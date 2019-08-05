@@ -39,32 +39,32 @@ void unit_tests() {
 
   printf("\r\n     starting bcast_test()...");
   bcast_test();
-  printf("\r\ncompleted");
+  printf("completed");
 
   printf("\r\n     starting chron_test()...");
   chron_test();
-  printf("\r\ncompleted");
+  printf("completed");
 
   printf("\r\n     starting heapsort_test()...");
   heapsort_test();
-  printf("\r\ncompleted");
+  printf("completed");
 
   printf("\r\n     starting jemi_test()...");
   jemi_test();
-  printf("\r\ncompleted");
+  printf("completed");
 
   printf("\r\n     starting mulog_test()...");
   mulog_test();
-  printf("\r\ncompleted");
+  printf("completed");
 
   printf("\r\n     starting pool_test()...");
   pool_test();
-  printf("\r\ncompleted");
+  printf("completed");
 
   printf("\r\n     starting sched_test()...");
   sched_test();
-  printf("\r\ncompleted");
+  printf("completed");
 
-  printf("==== Completed Unit Tests\r\n");
+  printf("\r\n==== Completed Unit Tests\r\n");
 
 }

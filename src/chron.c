@@ -36,8 +36,54 @@
 // =============================================================================
 // local storage
 
+static float s_clock_rate = CHRON_DEFAULT_CLOCK_RATE;
+
 // =============================================================================
 // public code
+
+// =============================================================================
+// public code
+
+// Return t1+dt
+chron_time_t chron_time_offset(chron_time_t t1, chron_duration_t dt) {
+  return t1 + dt;
+}
+
+// Return t1-t2 as a duration
+chron_duration_t chron_time_difference(chron_time_t t1, chron_time_t t2) {
+return t1 - t2;   // works due to twos compliment arithmetic
+}
+
+// Return true iff t1 is strictly earlier, equal to or
+// later than t2.
+bool chron_time_is_before(chron_time_t t1, chron_time_t t2) {
+  return chron_time_difference(t1, t2) > MAX_RTC_DURATION;
+}
+
+bool chron_time_is_equal(chron_time_t t1, chron_time_t t2) {
+  return t1 == t2;
+}
+
+bool chron_time_is_after(chron_time_t t1, chron_time_t t2) {
+  return chron_time_difference(t2, t1) > MAX_RTC_DURATION;
+}
+
+void chron_set_clock_rate(float tics_per_second) {
+  s_clock_rate = tics_per_second;
+}
+
+float chron_get_clock_rate() {
+  return s_clock_rate;
+}
+
+float chron_duration_to_seconds(chron_duration_t dt) {
+    return dt / s_clock_rate;
+}
+
+chron_duration_t chron_seconds_to_duration(float s) {
+    return s * s_clock_rate;
+}
+
 
 // =============================================================================
 // private code

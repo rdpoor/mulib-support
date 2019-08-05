@@ -24,7 +24,75 @@
 
 #include "../src/heapsort.h"
 #include "test_utilities.h"
+#include <string.h>
+
+// A structure with key/value pairs used for testing heapsort.
+typedef struct {
+  char *key;
+  int val;
+} test_t;
+
+// User-provided swap() function
+static void swap(void *items, int i1, int i2) {
+  test_t *kvs = (test_t *)items;
+  test_t tmp;
+
+  memcpy(&tmp, &kvs[i1], sizeof(test_t));
+  memcpy(&kvs[i1], &kvs[i2], sizeof(test_t));
+  memcpy(&kvs[i2], &tmp, sizeof(test_t));
+}
+
+// User provided functino to sort test_t structures by value
+int sort_by_val(void *items, int i1, int i2) {
+  test_t *kvs = (test_t *)items;
+
+  return kvs[i1].val - kvs[i2].val;
+}
+
+// User provided functino to sort test_t structures by value, descending
+int sort_by_val_descending(void *items, int i1, int i2) {
+  return sort_by_val(items, i2, i1);
+}
+
+// User provided functino to sort test_t structures by key
+int sort_by_key(void *items, int i1, int i2) {
+  test_t *kvs = (test_t *)items;
+
+  return strcmp(kvs[i1].key, kvs[i2].key);
+}
+
+#define N_ITEMS 5
 
 void heapsort_test() {
+  test_t items[N_ITEMS] = {
+    {.key="one", .val = 1},
+    {.key="four", .val = 4},
+    {.key="three", .val = 3},
+    {.key="two", .val = 2},
+    {.key="five", .val = 5},
+  };
 
+  // sort (numerically) by ascending value
+  heapsort(sort_by_val, swap, items, N_ITEMS);
+  UNIT_TEST_ASSERT(items[0].val == 1);
+  UNIT_TEST_ASSERT(items[1].val == 2);
+  UNIT_TEST_ASSERT(items[2].val == 3);
+  UNIT_TEST_ASSERT(items[3].val == 4);
+  UNIT_TEST_ASSERT(items[4].val == 5);
+
+  // sort (numerically) by descending value
+  heapsort(sort_by_val_descending, swap, items, N_ITEMS);
+  UNIT_TEST_ASSERT(items[0].val == 5);
+  UNIT_TEST_ASSERT(items[1].val == 4);
+  UNIT_TEST_ASSERT(items[2].val == 3);
+  UNIT_TEST_ASSERT(items[3].val == 2);
+  UNIT_TEST_ASSERT(items[4].val == 1);
+
+  // sort (alphbetically) by key
+  heapsort(sort_by_key, swap, items, N_ITEMS);
+  UNIT_TEST_ASSERT(strcmp(items[0].key, "five") == 0);
+  UNIT_TEST_ASSERT(strcmp(items[1].key, "four") == 0);
+  UNIT_TEST_ASSERT(strcmp(items[2].key, "one") == 0);
+  UNIT_TEST_ASSERT(strcmp(items[3].key, "three") == 0);
+  UNIT_TEST_ASSERT(strcmp(items[4].key, "two") == 0);
 }
