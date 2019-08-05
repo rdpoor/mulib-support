@@ -1,17 +1,17 @@
-# ulib
-ulib is curated collection of modules specifically for microcontrollers and
-other resource-constrained environments.
+# mulib
+mulib is curated collection of software modules specifically designed for
+microcontrollers and other resource-constrained environments.
 
-## About ulib
+## About mulib
 
-ulib is a collection of software modules, written in C, designed to run on
+mulib is a collection of software modules, written in C, designed to run on
 microcontrollers and other resource-constrained systems.
 
-ulib modules strive towards the following design goals.  (Whether or not they
+mulib modules strive towards the following design goals.  (Whether or not they
 always succeed is an open question):
 
 * Self-contained: minimize dependencies on external libraries
-* Two-file implementation: whenever practical, ulib modules are embodied in one
+* Two-file implementation: whenever practical, mulib modules are embodied in one
   header file and one C file.
 * Tested: unit tests validate the API
 * Documented API: The API is clearly documented in the header files.
