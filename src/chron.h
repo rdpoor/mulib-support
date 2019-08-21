@@ -38,13 +38,20 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-#define CHRON_DEFAULT_CLOCK_RATE 1000.0
+#ifndef CHRON_CLOCK_NBITS
+#define CHRON_CLOCK_NBITS 32
+#endif
 
-#define MAX_RTC_DURATION ((uint32_t)0x7fffffff)
+#ifndef CHRON_FLOAT_TYPE
+typedef double chron_float_t;
+#endif
 
+#if CHRON_CLOCK_NBITS == 32
 typedef uint32_t chron_time_t;
+typedef uint32_t chron_duration_t;
+#define CHRON_CLOCK_MAX_DURATION ((chron_duration_t)0x80000000)
+#endif
 
-typedef int32_t chron_duration_t;
 
 // =============================================================================
 // declarations
@@ -105,36 +112,22 @@ bool chron_time_is_equal(chron_time_t t1, chron_time_t t2);
 bool chron_time_is_after(chron_time_t t1, chron_time_t t2);
 
 /**
- * @brief Define the rate of the clock.  Used by chron_duration_to seconds and
- * chron_seconds_to_duration.
- *
- * @param tics_per_seconds The rate of the chron clock.
- */
-void chron_set_clock_rate(float tics_per_seconds);
-
-/**
- * @brief Get the chron clock rate.
- *
- * @return The rate of the chron clock.
- */
-float chron_get_clock_rate();
-
-/**
- * @brief Convert a duration to the corresponding number of seconds as a float.
+ * @brief Convert a duration to the corresponding number of seconds as a chron_float_t.
  *
  * @param dt A duration object
+ * @param clock_rate The clock rate of the counter in HZ
  * @return The duration in seconds
  */
-float chron_duration_to_seconds(chron_duration_t dt);
+chron_float_t chron_duration_to_seconds(chron_duration_t dt, chron_float_t clock_rate);
 
 /**
  * @brief Convert a number of seconds to the corresponding duration
  *
- * @param The duration in seconds
+ * @param s The duration in seconds
+ * @param clock_rate The clock rate of the counter in HZ
  * @return A duration object
  */
-chron_duration_t chron_seconds_to_duration(float s);
-
+chron_duration_t chron_seconds_to_duration(chron_float_t s, chron_float_t clock_rate);
 
 #ifdef __cplusplus
 }

@@ -26,17 +26,20 @@
 // includes
 
 #include "chron.h"
+#include <stdio.h>
 
 // =============================================================================
 // private types and definitions
+
+#if CHRON_CLOCK_NBITS == 32
+typedef int32_t signed_duration_t;  // signed version of chron_duration_t
+#endif
 
 // =============================================================================
 // private declarations
 
 // =============================================================================
 // local storage
-
-static float s_clock_rate = CHRON_DEFAULT_CLOCK_RATE;
 
 // =============================================================================
 // public code
@@ -51,13 +54,13 @@ chron_time_t chron_time_offset(chron_time_t t1, chron_duration_t dt) {
 
 // Return t1-t2 as a duration
 chron_duration_t chron_time_difference(chron_time_t t1, chron_time_t t2) {
-return t1 - t2;   // works due to twos compliment arithmetic
+  return t1 - t2;   // works due to twos compliment arithmetic
 }
 
 // Return true iff t1 is strictly earlier, equal to or
 // later than t2.
 bool chron_time_is_before(chron_time_t t1, chron_time_t t2) {
-  return chron_time_difference(t1, t2) > MAX_RTC_DURATION;
+  return chron_time_difference(t1, t2) > CHRON_CLOCK_MAX_DURATION;
 }
 
 bool chron_time_is_equal(chron_time_t t1, chron_time_t t2) {
@@ -65,25 +68,15 @@ bool chron_time_is_equal(chron_time_t t1, chron_time_t t2) {
 }
 
 bool chron_time_is_after(chron_time_t t1, chron_time_t t2) {
-  return chron_time_difference(t2, t1) > MAX_RTC_DURATION;
+  return chron_time_difference(t2, t1) > CHRON_CLOCK_MAX_DURATION;
 }
 
-void chron_set_clock_rate(float tics_per_second) {
-  s_clock_rate = tics_per_second;
+chron_float_t chron_duration_to_seconds(chron_duration_t dt, chron_float_t clock_rate) {
+  signed_duration_t sdt = (signed_duration_t)dt;  // convert to signed
+  return sdt / clock_rate;
 }
 
-float chron_get_clock_rate() {
-  return s_clock_rate;
+chron_duration_t chron_seconds_to_duration(chron_float_t s, chron_float_t clock_rate) {
+  signed_duration_t sdt = s * clock_rate;
+  return (chron_duration_t)sdt;            // convert to unsigned.
 }
-
-float chron_duration_to_seconds(chron_duration_t dt) {
-    return dt / s_clock_rate;
-}
-
-chron_duration_t chron_seconds_to_duration(float s) {
-    return s * s_clock_rate;
-}
-
-
-// =============================================================================
-// private code

@@ -24,46 +24,54 @@
 
 #include "../src/chron.h"
 #include "test_utilities.h"
+#include <stdio.h>
 
-#define CHRON_CLOCK_HZ 1234.0
+#define CLOCK_HZ 1234
+
+#define CHRON_CLOCK_EPS (0.5 / (float)CHRON_CLOCK_MAX_DURATION)
 
 void chron_test() {
   chron_time_t t1 = 0x1;
-  chron_time_t t2 = 0xffffffff;
+  chron_time_t t2 = (chron_time_t)(-1);
   chron_duration_t d1 = 2;
   chron_duration_t d2 = -2;
 
   // chron_time_t chron_rtc_offset(chron_time_t t1, chron_duration_t dt);
-  UNIT_TEST_ASSERT(chron_time_offset(t1, d1) == 3);
-  UNIT_TEST_ASSERT(chron_time_offset(t1, d2) == t2);
+  UTEST_ASSERT(chron_time_offset(t1, d1) == 3);
+  UTEST_ASSERT(chron_time_offset(t1, d2) == t2);
 
   // chron_duration_t chron_rtc_difference(chron_time_t t1, chron_time_t t2);
-  UNIT_TEST_ASSERT(chron_time_difference(t1, t2) == 2);
-  UNIT_TEST_ASSERT(chron_time_difference(t2, t1) == d2);
+  UTEST_ASSERT(chron_time_difference(t1, t2) == 2);
+  UTEST_ASSERT(chron_time_difference(t2, t1) == d2);
 
   // bool chron_rtc_is_before(chron_time_t t1, chron_time_t t2);
-  UNIT_TEST_ASSERT(chron_time_is_before(t2, t1) == true);
-  UNIT_TEST_ASSERT(chron_time_is_before(t1, t1) == false);
-  UNIT_TEST_ASSERT(chron_time_is_before(t1, t2) == false);
+  UTEST_ASSERT(chron_time_is_before(t2, t1) == true);
+  UTEST_ASSERT(chron_time_is_before(t1, t1) == false);
+  UTEST_ASSERT(chron_time_is_before(t1, t2) == false);
 
   // bool chron_rtc_is_equal(chron_time_t t1, chron_time_t t2);
-  UNIT_TEST_ASSERT(chron_time_is_equal(t1, t1) == true);
-  UNIT_TEST_ASSERT(chron_time_is_equal(t1, t2) == false);
+  UTEST_ASSERT(chron_time_is_equal(t1, t1) == true);
+  UTEST_ASSERT(chron_time_is_equal(t1, t2) == false);
 
   // bool chron_rtc_is_after(chron_time_t t1, chron_time_t t2);
-  UNIT_TEST_ASSERT(chron_time_is_after(t2, t1) == false);
-  UNIT_TEST_ASSERT(chron_time_is_after(t1, t1) == false);
-  UNIT_TEST_ASSERT(chron_time_is_after(t1, t2) == true);
+  UTEST_ASSERT(chron_time_is_after(t2, t1) == false);
+  UTEST_ASSERT(chron_time_is_after(t1, t1) == false);
+  UTEST_ASSERT(chron_time_is_after(t1, t2) == true);
 
-  chron_set_clock_rate(CHRON_CLOCK_HZ);
-  UNIT_TEST_ASSERT(chron_get_clock_rate() == CHRON_CLOCK_HZ);
+  UTEST_ASSERT(chron_duration_to_seconds(0xffffffff, 1.0) == -1.0);
+  UTEST_ASSERT(chron_duration_to_seconds(0, 1.0) == 0.0);
+  UTEST_ASSERT(chron_duration_to_seconds(1, 1.0) == 1.0);
+  UTEST_ASSERT(chron_duration_to_seconds(0x7fffffff, 1.0) == CHRON_CLOCK_MAX_DURATION-1);
 
-  // float chron_duration_t_to_s(chron_duration_t dt);
-  UNIT_TEST_ASSERT(chron_duration_to_seconds(CHRON_CLOCK_HZ) == 1.0);
-  UNIT_TEST_ASSERT(chron_duration_to_seconds(-CHRON_CLOCK_HZ) == -1.0);
+  UTEST_FLOAT_EPS(chron_duration_to_seconds(0xffffffff, CLOCK_HZ),-1.0/CLOCK_HZ, 0.001);
+  UTEST_FLOAT_EPS(chron_duration_to_seconds(0, CLOCK_HZ), 0.0, 0.001);
+  UTEST_FLOAT_EPS(chron_duration_to_seconds(1, CLOCK_HZ), 1.0/CLOCK_HZ, 0.001);
+  UTEST_FLOAT_EPS(chron_duration_to_seconds(0x7fffffff, CLOCK_HZ),
+                  (((chron_float_t)CHRON_CLOCK_MAX_DURATION)-1.0) / CLOCK_HZ,
+                  0.001);
 
   // chron_duration_t chron_rtc_s_to_dt(float s);
-  UNIT_TEST_ASSERT(chron_seconds_to_duration(2.0) == 2.0 * CHRON_CLOCK_HZ);
-  UNIT_TEST_ASSERT(chron_seconds_to_duration(-2.0) == -2.0 * CHRON_CLOCK_HZ);
+  UTEST_ASSERT(chron_seconds_to_duration(2.0, CLOCK_HZ) == (chron_duration_t)((int)(2.0 * CLOCK_HZ)));
+  UTEST_ASSERT(chron_seconds_to_duration(-2.0, CLOCK_HZ) == (chron_duration_t)((int)(-2.0 * CLOCK_HZ)));
 
 }

@@ -1,20 +1,21 @@
-# mulib
-mulib is curated collection of software modules specifically designed for
-microcontrollers and other resource-constrained environments.
+# mulib - Micro Library
+mulib is curated collection of software modules written in C specifically
+designed for microcontrollers and other resource-constrained environments.
 
-## About mulib
+## mulib's design philosophy
 
-mulib is a collection of software modules, written in C, designed to run on
-microcontrollers and other resource-constrained systems.
-
-mulib modules strive towards the following design goals.  (Whether or not they
-always succeed is an open question):
+mulib modules strive towards the following design goals.
 
 * Self-contained: minimize dependencies on external libraries
 * Two-file implementation: whenever practical, mulib modules are embodied in one
   header file and one C file.
 * Tested: unit tests validate the API
 * Documented API: The API is clearly documented in the header files.
+* Minimal Safety: mulib favors minimizing time and code space over argument
+  validation.
+* User controls memory management: Modules that require dynamic allocation and
+  freeing of objects take user-defined malloc() and free() methods in the
+  module's init() function.
 
 ## The modules
 
@@ -40,7 +41,7 @@ Allocate and free fixed-sized objects in a pool
 
 ### sched
 
-Time agnostic, single-thread, run-to-completion scheduler
+Clock agnostic, single-thread, run-to-completion scheduler
 
 ### mulog
 

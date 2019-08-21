@@ -25,12 +25,6 @@
 #include "test_utilities.h"
 #include <stdio.h>
 
-bool is_within_bounds(float f1, float f2, float bounds) {
-  float diff = f1 - f2;
-  if (diff < 0) diff = -diff;
-  return diff <= bounds;
-}
-
 /**
  * \brief Assert function
  */
@@ -43,6 +37,36 @@ void unit_test_assert(const bool condition,
     fflush(stdout);
 #ifdef UNIT_TEST_BREAK_ON_ERROR
     __asm("BKPT #0");
+#endif
+  }
+}
+
+/**
+ * @brief pass the test if f0 and f1 differ by less than eps
+ */
+void unit_test_float_eps(const float f0,
+                         const float f1,
+                         const float eps,
+                         const char *const f0_expr,
+                         const char *const f1_expr,
+                         const char *const eps_expr,
+                         const char *const file,
+                         const int line) {
+  float diff = f0-f1;
+  if (diff < 0) diff = -diff;
+  if (diff >= eps) {
+    printf("\r\n%e and %e differ by more than %e in UTEST_FLOAT_EPS(%s, %s, %s) at %s:%d",
+           f0,
+           f1,
+           eps,
+           f0_expr,
+           f1_expr,
+           eps_expr,
+           file,
+           line);
+    fflush(stdout);
+#ifdef UNIT_TEST_BREAK_ON_ERROR
+  __asm("BKPT #0");
 #endif
   }
 }

@@ -32,14 +32,21 @@ extern "C" {
 #include <stdbool.h>
 
 #define UNUSED(x) (void)(x)
-#define UNIT_TEST_ASSERT(condition) unit_test_assert((condition), #condition, __FILE__, __LINE__)
-
+#define UTEST_ASSERT(condition) unit_test_assert((condition), #condition, __FILE__, __LINE__)
 void unit_test_assert(const bool condition,
                       const char *const expr,
                       const char *const file,
                       const int line);
 
-bool is_within_bounds(float f1, float f2, float bounds);
+#define UTEST_FLOAT_EPS(f0, f1, eps) unit_test_float_eps((f0), (f1), (eps), #f0, #f1, #eps, __FILE__, __LINE__)
+void unit_test_float_eps(const float f0,
+                         const float f1,
+                         const float eps,
+                         const char *const f0_expr,
+                         const char *const f1_expr,
+                         const char *const eps_expr,
+                         const char *const file,
+                         const int line);
 
 #ifdef __cplusplus
 }

@@ -74,25 +74,25 @@ void heapsort_test() {
 
   // sort (numerically) by ascending value
   heapsort(sort_by_val, swap, items, N_ITEMS);
-  UNIT_TEST_ASSERT(items[0].val == 1);
-  UNIT_TEST_ASSERT(items[1].val == 2);
-  UNIT_TEST_ASSERT(items[2].val == 3);
-  UNIT_TEST_ASSERT(items[3].val == 4);
-  UNIT_TEST_ASSERT(items[4].val == 5);
+  UTEST_ASSERT(items[0].val == 1);
+  UTEST_ASSERT(items[1].val == 2);
+  UTEST_ASSERT(items[2].val == 3);
+  UTEST_ASSERT(items[3].val == 4);
+  UTEST_ASSERT(items[4].val == 5);
 
   // sort (numerically) by descending value
   heapsort(sort_by_val_descending, swap, items, N_ITEMS);
-  UNIT_TEST_ASSERT(items[0].val == 5);
-  UNIT_TEST_ASSERT(items[1].val == 4);
-  UNIT_TEST_ASSERT(items[2].val == 3);
-  UNIT_TEST_ASSERT(items[3].val == 2);
-  UNIT_TEST_ASSERT(items[4].val == 1);
+  UTEST_ASSERT(items[0].val == 5);
+  UTEST_ASSERT(items[1].val == 4);
+  UTEST_ASSERT(items[2].val == 3);
+  UTEST_ASSERT(items[3].val == 2);
+  UTEST_ASSERT(items[4].val == 1);
 
   // sort (alphbetically) by key
   heapsort(sort_by_key, swap, items, N_ITEMS);
-  UNIT_TEST_ASSERT(strcmp(items[0].key, "five") == 0);
-  UNIT_TEST_ASSERT(strcmp(items[1].key, "four") == 0);
-  UNIT_TEST_ASSERT(strcmp(items[2].key, "one") == 0);
-  UNIT_TEST_ASSERT(strcmp(items[3].key, "three") == 0);
-  UNIT_TEST_ASSERT(strcmp(items[4].key, "two") == 0);
+  UTEST_ASSERT(strcmp(items[0].key, "five") == 0);
+  UTEST_ASSERT(strcmp(items[1].key, "four") == 0);
+  UTEST_ASSERT(strcmp(items[2].key, "one") == 0);
+  UTEST_ASSERT(strcmp(items[3].key, "three") == 0);
+  UTEST_ASSERT(strcmp(items[4].key, "two") == 0);
 }
