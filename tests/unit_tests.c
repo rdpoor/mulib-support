@@ -29,6 +29,8 @@ void bcast_test();
 void chron_test();
 void heapsort_test();
 void jemi_test();
+void mulib_event_test();
+void mulib_task_test();
 void mulog_test();
 void pool_test();
 void sched_test();
@@ -51,6 +53,14 @@ void unit_tests() {
 
   printf("\r\n     starting jemi_test()...");
   jemi_test();
+  printf("completed");
+
+  printf("\r\n     starting mulib_event_test()...");
+  mulib_event_test();
+  printf("completed");
+
+  printf("\r\n     starting mulib_task_test()...");
+  mulib_task_test();
   printf("completed");
 
   printf("\r\n     starting mulog_test()...");

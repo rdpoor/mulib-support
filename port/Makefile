@@ -1,7 +1,7 @@
 # Makefile for mulib source files.  Used (mostly) for compiling unit tests on
 # a unix-like system.
 
-EXCLUDES := _template.c
+EXCLUDES := _template_test.c
 
 # In this src directory, all .c files are compiled into .o files
 SOURCES := $(filter-out $(EXCLUDES), $(wildcard *.c))
@@ -13,12 +13,13 @@ HEADERS := $(patsubst %.c,%.h,$(SOURCES))
 # cause a recompilation of the SOURCES.
 INCLUDES :=
 
+
 CC     = gcc
 
 # Good settings for debugging
 CFLAGS  = -O0 -Wall -g -DMULOG_ENABLED
 
-IFLAGS = 
+IFLAGS =
 
 %.o : %.c %.h $(INCLUDES)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
