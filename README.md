@@ -1,4 +1,5 @@
 # mulib - A library for microcontrollers
+
 mulib is curated collection of software modules written in C, specifically
 tailored for microcontrollers and other resource-constrained environments.
 
@@ -23,46 +24,68 @@ mulib strives towards the following design goals.
 
 Low-overhead publish / subscribe message passing.
 
+Status: Passing Tests.
+
 ### mu_evt
 
 Event handling.  Associates a `mu_time` with a `mu_msg` (q.v.).
+
+Status: Passing Tests.
 
 ### mu_jemi
 
 Json EMItter: Build complex data structures and emit them as JSON strings.
 
+Status: In progress.
+
 ### mu_mu_heapsort
 
 O(log N) in-place sorting of pointer-sized objects.
 
+Status: Passing Tests.
+
 ### mu_list
 
 Manage linked lists of pointer-sized objects.
+
+Status: In progress.
 
 ### mu_log
 
 No-nonsense logging with run-time control on reporting severity and multiple
 reporting channels.
 
+Status: In progress.
+
 ### mu_msg
 
 Simple, versatile, fast message passing.  Commonly used for deferred function
 calls.
 
+Status: Passing Tests.
+
 ### mu_pool
 
 Dynamically allocate and free fixed-sized objects from a static storage pool.
+
+Status: In progress.
 
 ### mu_ring
 
 Thread safe ring buffer for pointer-sized objects.  Also provides variants to
 handle 8-, 16-, 32- and 64-bit wide objects.
 
+Status: In progress.
+
 ### mu_sched
 
 Clock agnostic, single-thread, run-to-completion scheduler
+
+Status: In progress.
 
 ### mu_time
 
 Functions to manipulate time values, properly handling roll-over.  Requires
 platform specific support in port/port.h
+
+Status: Passing Tests.

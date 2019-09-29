@@ -25,6 +25,7 @@
 #include "unit_tests.h"
 #include <stdio.h>
 
+void mu_evt_test();
 void mu_heapsort_test();
 void mu_msg_test();
 void mu_time_test();
@@ -32,6 +33,10 @@ void mu_time_test();
 void unit_tests() {
 
   printf("\r\n==== Starting Unit Tests:");
+
+  printf("\r\n     starting mu_evt_test()...");
+  mu_evt_test();
+  printf("completed");
 
   printf("\r\n     starting mu_heapsort_test()...");
   mu_heapsort_test();

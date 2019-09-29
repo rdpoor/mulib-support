@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-#include "../src/bcast.h"
+#include "../src/mu_bcast.h"
 #include "test_utilities.h"
 #include <stdint.h>
 
 #define N_SUBSCRIBERS 5
 
-static bcast_subscriber_t s_subscribers[N_SUBSCRIBERS];
+static mu_bcast_subscriber_t s_subscribers[N_SUBSCRIBERS];
 
 static int s_a1_notified, s_a2_notified, s_a3_notified;
 
@@ -39,69 +39,76 @@ const uintptr_t BCAST_ARG = 44;
 const uintptr_t ARG_A1 = 55;
 const uintptr_t ARG_A2 = 66;
 
-static void action_a1(bcast_channel_t chan, void *arg, void *user_arg) {
+static void *action_a1(void *self, void *arg) {
     s_a1_notified++;
+    UTEST_ASSERT((uint32_t)self == ARG_A1);
     UTEST_ASSERT((uint32_t)arg == BCAST_ARG);
-    UTEST_ASSERT((uint32_t)user_arg == ARG_A1);
+    return self;
 }
 
-static void action_a2(bcast_channel_t chan, void *arg, void *user_arg) {
+static void *action_a2(void *self, void *arg) {
     s_a2_notified++;
+    UTEST_ASSERT((uint32_t)self == ARG_A2);
     UTEST_ASSERT((uint32_t)arg == BCAST_ARG);
-    UTEST_ASSERT((uint32_t)user_arg == ARG_A2);
+    return self;
 }
 
-static void action_a3(bcast_channel_t chan, void *arg, void *user_arg) {
+static void *action_a3(void *self, void *arg) {
     s_a3_notified++;
+    return self;
 }
 
-void bcast_test() {
-    bcast_mgr_t bcast_mgr;
+void mu_bcast_test() {
+    mu_bcast_mgr_t mu_bcast_mgr;
 
     s_a1_notified = 0;
     s_a2_notified = 0;
     s_a3_notified = 0;
 
-    bcast_init(&bcast_mgr, s_subscribers, N_SUBSCRIBERS);
-    UTEST_ASSERT(bcast_subscribe(&bcast_mgr, BCAST_CHANNEL_MIN-1, action_a1, (void *)0) == BCAST_ERR_ILLEGAL_CHANNEL);
+    mu_bcast_init(&mu_bcast_mgr, s_subscribers, N_SUBSCRIBERS);
+    UTEST_ASSERT(mu_bcast_subscribe(&mu_bcast_mgr, MU_BCAST_CHANNEL_MIN-1, action_a1, (void *)0) == MU_BCAST_ERR_ILLEGAL_CHANNEL);
 
     // action_a1 and action_a2 subscribed to CHAN_A
     // action_a2 and action_a3 subscribed to CHAN_B
-    UTEST_ASSERT(bcast_subscribe(&bcast_mgr, CHAN_A, action_a1, (void *)ARG_A1) == BCAST_ERR_NONE);
-    UTEST_ASSERT(bcast_subscribe(&bcast_mgr, CHAN_A, action_a2, (void *)ARG_A2) == BCAST_ERR_NONE);
-    UTEST_ASSERT(bcast_subscribe(&bcast_mgr, CHAN_B, action_a2, (void *)ARG_A2) == BCAST_ERR_NONE);
-    UTEST_ASSERT(bcast_subscribe(&bcast_mgr, CHAN_B, action_a3, (void *)0) == BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_subscribe(&mu_bcast_mgr, CHAN_A, action_a1, (void *)ARG_A1) == MU_BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_subscribe(&mu_bcast_mgr, CHAN_A, action_a2, (void *)ARG_A2) == MU_BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_subscribe(&mu_bcast_mgr, CHAN_B, action_a2, (void *)ARG_A2) == MU_BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_subscribe(&mu_bcast_mgr, CHAN_B, action_a3, (void *)0) == MU_BCAST_ERR_NONE);
 
     // notify with a legal channel
-    UTEST_ASSERT(bcast_notify(&bcast_mgr, CHAN_A, (void *)BCAST_ARG) == BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG) == MU_BCAST_ERR_NONE);
     UTEST_ASSERT(s_a1_notified == 1);
     UTEST_ASSERT(s_a2_notified == 1);
     UTEST_ASSERT(s_a3_notified == 0);
 
     // notify with a legal channel
-    UTEST_ASSERT(bcast_notify(&bcast_mgr, CHAN_B, (void *)BCAST_ARG) == BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_B, (void *)BCAST_ARG) == MU_BCAST_ERR_NONE);
     UTEST_ASSERT(s_a1_notified == 1);
     UTEST_ASSERT(s_a2_notified == 2);
     UTEST_ASSERT(s_a3_notified == 1);
 
     // subscribe when already subscribed
-    UTEST_ASSERT(bcast_subscribe(&bcast_mgr, CHAN_A, action_a1, (void *)ARG_A1) == BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_subscribe(&mu_bcast_mgr, CHAN_A, action_a1, (void *)ARG_A1) == MU_BCAST_ERR_NONE);
     // action_a1 should receive only one (additional) notification
-    UTEST_ASSERT(bcast_notify(&bcast_mgr, CHAN_A, (void *)BCAST_ARG) == BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG) == MU_BCAST_ERR_NONE);
     UTEST_ASSERT(s_a1_notified == 2);
     UTEST_ASSERT(s_a2_notified == 3);
     UTEST_ASSERT(s_a3_notified == 1);
 
     // unsubscribe action_a2 from CHAN_A (only)
-    UTEST_ASSERT(bcast_unsubscribe(&bcast_mgr, CHAN_A, action_a2) == BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_unsubscribe(&mu_bcast_mgr, CHAN_A, action_a2) == MU_BCAST_ERR_NONE);
     // action_a2 should not receive the notification..
-    UTEST_ASSERT(bcast_notify(&bcast_mgr, CHAN_A, (void *)BCAST_ARG) == BCAST_ERR_NONE);
+    UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG) == MU_BCAST_ERR_NONE);
     UTEST_ASSERT(s_a1_notified == 3);
     UTEST_ASSERT(s_a2_notified == 3);
     UTEST_ASSERT(s_a3_notified == 1);
 
-    // notify with an broadcast all channel
+    // notify on all channels
+    UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, MU_BCAST_ALL_CHANNELS, (void *)BCAST_ARG) == MU_BCAST_ERR_NONE);
+    UTEST_ASSERT(s_a1_notified == 4);
+    UTEST_ASSERT(s_a2_notified == 4);
+    UTEST_ASSERT(s_a3_notified == 2);
 
     // unsubscribe when not subscribed
-    UTEST_ASSERT(bcast_unsubscribe(&bcast_mgr, CHAN_A, action_a3) == BCAST_ERR_NOT_FOUND);
+    UTEST_ASSERT(mu_bcast_unsubscribe(&mu_bcast_mgr, CHAN_A, action_a3) == MU_BCAST_ERR_NOT_FOUND);
 }

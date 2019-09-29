@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_BCAST_H_
-#define MULIB_BCAST_H_
+#ifndef MU_BCAST_H_
+#define MU_BCAST_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,47 +32,36 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include "mu_msg.h"
 #include <stdint.h>
 
 // =============================================================================
 // types and definitions
 
 typedef enum {
-  BCAST_ERR_NONE = 0,
-  BCAST_ERR_EVENTS_EXHAUSTED,
-  BCAST_ERR_SUBSCRIBERS_EXHAUSTED,
-  BCAST_ERR_ILLEGAL_CHANNEL,
-  BCAST_ERR_NOT_FOUND,
-} bcast_err_t;
+  MU_BCAST_ERR_NONE = 0,
+  MU_BCAST_ERR_EVENTS_EXHAUSTED,
+  MU_BCAST_ERR_SUBSCRIBERS_EXHAUSTED,
+  MU_BCAST_ERR_ILLEGAL_CHANNEL,
+  MU_BCAST_ERR_NOT_FOUND,
+} mu_bcast_err_t;
 
-typedef uint16_t bcast_channel_t;
+typedef uint16_t mu_bcast_channel_t;
 
-#define BCAST_CHANNEL_UNASSIGNED 0
-#define BCAST_CHANNEL_MIN 1
-#define BCAST_CHANNEL_MAX UINT16_MAX
-
-/**
- * &brief: an bcast_arg_t is a pointer-sized reference.
- */
-typedef void bcast_arg_t;
-
-/**
- * @brief: prototype for exch callback functions.
- */
-typedef void (*bcast_function_t)(bcast_channel_t channel,
-                                bcast_arg_t *arg,
-                                bcast_arg_t *user_arg);
+#define MU_BCAST_CHANNEL_UNASSIGNED 0
+#define MU_BCAST_ALL_CHANNELS 0
+#define MU_BCAST_CHANNEL_MIN 1
+#define MU_BCAST_CHANNEL_MAX UINT16_MAX
 
 typedef struct _subscriber {
-  bcast_channel_t channel;
-  bcast_function_t function;
-  bcast_arg_t *user_arg;
-} bcast_subscriber_t;
+  mu_bcast_channel_t channel;
+  mu_msg_t msg;
+} mu_bcast_subscriber_t;
 
 typedef struct _manager {
-  bcast_subscriber_t *subscribers;
+  mu_bcast_subscriber_t *subscribers;
   int max_subscribers;
-} bcast_mgr_t;
+} mu_bcast_mgr_t;
 
 // =============================================================================
 // declarations
@@ -80,39 +69,39 @@ typedef struct _manager {
 /**
  * @brief: Initialize the exch system.
  */
-void bcast_init(bcast_mgr_t *bcast_mgr,
-                bcast_subscriber_t *subscribers,
-                int max_subscribers);
+void mu_bcast_init(mu_bcast_mgr_t *mu_bcast_mgr,
+                   mu_bcast_subscriber_t *subscribers,
+                   int max_subscribers);
 
 /**
  * @brief: Clear all subscribers
  */
-void bcast_reset(bcast_mgr_t *bcast_mgr);
+void mu_bcast_reset(mu_bcast_mgr_t *mu_bcast_mgr);
 
 /**
  * @brief: subscribe to notifications on the specified channel.
  */
-bcast_err_t bcast_subscribe(bcast_mgr_t *bcast_mgr,
-                            bcast_channel_t channel,
-                            bcast_function_t function,
-                            bcast_arg_t *user_arg);
+mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
+                                  mu_bcast_channel_t channel,
+                                  mu_msg_fn function,
+                                  void *target);
 
 /**
  * @brief: stop receiving notifications
  */
-bcast_err_t bcast_unsubscribe(bcast_mgr_t *bcast_mgr,
-                              bcast_channel_t channel,
-                              bcast_function_t function);
+mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
+                                    mu_bcast_channel_t channel,
+                                    mu_msg_fn function);
 
 /**
  * @brief: notify every subscriber on the given channel.
  */
-bcast_err_t bcast_notify(bcast_mgr_t *bcast_mgr,
-                         bcast_channel_t channel,
-                         bcast_arg_t *arg);
+mu_bcast_err_t mu_bcast_notify(mu_bcast_mgr_t *mu_bcast_mgr,
+                               mu_bcast_channel_t channel,
+                               void *arg);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MULIB_BCAST_H_
+#endif // #ifndef MU_BCAST_H_
