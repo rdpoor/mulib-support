@@ -6,18 +6,16 @@
 int s_msg_1_called;
 int s_msg_2_called;
 
-static void *test_fn_1(void *self, void *arg) {
+static void test_fn_1(void *self, void *arg) {
   UTEST_ASSERT(self == (void *)100);
   UTEST_ASSERT(arg == (void *)1);
   s_msg_1_called += 1;
-  return self;
 }
 
-static void *test_fn_2(void *self, void *arg) {
+static void test_fn_2(void *self, void *arg) {
   UTEST_ASSERT(self == (void *)200);
   UTEST_ASSERT(arg == (void *)2);
   s_msg_2_called += 1;
-  return self;
 }
 
 void mu_msg_test() {

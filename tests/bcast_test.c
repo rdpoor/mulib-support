@@ -39,23 +39,20 @@ const uintptr_t BCAST_ARG = 44;
 const uintptr_t ARG_A1 = 55;
 const uintptr_t ARG_A2 = 66;
 
-static void *action_a1(void *self, void *arg) {
+static void action_a1(void *self, void *arg) {
     s_a1_notified++;
     UTEST_ASSERT((uint32_t)self == ARG_A1);
     UTEST_ASSERT((uint32_t)arg == BCAST_ARG);
-    return self;
 }
 
-static void *action_a2(void *self, void *arg) {
+static void action_a2(void *self, void *arg) {
     s_a2_notified++;
     UTEST_ASSERT((uint32_t)self == ARG_A2);
     UTEST_ASSERT((uint32_t)arg == BCAST_ARG);
-    return self;
 }
 
-static void *action_a3(void *self, void *arg) {
+static void action_a3(void *self, void *arg) {
     s_a3_notified++;
-    return self;
 }
 
 void mu_bcast_test() {

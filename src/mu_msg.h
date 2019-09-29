@@ -35,7 +35,7 @@ extern "C" {
  * and is expected to return a pointer-sized object (frequently the self arg
  * on success and NULL on failure).
  */
-typedef void *(*mu_msg_fn)(void *self, void *arg);
+typedef void (*mu_msg_fn)(void *self, void *arg);
 
 typedef struct {
   mu_msg_fn fn;

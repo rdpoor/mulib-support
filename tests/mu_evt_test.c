@@ -8,25 +8,22 @@ int s_msg_i_called;
 int s_msg_t1_called;
 int s_msg_t2_called;
 
-static void *msg_fn_imm(void *self, void *arg) {
+static void msg_fn_imm(void *self, void *arg) {
   UTEST_ASSERT(arg == (void *)1);
   UTEST_ASSERT(self == (void *)100);
   s_msg_i_called += 1;
-  return self;
 }
 
-static void *msg_fn_t1(void *self, void *arg) {
+static void msg_fn_t1(void *self, void *arg) {
   UTEST_ASSERT(arg == (void *)2);
   UTEST_ASSERT(self == (void *)200);
   s_msg_t1_called += 1;
-  return self;
 }
 
-static void *msg_fn_t2(void *self, void *arg) {
+static void msg_fn_t2(void *self, void *arg) {
   UTEST_ASSERT(arg == (void *)3);
   UTEST_ASSERT(self == (void *)300);
   s_msg_t2_called += 1;
-  return self;
 }
 
 void mu_evt_test() {
