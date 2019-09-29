@@ -25,9 +25,9 @@
 // =============================================================================
 // includes
 
-#include "mulog.h"
+#include "mu_log.h"
 
-#ifdef MULOG_ENABLED  // whole file...
+#ifdef MU_LOG_ENABLED  // whole file...
 
 #include <stdio.h>
 #include <string.h>
@@ -37,8 +37,8 @@
 // private types and definitions
 
 typedef struct {
-  mulog_function_t fn;
-  mulog_level_t threshold;
+  mu_log_subscriber_fn fn;
+  mu_log_level_t threshold;
 } subscriber_t;
 
 // =============================================================================
@@ -48,24 +48,24 @@ typedef struct {
 // local storage
 
 // TODO: implement user-allocated subscribers and message buffer
-static subscriber_t s_subscribers[MULOG_MAX_SUBSCRIBERS];
-static char s_message[MULOG_MAX_MESSAGE_LENGTH];
+static subscriber_t s_subscribers[MU_LOG_MAX_SUBSCRIBERS];
+static char s_message[MU_LOG_MAX_MESSAGE_LENGTH];
 
 // =============================================================================
 // public code
 
-void mulog_init() {
+void mu_log_init() {
   memset(s_subscribers, 0, sizeof(s_subscribers));
 }
 
 // search the s_subscribers table to install or update fn
-mulog_err_t mulog_subscribe(mulog_function_t fn, mulog_level_t threshold) {
+mu_log_err_t mu_log_subscribe(mu_log_subscriber_fn fn, mu_log_level_t threshold) {
   int available_slot = -1;
-  for (int i=0; i<MULOG_MAX_SUBSCRIBERS; i++) {
+  for (int i=0; i<MU_LOG_MAX_SUBSCRIBERS; i++) {
     if (s_subscribers[i].fn == fn) {
       // already subscribed: update threshold and return immediately.
       s_subscribers[i].threshold = threshold;
-      return MULOG_ERR_NONE;
+      return MU_LOG_ERR_NONE;
 
     } else if (s_subscribers[i].fn == NULL) {
       // found a free slot
@@ -74,44 +74,44 @@ mulog_err_t mulog_subscribe(mulog_function_t fn, mulog_level_t threshold) {
   }
   // fn is not yet a subscriber.  assign if possible.
   if (available_slot == -1) {
-    return MULOG_ERR_SUBSCRIBERS_EXCEEDED;
+    return MU_LOG_ERR_SUBSCRIBERS_EXCEEDED;
   }
   s_subscribers[available_slot].fn = fn;
   s_subscribers[available_slot].threshold = threshold;
-  return MULOG_ERR_NONE;
+  return MU_LOG_ERR_NONE;
 }
 
 // search the s_subscribers table to remove
-mulog_err_t mulog_unsubscribe(mulog_function_t fn) {
-  for (int i=0; i<MULOG_MAX_SUBSCRIBERS; i++) {
+mu_log_err_t mu_log_unsubscribe(mu_log_subscriber_fn fn) {
+  for (int i=0; i<MU_LOG_MAX_SUBSCRIBERS; i++) {
     if (s_subscribers[i].fn == fn) {
       s_subscribers[i].fn = NULL;    // mark as empty
-      return MULOG_ERR_NONE;
+      return MU_LOG_ERR_NONE;
     }
   }
-  return MULOG_ERR_NOT_SUBSCRIBED;
+  return MU_LOG_ERR_NOT_SUBSCRIBED;
 }
 
-const char *mulog_level_name(mulog_level_t severity) {
+const char *mu_log_level_name(mu_log_level_t severity) {
   switch(severity) {
-   case MULOG_TRACE_LEVEL: return "TRACE";
-   case MULOG_DEBUG_LEVEL: return "DEBUG";
-   case MULOG_INFO_LEVEL: return "INFO";
-   case MULOG_WARNING_LEVEL: return "WARNING";
-   case MULOG_ERROR_LEVEL: return "ERROR";
-   case MULOG_CRITICAL_LEVEL: return "CRITICAL";
-   case MULOG_ALWAYS_LEVEL: return "ALWAYS";
+   case MU_LOG_TRACE_LEVEL: return "TRACE";
+   case MU_LOG_DEBUG_LEVEL: return "DEBUG";
+   case MU_LOG_INFO_LEVEL: return "INFO";
+   case MU_LOG_WARNING_LEVEL: return "WARNING";
+   case MU_LOG_ERROR_LEVEL: return "ERROR";
+   case MU_LOG_CRITICAL_LEVEL: return "CRITICAL";
+   case MU_LOG_ALWAYS_LEVEL: return "ALWAYS";
    default: return "UNKNOWN";
   }
 }
 
-void mulog_message(mulog_level_t severity, const char *fmt, ...) {
+void mu_log_message(mu_log_level_t severity, const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  vsnprintf(s_message, MULOG_MAX_MESSAGE_LENGTH, fmt, ap);
+  vsnprintf(s_message, MU_LOG_MAX_MESSAGE_LENGTH, fmt, ap);
   va_end(ap);
 
-  for (int i=0; i<MULOG_MAX_SUBSCRIBERS; i++) {
+  for (int i=0; i<MU_LOG_MAX_SUBSCRIBERS; i++) {
     if (s_subscribers[i].fn != NULL) {
       if (severity >= s_subscribers[i].threshold) {
         s_subscribers[i].fn(severity, s_message);
@@ -123,4 +123,4 @@ void mulog_message(mulog_level_t severity, const char *fmt, ...) {
 // =============================================================================
 // private code
 
-#endif  // #ifdef MULOG_ENABLED
+#endif  // #ifdef MU_LOG_ENABLED

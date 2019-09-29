@@ -31,9 +31,7 @@ extern "C" {
 
 /**
  * A mu_msg comprises a function (`msg_msg_fn`) and a context (void *self).
- * When called, the function is passed the self argument and a void * argument,
- * and is expected to return a pointer-sized object (frequently the self arg
- * on success and NULL on failure).
+ * When called, the function is passed the self argument and a void * argument.
  */
 typedef void (*mu_msg_fn)(void *self, void *arg);
 

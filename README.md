@@ -55,7 +55,7 @@ Status: In progress.
 No-nonsense logging with run-time control on reporting severity and multiple
 reporting channels.
 
-Status: In progress.
+Status: Passing Tests.
 
 ### mu_msg
 

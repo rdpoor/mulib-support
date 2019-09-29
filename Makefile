@@ -13,7 +13,7 @@ SOURCES := $(filter-out $(EXCLUDE_SOURCES), $(ALL_SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 CC = gcc
 # Good settings for debugging
-CFLAGS  = -O0 -Wall -g -DMULOG_ENABLED
+CFLAGS  = -O0 -Wall -g -DMU_LOG_ENABLED
 IFLAGS =
 
 src_objects :

@@ -44,23 +44,23 @@
  *     }
  *
  *     int main() {
- *         MULOG_INIT();
+ *         MU_LOG_INIT();
  *
  *         // log messages to the console that are WARNING or more severe.  You
  *         // can dynamically re-subscribe a function to change the severity
  *         // level.
- *         MULOG_SUBSCRIBE(my_console_logger, MULOG_WARNING);
+ *         MU_LOG_SUBSCRIBE(my_console_logger, MU_LOG_WARNING);
  *
  *         // log to a file messages that are DEBUG or more severe
- *         MULOG_SUBSCRIBE(my_file_logger, MULOG_DEBUG);
+ *         MU_LOG_SUBSCRIBE(my_file_logger, MU_LOG_DEBUG);
  *
  *         int arg = 42;
- *         MULOG_INFO("Arg is %d", arg);  // logs to file but not console
+ *         MU_LOG_INFO("Arg is %d", arg);  // logs to file but not console
  *     }
  */
 
-#ifndef MULIB_MULOG_H_
-#define MULIB_MULOG_H_
+#ifndef MU_LOG_H_
+#define MU_LOG_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,76 +73,82 @@ extern "C" {
 // types and definitions
 
 typedef enum {
-  MULOG_TRACE_LEVEL=100,
-  MULOG_DEBUG_LEVEL,
-  MULOG_INFO_LEVEL,
-  MULOG_WARNING_LEVEL,
-  MULOG_ERROR_LEVEL,
-  MULOG_CRITICAL_LEVEL,
-  MULOG_ALWAYS_LEVEL
-} mulog_level_t;
+  MU_LOG_TRACE_LEVEL=100,
+  MU_LOG_DEBUG_LEVEL,
+  MU_LOG_INFO_LEVEL,
+  MU_LOG_WARNING_LEVEL,
+  MU_LOG_ERROR_LEVEL,
+  MU_LOG_CRITICAL_LEVEL,
+  MU_LOG_ALWAYS_LEVEL
+} mu_log_level_t;
 
-// Unless MULOG_ENABLED is defined at compile time, all logging is disabled and
+// Unless MU_LOG_ENABLED is defined at compile time, all logging is disabled and
 // no logging code is generated.  To enable logging, uncomment the next line or
-// add -DMULOG_ENABLED to your compiler switches.
+// add -DMU_LOG_ENABLED to your compiler switches.
+//
+// #define MU_LOG_ENABLED
 
-#ifdef MULOG_ENABLED
-  #define MULOG_INIT() mulog_init()
-  #define MULOG_SUBSCRIBE(a, b) mulog_subscribe(a, b)
-  #define MULOG_UNSUBSCRIBE(a) mulog_unsubscribe(a)
-  #define MULOG_LEVEL_NAME(a) mulog_level_name(a)
-  #define MULOG(...) mulog_message(__VA_ARGS__)
-  #define MULOG_TRACE(...) mulog_message(MULOG_TRACE_LEVEL, __VA_ARGS__)
-  #define MULOG_DEBUG(...) mulog_message(MULOG_DEBUG_LEVEL, __VA_ARGS__)
-  #define MULOG_INFO(...) mulog_message(MULOG_INFO_LEVEL, __VA_ARGS__)
-  #define MULOG_WARNING(...) mulog_message(MULOG_WARNING_LEVEL, __VA_ARGS__)
-  #define MULOG_ERROR(...) mulog_message(MULOG_ERROR_LEVEL, __VA_ARGS__)
-  #define MULOG_CRITICAL(...) mulog_message(MULOG_CRITICAL_LEVEL, __VA_ARGS__)
-  #define MULOG_ALWAYS(...) mulog_message(MULOG_ALWAYS_LEVEL, __VA_ARGS__)
+#ifdef MU_LOG_ENABLED
+  #define MU_LOG_INIT() mu_log_init()
+  #define MU_LOG_SUBSCRIBE(a, b) mu_log_subscribe(a, b)
+  #define MU_LOG_UNSUBSCRIBE(a) mu_log_unsubscribe(a)
+  #define MU_LOG_LEVEL_NAME(a) mu_log_level_name(a)
+  #define MU_LOG(...) mu_log_message(__VA_ARGS__)
+  #define MU_LOG_TRACE(...) mu_log_message(MU_LOG_TRACE_LEVEL, __VA_ARGS__)
+  #define MU_LOG_DEBUG(...) mu_log_message(MU_LOG_DEBUG_LEVEL, __VA_ARGS__)
+  #define MU_LOG_INFO(...) mu_log_message(MU_LOG_INFO_LEVEL, __VA_ARGS__)
+  #define MU_LOG_WARNING(...) mu_log_message(MU_LOG_WARNING_LEVEL, __VA_ARGS__)
+  #define MU_LOG_ERROR(...) mu_log_message(MU_LOG_ERROR_LEVEL, __VA_ARGS__)
+  #define MU_LOG_CRITICAL(...) mu_log_message(MU_LOG_CRITICAL_LEVEL, __VA_ARGS__)
+  #define MU_LOG_ALWAYS(...) mu_log_message(MU_LOG_ALWAYS_LEVEL, __VA_ARGS__)
 #else
   // uLog vanishes when disabled at compile time...
-  #define MULOG_INIT() do {} while(0)
-  #define MULOG_SUBSCRIBE(a, b) do {} while(0)
-  #define MULOG_UNSUBSCRIBE(a) do {} while(0)
-  #define MULOG_LEVEL_NAME(A) do {} while(0)
-  #define MULOG(s, f, ...) do {} while(0)
-  #define MULOG_TRACE(f, ...) do {} while(0)
-  #define MULOG_DEBUG(f, ...) do {} while(0))
-  #define MULOG_INFO(f, ...) do {} while(0)
-  #define MULOG_WARNING(f, ...) do {} while(0)
-  #define MULOG_ERROR(f, ...) do {} while(0)
-  #define MULOG_CRITICAL(f, ...) do {} while(0)
-  #define MULOG_ALWAYS(f, ...) do {} while(0)
+  #define MU_LOG_INIT() do {} while(0)
+  #define MU_LOG_SUBSCRIBE(a, b) do {} while(0)
+  #define MU_LOG_UNSUBSCRIBE(a) do {} while(0)
+  #define MU_LOG_LEVEL_NAME(A) do {} while(0)
+  #define MU_LOG(s, f, ...) do {} while(0)
+  #define MU_LOG_TRACE(f, ...) do {} while(0)
+  #define MU_LOG_DEBUG(f, ...) do {} while(0))
+  #define MU_LOG_INFO(f, ...) do {} while(0)
+  #define MU_LOG_WARNING(f, ...) do {} while(0)
+  #define MU_LOG_ERROR(f, ...) do {} while(0)
+  #define MU_LOG_CRITICAL(f, ...) do {} while(0)
+  #define MU_LOG_ALWAYS(f, ...) do {} while(0)
 #endif
 
+#ifdef MU_LOG_ENABLED  // remainder of file...
+
 typedef enum {
-  MULOG_ERR_NONE = 0,
-  MULOG_ERR_SUBSCRIBERS_EXCEEDED,
-  MULOG_ERR_NOT_SUBSCRIBED,
-} mulog_err_t;
+  MU_LOG_ERR_NONE = 0,
+  MU_LOG_ERR_SUBSCRIBERS_EXCEEDED,
+  MU_LOG_ERR_NOT_SUBSCRIBED,
+} mu_log_err_t;
 
 // define the maximum number of concurrent subscribers
-#define MULOG_MAX_SUBSCRIBERS 6
+#define MU_LOG_MAX_SUBSCRIBERS 6
 
 // maximum length of formatted log message
-#define MULOG_MAX_MESSAGE_LENGTH 120
+#define MU_LOG_MAX_MESSAGE_LENGTH 120
 
 /**
  * @brief: prototype for uLog subscribers.
  */
-typedef void (*mulog_function_t)(mulog_level_t severity, char *msg);
+typedef void (*mu_log_subscriber_fn)(mu_log_level_t severity, char *msg);
 
 // =============================================================================
 // declarations
 
-void mulog_init();
-mulog_err_t mulog_subscribe(mulog_function_t fn, mulog_level_t threshold);
-mulog_err_t mulog_unsubscribe(mulog_function_t fn);
-const char *mulog_level_name(mulog_level_t level);
-void mulog_message(mulog_level_t severity, const char *fmt, ...);
+void mu_log_init();
+mu_log_err_t mu_log_subscribe(mu_log_subscriber_fn fn, mu_log_level_t threshold);
+mu_log_err_t mu_log_unsubscribe(mu_log_subscriber_fn fn);
+const char *mu_log_level_name(mu_log_level_t level);
+void mu_log_message(mu_log_level_t severity, const char *fmt, ...);
+
+#endif // #ifdef MU_LOG_ENABLED
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MULIB_MULOG_H_
+#endif // #ifndef MULIB_MU_LOG_H_

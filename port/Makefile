@@ -17,7 +17,7 @@ INCLUDES :=
 CC     = gcc
 
 # Good settings for debugging
-CFLAGS  = -O0 -Wall -g -DMULOG_ENABLED
+CFLAGS  = -O0 -Wall -g -DMU_LOG_ENABLED
 
 IFLAGS =
 
