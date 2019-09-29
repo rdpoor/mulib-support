@@ -68,7 +68,7 @@ void mu_bcast_reset(mu_bcast_mgr_t *mu_bcast_mgr) {
 mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                   mu_bcast_channel_t channel,
                                   mu_msg_fn function,
-                                  void *self) {
+                                  void *target) {
   mu_bcast_subscriber_t *subscriber;
   int first_available_slot = -1;
 
@@ -78,19 +78,21 @@ mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
 
   for (int i = 0; i < mu_bcast_mgr->max_subscribers; i++) {
     subscriber = &(mu_bcast_mgr->subscribers[i]);
-    if (subscriber->msg.fn == function && subscriber->channel == channel) {
-      // Already subscribed on this channel. Update `self` arg.
-      return subscribe_one(subscriber, channel, function, self);
+
+    if ((subscriber->channel == channel) && (subscriber->msg.fn == function) && (subscriber->msg.self == target)) {
+      // Already subscribed on this channel.
+      return MU_BCAST_ERR_NONE;
+
     } else if (first_available_slot == -1 && subscriber->msg.fn == NULL) {
       // make a note of the first available slot
       first_available_slot = i;
     }
   }
 
-  // function was not present.  assign to first available slot.
+  // endgame: assign target.function to first available slot.
   if (first_available_slot != -1) {
     subscriber = &(mu_bcast_mgr->subscribers[first_available_slot]);
-    return subscribe_one(subscriber, channel, function, self);
+    return subscribe_one(subscriber, channel, function, target);
   }
 
   return MU_BCAST_ERR_SUBSCRIBERS_EXHAUSTED;
@@ -98,14 +100,29 @@ mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
 
 mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                     mu_bcast_channel_t channel,
-                                    mu_msg_fn function) {
+                                    mu_msg_fn function,
+                                    void *target) {
   mu_bcast_subscriber_t *subscriber;
 
   for (int i = 0; i < mu_bcast_mgr->max_subscribers; i++) {
     subscriber = &(mu_bcast_mgr->subscribers[i]);
-    if (subscriber->msg.fn == function && ((MU_BCAST_ALL_CHANNELS == channel) ||
-                                           (subscriber->channel == channel))) {
-      return unsubscribe_one(subscriber);
+    if ((channel == MU_BCAST_ALL_CHANNELS) || (subscriber->channel == channel)) {
+      if ((function == NULL) && (target == NULL)) {
+        // match any target.function combination
+        return unsubscribe_one(subscriber);
+
+      } else if ((function == NULL) && (subscriber->msg.self == target)) {
+        // match on target
+        return unsubscribe_one(subscriber);
+
+      } else if ((target == NULL) && (subscriber->msg.fn == function)) {
+        // match on function
+        return unsubscribe_one(subscriber);
+
+      } else if ((subscriber->msg.fn == function) && (subscriber->msg.self == target)) {
+        // match on target.function
+        return unsubscribe_one(subscriber);
+      }
     }
   }
   return MU_BCAST_ERR_NOT_FOUND;
@@ -120,8 +137,8 @@ mu_bcast_err_t mu_bcast_notify(mu_bcast_mgr_t *mu_bcast_mgr,
 
   for (int i = 0; i < mu_bcast_mgr->max_subscribers; i++) {
     mu_bcast_subscriber_t *subscriber = &(mu_bcast_mgr->subscribers[i]);
-    if ((subscriber->msg.fn != NULL) && ((MU_BCAST_ALL_CHANNELS == channel) ||
-                                         (subscriber->channel == channel))) {
+    if ((channel == MU_BCAST_ALL_CHANNELS) || (subscriber->channel == channel)) {
+      // mu_msg_call handles the case of a null msg.fn
       mu_msg_call(&subscriber->msg, arg);
     }
   }

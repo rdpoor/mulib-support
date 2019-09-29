@@ -81,10 +81,6 @@ void mu_bcast_reset(mu_bcast_mgr_t *mu_bcast_mgr);
 /**
  * @brief: subscribe to notifications on the specified channel.
  *
- * Design note: At present, mu_bcast_subscribe discriminates on function, not
- * on target.  A user might expect to update the function for a specific target
- * rather than the other way around.  But since target can be NULL, it's not
- * clear how this should be implemented.  Create a separate function?
  */
 mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                   mu_bcast_channel_t channel,
@@ -93,10 +89,16 @@ mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
 
 /**
  * @brief: stop receiving notifications
+ *
+ * If function is NULL, all subscribers matching target are unsubscribed.
+ * If target is NULL, all subscribers matching function are unsubscribed.
+ * if channel == MU_BCAST_ALL_CHANNELS, matching subscribers are removed from
+ * all chanels.
  */
 mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                     mu_bcast_channel_t channel,
-                                    mu_msg_fn function);
+                                    mu_msg_fn function,
+                                    void *target);
 
 /**
  * @brief: notify every subscriber on the given channel.
