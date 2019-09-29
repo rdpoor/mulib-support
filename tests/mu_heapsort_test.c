@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include "../src/heapsort.h"
+#include "../src/mu_heapsort.h"
 #include "test_utilities.h"
 #include <string.h>
 
-// A structure with key/value pairs used for testing heapsort.
+// A structure with key/value pairs used for testing mu_heapsort.
 typedef struct {
   char *key;
   int val;
@@ -43,15 +43,15 @@ static void swap(void *items, int i1, int i2) {
 }
 
 // User provided functino to sort test_t structures by value
-int sort_by_val(void *items, int i1, int i2) {
+int sort_by_val_ascending(void *items, int i1, int i2) {
   test_t *kvs = (test_t *)items;
 
   return kvs[i1].val - kvs[i2].val;
 }
 
-// User provided functino to sort test_t structures by value, descending
+// User provided functin to sort test_t structures by value, descending
 int sort_by_val_descending(void *items, int i1, int i2) {
-  return sort_by_val(items, i2, i1);
+  return sort_by_val_ascending(items, i2, i1);
 }
 
 // User provided functino to sort test_t structures by key
@@ -63,7 +63,7 @@ int sort_by_key(void *items, int i1, int i2) {
 
 #define N_ITEMS 5
 
-void heapsort_test() {
+void mu_heapsort_test() {
   test_t items[N_ITEMS] = {
     {.key="one", .val = 1},
     {.key="four", .val = 4},
@@ -73,7 +73,7 @@ void heapsort_test() {
   };
 
   // sort (numerically) by ascending value
-  heapsort(sort_by_val, swap, items, N_ITEMS);
+  mu_heapsort(sort_by_val_ascending, swap, items, N_ITEMS);
   UTEST_ASSERT(items[0].val == 1);
   UTEST_ASSERT(items[1].val == 2);
   UTEST_ASSERT(items[2].val == 3);
@@ -81,7 +81,7 @@ void heapsort_test() {
   UTEST_ASSERT(items[4].val == 5);
 
   // sort (numerically) by descending value
-  heapsort(sort_by_val_descending, swap, items, N_ITEMS);
+  mu_heapsort(sort_by_val_descending, swap, items, N_ITEMS);
   UTEST_ASSERT(items[0].val == 5);
   UTEST_ASSERT(items[1].val == 4);
   UTEST_ASSERT(items[2].val == 3);
@@ -89,7 +89,7 @@ void heapsort_test() {
   UTEST_ASSERT(items[4].val == 1);
 
   // sort (alphbetically) by key
-  heapsort(sort_by_key, swap, items, N_ITEMS);
+  mu_heapsort(sort_by_key, swap, items, N_ITEMS);
   UTEST_ASSERT(strcmp(items[0].key, "five") == 0);
   UTEST_ASSERT(strcmp(items[1].key, "four") == 0);
   UTEST_ASSERT(strcmp(items[2].key, "one") == 0);

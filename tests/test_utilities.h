@@ -32,6 +32,7 @@ extern "C" {
 #include <stdbool.h>
 
 #define UNUSED(x) (void)(x)
+
 #define UTEST_ASSERT(condition) unit_test_assert((condition), #condition, __FILE__, __LINE__)
 void unit_test_assert(const bool condition,
                       const char *const expr,

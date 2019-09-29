@@ -22,26 +22,46 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_TASK_H
-#define MULIB_TASK_H
+#ifndef PORT_H_
+#define PORT_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void (*mulib_task_fn)(void *d_arg, void *u_arg);
+#include <time.h>
 
-typedef struct {
-  mulib_task_fn fn;
-  void *u_arg;
-} mulib_task_t;
+// =============================================================================
+// includes
+#include <stdint.h>
+#include <stdbool.h>
 
-mulib_task_t *mulib_task_init(mulib_task_t *task, mulib_task_fn fn, void *u_arg);
+// =============================================================================
+// types and definitions
 
-void mulib_task_run(mulib_task_t *task, void *d_arg);
+typedef clock_t port_time_t;    // an absolute time
+typedef clock_t port_time_dt;   // the interval between two times
+typedef double port_time_seconds_t;
+
+// =============================================================================
+// declarations
+
+port_time_t port_time_offset(port_time_t t, port_time_dt dt);
+port_time_dt port_time_difference(port_time_t t1, port_time_t t2);
+
+bool port_time_is_before(port_time_t t1, port_time_t t2);
+bool port_time_is_equal(port_time_t t1, port_time_t t2);
+bool port_time_is_after(port_time_t t1, port_time_t t2);
+
+port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds);
+port_time_dt port_time_duration_to_seconds(port_time_dt dt);
+
+port_time_t port_time_now();
+
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MULIB_EVENT_H
+#endif // #ifndef PORT_H_

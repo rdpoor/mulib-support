@@ -22,22 +22,42 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// includes
+#ifndef MULIB_EVENT_H
+#define MULIB_EVENT_H
 
-#include "sched.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-// =============================================================================
-// private types and definitions
+#include "mu_msg.h"
+#include "mu_time.h"
+#include <stdbool.h>
 
-// =============================================================================
-// private declarations
+typedef struct {
+  bool is_immediate; // true if this event is scheduled for "now".
+  mu_time_t time;    // time of this event (ignored if is_immediate)
+  mu_msg_t msg;      // function to call
+} mu_evt_t;
 
-// =============================================================================
-// local storage
+mu_evt_t *mu_evt_init_immediate(mu_evt_t *evt, mu_msg_fn fn, void *self);
 
-// =============================================================================
-// public code
+mu_evt_t *mu_evt_init_timed(mu_evt_t *evt,
+                            mu_time_t time,
+                            mu_msg_fn fn,
+                            void *self);
 
-// =============================================================================
-// private code
+bool mu_evt_is_immediate(mu_evt_t *evt);
+
+mu_time_t mu_evt_time(mu_evt_t *evt);
+
+mu_msg_t *mu_evt_msg(mu_evt_t *evt);
+
+bool mu_evt_has_arrived(mu_evt_t *evt, mu_time_t now);
+
+void mu_evt_call(mu_evt_t *evt, void *arg);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // #ifndef MULIB_EVENT_H

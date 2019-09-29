@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "port_time.h"
+#include "port.h"
 #include <time.h>
 
 // =============================================================================
@@ -62,12 +62,12 @@ bool port_time_is_after(port_time_t t1, port_time_t t2) {
   return port_time_difference(t2, t1) > MAX_DURATION;
 }
 
-port_time_dt port_time_s_to_dt(float seconds) {
+port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds) {
   return seconds * CLOCKS_PER_SEC;
 }
 
-float port_time_t_to_s(port_time_dt dt) {
-  return (float)dt / CLOCKS_PER_SEC;
+port_time_dt port_time_duration_to_seconds(port_time_dt dt) {
+  return (port_time_seconds_t)dt / CLOCKS_PER_SEC;
 }
 
 port_time_t port_time_now() {

@@ -39,7 +39,7 @@ static bool sched_step(mulib_sched_t *sched);
  *
  * Must be called prior to other mulib_sched functions.
  */
-void mulib_sched_init(mulib_sched_t *sched, mulib_event_t *events, size_t capacity) {
+void mulib_sched_init(mulib_sched_t *sched, mu_evt_t *events, size_t capacity) {
   sched->events = events;
   sched->capacity = capacity;
   mulib_sched_set_idle_task(sched, NULL, NULL);
@@ -49,11 +49,11 @@ void mulib_sched_init(mulib_sched_t *sched, mulib_event_t *events, size_t capaci
 void mulib_sched_reset(mulib_sched_t *sched) {
   sched->count = 0;
   sched->current_event = NULL;
-  memset(sched->events, 0, sched->capacity * sizeof(mulib_event_t));
+  memset(sched->events, 0, sched->capacity * sizeof(mu_evt_t));
 }
 
-void mulib_sched_set_idle_task(mulib_sched_t *sched, mulib_task_fn fn, void *u_arg) {
-  mulib_task_init(&sched->idle_task, fn, u_arg);
+void mulib_sched_set_idle_task(mulib_sched_t *sched, mu_msg_fn fn, void *self) {
+  mu_msg_init(&sched->idle_task, fn, self);
 }
 
 void mulib_sched_process(mulib_sched_t *sched) {
@@ -61,28 +61,28 @@ void mulib_sched_process(mulib_sched_t *sched) {
     // just processed one event
   }
   while (!sched_has_runnable_event(sched)) {
-    mulib_task_run(&sched->idle_task, sched);
+    mu_msg_call(&sched->idle_task, sched);
   }
 }
 
 mulib_sched_err_t mulib_sched_immediate(mulib_sched_t *sched,
-                                        mulib_task_fn fn,
-                                        void *u_arg) {
+                                        mu_msg_fn fn,
+                                        void *self) {
   if (sched->count == sched->capacity) {
     return MULIB_SCHED_ERR_FULL;
   }
 
   port_critical_begin();
-  mulib_event_init_immediate(&(sched->events[sched->count++]), fn, u_arg);
+  mu_evt_init_immediate(&(sched->events[sched->count++]), fn, self);
   port_critical_end();
 
   return MULIB_SCHED_ERR_NONE;
 }
 
 mulib_sched_err_t mulib_sched_at(mulib_sched_t *sched, port_time_t at,
-                                 mulib_task_fn fn, void *u_arg) {
+                                 mu_msg_fn fn, void *self) {
   int i;
-  mulib_event_t *event;
+  mu_evt_t *event;
 
   if (sched->count == sched->capacity) {
     return MULIB_SCHED_ERR_FULL;
@@ -95,8 +95,8 @@ mulib_sched_err_t mulib_sched_at(mulib_sched_t *sched, port_time_t at,
   // and binary search depending on sched->count.
   for (i=0; i<sched->count; i++) {
     event = &sched->events[i];
-    if (mulib_event_is_immediate(event) ||
-        port_time_is_after(at, mulib_event_time(event))) {
+    if (mu_evt_is_immediate(event) ||
+        port_time_is_after(at, mu_evt_time(event))) {
       break;
     }
   }
@@ -104,24 +104,24 @@ mulib_sched_err_t mulib_sched_at(mulib_sched_t *sched, port_time_t at,
   // Now i is the index at which to insert.  Carve a hole by moving events up.
   int n = sched->count - i;            // number of events to move
   event = &(sched->events[i]);
-  memmove(&(event[1]), event, n * sizeof(mulib_event_t));
+  memmove(&(event[1]), event, n * sizeof(mu_evt_t));
   sched->count += 1;
   port_critical_end();
 
   // Initialize the event.
-  mulib_event_init_timed(event, at, fn, u_arg);
+  mu_evt_init_timed(event, at, fn, self);
 
   return MULIB_SCHED_ERR_NONE;
 }
 
 mulib_sched_err_t mulib_sched_in(mulib_sched_t *sched,
                                  port_time_dt in,
-                                 mulib_task_fn fn,
-                                 void *u_arg) {
-  return mulib_sched_at(sched, port_time_offset(port_time_now(), in), fn, u_arg);
+                                 mu_msg_fn fn,
+                                 void *self) {
+  return mulib_sched_at(sched, port_time_offset(port_time_now(), in), fn, self);
 }
 
-mulib_event_t *mulib_sched_current_event(mulib_sched_t *sched) {
+mu_evt_t *mulib_sched_current_event(mulib_sched_t *sched) {
   return sched->current_event;
 }
 
@@ -136,8 +136,8 @@ static bool sched_has_runnable_event(mulib_sched_t *sched) {
   if (sched->count == 0) {
     is_runnable = false;
   } else {
-    mulib_event_t *event = &(sched->events[sched->count - 1]);
-    is_runnable = mulib_event_is_runnable(event);  // peek at last event
+    mu_evt_t *event = &(sched->events[sched->count - 1]);
+    is_runnable = mu_evt_has_arrived(event);  // peek at last event
   }
   port_critical_end();
 
@@ -148,7 +148,7 @@ static bool sched_has_runnable_event(mulib_sched_t *sched) {
 // return true.  Else return false;
 static bool sched_step(mulib_sched_t *sched) {
   bool is_runnable;
-  mulib_event_t *event;
+  mu_evt_t *event;
 
   port_critical_begin();
   if (sched->count == 0) {
@@ -162,7 +162,7 @@ static bool sched_step(mulib_sched_t *sched) {
 
   if (is_runnable) {
     sched->current_event = event;
-    mulib_event_run(event, sched);
+    mu_evt_call(event, sched);
     sched->current_event = NULL;
   }
 

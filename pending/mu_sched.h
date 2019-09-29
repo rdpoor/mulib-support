@@ -41,7 +41,7 @@
  * Sleep until something happens, along these lines:
  *   scheduler_will_idle();
  *   if ((next_event = mulib_sched_next_event()) != NULL) {
- *     port_sleep_until(mulib_event_time(next_event));
+ *     port_sleep_until(mu_evt_time(next_event));
  *   } else {
  *     port_sleep();
  *   }
@@ -57,8 +57,8 @@ extern "C" {
 #endif
 
 #include <stddef.h>
-#include "mulib_event.h"
-#include "mulib_task.h"
+#include "mu_evt.h"
+#include "mu_msg.h"
 #include "../port/port_time.h"
 
 typedef enum {
@@ -67,11 +67,11 @@ typedef enum {
 } mulib_sched_err_t;
 
 typedef struct _mulib_sched {
-  mulib_event_t *events;        // array of events, latest at events[0]
+  mu_evt_t *events;        // array of events, latest at events[0]
   size_t capacity;              // max number of events
   size_t count;                 // next available event slot
-  mulib_event_t *current_event; // event currently being processed
-  mulib_task_t idle_task;       // task to run if nothing else is runnable
+  mu_evt_t *current_event; // event currently being processed
+  mu_msg_t idle_task;       // task to run if nothing else is runnable
 } mulib_sched_t;
 
 /**
@@ -79,21 +79,21 @@ typedef struct _mulib_sched {
  *
  * Must be called prior to other mulib_sched functions.
  */
-void mulib_sched_init(mulib_sched_t *sched, mulib_event_t *events, size_t capacity);
+void mulib_sched_init(mulib_sched_t *sched, mu_evt_t *events, size_t capacity);
 
 void mulib_sched_reset(mulib_sched_t *sched);
 
-void mulib_sched_set_idle_task(mulib_sched_t *sched, mulib_task_fn fn, void *u_arg);
+void mulib_sched_set_idle_task(mulib_sched_t *sched, mu_msg_fn fn, void *self);
 
 void mulib_sched_process(mulib_sched_t *sched);
 
-mulib_sched_err_t mulib_sched_immediate(mulib_sched_t *sched, mulib_task_fn fn, void *u_arg);
+mulib_sched_err_t mulib_sched_immediate(mulib_sched_t *sched, mu_msg_fn fn, void *self);
 
-mulib_sched_err_t mulib_sched_at(mulib_sched_t *sched, port_time_t at, mulib_task_fn fn, void *u_arg);
+mulib_sched_err_t mulib_sched_at(mulib_sched_t *sched, port_time_t at, mu_msg_fn fn, void *self);
 
-mulib_sched_err_t mulib_sched_in(mulib_sched_t *sched, port_time_dt in, mulib_task_fn fn, void *u_arg);
+mulib_sched_err_t mulib_sched_in(mulib_sched_t *sched, port_time_dt in, mu_msg_fn fn, void *self);
 
-mulib_event_t *mulib_sched_current_event(mulib_sched_t *sched);
+mu_evt_t *mulib_sched_current_event(mulib_sched_t *sched);
 
 #ifdef __cplusplus
 }

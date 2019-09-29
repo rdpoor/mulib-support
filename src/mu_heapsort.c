@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "heapsort.h"
+#include "mu_heapsort.h"
 #include <stddef.h>
 
 // =============================================================================
@@ -50,7 +50,7 @@ static void sift_down(heap_cmp_fn cmp,
 
 // https://rosettacode.org/wiki/Sorting_algorithms/Heapsort#C
 
-void heapsort(heap_cmp_fn cmp, heap_swap_fn swap, void *items, int count) {
+void mu_heapsort(heap_cmp_fn cmp, heap_swap_fn swap, void *items, int count) {
 
   heapify(cmp, swap, items, count);
 

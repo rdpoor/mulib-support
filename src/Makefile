@@ -18,12 +18,12 @@ CC     = gcc
 # Good settings for debugging
 CFLAGS  = -O0 -Wall -g -DMULOG_ENABLED
 
-IFLAGS = 
+IFLAGS =
 
 %.o : %.c %.h $(INCLUDES)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
+objects: $(OBJECTS)
+
 clean:
 	rm -f $(OBJECTS)
-
-objects: $(OBJECTS)

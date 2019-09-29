@@ -12,6 +12,9 @@ ALL_SOURCES := $(wildcard $(SOURCE_DIR)/*.c) $(wildcard $(TEST_DIR)/*.c) $(wildc
 SOURCES := $(filter-out $(EXCLUDE_SOURCES), $(ALL_SOURCES))
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 CC = gcc
+# Good settings for debugging
+CFLAGS  = -O0 -Wall -g -DMULOG_ENABLED
+IFLAGS =
 
 src_objects :
 	cd $(SOURCE_DIR) && make objects
@@ -23,7 +26,7 @@ port_objects :
 	cd $(PORT_DIR) && make objects
 
 unit_tests: src_objects test_objects port_objects
-	$(CC) -o main $(OBJECTS) main.c
+	$(CC) $(CFLAGS) $(IFLAGS) -o main $(OBJECTS) main.c
 
 run_tests: unit_tests
 	./main

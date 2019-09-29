@@ -1,48 +1,68 @@
-# mulib - Micro Library
-mulib is curated collection of software modules written in C specifically
-designed for microcontrollers and other resource-constrained environments.
+# mulib - A library for microcontrollers
+mulib is curated collection of software modules written in C, specifically
+tailored for microcontrollers and other resource-constrained environments.
 
 ## mulib's design philosophy
 
-mulib modules strive towards the following design goals.
+mulib strives towards the following design goals.
 
 * Self-contained: minimize dependencies on external libraries
 * Two-file implementation: whenever practical, mulib modules are embodied in one
   header file and one C file.
-* Tested: unit tests validate the API
-* Documented API: The API is clearly documented in the header files.
-* Minimal Safety: mulib favors minimizing time and code space over argument
-  validation.
-* User controls memory management: Modules that require dynamic allocation and
-  freeing of objects take user-defined malloc() and free() methods in the
-  module's init() function.
+* Well-tested and documented: unit tests validate the API, which is clearly
+  documented in the header files.
+* Fast and Dangerous: mulib favors minimizing time and code space over argument
+  validation.  However, MU_ASSERT() provides a safety net that can be switched
+  on or off at compile time.
+* Yours to use: The entirety of mulib is covered under the MIT open source
+  license.
 
 ## The modules
 
-### bcast
+### mu_bcast
 
 Low-overhead publish / subscribe message passing.
 
-### chron
+### mu_evt
 
-Functions to manipulate time values, properly handling roll-over
+Event handling.  Associates a `mu_time` with a `mu_msg` (q.v.).
 
-### jemi
+### mu_jemi
 
-Build complex JSON structures and emit them as JSON formatted strings.
+Json EMItter: Build complex data structures and emit them as JSON strings.
 
-### heapsort
+### mu_mu_heapsort
 
 O(log N) in-place sorting of pointer-sized objects.
 
-### pool
+### mu_list
 
-Allocate and free fixed-sized objects in a pool
+Manage linked lists of pointer-sized objects.
 
-### sched
+### mu_log
+
+No-nonsense logging with run-time control on reporting severity and multiple
+reporting channels.
+
+### mu_msg
+
+Simple, versatile, fast message passing.  Commonly used for deferred function
+calls.
+
+### mu_pool
+
+Dynamically allocate and free fixed-sized objects from a static storage pool.
+
+### mu_ring
+
+Thread safe ring buffer for pointer-sized objects.  Also provides variants to
+handle 8-, 16-, 32- and 64-bit wide objects.
+
+### mu_sched
 
 Clock agnostic, single-thread, run-to-completion scheduler
 
-### mulog
+### mu_time
 
-No-nonsense logging
+Functions to manipulate time values, properly handling roll-over.  Requires
+platform specific support in port/port.h

@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_ERR_H_
-#define MULIB_ERR_H_
+#ifndef MU_HEAPSORT_H_
+#define MU_HEAPSORT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,16 +35,33 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-typedef enum {
-  MULIB_ERR_NONE = 0,
-  MULIB_ERR_SCHED_FULL,
-} mulib_err_t;
+typedef int (*heap_cmp_fn)(void *items, int i1, int i2);
+typedef void (*heap_swap_fn)(void *items, int i1, int i2);
 
 // =============================================================================
 // declarations
+
+/**
+ * @brief Efficient in-place sort routine.
+ *
+ * @param[in] cmp   User-supplied comparison function.   Call signature is
+ *                  `cmp(void *items, int i1, int i2)`, where items is the
+ *                  list of items to sort, i1 and i2 are indeces into the
+ *                  array.  The function should return a negative, zero or
+ *                  positive value if items[i1] is less than, equal to or
+ *                  greather than items[i2].
+ * @param[in] swap  User-supplied swap function.  Call signature is
+ *                  `swap(void *items, int i1, int i2)`.  The function should
+ *                  swap the elements referred to by items[i1] and items[i2].
+ * @param[in] items The array of items to sort.
+ * @param[in] count The nmber of items in the array.
+ *
+ * On return, the items are sorted according to the user-supplied cmp function.
+ */
+void mu_heapsort(heap_cmp_fn cmp, heap_swap_fn swap, void *items, int count);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MULIB_ERROR_H_
+#endif // #ifndef MU_HEAPSORT_H_

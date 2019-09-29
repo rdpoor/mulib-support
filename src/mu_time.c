@@ -22,46 +22,55 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_HEAPSORT_H_
-#define MULIB_HEAPSORT_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================================
 // includes
 
-// =============================================================================
-// types and definitions
-
-typedef int (*heap_cmp_fn)(void *items, int i1, int i2);
-typedef void (*heap_swap_fn)(void *items, int i1, int i2);
+#include "mu_time.h"
+#include "../port/port.h"
+#include <stdio.h>
 
 // =============================================================================
-// declarations
+// private types and definitions
 
-/**
- * @brief Efficient in-place sort routine.
- *
- * @param[in] cmp   User-supplied comparison function.   Call signature is
- *                  `cmp(void *items, int i1, int i2)`, where items is the
- *                  list of items to sort, i1 and i2 are indeces into the
- *                  array.  The function should return a negative, zero or
- *                  positive value if items[i1] is less than, equal to or
- *                  greather than items[i2].
- * @param[in] swap  User-supplied swap function.  Call signature is
- *                  `swap(void *items, int i1, int i2)`.  The function should
- *                  swap the elements referred to by items[i1] and items[i2].
- * @param[in] items The array of items to sort.
- * @param[in] count The nmber of items in the array.
- *
- * On return, the items are sorted according to the user-supplied cmp function.
- */
-void heapsort(heap_cmp_fn cmp, heap_swap_fn swap, void *items, int count);
+// =============================================================================
+// private declarations
 
-#ifdef __cplusplus
+// =============================================================================
+// local storage
+
+// =============================================================================
+// public code
+
+mu_time_t mu_time_now() {
+  return port_time_now();
 }
-#endif
 
-#endif // #ifndef MULIB_HEAPSORT_H_
+mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt) {
+  return port_time_offset(t1, dt);
+}
+
+mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
+  return port_time_difference(t1, t2);
+}
+
+// Return true iff t1 is strictly earlier, equal to or
+// later than t2.
+bool mu_time_is_before(mu_time_t t1, mu_time_t t2) {
+  return port_time_is_before(t1, t2);
+}
+
+bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
+  return port_time_is_equal(t1, t2);
+}
+
+bool mu_time_is_after(mu_time_t t1, mu_time_t t2) {
+  return port_time_is_before(t2, t1);
+}
+
+mu_time_seconds_t mu_time_duration_to_seconds(mu_time_dt dt) {
+  return port_time_duration_to_seconds(dt);
+}
+
+mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_t s) {
+  return port_time_seconds_to_duration(s);
+}

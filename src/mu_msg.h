@@ -22,24 +22,32 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_SCHED_H_
-#define MULIB_SCHED_H_
+#ifndef MU_MSG_H_
+#define MU_MSG_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// =============================================================================
-// includes
+/**
+ * A mu_msg comprises a function (`msg_msg_fn`) and a context (void *self).
+ * When called, the function is passed the self argument and a void * argument,
+ * and is expected to return a pointer-sized object (frequently the self arg
+ * on success and NULL on failure).
+ */
+typedef void *(*mu_msg_fn)(void *self, void *arg);
 
-// =============================================================================
-// types and definitions
+typedef struct {
+  mu_msg_fn fn;
+  void *self;
+} mu_msg_t;
 
-// =============================================================================
-// declarations
+mu_msg_t *mu_msg_init(mu_msg_t *msg, mu_msg_fn fn, void *self);
+
+void mu_msg_call(mu_msg_t *msg, void *arg);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MULIB_SCHED_H_
+#endif // #ifndef MU_MSG_H_

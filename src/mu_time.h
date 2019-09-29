@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_CHRON_H_
-#define MULIB_CHRON_H_
+#ifndef MU_TIME_H_
+#define MU_TIME_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,61 +34,58 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "../port/port.h"
 
 // =============================================================================
 // types and definitions
 
-#ifndef CHRON_CLOCK_NBITS
-#define CHRON_CLOCK_NBITS 32
-#endif
-
-#ifndef CHRON_FLOAT_TYPE
-typedef double chron_float_t;
-#endif
-
-#if CHRON_CLOCK_NBITS == 32
-typedef uint32_t chron_time_t;
-typedef uint32_t chron_duration_t;
-#define CHRON_CLOCK_MAX_DURATION ((chron_duration_t)0x80000000)
-#endif
-
+typedef port_time_t mu_time_t;
+typedef port_time_dt mu_time_dt;
+typedef port_time_seconds_t mu_time_seconds_t;
 
 // =============================================================================
 // declarations
 
 /**
+ * @brief Get the current system time.
+ *
+ * @return A value representing the current time.
+ */
+mu_time_t mu_time_now();
+
+/**
  * @brief Add a time and a duration.
  *
- * `chron_time_offset` adds a time and a duration to produce a new time object.
+ * `mu_time_offset` adds a time and a duration to produce a new time object.
  *
  * @param t1 a time object
  * @param dt a duration object
  * @return t1 offset by dt
  */
-chron_time_t chron_time_offset(chron_time_t t1, chron_duration_t dt);
+mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt);
 
 /**
  * @brief Take the difference between two time objects
  *
- * `chron_time_difference` subtracts t2 from t1 to produce a duration object.
+ * `mu_time_difference` subtracts t2 from t1 to produce a duration object.
  *
  * @param t1 A time object
  * @param t2 A time object
  * @return (t1-t2) as a duration object
  */
-chron_duration_t chron_time_difference(chron_time_t t1, chron_time_t t2);
+mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2);
 
 /**
  * @brief Return true if t1 is strictly before t2
  *
  * Note that if you want to know if t1 is before or equal to t2, you can use the
- * construct `!chron_time_is_after(t2, t1)``
+ * construct `!mu_time_is_after(t2, t1)``
  *
  * @param t1 A time object
  * @param t2 A time object
  * @return true if t1 is strictly before t2, false otherwise.
  */
-bool chron_time_is_before(chron_time_t t1, chron_time_t t2);
+bool mu_time_is_before(mu_time_t t1, mu_time_t t2);
 
 /**
  * @brief Return true if t1 is equal to t2
@@ -97,19 +94,19 @@ bool chron_time_is_before(chron_time_t t1, chron_time_t t2);
  * @param t2 A time object
  * @return true if t1 equals t2, false otherwise.
  */
-bool chron_time_is_equal(chron_time_t t1, chron_time_t t2);
+bool mu_time_is_equal(mu_time_t t1, mu_time_t t2);
 
 /**
  * @brief Return true if t1 is strictly after t2
  *
  * Note that if you want to know if t1 is equal to or after t2, you can use the
- * construct `!chron_time_is_before(t2, t1)``
+ * construct `!mu_time_is_before(t2, t1)``
  *
  * @param t1 A time object
  * @param t2 A time object
  * @return true if t1 is strictly after t2, false otherwise.
  */
-bool chron_time_is_after(chron_time_t t1, chron_time_t t2);
+bool mu_time_is_after(mu_time_t t1, mu_time_t t2);
 
 /**
  * @brief Convert a duration to the corresponding number of seconds as a chron_float_t.
@@ -118,7 +115,7 @@ bool chron_time_is_after(chron_time_t t1, chron_time_t t2);
  * @param clock_rate The clock rate of the counter in HZ
  * @return The duration in seconds
  */
-chron_float_t chron_duration_to_seconds(chron_duration_t dt, chron_float_t clock_rate);
+mu_time_seconds_t mu_time_duration_to_seconds(mu_time_dt dt);
 
 /**
  * @brief Convert a number of seconds to the corresponding duration
@@ -127,10 +124,10 @@ chron_float_t chron_duration_to_seconds(chron_duration_t dt, chron_float_t clock
  * @param clock_rate The clock rate of the counter in HZ
  * @return A duration object
  */
-chron_duration_t chron_seconds_to_duration(chron_float_t s, chron_float_t clock_rate);
+mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_t s);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MULIB_CHRON_H_
+#endif // #ifndef MU_TIME_H_

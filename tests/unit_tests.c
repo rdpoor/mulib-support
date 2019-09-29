@@ -25,54 +25,24 @@
 #include "unit_tests.h"
 #include <stdio.h>
 
-void bcast_test();
-void chron_test();
-void heapsort_test();
-void jemi_test();
-void mulib_event_test();
-void mulib_task_test();
-void mulog_test();
-void pool_test();
-void sched_test();
+void mu_heapsort_test();
+void mu_msg_test();
+void mu_time_test();
 
 void unit_tests() {
 
   printf("\r\n==== Starting Unit Tests:");
 
-  printf("\r\n     starting bcast_test()...");
-  bcast_test();
+  printf("\r\n     starting mu_heapsort_test()...");
+  mu_heapsort_test();
   printf("completed");
 
-  printf("\r\n     starting chron_test()...");
-  chron_test();
+  printf("\r\n     starting mu_msg_test()...");
+  mu_msg_test();
   printf("completed");
 
-  printf("\r\n     starting heapsort_test()...");
-  heapsort_test();
-  printf("completed");
-
-  printf("\r\n     starting jemi_test()...");
-  jemi_test();
-  printf("completed");
-
-  printf("\r\n     starting mulib_event_test()...");
-  mulib_event_test();
-  printf("completed");
-
-  printf("\r\n     starting mulib_task_test()...");
-  mulib_task_test();
-  printf("completed");
-
-  printf("\r\n     starting mulog_test()...");
-  mulog_test();
-  printf("completed");
-
-  printf("\r\n     starting pool_test()...");
-  pool_test();
-  printf("completed");
-
-  printf("\r\n     starting sched_test()...");
-  sched_test();
+  printf("\r\n     starting mu_time_test()...");
+  mu_time_test();
   printf("completed");
 
   printf("\r\n==== Completed Unit Tests\r\n");

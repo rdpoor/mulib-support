@@ -22,22 +22,40 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// includes
+#include "../src/mu_time.h"
+#include "test_utilities.h"
+#include <stdio.h>
 
-#include "mulib_err.h"
+void mu_time_test() {
+  mu_time_t t1;
+  mu_time_t t2;
+  mu_time_dt d1;
+  mu_time_dt d2;
 
-// =============================================================================
-// private types and definitions
+  t1 = mu_time_now();  // an arbitrary time
+  d1 = mu_time_seconds_to_duration(1.0);
+  t2 = mu_time_offset(t1, d1);
 
-// =============================================================================
-// private declarations
+  UTEST_ASSERT(mu_time_is_before(t1, t2) == true);
+  UTEST_ASSERT(mu_time_is_before(t1, t1) == false);
+  UTEST_ASSERT(mu_time_is_before(t2, t1) == false);
 
-// =============================================================================
-// local storage
+  UTEST_ASSERT(mu_time_is_equal(t1, t1) == true);
+  UTEST_ASSERT(mu_time_is_equal(t1, t2) == false);
 
-// =============================================================================
-// public code
+  UTEST_ASSERT(mu_time_is_after(t1, t2) == false);
+  UTEST_ASSERT(mu_time_is_after(t1, t1) == false);
+  UTEST_ASSERT(mu_time_is_after(t2, t1) == true);
 
-// =============================================================================
-// private code
+  d2 = mu_time_difference(t2, t1);
+  UTEST_FLOAT_EPS(mu_time_duration_to_seconds(d2), 1.0, 0.001);
+
+  t1 = mu_time_now();  // an arbitrary time
+  t2 = mu_time_offset(t1, mu_time_seconds_to_duration(3.0));
+
+  printf("test should pause for approximately 3.0 seconds\n");
+  while (mu_time_is_before(mu_time_now(), t2)) {
+    // buzz
+  }
+  printf("...done\n");
+}

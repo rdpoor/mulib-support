@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-#include "mulib_task.h"
+#include "mu_msg.h"
 #include <stddef.h>
 
-mulib_task_t *mulib_task_init(mulib_task_t *task, mulib_task_fn fn, void *u_arg) {
-  task->fn = fn;
-  task->u_arg = u_arg;
-  return task;
+mu_msg_t *mu_msg_init(mu_msg_t *msg, mu_msg_fn fn, void *self) {
+  msg->fn = fn;
+  msg->self = self;
+  return msg;
 }
 
-void mulib_task_run(mulib_task_t *task, void *d_arg) {
-  if (task && task->fn != NULL) {
-    task->fn(d_arg, task->u_arg);
+void mu_msg_call(mu_msg_t *msg, void *arg) {
+  if (msg && msg->fn != NULL) {
+    msg->fn(msg->self, arg);
   }
 }
 
