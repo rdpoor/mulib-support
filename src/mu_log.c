@@ -37,9 +37,11 @@
 // private types and definitions
 
 typedef struct {
-  mu_log_subscriber_fn fn;
-  mu_log_level_t threshold;
-} subscriber_t;
+  mu_log_subscriber_t *subscriber_pool;
+  int subscriber_pool_size;
+  char *msg_buffer;
+  int msg_buffer_size;
+} mu_log_mgr_t;
 
 // =============================================================================
 // private declarations
@@ -47,27 +49,32 @@ typedef struct {
 // =============================================================================
 // local storage
 
-// TODO: implement user-allocated subscribers and message buffer
-static subscriber_t s_subscribers[MU_LOG_MAX_SUBSCRIBERS];
-static char s_message[MU_LOG_MAX_MESSAGE_LENGTH];
+static mu_log_mgr_t s_log_mgr;
 
 // =============================================================================
 // public code
 
-void mu_log_init() {
-  memset(s_subscribers, 0, sizeof(s_subscribers));
+void mu_log_init(mu_log_subscriber_t *subscriber_pool,
+                 int subscriber_pool_size,
+                 char *msg_buffer,
+                 int msg_buffer_size) {
+  s_log_mgr.subscriber_pool = subscriber_pool;
+  s_log_mgr.subscriber_pool_size = subscriber_pool_size;
+  s_log_mgr.msg_buffer = msg_buffer;
+  s_log_mgr.msg_buffer_size = msg_buffer_size;
+  memset(subscriber_pool, 0, subscriber_pool_size * sizeof(mu_log_subscriber_t));
 }
 
-// search the s_subscribers table to install or update fn
+// search the s_log_mgr.subscriber_pool table to install or update fn
 mu_log_err_t mu_log_subscribe(mu_log_subscriber_fn fn, mu_log_level_t threshold) {
   int available_slot = -1;
-  for (int i=0; i<MU_LOG_MAX_SUBSCRIBERS; i++) {
-    if (s_subscribers[i].fn == fn) {
+  for (int i=0; i<s_log_mgr.subscriber_pool_size; i++) {
+    if (s_log_mgr.subscriber_pool[i].fn == fn) {
       // already subscribed: update threshold and return immediately.
-      s_subscribers[i].threshold = threshold;
+      s_log_mgr.subscriber_pool[i].threshold = threshold;
       return MU_LOG_ERR_NONE;
 
-    } else if (s_subscribers[i].fn == NULL) {
+    } else if (s_log_mgr.subscriber_pool[i].fn == NULL) {
       // found a free slot
       available_slot = i;
     }
@@ -76,16 +83,16 @@ mu_log_err_t mu_log_subscribe(mu_log_subscriber_fn fn, mu_log_level_t threshold)
   if (available_slot == -1) {
     return MU_LOG_ERR_SUBSCRIBERS_EXCEEDED;
   }
-  s_subscribers[available_slot].fn = fn;
-  s_subscribers[available_slot].threshold = threshold;
+  s_log_mgr.subscriber_pool[available_slot].fn = fn;
+  s_log_mgr.subscriber_pool[available_slot].threshold = threshold;
   return MU_LOG_ERR_NONE;
 }
 
-// search the s_subscribers table to remove
+// search the s_log_mgr.subscriber_pool table to remove
 mu_log_err_t mu_log_unsubscribe(mu_log_subscriber_fn fn) {
-  for (int i=0; i<MU_LOG_MAX_SUBSCRIBERS; i++) {
-    if (s_subscribers[i].fn == fn) {
-      s_subscribers[i].fn = NULL;    // mark as empty
+  for (int i=0; i<s_log_mgr.subscriber_pool_size; i++) {
+    if (s_log_mgr.subscriber_pool[i].fn == fn) {
+      s_log_mgr.subscriber_pool[i].fn = NULL;    // mark as empty
       return MU_LOG_ERR_NONE;
     }
   }
@@ -108,13 +115,13 @@ const char *mu_log_level_name(mu_log_level_t severity) {
 void mu_log_message(mu_log_level_t severity, const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  vsnprintf(s_message, MU_LOG_MAX_MESSAGE_LENGTH, fmt, ap);
+  vsnprintf(s_log_mgr.msg_buffer, s_log_mgr.msg_buffer_size, fmt, ap);
   va_end(ap);
 
-  for (int i=0; i<MU_LOG_MAX_SUBSCRIBERS; i++) {
-    if (s_subscribers[i].fn != NULL) {
-      if (severity >= s_subscribers[i].threshold) {
-        s_subscribers[i].fn(severity, s_message);
+  for (int i=0; i<s_log_mgr.subscriber_pool_size; i++) {
+    if (s_log_mgr.subscriber_pool[i].fn != NULL) {
+      if (severity >= s_log_mgr.subscriber_pool[i].threshold) {
+        s_log_mgr.subscriber_pool[i].fn(severity, s_log_mgr.msg_buffer);
       }
     }
   }

@@ -32,6 +32,9 @@
 // =============================================================================
 // private types and definitions
 
+#define MAX_SUBSCRIBERS 6
+#define MAX_MESSAGE_LENGTH 120
+
 #define TEST_TRACE 0
 #define TEST_DEBUG 1
 #define TEST_INFO 2
@@ -59,7 +62,10 @@ static int s_fn_calls[6];
 // public code
 
 void mu_log_test() {
-  MU_LOG_INIT();
+  mu_log_subscriber_t subscriber_pool[MAX_SUBSCRIBERS];
+  char msg_buf[MAX_MESSAGE_LENGTH];
+
+  MU_LOG_INIT(subscriber_pool, MAX_SUBSCRIBERS, msg_buf, MAX_MESSAGE_LENGTH);
   memset(s_fn_calls, 0, sizeof(s_fn_calls));
 
   UTEST_ASSERT(MU_LOG_SUBSCRIBE(logger_fn0, MU_LOG_TRACE_LEVEL) == MU_LOG_ERR_NONE);

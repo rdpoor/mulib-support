@@ -89,7 +89,7 @@ typedef enum {
 // #define MU_LOG_ENABLED
 
 #ifdef MU_LOG_ENABLED
-  #define MU_LOG_INIT() mu_log_init()
+  #define MU_LOG_INIT(a, b, c, d) mu_log_init(a, b, c, d)
   #define MU_LOG_SUBSCRIBE(a, b) mu_log_subscribe(a, b)
   #define MU_LOG_UNSUBSCRIBE(a) mu_log_unsubscribe(a)
   #define MU_LOG_LEVEL_NAME(a) mu_log_level_name(a)
@@ -103,7 +103,7 @@ typedef enum {
   #define MU_LOG_ALWAYS(...) mu_log_message(MU_LOG_ALWAYS_LEVEL, __VA_ARGS__)
 #else
   // uLog vanishes when disabled at compile time...
-  #define MU_LOG_INIT() do {} while(0)
+  #define MU_LOG_INIT(a, b, c, d) do {} while(0)
   #define MU_LOG_SUBSCRIBE(a, b) do {} while(0)
   #define MU_LOG_UNSUBSCRIBE(a) do {} while(0)
   #define MU_LOG_LEVEL_NAME(A) do {} while(0)
@@ -119,27 +119,29 @@ typedef enum {
 
 #ifdef MU_LOG_ENABLED  // remainder of file...
 
+/**
+ * @brief: prototype for uLog subscribers.
+ */
+typedef void (*mu_log_subscriber_fn)(mu_log_level_t severity, char *msg);
+
+typedef struct {
+  mu_log_subscriber_fn fn;
+  mu_log_level_t threshold;
+} mu_log_subscriber_t;
+
 typedef enum {
   MU_LOG_ERR_NONE = 0,
   MU_LOG_ERR_SUBSCRIBERS_EXCEEDED,
   MU_LOG_ERR_NOT_SUBSCRIBED,
 } mu_log_err_t;
 
-// define the maximum number of concurrent subscribers
-#define MU_LOG_MAX_SUBSCRIBERS 6
-
-// maximum length of formatted log message
-#define MU_LOG_MAX_MESSAGE_LENGTH 120
-
-/**
- * @brief: prototype for uLog subscribers.
- */
-typedef void (*mu_log_subscriber_fn)(mu_log_level_t severity, char *msg);
-
 // =============================================================================
 // declarations
 
-void mu_log_init();
+void mu_log_init(mu_log_subscriber_t *subscriber_pool,
+                 int subscriber_pool_size,
+                 char *msg_buffer,
+                 int msg_buffer_size);
 mu_log_err_t mu_log_subscribe(mu_log_subscriber_fn fn, mu_log_level_t threshold);
 mu_log_err_t mu_log_unsubscribe(mu_log_subscriber_fn fn);
 const char *mu_log_level_name(mu_log_level_t level);
