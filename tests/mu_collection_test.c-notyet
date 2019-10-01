@@ -1,0 +1,87 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019 R. Dunbar Poor <rdpoor@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "../src/mu_collection.h"
+#include "test_utilities.h"
+#include <string.h>
+
+#define N_ITEMS 5
+
+void mu_list_test() {
+  void *items[N_ITEMS];
+  mu_list list;
+  mu_list_ref list_ref;
+  void *val;
+
+  mu_list_init(&slist, items, N_ITEMS);
+
+  UTEST_ASSERTEQ_SIZE(mu_list_capacity(&list), N_ITEMS);
+  // list = [];
+  UTEST_ASSERTEQ_SIZE(mu_list_count(&list), 0);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_empty(&list), true);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_full(&list), false);
+
+  UTEST_ASSERTEQ_INT(mu_list_push_back(&list, (void *)1), MU_COLLECTION_ERR_NONE);
+  // list = [1]
+  UTEST_ASSERTEQ_SIZE(mu_list_count(&list), 1);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_empty(&list), false);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_full(&list), false);
+
+  UTEST_ASSERTEQ_INT(mu_list_push_front(&list, (void *)2), MU_COLLECTION_ERR_NONE);
+  // list = [2, 1]
+  UTEST_ASSERTEQ_SIZE(mu_list_count(&list), 2);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_empty(&list), false);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_full(&list), false);
+
+  UTEST_ASSERTEQ_INT(mu_list_push_back(&list, (void *)3), MU_COLLECTION_ERR_NONE);
+  // list = [2, 1, 3]
+  UTEST_ASSERTEQ_SIZE(mu_list_count(&list), 3);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_empty(&list), false);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_full(&list), false);
+
+  UTEST_ASSERTEQ_INT(mu_list_push_front(&list, (void *)4), MU_COLLECTION_ERR_NONE);
+  // list = [4, 2, 1, 3]
+  UTEST_ASSERTEQ_SIZE(mu_list_count(&list), 4);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_empty(&list), false);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_full(&list), false);
+
+  UTEST_ASSERTEQ_INT(mu_list_push_back(&list, (void *)5), MU_COLLECTION_ERR_NONE);
+  // list = [4, 2, 1, 3, 5]
+  UTEST_ASSERTEQ_SIZE(mu_list_count(&list), 5);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_empty(&list), false);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_full(&list), true);
+
+  // adding to a collection that's full
+  UTEST_ASSERTEQ_INT(mu_list_push_front(&list, (void *)6), MU_COLLECTION_ERR_FULL);
+  // list = [4, 2, 1, 3, 5]
+  UTEST_ASSERTEQ_SIZE(mu_list_count(&list), 5);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_empty(&list), false);
+  UTEST_ASSERTEQ_BOOL(mu_list_is_full(&list), true);
+
+  // list = [4, 2, 1, 3, 5]
+  // Test ref_back, ref_front, ref_next, ref_prev
+  // A ref has a "prev" and a "this".  If "prev" is null, ref is at the head
+  // (back) of the collection.  If "this" is null, ref is one beyond the tail
+  // (front) of the collection.
+}

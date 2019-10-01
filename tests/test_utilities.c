@@ -24,6 +24,7 @@
 
 #include "test_utilities.h"
 #include <stdio.h>
+#include <stdint.h>
 
 /**
  * \brief Assert function
@@ -67,6 +68,51 @@ void unit_test_float_eps(const float f0,
     fflush(stdout);
 #ifdef UNIT_TEST_BREAK_ON_ERROR
   __asm("BKPT #0");
+#endif
+  }
+}
+
+void unit_test_assert_eq_bool(const bool observed,
+                              const bool expected,
+                              const char *observed_expr,
+                              const char *expected_expr,
+                              const char *const file,
+                              const int line) {
+  if (observed != expected) {
+    printf("\r\n%d != %d in %s == %s at %s:%d", observed, expected, observed_expr, expected_expr, file, line);
+    fflush(stdout);
+#ifdef UNIT_TEST_BREAK_ON_ERROR
+    __asm("BKPT #0");
+#endif
+  }
+}
+
+void unit_test_assert_eq_int(const int observed,
+                             const int expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line) {
+  if (observed != expected) {
+    printf("\r\n%d != %d in %s == %s at %s:%d", observed, expected, observed_expr, expected_expr, file, line);
+    fflush(stdout);
+#ifdef UNIT_TEST_BREAK_ON_ERROR
+    __asm("BKPT #0");
+#endif
+  }
+}
+
+void unit_test_assert_eq_ptr(const void *observed,
+                             const void *expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line) {
+  if (observed != expected) {
+    printf("\r\n%p != %p in %s == %s at %s:%d", observed, expected, observed_expr, expected_expr, file, line);
+    fflush(stdout);
+#ifdef UNIT_TEST_BREAK_ON_ERROR
+    __asm("BKPT #0");
 #endif
   }
 }

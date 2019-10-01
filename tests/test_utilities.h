@@ -30,6 +30,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #define UNUSED(x) (void)(x)
 
@@ -48,6 +49,34 @@ void unit_test_float_eps(const float f0,
                          const char *const eps_expr,
                          const char *const file,
                          const int line);
+
+#define UTEST_ASSERTEQ_BOOL(observed, expected) \
+  unit_test_assert_eq_bool((observed), (expected), #observed, #expected, __FILE__, __LINE__)
+void unit_test_assert_eq_bool(const bool observed,
+                              const bool expected,
+                              const char *observed_expr,
+                              const char *expected_expr,
+                              const char *const file,
+                              const int line);
+
+#define UTEST_ASSERTEQ_INT(observed, expected) \
+  unit_test_assert_eq_int((observed), (expected), #observed, #expected, __FILE__, __LINE__)
+void unit_test_assert_eq_int(const int observed,
+                             const int expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line);
+
+#define UTEST_ASSERTEQ_PTR(observed, expected) \
+  unit_test_assert_eq_ptr((observed), (expected), #observed, #expected, __FILE__, __LINE__)
+void unit_test_assert_eq_ptr(const void *observed,
+                             const void *expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line);
+
 
 #ifdef __cplusplus
 }

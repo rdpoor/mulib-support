@@ -30,6 +30,7 @@ void mu_heapsort_test();
 void mu_log_test();
 void mu_msg_test();
 void mu_time_test();
+void test_utilities_test();
 
 void unit_tests() {
 
@@ -53,6 +54,10 @@ void unit_tests() {
 
   printf("\r\n     starting mu_time_test()...");
   mu_time_test();
+  printf("completed");
+
+  printf("\r\n     starting test_utilities_test()...");
+  test_utilities_test();
   printf("completed");
 
   printf("\r\n==== Completed Unit Tests\r\n");
