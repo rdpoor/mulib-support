@@ -1,4 +1,5 @@
 #include "test_utilities.h"
+#include <stdio.h>
 
 void test_utilities_test() {
   int a, b;

@@ -31,6 +31,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #define UNUSED(x) (void)(x)
 
@@ -72,6 +73,15 @@ void unit_test_assert_eq_int(const int observed,
   unit_test_assert_eq_ptr((observed), (expected), #observed, #expected, __FILE__, __LINE__)
 void unit_test_assert_eq_ptr(const void *observed,
                              const void *expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line);
+
+#define UTEST_ASSERTEQ_SIZE(observed, expected) \
+  unit_test_assert_eq_size((observed), (expected), #observed, #expected, __FILE__, __LINE__)
+void unit_test_assert_eq_size(const size_t observed,
+                             const size_t expected,
                              const char *observed_expr,
                              const char *expected_expr,
                              const char *const file,

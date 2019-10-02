@@ -116,3 +116,18 @@ void unit_test_assert_eq_ptr(const void *observed,
 #endif
   }
 }
+
+void unit_test_assert_eq_size(const size_t observed,
+                             const size_t expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line) {
+  if (observed != expected) {
+    printf("\r\n%lu != %lu in %s == %s at %s:%d", observed, expected, observed_expr, expected_expr, file, line);
+    fflush(stdout);
+#ifdef UNIT_TEST_BREAK_ON_ERROR
+    __asm("BKPT #0");
+#endif
+  }
+}
