@@ -1,7 +1,12 @@
-# Collection notes
+# mu_collection family
 
-It should be possible to implement collections using either arrays or linked
-lists, which means both implementations could have similar APIs.
+A mu collection provides ordered storage for homogeneous objects, such as
+pointers, integers or characters.  Mu collection provides several storage
+strategies, including single- and double-ended linked lists, arrays and ring
+buffers.
+
+A consistent set of interface functions makes it easy to switch among storage
+strategies, depending on your requirements.
 
 ## terminology
 
@@ -118,11 +123,11 @@ Clears the collection, then copies items from the items array into the
 collection, stopping after count items have been copied or the collection
 is full, whichever comes first.  Returns the number of items copied.
 
-## Cursor functions
+## References
 
-A "ref" is a reference to an item in a collection.  It allows you to access
-items in the collection without regard as to whether the underlying storage
-is an array, list, or some other data structure.
+A "ref" is a reference to an item in a collection.  A ref provides a common
+interface to items in the collection, independent of the underlying storage
+strategy.
 
 ### ref_first(c, &ref)
 
@@ -132,15 +137,11 @@ Get a reference to the first of the collection.
 
 Get a reference to the last of the collection.
 
-### ref_of(c, item, &ref)
-
-Get a reference to an item in the collection.
-
-### ref_next(sref, &ref)
+### ref_next(&ref)
 
 Get a reference to the next item in the collection
 
-### ref_prev(sref, &ref)
+### ref_prev(&ref)
 
 Get a reference to the previous item in the collection.
 
@@ -156,9 +157,13 @@ Insert item before the reference.
 
 Insert item after the reference.
 
-### remove_at(ref, &item)
+### ref_pop(ref, &item)
 
-Remove the referred-to item from the collection.
+Remove the item referred to by ref and move ref to next.
+
+### ref_remove(ref, &item)
+
+Remove the item referred to by ref and move ref to prev.
 
 ### traverse(c, mu_msg)
 

@@ -79,3 +79,43 @@ size_t mu_vect_from_array(mu_vect_t *c, mu_vect_item_t items, size_t n_items) {
 size_t mu_vect_to_array(mu_vect_t *c, mu_vect_item_t items, size_t n_items) {
   return 0;
 }
+
+mu_collection_err_t mu_vect_deref(mu_vect_ref_t *r, mu_vect_item_t *item) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_ref_first(mu_vect_t *c, mu_vect_ref_t *r) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_ref_last(mu_vect_t *c, mu_vect_ref_t *r) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_ref_next(mu_vect_ref_t *r) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_ref_prev(mu_vect_ref_t *r) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_insert_before(mu_vect_ref_t *r, mu_vect_item_t i) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_insert_after(mu_vect_ref_t *r, mu_vect_item_t i) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_ref_pop(mu_vect_ref_t *r, mu_vect_item_t *i) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_ref_remove(mu_vect_ref_t *r, mu_vect_item_t *i) {
+  return MU_COLLECTION_ERR_NONE;
+}
+
+void mu_vect_traverse(mu_vect_t *c,  mu_vect_traverse_fn fn, void *target) {
+  return;
+}
