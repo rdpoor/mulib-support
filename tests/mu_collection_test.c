@@ -40,7 +40,7 @@ void mu_collection_test() {
  * Helper function to initialize an array with items.
  */
 static void fill_vect(mu_vect_t *c) {
-  mu_vect_item_t arr[ARRAY_SIZE];
+  void *arr[ARRAY_SIZE];
 
   arr[0] = (mu_vect_item_t)10;
   arr[1] = (mu_vect_item_t)11;
@@ -52,12 +52,12 @@ static void fill_vect(mu_vect_t *c) {
 
 typedef struct {
   int count;
-  mu_vect_item_t first_found;
+  void *first_found;
 } test_struct_t;
 
 // specialized traversal function that stops aftr finding the first odd item
-static bool first_odd_fn(mu_vect_ref_t *ref, void *self) {
-  mu_vect_item_t item;
+static bool first_odd_fn(mu_vref_t *ref, void *self) {
+  void *item;
 
   ((test_struct_t *)self)->count += 1;
   mu_vect_deref(ref, &item);
@@ -71,12 +71,12 @@ static bool first_odd_fn(mu_vect_ref_t *ref, void *self) {
 }
 
 static void mu_vect_test() {
-  mu_vect_item_t items[N_ITEMS];
-  mu_vect_item_t item;
-  mu_vect_item_t arr[ARRAY_SIZE];
+  void *items[N_ITEMS];
+  void *item;
+  void *arr[ARRAY_SIZE];
 
   mu_vect_t c;
-  mu_vect_ref_t ref;
+  mu_vref_t ref;
 
   mu_vect_init(&c, items, N_ITEMS);
 
@@ -199,59 +199,59 @@ static void mu_vect_test() {
   // ref_first, ref_last, deref
   mu_vect_reset(&c);
   // vect = []
-  UTEST_ASSERTEQ_INT(mu_vect_ref_first(&c, &ref), MU_COLLECTION_ERR_BOUNDS);
-  UTEST_ASSERTEQ_INT(mu_vect_ref_last(&c, &ref), MU_COLLECTION_ERR_BOUNDS);
+  UTEST_ASSERTEQ_INT(mu_vref_first(&c, &ref), MU_COLLECTION_ERR_BOUNDS);
+  UTEST_ASSERTEQ_INT(mu_vref_last(&c, &ref), MU_COLLECTION_ERR_BOUNDS);
 
   fill_vect(&c);
   // vect = [10, 11, 12, 13, 14]
-  UTEST_ASSERTEQ_INT(mu_vect_ref_first(&c, &ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_first(&c, &ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)10);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_last(&c, &ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_last(&c, &ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)14);
 
   // ref_next, ref_prev
-  UTEST_ASSERTEQ_INT(mu_vect_ref_first(&c, &ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_first(&c, &ref), MU_COLLECTION_ERR_NONE);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_next(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_next(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)11);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_next(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_next(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)12);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_next(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_next(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)13);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_next(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_next(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)14);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_next(&ref), MU_COLLECTION_ERR_BOUNDS);
+  UTEST_ASSERTEQ_INT(mu_vref_next(&ref), MU_COLLECTION_ERR_BOUNDS);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_last(&c, &ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_last(&c, &ref), MU_COLLECTION_ERR_NONE);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_prev(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_prev(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)13);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_prev(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_prev(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)12);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_prev(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_prev(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)11);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_prev(&ref), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_prev(&ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)10);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_prev(&ref), MU_COLLECTION_ERR_BOUNDS);
+  UTEST_ASSERTEQ_INT(mu_vref_prev(&ref), MU_COLLECTION_ERR_BOUNDS);
 
   // ===========================================================================
   // insert_before, insert_after
@@ -259,22 +259,22 @@ static void mu_vect_test() {
   mu_vect_reset(&c);
   mu_vect_push(&c, (mu_vect_item_t)25);
   // vect = [25]
-  mu_vect_ref_first(&c, &ref);
+  mu_vref_first(&c, &ref);
   // vect = [25]
   //     ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_push(&ref, (mu_vect_item_t)23), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_push(&ref, (mu_vect_item_t)23), MU_COLLECTION_ERR_NONE);
   // vect = [23, 25]
   //         ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_append(&ref, (mu_vect_item_t)27), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_append(&ref, (mu_vect_item_t)27), MU_COLLECTION_ERR_NONE);
   // vect = [23, 25, 27]
   //         ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_push(&ref, (mu_vect_item_t)24), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_push(&ref, (mu_vect_item_t)24), MU_COLLECTION_ERR_NONE);
   // vect = [23, 24, 25, 27]
   //             ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_append(&ref, (mu_vect_item_t)26), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_append(&ref, (mu_vect_item_t)26), MU_COLLECTION_ERR_NONE);
   // vect = [23, 24, 25, 26, 27]
   //             ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_append(&ref, (mu_vect_item_t)29), MU_COLLECTION_ERR_FULL);
+  UTEST_ASSERTEQ_INT(mu_vref_append(&ref, (mu_vect_item_t)29), MU_COLLECTION_ERR_FULL);
   // vect = [23, 24, 25, 26, 27]
   //             ref ^
   // check results
@@ -290,23 +290,23 @@ static void mu_vect_test() {
 
   // vect = [23, 24, 25, 26, 27]
   //             ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_pop(&ref, &item), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_pop(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)25);
   // vect = [23, 24, 26, 27]
   //             ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_remove(&ref, &item), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_remove(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)26);
   // vect = [23, 24, 27]
   //         ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_pop(&ref, &item), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_pop(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)24);
   // vect = [23, 27]
   //         ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_remove(&ref, &item), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_remove(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)27);
   // vect = [23]
   //     ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_pop(&ref, &item), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vref_pop(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)23);
   // vect = []
   //    ref ^
