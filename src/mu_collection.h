@@ -44,16 +44,18 @@ typedef void * mu_vect_item_t;
 typedef struct {
   size_t capacity;
   size_t count;
+  mu_vect_item_t *data;
 } mu_vect_t;
 
 typedef struct {
   mu_vect_t *c;
+  size_t index;
 } mu_vect_ref_t;
 
-typedef bool (*mu_vect_traverse_fn)(void *target, mu_vect_ref_t *r);
+typedef bool (mu_vect_traverse_fn)(mu_vect_ref_t *r, void *target);
 
-void mu_vect_init(mu_vect_t *c, mu_vect_item_t items, size_t n_items);
-void mu_vect_reset(mu_vect_t *c);
+mu_vect_t *mu_vect_init(mu_vect_t *c, mu_vect_item_t *items, size_t n_items);
+mu_vect_t *mu_vect_reset(mu_vect_t *c);
 
 bool mu_vect_is_empty(mu_vect_t *c);
 bool mu_vect_is_full(mu_vect_t *c);
@@ -70,9 +72,9 @@ mu_collection_err_t mu_vect_ref_first(mu_vect_t *c, mu_vect_ref_t *r);
 mu_collection_err_t mu_vect_ref_last(mu_vect_t *c, mu_vect_ref_t *r);
 mu_collection_err_t mu_vect_ref_next(mu_vect_ref_t *r);
 mu_collection_err_t mu_vect_ref_prev(mu_vect_ref_t *r);
-mu_collection_err_t mu_vect_insert_before(mu_vect_ref_t *r, mu_vect_item_t i);
-mu_collection_err_t mu_vect_insert_after(mu_vect_ref_t *r, mu_vect_item_t i);
+mu_collection_err_t mu_vect_ref_push(mu_vect_ref_t *r, mu_vect_item_t i);
 mu_collection_err_t mu_vect_ref_pop(mu_vect_ref_t *r, mu_vect_item_t *i);
+mu_collection_err_t mu_vect_ref_append(mu_vect_ref_t *r, mu_vect_item_t i);
 mu_collection_err_t mu_vect_ref_remove(mu_vect_ref_t *r, mu_vect_item_t *i);
 
 size_t mu_vect_capacity(mu_vect_t *c);

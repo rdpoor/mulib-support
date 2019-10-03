@@ -23,99 +23,241 @@
  */
 
 #include "./mu_collection.h"
+#include <string.h>
 
-void mu_vect_init(mu_vect_t *c, mu_vect_item_t items, size_t n_items) {
+static bool ref_is_valid(mu_vect_ref_t *r);
+static mu_collection_err_t validate_ref(mu_vect_ref_t *r);
 
+// =============================================================================
+// public code
+
+mu_vect_t *mu_vect_init(mu_vect_t *c, mu_vect_item_t *items, size_t n_items) {
+  c->capacity = n_items;
+  c->count = 0;
+  c->data = items;
+  return c;
 }
 
-void mu_vect_reset(mu_vect_t *c) {
+mu_vect_t *mu_vect_reset(mu_vect_t *c) {
+  c->count = 0;
+  return c;
+}
 
+size_t mu_vect_capacity(mu_vect_t *c) {
+  return c->capacity;
+}
+
+size_t mu_vect_count(mu_vect_t *c) {
+  return c->count;
 }
 
 bool mu_vect_is_empty(mu_vect_t *c) {
-  return true;
+  return c->count == 0;
 }
 
 bool mu_vect_is_full(mu_vect_t *c) {
-  return true;
+  return c->count == c->capacity;
 }
 
 mu_collection_err_t mu_vect_first(mu_vect_t *c, mu_vect_item_t *item) {
+  if (mu_vect_is_empty(c)) {
+    return MU_COLLECTION_ERR_EMPTY;
+  }
+  *item = c->data[0];
   return MU_COLLECTION_ERR_NONE;
 }
 
 mu_collection_err_t mu_vect_last(mu_vect_t *c, mu_vect_item_t *item) {
-  return MU_COLLECTION_ERR_NONE;
-}
-
-mu_collection_err_t mu_vect_pop(mu_vect_t *c, mu_vect_item_t *item) {
+  if (mu_vect_is_empty(c)) {
+    return MU_COLLECTION_ERR_EMPTY;
+  }
+  *item = c->data[c->count - 1];
   return MU_COLLECTION_ERR_NONE;
 }
 
 mu_collection_err_t mu_vect_push(mu_vect_t *c, mu_vect_item_t item) {
+  if (mu_vect_is_full(c)) {
+    return MU_COLLECTION_ERR_FULL;
+  }
+  // shift elements down to leave a hole
+  memmove(&(c->data[1]), &(c->data[0]), c->count * sizeof(mu_vect_item_t));
+  c->data[0] = item;
+  c->count += 1;
+  return MU_COLLECTION_ERR_NONE;
+}
+
+mu_collection_err_t mu_vect_pop(mu_vect_t *c, mu_vect_item_t *item) {
+  if (mu_vect_is_empty(c)) {
+    return MU_COLLECTION_ERR_EMPTY;
+  }
+  *item = c->data[0];
+  // shift elements up to close gap
+  c->count -= 1;
+  memmove(&(c->data[0]), &(c->data[1]), c->count * sizeof(mu_vect_item_t));
   return MU_COLLECTION_ERR_NONE;
 }
 
 mu_collection_err_t mu_vect_append(mu_vect_t *c, mu_vect_item_t item) {
+  if (mu_vect_is_full(c)) {
+    return MU_COLLECTION_ERR_FULL;
+  }
+  c->data[c->count++] = item;
   return MU_COLLECTION_ERR_NONE;
 }
 
 mu_collection_err_t mu_vect_remove(mu_vect_t *c, mu_vect_item_t *item) {
+  if (mu_vect_is_empty(c)) {
+    return MU_COLLECTION_ERR_EMPTY;
+  }
+  *item = c->data[--c->count];
   return MU_COLLECTION_ERR_NONE;
 }
 
-size_t mu_vect_capacity(mu_vect_t *c) {
-  return 0;
-}
-
-size_t mu_vect_count(mu_vect_t *c) {
-  return 0;
-}
-
 size_t mu_vect_from_array(mu_vect_t *c, mu_vect_item_t items, size_t n_items) {
-  return 0;
+  c->count = (n_items > c->capacity) ? c->capacity : n_items;
+  memmove(c->data, items, c->count * sizeof(mu_vect_item_t));
+  return c->count;
 }
 
 size_t mu_vect_to_array(mu_vect_t *c, mu_vect_item_t items, size_t n_items) {
-  return 0;
+  int n = (n_items > c->count) ? c->count : n_items;
+  memmove(items, c->data, n * sizeof(mu_vect_item_t));
+  return n;
 }
 
 mu_collection_err_t mu_vect_deref(mu_vect_ref_t *r, mu_vect_item_t *item) {
+  if (!ref_is_valid(r)) {
+    return MU_COLLECTION_ERR_BOUNDS;
+  }
+  *item = r->c->data[r->index];
   return MU_COLLECTION_ERR_NONE;
 }
 
 mu_collection_err_t mu_vect_ref_first(mu_vect_t *c, mu_vect_ref_t *r) {
-  return MU_COLLECTION_ERR_NONE;
+  r->c = c;
+  r->index = 0;
+  return validate_ref(r);
 }
 
 mu_collection_err_t mu_vect_ref_last(mu_vect_t *c, mu_vect_ref_t *r) {
-  return MU_COLLECTION_ERR_NONE;
+  r->c = c;
+  r->index = c->count - 1;
+  return validate_ref(r);
 }
 
 mu_collection_err_t mu_vect_ref_next(mu_vect_ref_t *r) {
-  return MU_COLLECTION_ERR_NONE;
+  r->index += 1;
+  return validate_ref(r);
 }
 
 mu_collection_err_t mu_vect_ref_prev(mu_vect_ref_t *r) {
+  r->index -= 1;
+  return validate_ref(r);
+}
+
+// TODO: DRY the next four functions.  See also push, pop, append, remove
+mu_collection_err_t mu_vect_ref_push(mu_vect_ref_t *r, mu_vect_item_t i) {
+  if (!ref_is_valid(r)) {
+    return MU_COLLECTION_ERR_BOUNDS;
+  } else if (mu_vect_is_full(r->c)) {
+    return MU_COLLECTION_ERR_FULL;
+  }
+
+  mu_vect_t *c = r->c;
+  int index = r->index;
+  int n_moved = mu_vect_count(c) - index;
+
+  memmove(&(c->data[index+1]),
+          &(c->data[index]),
+          n_moved * sizeof(mu_vect_item_t));
+  c->data[index] = i;
+  c->count += 1;
+  r->index += 1;
   return MU_COLLECTION_ERR_NONE;
 }
 
-mu_collection_err_t mu_vect_insert_before(mu_vect_ref_t *r, mu_vect_item_t i) {
-  return MU_COLLECTION_ERR_NONE;
-}
+mu_collection_err_t mu_vect_ref_append(mu_vect_ref_t *r, mu_vect_item_t i) {
+  if (!ref_is_valid(r)) {
+    return MU_COLLECTION_ERR_BOUNDS;
+  } else if (mu_vect_is_full(r->c)) {
+    return MU_COLLECTION_ERR_FULL;
+  }
 
-mu_collection_err_t mu_vect_insert_after(mu_vect_ref_t *r, mu_vect_item_t i) {
+  mu_vect_t *c = r->c;
+  int index = r->index;
+  int n_moved = mu_vect_count(c) - index - 1;
+
+  memmove(&(c->data[index+2]),
+          &(c->data[index+1]),
+          n_moved * sizeof(mu_vect_item_t));
+  c->data[index+1] = i;
+  c->count += 1;
   return MU_COLLECTION_ERR_NONE;
 }
 
 mu_collection_err_t mu_vect_ref_pop(mu_vect_ref_t *r, mu_vect_item_t *i) {
+  if (!ref_is_valid(r)) {
+    return MU_COLLECTION_ERR_BOUNDS;
+  } else if (mu_vect_is_empty(r->c)) {
+    return MU_COLLECTION_ERR_EMPTY;
+  }
+
+  mu_vect_t *c = r->c;
+  int index = r->index;
+  int n_moved = mu_vect_count(c) - index - 1;
+
+  *i = c->data[index];
+  memmove(&(c->data[index]),
+          &(c->data[index+1]),
+          n_moved * sizeof(mu_vect_item_t));
+
+  c->count -= 1;
+  // reference points to item after popped item
   return MU_COLLECTION_ERR_NONE;
 }
 
 mu_collection_err_t mu_vect_ref_remove(mu_vect_ref_t *r, mu_vect_item_t *i) {
+  if (!ref_is_valid(r)) {
+    return MU_COLLECTION_ERR_BOUNDS;
+  } else if (mu_vect_is_empty(r->c)) {
+    return MU_COLLECTION_ERR_EMPTY;
+  }
+
+  mu_vect_t *c = r->c;
+  int index = r->index;
+  int n_moved = mu_vect_count(c) - index - 1;
+
+  *i = c->data[index];
+  memmove(&(c->data[index]),
+          &(c->data[index+1]),
+          n_moved * sizeof(mu_vect_item_t));
+
+  c->count -= 1;
+  // reference points to item before popped item
+  r->index -= 1;
   return MU_COLLECTION_ERR_NONE;
 }
 
 void mu_vect_traverse(mu_vect_t *c,  mu_vect_traverse_fn fn, void *target) {
-  return;
+  mu_vect_ref_t r;
+  mu_vect_ref_first(c, &r);
+  while (ref_is_valid(&r)) {
+    if (!fn(&r, target)) break;
+    mu_vect_ref_next(&r);
+  }
+}
+
+// =============================================================================
+// private code
+
+static bool ref_is_valid(mu_vect_ref_t *r) {
+  return (r->c != NULL) && (r->index < r->c->count);
+}
+
+static mu_collection_err_t validate_ref(mu_vect_ref_t *r) {
+  if (ref_is_valid(r)) {
+    return MU_COLLECTION_ERR_NONE;
+  }
+  r->c = NULL;  // invalidate future attempts to dereference
+  return MU_COLLECTION_ERR_BOUNDS;
 }

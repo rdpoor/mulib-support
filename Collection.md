@@ -149,11 +149,11 @@ Get a reference to the previous item in the collection.
 
 Dereference an item in the collection
 
-### insert_before(ref, item)
+### ref_push(ref, item)
 
 Insert item before the reference.
 
-### insert_after(ref, item)
+### ref_append(ref, item)
 
 Insert item after the reference.
 
@@ -165,6 +165,7 @@ Remove the item referred to by ref and move ref to next.
 
 Remove the item referred to by ref and move ref to prev.
 
-### traverse(c, mu_msg)
+### traverse(c, fn)
 
-Visit each item in c, calling mu_msg with a reference to each element.
+Visit each item in c, calling fn with a reference to each element.  Stop
+when mu_msg returns non-null value and returns that.

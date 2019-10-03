@@ -61,9 +61,9 @@ void unit_tests() {
   mu_time_test();
   printf("completed");
 
-  printf("\r\n     starting test_utilities_test()...");
-  test_utilities_test();
-  printf("completed");
+  // printf("\r\n     starting test_utilities_test()...");
+  // test_utilities_test();
+  // printf("completed");
 
   printf("\r\n==== Completed Unit Tests\r\n");
 

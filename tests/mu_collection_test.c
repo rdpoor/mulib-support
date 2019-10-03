@@ -25,6 +25,7 @@
 #include "../src/mu_collection.h"
 #include "test_utilities.h"
 #include <string.h>
+#include <stdio.h>
 
 #define N_ITEMS 5
 #define ARRAY_SIZE 7
@@ -141,13 +142,13 @@ static void mu_vect_test() {
   // c = [4, 2, 1, 3, 5]
   // pop, remove
   UTEST_ASSERTEQ_INT(mu_vect_pop(&c, &item), MU_COLLECTION_ERR_NONE);
-  UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)5);
-  UTEST_ASSERTEQ_INT(mu_vect_remove(&c, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)4);
-  UTEST_ASSERTEQ_INT(mu_vect_pop(&c, &item), MU_COLLECTION_ERR_NONE);
-  UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)3);
   UTEST_ASSERTEQ_INT(mu_vect_remove(&c, &item), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)5);
+  UTEST_ASSERTEQ_INT(mu_vect_pop(&c, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)2);
+  UTEST_ASSERTEQ_INT(mu_vect_remove(&c, &item), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)3);
   UTEST_ASSERTEQ_INT(mu_vect_pop(&c, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)1);
 
@@ -197,15 +198,17 @@ static void mu_vect_test() {
 
   // ref_first, ref_last, deref
   mu_vect_reset(&c);
-  UTEST_ASSERTEQ_INT(mu_vect_ref_first(&c, &ref), MU_COLLECTION_ERR_EMPTY);
-  UTEST_ASSERTEQ_INT(mu_vect_ref_last(&c, &ref), MU_COLLECTION_ERR_EMPTY);
+  // vect = []
+  UTEST_ASSERTEQ_INT(mu_vect_ref_first(&c, &ref), MU_COLLECTION_ERR_BOUNDS);
+  UTEST_ASSERTEQ_INT(mu_vect_ref_last(&c, &ref), MU_COLLECTION_ERR_BOUNDS);
 
   fill_vect(&c);
+  // vect = [10, 11, 12, 13, 14]
   UTEST_ASSERTEQ_INT(mu_vect_ref_first(&c, &ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)10);
 
-  UTEST_ASSERTEQ_INT(mu_vect_ref_last(&c, &ref), MU_COLLECTION_ERR_EMPTY);
+  UTEST_ASSERTEQ_INT(mu_vect_ref_last(&c, &ref), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_NONE);
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)14);
 
@@ -259,22 +262,21 @@ static void mu_vect_test() {
   mu_vect_ref_first(&c, &ref);
   // vect = [25]
   //     ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_insert_before(&ref, (mu_vect_item_t)23), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vect_ref_push(&ref, (mu_vect_item_t)23), MU_COLLECTION_ERR_NONE);
   // vect = [23, 25]
   //         ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_insert_after(&ref, (mu_vect_item_t)27), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vect_ref_append(&ref, (mu_vect_item_t)27), MU_COLLECTION_ERR_NONE);
   // vect = [23, 25, 27]
   //         ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_insert_before(&ref, (mu_vect_item_t)24), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vect_ref_push(&ref, (mu_vect_item_t)24), MU_COLLECTION_ERR_NONE);
   // vect = [23, 24, 25, 27]
   //             ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_insert_after(&ref, (mu_vect_item_t)26), MU_COLLECTION_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_vect_ref_append(&ref, (mu_vect_item_t)26), MU_COLLECTION_ERR_NONE);
   // vect = [23, 24, 25, 26, 27]
   //             ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_insert_after(&ref, (mu_vect_item_t)26), MU_COLLECTION_ERR_FULL);
+  UTEST_ASSERTEQ_INT(mu_vect_ref_append(&ref, (mu_vect_item_t)29), MU_COLLECTION_ERR_FULL);
   // vect = [23, 24, 25, 26, 27]
   //             ref ^
-
   // check results
   UTEST_ASSERTEQ_SIZE(mu_vect_to_array(&c, arr, ARRAY_SIZE), N_ITEMS);
   UTEST_ASSERTEQ_PTR(arr[0], (mu_vect_item_t)23);
@@ -308,7 +310,7 @@ static void mu_vect_test() {
   UTEST_ASSERTEQ_PTR(item, (mu_vect_item_t)23);
   // vect = []
   //    ref ^
-  UTEST_ASSERTEQ_INT(mu_vect_ref_remove(&ref, &item), MU_COLLECTION_ERR_BOUNDS);
+  UTEST_ASSERTEQ_INT(mu_vect_deref(&ref, &item), MU_COLLECTION_ERR_BOUNDS);
 
   // ===========================================================================
   // traverse

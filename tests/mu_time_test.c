@@ -53,9 +53,9 @@ void mu_time_test() {
   t1 = mu_time_now();  // an arbitrary time
   t2 = mu_time_offset(t1, mu_time_seconds_to_duration(3.0));
 
-  printf("test should pause for approximately 3.0 seconds\n");
+  printf("test should pause for approximately 3.0 seconds...");
+  fflush(stdout);
   while (mu_time_is_before(mu_time_now(), t2)) {
     // buzz
   }
-  printf("...done\n");
 }
