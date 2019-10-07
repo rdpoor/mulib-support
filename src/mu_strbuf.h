@@ -22,27 +22,39 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+#ifndef MU_STRBUF_H_
+#define MU_STRBUF_H_
 
-#include "../src/template.h"
-#include "test_utilities.h"
-
-// =============================================================================
-// private types and definitions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// private declarations
+// includes
+
+#include <stddef.h>
 
 // =============================================================================
-// local storage
+// types and definitions
+
+typedef struct {
+  char *data;
+  size_t capacity;
+  size_t length;
+} mu_strbuf_t;
 
 // =============================================================================
-// public code
+// declarations
 
-void template_test() {
+mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *str, char *buf, size_t capacity);
+mu_strbuf_t *mu_strbuf_reset(mu_strbuf_t *str);
+size_t mu_strbuf_capacity(mu_strbuf_t *str);
+size_t mu_strbuf_length(mu_strbuf_t *str);
+size_t mu_strbuf_append(mu_strbuf_t *str, const char *fmt, ...);
+char *mu_strbuf_data(mu_strbuf_t *str);
 
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif // #ifndef MU_STRBUF_H_

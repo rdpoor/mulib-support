@@ -25,6 +25,7 @@
 #include "test_utilities.h"
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 /**
  * \brief Assert function
@@ -125,6 +126,24 @@ void unit_test_assert_eq_size(const size_t observed,
                              const int line) {
   if (observed != expected) {
     printf("\r\n%lu != %lu in %s == %s at %s:%d", observed, expected, observed_expr, expected_expr, file, line);
+    fflush(stdout);
+#ifdef UNIT_TEST_BREAK_ON_ERROR
+    __asm("BKPT #0");
+#endif
+  }
+}
+
+/**
+ * @brief pass the test if the two strings are equal
+ */
+void unit_test_assert_eq_str(const char *observed,
+                             const char *expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line) {
+  if (strcmp(observed, expected) != 0) {
+    printf("\r\n'%s' != '%s' in %s == %s at %s:%d", observed, expected, observed_expr, expected_expr, file, line);
     fflush(stdout);
 #ifdef UNIT_TEST_BREAK_ON_ERROR
     __asm("BKPT #0");

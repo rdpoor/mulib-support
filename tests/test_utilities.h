@@ -87,6 +87,14 @@ void unit_test_assert_eq_size(const size_t observed,
                              const char *const file,
                              const int line);
 
+#define UTEST_ASSERTEQ_STR(observed, expected) \
+unit_test_assert_eq_str((observed), (expected), #observed, #expected, __FILE__, __LINE__)
+void unit_test_assert_eq_str(const char *observed,
+                             const char *expected,
+                             const char *observed_expr,
+                             const char *expected_expr,
+                             const char *const file,
+                             const int line);
 
 #ifdef __cplusplus
 }

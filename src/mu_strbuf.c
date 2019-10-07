@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
-#include "../src/template.h"
-#include "test_utilities.h"
+#include "mu_strbuf.h"
+#include <stdarg.h>
+#include <stdio.h>
 
 // =============================================================================
 // private types and definitions
@@ -34,15 +35,50 @@
 // =============================================================================
 // private declarations
 
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+
 // =============================================================================
 // local storage
 
 // =============================================================================
 // public code
 
-void template_test() {
-
+mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *str, char *buf, size_t capacity) {
+  str->data = buf;
+  str->capacity = capacity;
+  return mu_strbuf_reset(str);
 }
+
+mu_strbuf_t *mu_strbuf_reset(mu_strbuf_t *str) {
+  str->length = 0;
+  str->data[0] = '\0';
+  return str;
+}
+
+size_t mu_strbuf_capacity(mu_strbuf_t *str) { return str->capacity; }
+
+// Return the length of the accumulated string.  Never exceeds capacity-1
+// since mu_strbuf_append() always terminates the string with a '\0'.
+size_t mu_strbuf_length(mu_strbuf_t *str) {
+  return MIN(str->length, str->capacity - 1);
+}
+
+size_t mu_strbuf_append(mu_strbuf_t *str, const char *fmt, ...) {
+  va_list ap;
+  size_t available = str->capacity - str->length;
+
+  va_start(ap, fmt);
+  // append no more than `available` chars to the end of the buffer
+  int written = vsnprintf(&(str->data[str->length]), available, fmt, ap);
+  va_end(ap);
+
+  str->length += (written < available) ? written : available;
+  return mu_strbuf_length(str);
+}
+
+char *mu_strbuf_data(mu_strbuf_t *str) { return str->data; }
 
 // =============================================================================
 // private code

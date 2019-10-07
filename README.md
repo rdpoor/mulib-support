@@ -57,6 +57,16 @@ reporting channels.
 
 Status: Passing Tests.
 
+### mu_sched
+
+Fast, lightweight run-to-completion scheduler.  
+
+Status: Passing Tests.  (Needs work & testing for interrupt-safe actions.)
+
+### mu_strbuf
+
+Safely append formatted string data to a buffer.
+
 ### mu_task
 
 Simple, versatile, fast message passing.  Commonly used for deferred function
