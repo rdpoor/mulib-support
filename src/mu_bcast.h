@@ -32,7 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_msg.h"
+#include "mu_task.h"
 #include <stdint.h>
 
 // =============================================================================
@@ -55,7 +55,7 @@ typedef uint16_t mu_bcast_channel_t;
 
 typedef struct _subscriber {
   mu_bcast_channel_t channel;
-  mu_msg_t msg;
+  mu_task_t msg;
 } mu_bcast_subscriber_t;
 
 typedef struct _manager {
@@ -84,7 +84,7 @@ void mu_bcast_reset(mu_bcast_mgr_t *mu_bcast_mgr);
  */
 mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                   mu_bcast_channel_t channel,
-                                  mu_msg_fn function,
+                                  mu_task_fn function,
                                   void *target);
 
 /**
@@ -97,7 +97,7 @@ mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
  */
 mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                     mu_bcast_channel_t channel,
-                                    mu_msg_fn function,
+                                    mu_task_fn function,
                                     void *target);
 
 /**

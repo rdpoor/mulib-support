@@ -168,4 +168,4 @@ Remove the item referred to by ref and move ref to prev.
 ### traverse(c, fn)
 
 Visit each item in c, calling fn with a reference to each element.  Stop
-when mu_msg returns non-null value and returns that.
+when mu_task returns non-null value and returns that.

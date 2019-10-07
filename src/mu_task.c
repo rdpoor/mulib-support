@@ -22,30 +22,20 @@
  * SOFTWARE.
  */
 
-#ifndef MU_MSG_H_
-#define MU_MSG_H_
+#include "mu_task.h"
+#include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- * A mu_msg comprises a function (`msg_msg_fn`) and a context (void *self).
- * When called, the function is passed the self argument and a void * argument.
- */
-typedef void (*mu_msg_fn)(void *self, void *arg);
-
-typedef struct {
-  mu_msg_fn fn;
-  void *self;
-} mu_msg_t;
-
-mu_msg_t *mu_msg_init(mu_msg_t *msg, mu_msg_fn fn, void *self);
-
-void mu_msg_call(mu_msg_t *msg, void *arg);
-
-#ifdef __cplusplus
+mu_task_t *mu_task_init(mu_task_t *task, mu_task_fn fn, void *self) {
+  task->fn = fn;
+  task->self = self;
+  return task;
 }
-#endif
 
-#endif // #ifndef MU_MSG_H_
+void mu_task_call(mu_task_t *task, void *arg) {
+  if (task && task->fn != NULL) {
+    task->fn(task->self, arg);
+  }
+}
+
+// =============================================================================
+// private functions

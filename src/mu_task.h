@@ -22,20 +22,33 @@
  * SOFTWARE.
  */
 
-#include "mu_msg.h"
-#include <stddef.h>
+#ifndef mu_task_H_
+#define mu_task_H_
 
-mu_msg_t *mu_msg_init(mu_msg_t *msg, mu_msg_fn fn, void *self) {
-  msg->fn = fn;
-  msg->self = self;
-  return msg;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * A `mu_task` is essentially a function that can be called later.  It comprises
+ * a function pointer (`msg_msg_fn`) and a context (`void *self`).  When called,
+ * the function is passed the self argument and a `void *` argument.
+ */
+
+// Ths signature of o mu_task function.
+typedef void (*mu_task_fn)(void *self, void *arg);
+
+typedef struct {
+  mu_task_fn fn;
+  void *self;
+} mu_task_t;
+
+mu_task_t *mu_task_init(mu_task_t *msg, mu_task_fn fn, void *self);
+
+void mu_task_call(mu_task_t *msg, void *arg);
+
+#ifdef __cplusplus
 }
+#endif
 
-void mu_msg_call(mu_msg_t *msg, void *arg) {
-  if (msg && msg->fn != NULL) {
-    msg->fn(msg->self, arg);
-  }
-}
-
-// =============================================================================
-// private functions
+#endif // #ifndef mu_task_H_

@@ -39,7 +39,7 @@ static bool channel_is_valid(mu_bcast_channel_t channel);
 
 mu_bcast_err_t subscribe_one(mu_bcast_subscriber_t *subscriber,
                              mu_bcast_channel_t channel,
-                             mu_msg_fn function,
+                             mu_task_fn function,
                              void *self);
 
 mu_bcast_err_t unsubscribe_one(mu_bcast_subscriber_t *subscriber);
@@ -67,7 +67,7 @@ void mu_bcast_reset(mu_bcast_mgr_t *mu_bcast_mgr) {
 
 mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                   mu_bcast_channel_t channel,
-                                  mu_msg_fn function,
+                                  mu_task_fn function,
                                   void *target) {
   mu_bcast_subscriber_t *subscriber;
   int first_available_slot = -1;
@@ -100,7 +100,7 @@ mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
 
 mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                     mu_bcast_channel_t channel,
-                                    mu_msg_fn function,
+                                    mu_task_fn function,
                                     void *target) {
   mu_bcast_subscriber_t *subscriber;
 
@@ -138,8 +138,8 @@ mu_bcast_err_t mu_bcast_notify(mu_bcast_mgr_t *mu_bcast_mgr,
   for (int i = 0; i < mu_bcast_mgr->max_subscribers; i++) {
     mu_bcast_subscriber_t *subscriber = &(mu_bcast_mgr->subscribers[i]);
     if ((channel == MU_BCAST_ALL_CHANNELS) || (subscriber->channel == channel)) {
-      // mu_msg_call handles the case of a null msg.fn
-      mu_msg_call(&subscriber->msg, arg);
+      // mu_task_call handles the case of a null msg.fn
+      mu_task_call(&subscriber->msg, arg);
     }
   }
   return MU_BCAST_ERR_NONE;
@@ -155,7 +155,7 @@ static bool channel_is_valid(mu_bcast_channel_t channel) {
 
 mu_bcast_err_t subscribe_one(mu_bcast_subscriber_t *subscriber,
                              mu_bcast_channel_t channel,
-                             mu_msg_fn function,
+                             mu_task_fn function,
                              void *self) {
   subscriber->channel = channel;
   subscriber->msg.fn = function;

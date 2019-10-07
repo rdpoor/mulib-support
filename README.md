@@ -28,7 +28,7 @@ Status: Passing Tests.
 
 ### mu_evt
 
-Event handling.  Associates a `mu_time` with a `mu_msg` (q.v.).
+Event handling.  Associates a `mu_time` with a `mu_task` (q.v.).
 
 Status: Passing Tests.
 
@@ -57,7 +57,7 @@ reporting channels.
 
 Status: Passing Tests.
 
-### mu_msg
+### mu_task
 
 Simple, versatile, fast message passing.  Commonly used for deferred function
 calls.
@@ -81,7 +81,7 @@ Status: In progress.
 
 Clock agnostic, single-thread, run-to-completion scheduler
 
-Status: In progress.
+Status: Passing Tests.
 
 ### mu_time
 
