@@ -31,7 +31,7 @@ extern "C" {
 
 /**
  * A `mu_task` is essentially a function that can be called later.  It comprises
- * a function pointer (`msg_msg_fn`) and a context (`void *self`).  When called,
+ * a function pointer (`mu_task_fn`) and a context (`void *self`).  When called,
  * the function is passed the self argument and a `void *` argument.
  */
 
@@ -43,9 +43,9 @@ typedef struct {
   void *self;
 } mu_task_t;
 
-mu_task_t *mu_task_init(mu_task_t *msg, mu_task_fn fn, void *self);
+mu_task_t *mu_task_init(mu_task_t *task, mu_task_fn fn, void *self);
 
-void mu_task_call(mu_task_t *msg, void *arg);
+void mu_task_call(mu_task_t *task, void *arg);
 
 #ifdef __cplusplus
 }
