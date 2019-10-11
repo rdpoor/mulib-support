@@ -57,6 +57,12 @@ reporting channels.
 
 Status: Passing Tests.
 
+### mu_pool
+
+Dynamically allocate and free fixed-sized objects from a static storage pool.
+
+Status: In progress.
+
 ### mu_queue
 
 Efficient queue for pointer-sized objects.  Thread safe for single-producer /
@@ -64,9 +70,16 @@ single-consumer applications.
 
 Status: Passing Tests.
 
+### mu_ring
+
+Thread safe ring buffer for pointer-sized objects.  Also provides variants to
+handle 8-, 16-, 32- and 64-bit wide objects.
+
+Status: In progress.
+
 ### mu_sched
 
-Fast, lightweight run-to-completion scheduler.  
+Clock agnostic, lightweight single-thread, run-to-completion scheduler
 
 Status: Passing Tests.  (Lacks `mu_sched_from_isr()`, coming soon...)
 
@@ -78,25 +91,6 @@ Safely append formatted string data to a buffer.
 
 Simple, versatile, fast message passing.  Commonly used for deferred function
 calls.
-
-Status: Passing Tests.
-
-### mu_pool
-
-Dynamically allocate and free fixed-sized objects from a static storage pool.
-
-Status: In progress.
-
-### mu_ring
-
-Thread safe ring buffer for pointer-sized objects.  Also provides variants to
-handle 8-, 16-, 32- and 64-bit wide objects.
-
-Status: In progress.
-
-### mu_sched
-
-Clock agnostic, single-thread, run-to-completion scheduler
 
 Status: Passing Tests.
 
