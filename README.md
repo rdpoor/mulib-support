@@ -7,13 +7,13 @@ tailored for microcontrollers and other resource-constrained environments.
 
 mulib strives towards the following design goals.
 
-* Self-contained, pure C code: minimize dependencies on external libraries
+* Self-contained, pure C code: minimize dependencies on external libraries.
 * Two-file implementation: whenever practical, each mulib module is embodied in
   one header file and one C file.
-* Well-tested and documented: unit tests validate the API and clearly documented
-  in the header files.
+* Well-tested and documented: unit tests validate the API and with clear
+  documentation in the header files.
 * Fast and Dangerous: mulib favors minimizing time and code space over argument
-  validation.  (coming soon: MU_ASSERT() will providee a safety net that can be switched on or off at compile time.
+  validation.  (Coming soon: MU_ASSERT() will providee a safety net that can be switched on or off at compile time.
 * Yours to use: The entirety of mulib is covered under the MIT open source
   license.
 
@@ -44,16 +44,16 @@ reporting channels.
 
 Status: Passing Tests.
 
-### mu_queue
+### mu_ring
 
-Efficient queue for pointer-sized objects.  Thread safe for single-producer /
+Fast, thread-safe queue for void * sized objects, designed for single-producer /
 single-consumer applications.
 
 Status: Passing Tests.
 
 ### mu_sched
 
-Clock agnostic, lightweight single-thread, run-to-completion scheduler
+Clock agnostic, lightweight single-thread, run-to-completion scheduler.
 
 Status: Passing Tests.  (Lacks `mu_sched_from_isr()`, coming soon...)
 
@@ -95,9 +95,8 @@ Dynamically allocate and free fixed-sized objects from a static storage pool.
 
 Status: In progress.
 
-### mu_ring
+### mu_ring8, mu_ring16, mu_ring32, mu_ring64
 
-Thread safe ring buffer for pointer-sized objects.  Also provides variants to
-handle 8-, 16-, 32- and 64-bit wide objects.
+Thread safe ring buffer for 8-, 16-, 32- and 64-bit wide objects.
 
 Status: In progress.
