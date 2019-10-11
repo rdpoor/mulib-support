@@ -57,11 +57,18 @@ reporting channels.
 
 Status: Passing Tests.
 
+### mu_queue
+
+Efficient queue for pointer-sized objects.  Thread safe for single-producer /
+single-consumer applications.
+
+Status: Passing Tests.
+
 ### mu_sched
 
 Fast, lightweight run-to-completion scheduler.  
 
-Status: Passing Tests.  (Needs work & testing for interrupt-safe actions.)
+Status: Passing Tests.  (Lacks `mu_sched_from_isr()`, coming soon...)
 
 ### mu_strbuf
 

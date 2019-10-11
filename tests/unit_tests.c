@@ -29,6 +29,7 @@ void mu_collection_test();
 void mu_evt_test();
 void mu_heapsort_test();
 void mu_log_test();
+void mu_queue_test();
 void mu_sched_test();
 void mu_strbuf_test();
 void mu_task_test();
@@ -55,6 +56,10 @@ void unit_tests() {
   mu_log_test();
   printf("completed");
 
+  printf("\r\n     starting mu_queue_test()...");
+  mu_queue_test();
+  printf("completed");
+  
   printf("\r\n     starting mu_sched_test()...");
   mu_sched_test();
   printf("completed");

@@ -49,8 +49,18 @@ typedef enum {
 // Signature for clock source function.  Returns a port_time_t value.
 typedef port_time_t (*mu_clock_fn)(void);
 
+// TODO:
+// We want a way to queue events from interrupt level.  We can use a thread-
+// safe circular buffer to queue events produced at interrupt level and consumed
+// at foreground level.  For this, we've created mu_queue (q.v).
+//
+// So mu_sched_from_isr() will push an event on the queue.  Then mu_sched_step()
+// will get all events from that queue and add them the regular event list
+// before processing.
+
 typedef struct {
-  mu_evt_t *events;         // a linked list of events
+  mu_evt_t *events;          // a linked list of events
+  // mu_queue_t *isr_events; // see TODO above
   mu_clock_fn clock_source;
   mu_task_t *idle_task;
   mu_evt_t *current_event;
@@ -76,6 +86,9 @@ mu_evt_t *mu_sched_current_event(mu_sched_t *sched);
 mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_evt_t *event);
 
 mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_evt_t *evt);
+
+// see TODO
+// mu_sched_err_t mu_sched_from_isr(mu_sched_t *sched, mu_evt_t *event);
 
 #ifdef __cplusplus
 }
