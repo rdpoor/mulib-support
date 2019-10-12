@@ -45,7 +45,7 @@ mu_ring_err_t mu_ring_init(mu_ring_t *q,
                              mu_ring_obj_t *pool,
                              unsigned int capacity) {
   if ((capacity == 0) || !IS_POWER_OF_TWO(capacity)) {
-    return MU_QUEUE_ERR_SIZE;
+    return MU_RING_ERR_SIZE;
   }
   q->mask = capacity - 1;
   q->pool = pool;
@@ -55,7 +55,7 @@ mu_ring_err_t mu_ring_init(mu_ring_t *q,
 mu_ring_err_t mu_ring_reset(mu_ring_t *q) {
   q->head = 0;
   q->tail = 0;
-  return MU_QUEUE_ERR_NONE;
+  return MU_RING_ERR_NONE;
 }
 
 unsigned int mu_ring_capacity(mu_ring_t *q) { return q->mask + 1; }
@@ -66,20 +66,20 @@ unsigned int mu_ring_count(mu_ring_t *q) {
 
 mu_ring_err_t mu_ring_put(mu_ring_t *q, mu_ring_obj_t obj) {
   if (mu_ring_count(q) == mu_ring_capacity(q)) {
-    return MU_QUEUE_ERR_FULL;
+    return MU_RING_ERR_FULL;
   }
   // Note that head grows "without bound", but tail is guarateed to grow too.
   q->pool[q->head++ & q->mask] = obj;
-  return MU_QUEUE_ERR_NONE;
+  return MU_RING_ERR_NONE;
 }
 
 mu_ring_err_t mu_ring_get(mu_ring_t *q, mu_ring_obj_t *obj) {
   if (mu_ring_count(q) == 0) {
-    return MU_QUEUE_ERR_EMPTY;
+    return MU_RING_ERR_EMPTY;
   }
   // Note that tail grows "without bound", but head is guaranteed to grow too.
-  *obj = q->pool[q->tail++ * q->mask];
-  return MU_QUEUE_ERR_NONE;
+  *obj = q->pool[q->tail++ & q->mask];
+  return MU_RING_ERR_NONE;
 }
 
 // =============================================================================

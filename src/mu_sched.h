@@ -34,6 +34,7 @@ extern "C" {
 
 #include "../port/port.h"
 #include "mu_evt.h"
+#include "mu_ring.h"
 #include "mu_task.h"
 #include <stdbool.h>
 
@@ -60,7 +61,7 @@ typedef port_time_t (*mu_clock_fn)(void);
 
 typedef struct {
   mu_evt_t *events;          // a linked list of events
-  // mu_ring_t *isr_events; // see TODO above
+  mu_ring_t isr_queue;       // interrupt-safe queue of events to be added
   mu_clock_fn clock_source;
   mu_task_t *idle_task;
   mu_evt_t *current_event;
@@ -69,7 +70,10 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_sched_t *mu_sched_init(mu_sched_t *sched);
+// isr_queue_size must be a power of two
+mu_sched_t *mu_sched_init(mu_sched_t *sched,
+                          mu_ring_obj_t *isr_queue_pool,
+                          unsigned int isr_queue_pool_size);
 
 mu_sched_t *mu_sched_reset(mu_sched_t *sched);
 
@@ -81,14 +85,15 @@ bool mu_sched_is_empty(mu_sched_t *sched);
 
 mu_sched_err_t mu_sched_step(mu_sched_t *sched);
 
+port_time_t mu_sched_get_time(mu_sched_t *sched);
+
 mu_evt_t *mu_sched_current_event(mu_sched_t *sched);
 
 mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_evt_t *event);
 
 mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_evt_t *evt);
 
-// see TODO
-// mu_sched_err_t mu_sched_from_isr(mu_sched_t *sched, mu_evt_t *event);
+mu_sched_err_t mu_sched_from_isr(mu_sched_t *sched, mu_evt_t *event);
 
 #ifdef __cplusplus
 }

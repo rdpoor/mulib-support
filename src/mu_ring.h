@@ -43,10 +43,10 @@ extern "C" {
 //   void get(char* c) { if (inuse() != 0) { *c = buffer[tail++%N]; } }
 
 typedef enum {
-  MU_QUEUE_ERR_NONE,
-  MU_QUEUE_ERR_EMPTY,
-  MU_QUEUE_ERR_FULL,
-  MU_QUEUE_ERR_SIZE,
+  MU_RING_ERR_NONE,
+  MU_RING_ERR_EMPTY,
+  MU_RING_ERR_FULL,
+  MU_RING_ERR_SIZE,
 } mu_ring_err_t;
 
 // mu_ring manages pointer-sized objects

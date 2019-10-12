@@ -26,6 +26,7 @@
 // includes
 
 #include "port.h"
+#include <stdio.h>
 #include <time.h>
 
 // =============================================================================
@@ -41,6 +42,15 @@
 
 // =============================================================================
 // public code
+
+void port_assert(const bool condition,
+                 const char *const expr,
+                 const char *const file,
+                 const int line) {
+  if (!condition) {
+    printf("Assertion '%s' failed at %s:%d", expr, file, line);
+  }
+}
 
 port_time_t port_time_offset(port_time_t t, port_time_dt dt) {
   return t + dt;

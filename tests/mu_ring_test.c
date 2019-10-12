@@ -59,50 +59,56 @@ mu_ring_obj_t s_pool[QUEUE_SIZE];
 
 void mu_ring_test() {
   mu_ring_t queue;
+  mu_ring_t *q = &queue;
   mu_ring_obj_t obj;
 
   // Require power of two queue size
-  UTEST_ASSERTEQ_INT(mu_ring_init(&queue, s_pool, QUEUE_SIZE-1), MU_QUEUE_ERR_SIZE);
+  UTEST_ASSERTEQ_INT(mu_ring_init(q, s_pool, QUEUE_SIZE-1), MU_RING_ERR_SIZE);
 
   // Valid initialization
-  UTEST_ASSERTEQ_INT(mu_ring_init(&queue, s_pool, QUEUE_SIZE), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_capacity(&queue), QUEUE_SIZE);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), 0);
+  UTEST_ASSERTEQ_INT(mu_ring_init(q, s_pool, QUEUE_SIZE), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_capacity(q), QUEUE_SIZE);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 0);
 
   // basic put / get
-  UTEST_ASSERTEQ_INT(mu_ring_put(&queue, obj_a), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), 1);
-  UTEST_ASSERTEQ_INT(mu_ring_get(&queue, &obj), MU_QUEUE_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_a), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 1);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_b), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 2);
+  UTEST_ASSERTEQ_INT(mu_ring_get(q, &obj), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_PTR(obj, obj_b);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 1);
+  UTEST_ASSERTEQ_INT(mu_ring_get(q, &obj), MU_RING_ERR_NONE);
   UTEST_ASSERTEQ_PTR(obj, obj_a);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), 0);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 0);
 
   // put until overflow
-  UTEST_ASSERTEQ_INT(mu_ring_put(&queue, obj_a), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_put(&queue, obj_b), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_put(&queue, obj_c), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_put(&queue, obj_d), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), QUEUE_SIZE);
-  UTEST_ASSERTEQ_INT(mu_ring_put(&queue, obj_e), MU_QUEUE_ERR_FULL);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), QUEUE_SIZE);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_a), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_b), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_c), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_d), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), QUEUE_SIZE);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_e), MU_RING_ERR_FULL);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), QUEUE_SIZE);
 
   // get until underflow
-  UTEST_ASSERTEQ_INT(mu_ring_get(&queue, &obj), MU_QUEUE_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_get(q, &obj), MU_RING_ERR_NONE);
   UTEST_ASSERTEQ_PTR(obj, obj_a);
-  UTEST_ASSERTEQ_INT(mu_ring_get(&queue, &obj), MU_QUEUE_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_get(q, &obj), MU_RING_ERR_NONE);
   UTEST_ASSERTEQ_PTR(obj, obj_b);
-  UTEST_ASSERTEQ_INT(mu_ring_get(&queue, &obj), MU_QUEUE_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_get(q, &obj), MU_RING_ERR_NONE);
   UTEST_ASSERTEQ_PTR(obj, obj_c);
-  UTEST_ASSERTEQ_INT(mu_ring_get(&queue, &obj), MU_QUEUE_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_get(q, &obj), MU_RING_ERR_NONE);
   UTEST_ASSERTEQ_PTR(obj, obj_d);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), 0);
-  UTEST_ASSERTEQ_INT(mu_ring_get(&queue, &obj), MU_QUEUE_ERR_EMPTY);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), 0);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 0);
+  UTEST_ASSERTEQ_INT(mu_ring_get(q, &obj), MU_RING_ERR_EMPTY);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 0);
 
   // reset
-  UTEST_ASSERTEQ_INT(mu_ring_put(&queue, obj_a), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), 1);
-  UTEST_ASSERTEQ_INT(mu_ring_reset(&queue), MU_QUEUE_ERR_NONE);
-  UTEST_ASSERTEQ_INT(mu_ring_count(&queue), 0);
+  UTEST_ASSERTEQ_INT(mu_ring_put(q, obj_a), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 1);
+  UTEST_ASSERTEQ_INT(mu_ring_reset(q), MU_RING_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_ring_count(q), 0);
 }
 
 // =============================================================================

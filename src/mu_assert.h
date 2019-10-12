@@ -22,54 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef PORT_H_
-#define PORT_H_
+#ifndef MU_ASSERT_H_
+#define MU_ASSERT_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <time.h>
-
 // =============================================================================
 // includes
-#include <stdint.h>
-#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
 
-typedef clock_t port_time_t;    // an absolute time
-typedef clock_t port_time_dt;   // the interval between two times
-typedef double port_time_seconds_t;
+// Disable assertions
+#define MU_ASSERT(expr) do {} while(0)
+
+// Enable assertions
+// #define MU_ASSERT(expr) port_assert((expr), #expr, __FILE__, __LINE__)
 
 // =============================================================================
 // declarations
-
-// called only when MU_ASSERT() is enabled
-void port_assert(const bool condition,
-                 const char *const expr,
-                 const char *const file,
-                 const int line);
-
-port_time_t port_time_offset(port_time_t t, port_time_dt dt);
-
-port_time_dt port_time_difference(port_time_t t1, port_time_t t2);
-
-bool port_time_is_before(port_time_t t1, port_time_t t2);
-
-bool port_time_is_equal(port_time_t t1, port_time_t t2);
-
-bool port_time_is_after(port_time_t t1, port_time_t t2);
-
-port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds);
-
-port_time_dt port_time_duration_to_seconds(port_time_dt dt);
-
-port_time_t port_time_now();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef PORT_H_
+#endif // #ifndef MU_ASSERT_H_
