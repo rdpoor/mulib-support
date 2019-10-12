@@ -39,23 +39,21 @@ Status: Passing Tests.
 
 ### mu_log
 
-No-nonsense logging with run-time control on reporting severity and multiple
-reporting channels.
+No-nonsense logging with run-time control on reporting severity and multiple reporting channels.
 
 Status: Passing Tests.
 
 ### mu_ring
 
-Fast, thread-safe queue for void * sized objects, designed for single-producer /
-single-consumer applications.
+Fast, thread-safe queue for void * sized objects, designed for single-producer / single-consumer applications.
 
 Status: Passing Tests.
 
 ### mu_sched
 
-Clock agnostic, lightweight single-thread, run-to-completion scheduler.
+Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion scheduler.
 
-Status: Passing Tests.  (Lacks `mu_sched_from_isr()`, coming soon...)
+Status: Passing Tests.
 
 ### mu_strbuf
 
@@ -63,15 +61,13 @@ Safely append formatted string data to a buffer.
 
 ### mu_task
 
-Simple, versatile, fast message passing.  Commonly used for deferred function
-calls.
+Simple, versatile, fast message passing.  Commonly used for deferred function calls.
 
 Status: Passing Tests.
 
 ### mu_time
 
-Functions to manipulate time values, properly handling roll-over.  Requires
-platform specific support in port/port.h
+Functions to manipulate time values, properly handling roll-over.  Requires platform specific support in port/port.h
 
 Status: Passing Tests.
 
