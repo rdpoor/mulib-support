@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_EVENT_H
-#define MULIB_EVENT_H
+#ifndef MU_EVT_H_
+#define MU_EVT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,24 +36,39 @@ extern "C" {
 typedef struct _mu_evt_t {
   struct _mu_evt_t *next;  // link to next older event
   mu_task_t task;          // function to call
-  port_time_t time;        // time of this event (ignored if is_immediate)
+  mu_time_t time;          // time of this event (ignored if is_immediate)
   bool is_immediate;       // true if this event is scheduled for "now".
 } mu_evt_t;
 
-mu_evt_t *mu_evt_init_immed(mu_evt_t *evt, mu_task_fn fn, void *self);
+#if (MU_TASK_PROFILING == 1)
+mu_evt_t *mu_evt_init_immed(mu_evt_t *evt,
+                            mu_task_fn fn,
+                            void *self,
+                            const char *name);
 
 mu_evt_t *mu_evt_init_at(mu_evt_t *evt,
-                         port_time_t time,
+                         mu_time_t time,
+                         mu_task_fn fn,
+                         void *self,
+                         const char *name);
+#else
+mu_evt_t *mu_evt_init_immed(mu_evt_t *evt,
+                            mu_task_fn fn,
+                            void *self);
+
+mu_evt_t *mu_evt_init_at(mu_evt_t *evt,
+                         mu_time_t time,
                          mu_task_fn fn,
                          void *self);
+#endif
 
 bool mu_evt_is_immediate(mu_evt_t *evt);
 
-port_time_t mu_evt_time(mu_evt_t *evt);
+mu_time_t mu_evt_time(mu_evt_t *evt);
 
 mu_task_t *mu_evt_msg(mu_evt_t *evt);
 
-bool mu_evt_is_runnable(mu_evt_t *evt, port_time_t at);
+bool mu_evt_is_runnable(mu_evt_t *evt, mu_time_t at);
 
 // Return true if e1 occurs after e2
 bool mu_evt_is_after(mu_evt_t *e1, mu_evt_t *e2);
@@ -64,4 +79,4 @@ void mu_evt_call(mu_evt_t *evt, void *arg);
 }
 #endif
 
-#endif // #ifndef MULIB_EVENT_H
+#endif // #ifndef MU_EVT_H_

@@ -27,7 +27,7 @@
 
 #include "mu_assert.h"
 #include "mu_sched.h"
-#include "../port/port.h"
+#include "port.h"
 #include "mu_evt.h"
 #include "mu_ring.h"
 #include "mu_task.h"
@@ -40,7 +40,7 @@
 // =============================================================================
 // private declarations
 
-static mu_evt_t *remove_runnable_event(mu_sched_t *sched, port_time_t now);
+static mu_evt_t *remove_runnable_event(mu_sched_t *sched, mu_time_t now);
 
 // transfer ISR-initiated events from the ISR queue to the schedule
 static void process_isr_queue(mu_sched_t *sched);
@@ -60,7 +60,7 @@ mu_sched_t *mu_sched_init(mu_sched_t *sched,
   sched->events = (mu_evt_t *)NULL;     // event queue starts out empty
   err = mu_ring_init(q, isr_queue_pool, isr_queue_pool_size);
   MU_ASSERT(err == MU_RING_ERR_NONE);
-  sched->clock_source = port_time_now;  // default clock source
+  sched->clock_source = mu_time_now;  // default clock source
   sched->idle_task = NULL;
   return mu_sched_reset(sched);
 }
@@ -98,9 +98,31 @@ bool mu_sched_is_empty(mu_sched_t *sched) {
   return sched->events == (mu_evt_t *)NULL;
 }
 
+bool mu_sched_has_event(mu_sched_t *sched, mu_evt_t *event) {
+	mu_evt_t *evts = mu_sched_get_events(sched);
+	while(evts) {
+		if (evts == event) return true;
+		evts = evts->next;
+	}
+	return false;
+}
+
+unsigned int mu_sched_task_count(mu_sched_t *sched) {
+	unsigned int count = 0;
+	mu_evt_t *evts = mu_sched_get_events(sched);
+	while(evts) {
+		count += 1;
+	}
+	return count;
+}
+
+mu_evt_t *mu_sched_get_events(mu_sched_t *sched) {
+	return sched->events;
+}
+
 mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   mu_evt_t *runnable;
-  port_time_t now = mu_sched_get_time(sched);
+  mu_time_t now = mu_sched_get_time(sched);
 
   // add any events that have arrived on the ISR queue
   process_isr_queue(sched);
@@ -120,7 +142,7 @@ mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   return MU_SCHED_ERR_NONE;
 }
 
-port_time_t mu_sched_get_time(mu_sched_t *sched) {
+mu_time_t mu_sched_get_time(mu_sched_t *sched) {
   return sched->clock_source();
 }
 
@@ -195,7 +217,7 @@ mu_sched_err_t mu_sched_from_isr(mu_sched_t *sched, mu_evt_t *event) {
 //
 // Since the event list is always sorted with the "soonest" event first, we
 // only need to check the first element.  Fast.
-static mu_evt_t *remove_runnable_event(mu_sched_t *sched, port_time_t now) {
+static mu_evt_t *remove_runnable_event(mu_sched_t *sched, mu_time_t now) {
   mu_evt_t *curr = sched->events;
 
   if (curr == NULL) {

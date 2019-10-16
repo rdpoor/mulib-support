@@ -1,11 +1,11 @@
-# Makefile for mulib unit tests for unit-like systems.
+# Makefile for mulib unit tests for posix-like systems.
 # Usage:
 #   $ make run_tests
 #   $ make clean
 
 SOURCE_DIR = ./src
 TEST_DIR = ./tests
-PORT_DIR = ./port
+PORT_DIR = ./ports/posix
 EXCLUDE_SOURCES = $(TEST_DIR)/_template_test.c $(SOURCE_DIR)/_template.c $(PORT_DIR)/_template.c
 
 ALL_SOURCES := $(wildcard $(SOURCE_DIR)/*.c) $(wildcard $(TEST_DIR)/*.c) $(wildcard $(PORT_DIR)/*.c)

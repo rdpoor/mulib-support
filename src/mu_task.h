@@ -29,6 +29,10 @@
 extern "C" {
 #endif
 
+#if (MU_TASK_PROFILING == 1)
+#include "mu_time.h"
+#endif
+
 /**
  * A `mu_task` is essentially a function that can be called later.  It comprises
  * a function pointer (`mu_task_fn`) and a context (`void *self`).  When called,
@@ -41,11 +45,38 @@ typedef void (*mu_task_fn)(void *self, void *arg);
 typedef struct {
   mu_task_fn fn;
   void *self;
+#if (MU_TASK_PROFILING == 1)
+  const char *name;
+  unsigned int call_count;
+  mu_time_t called_at;
+  mu_time_dt runtime;
+#endif
 } mu_task_t;
 
-mu_task_t *mu_task_init(mu_task_t *task, mu_task_fn fn, void *self);
+#if (MU_TASK_PROFILING == 1)
+mu_task_t *mu_task_init(mu_task_t *task,
+                        mu_task_fn fn,
+                        void *self,
+                        const char *name);
+#else
+mu_task_t *mu_task_init(mu_task_t *task,
+                        mu_task_fn fn,
+                        void *self);
+#endif
 
 void mu_task_call(mu_task_t *task, void *arg);
+
+#if (MU_TASK_PROFILING == 1)
+
+const char *mu_task_name(mu_task_t *task);
+
+unsigned int mu_task_call_count(mu_task_t *task);
+
+float mu_task_runtime(mu_task_t *task);
+
+void mu_task_print(mu_task_t *task, char *buf, int buflen);
+
+#endif
 
 #ifdef __cplusplus
 }

@@ -32,7 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "../port/port.h"
+#include "port.h"
 #include "mu_evt.h"
 #include "mu_ring.h"
 #include "mu_task.h"
@@ -82,6 +82,12 @@ mu_sched_t *mu_sched_set_clock_source(mu_sched_t *sched, mu_clock_fn clock_fn);
 mu_sched_t *mu_sched_set_idle_task(mu_sched_t *sched, mu_task_t *idle_task);
 
 bool mu_sched_is_empty(mu_sched_t *sched);
+
+bool mu_sched_has_event(mu_sched_t *sched, mu_evt_t *event);
+
+unsigned int mu_sched_task_count(mu_sched_t *sched);
+
+mu_evt_t *mu_sched_get_events(mu_sched_t *sched);
 
 mu_sched_err_t mu_sched_step(mu_sched_t *sched);
 

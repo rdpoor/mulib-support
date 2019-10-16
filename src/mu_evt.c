@@ -28,6 +28,7 @@
 #include "mu_evt.h"
 #include "mu_task.h"
 #include "mu_time.h"
+#include "stdio.h"
 
 // =============================================================================
 // private types and definitions
@@ -47,14 +48,16 @@ static mu_evt_t *init_event(mu_evt_t *evt,
 // =============================================================================
 // public code
 
-mu_evt_t *mu_evt_init_immed(mu_evt_t *evt, mu_task_fn fn, void *self) {
+mu_evt_t *mu_evt_init_immed(mu_evt_t *evt,
+                            mu_task_fn fn,
+                            void *self) {
   return init_event(evt, true, 0, fn, self);
 }
 
 mu_evt_t *mu_evt_init_at(mu_evt_t *evt,
-                            port_time_t time,
-                            mu_task_fn fn,
-                            void *self) {
+                         port_time_t time,
+                         mu_task_fn fn,
+                         void *self) {
   return init_event(evt, false, time, fn, self);
 }
 

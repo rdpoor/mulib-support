@@ -26,7 +26,7 @@
 // includes
 
 #include "mu_time.h"
-#include "../port/port.h"
+#include "port.h"
 #include <stdio.h>
 
 // =============================================================================

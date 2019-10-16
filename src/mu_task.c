@@ -23,19 +23,71 @@
  */
 
 #include "mu_task.h"
+#if (MU_TASK_PROFILING == 1)
+#include "mu_time.h"
+#endif
 #include <stddef.h>
 
+#if (MU_TASK_PROFILING != 1)
 mu_task_t *mu_task_init(mu_task_t *task, mu_task_fn fn, void *self) {
   task->fn = fn;
   task->self = self;
   return task;
 }
 
+#else
+mu_task_t *mu_task_init(mu_task_t *task,
+                        mu_task_fn fn,
+                        void *self,
+                        const char *name) {
+  task->fn = fn;
+  task->self = self;
+  task->call_count = 0;
+  task->runtime = 0;
+  return task;
+}
+#endif
+
+
+#if (MU_TASK_PROFILING != 1)
+
 void mu_task_call(mu_task_t *task, void *arg) {
   if (task && task->fn != NULL) {
     task->fn(task->self, arg);
   }
 }
+
+#else
+
+void mu_task_call(mu_task_t *task, void *arg) {
+  task->call_count += 1;
+  task->called_at = mu_time_now();
+  if (task && task->fn != NULL) {
+    task->fn(task->self, arg);
+  }
+  task->runtime += mu_time_difference(mu_time_now(), task->called_at);
+}
+
+const char *mu_task_name(mu_task_t *task) {
+  return task->name;
+}
+
+unsigned int mu_task_call_count(mu_task_t *task) {
+  return task->call_count;
+}
+
+float mu_task_runtime(mu_task_t *task) {
+  return mu_time_duration_to_seconds(task->runtime);
+}
+
+void mu_task_print(mu_task_t *task, char *buf, int buflen) {
+  snprintf(buf, buflen, "%s: %d %f\n",
+           mu_task_name(task),
+           mu_task_call_count(task),
+           mu_task_runtime(task));
+}
+
+#endif
 
 // =============================================================================
 // private functions

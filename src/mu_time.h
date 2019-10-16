@@ -34,7 +34,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "../port/port.h"
+#include "port.h"
 
 // =============================================================================
 // types and definitions
