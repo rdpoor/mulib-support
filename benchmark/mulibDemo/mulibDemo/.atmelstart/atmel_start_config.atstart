@@ -141,7 +141,7 @@ drivers:
       usart_arch_sampa: 7-8-9 (3-4-5 8-bit over-sampling)
       usart_arch_sampr: 16x arithmetic
       usart_arch_sfde: false
-      usart_baud_rate: 9600
+      usart_baud_rate: 57600
       usart_character_size: 8 bits
       usart_parity: No parity
       usart_rx_enable: true
@@ -178,7 +178,7 @@ drivers:
     api: HAL:Driver:Calendar
     configuration:
       rtc_arch_init_reset: true
-      rtc_arch_prescaler: Peripheral clock divided by 1024
+      rtc_arch_prescaler: Peripheral clock divided by 1
       rtc_cmpeo0: false
       rtc_event_control: false
       rtc_ovfeo: false

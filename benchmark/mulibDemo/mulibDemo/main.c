@@ -82,9 +82,14 @@ static bool char_is_available(void);
 static void _os_show_statistics(void);
 
 /**
- * \brief Print event state
+ * \brief Generate single character representing event status
+ *
+ * A = active (current)
+ * I = inactive (not in sched)
+ * P = pending (not yet runnable)
+ * R = runnable (ready to run)
  */
-static void print_event(mu_evt_t *evt, char *buf, int maxlen);
+ static char event_status(mu_evt_t *evt);
 
 /**
  * \brief mulib task that blinks LED
@@ -139,6 +144,11 @@ static mu_evt_t s_led_event;
 static mu_evt_t s_monitor_event;
 static mu_evt_t s_console_event;
 
+// The only reason for keeping an array of events is so we can get the status
+// of those events NOT in the scheduler (i.e. idle status).
+static mu_evt_t *s_events[] = {&s_led_event, &s_monitor_event, &s_console_event};
+static const int N_EVENTS = sizeof(s_events) / sizeof(mu_evt_t *);
+
 // =============================================================================
 // public code
 
@@ -163,7 +173,6 @@ int main(void) {
 
   while(1) {
     mu_sched_step(&s_sched);
-    _os_show_statistics();
   }
 
   // Like Charlie on the MTA...
@@ -178,7 +187,7 @@ int main(void) {
  */
 static void str_write(const char *s) {
   io_write(s_usart_io, (const uint8_t *)s, strlen(s));
-  delay_ms(500);
+  delay_ms(10);  // use sync output instead?
 }
 
 /**
@@ -212,23 +221,21 @@ static void _os_show_statistics(void) {
   sprintf(szList,
           "\r\n--- Number of tasks: %u",
           mu_sched_task_count(&s_sched) + 1);   // + 1 to account for current event
-  str_write("\r\n> Tasks\tState\tPri\tStack\tNum");
-  str_write("\r\n***********************************");
-  if ((evt = mu_sched_current_event(&s_sched)) != NULL) {
-    // print current event (if there is one...)
+  str_write("\r\n>     Task  State Calls Max Latency     Runtime");
+  str_write("\r\n***********************************************");
+  for (int i=0; i<N_EVENTS; i++) {
+    evt = s_events[i];
+    mu_task_t *task = &evt->task;
     str_write("\r\n");
-    print_event(evt, szList, 128);
+    snprintf(szList, 128, "%10s:     %c%6d  %10f  %10f",
+             mu_task_name(task),
+             event_status(evt),
+             mu_task_call_count(task),
+             mu_task_max_latency(task),
+             mu_task_runtime(task));
     str_write(szList);
   }
-  evt = mu_sched_get_events(&s_sched);
-  while(evt != NULL) {
-    str_write("\r\n");
-	  print_event(evt, szList, 128);
-	  str_write(szList);
-	  evt = evt->next;
-  }
-
-  str_write("\r\n--- Press a key:"
+  str_write("\r\n--- Press a Key:"
             "\r\n a: LED blink task active"
             "\r\n s: LED OFF and blink task suspend"
             "\r\n M: Monitor task suspend"
@@ -237,14 +244,22 @@ static void _os_show_statistics(void) {
             "\r\n# ");
 }
 
-static void print_event(mu_evt_t *evt, char *buf, int maxlen) {
-  // todo: immediate vs no, sched time, is runnable
-  // todo: is in schedule, call count, runtime
-  mu_task_t *task = &evt->task;
-  snprintf(buf, maxlen, "%10s: %d %f",
-           mu_task_name(task),
-           mu_task_call_count(task),
-           mu_task_runtime(task));
+/*
+* A = active (current)
+* I = inactive (not in sched)
+* P = pending (not yet runnable)
+* R = runnable (ready to run)
+*/
+static char event_status(mu_evt_t *evt) {
+  if (mu_sched_current_event(&s_sched) == evt) {
+    return 'A';   // this event is currently running
+  } else if (!mu_sched_has_event(&s_sched, evt)) {
+    return 'I';   // this event is not scheduled
+  } else if (mu_evt_is_runnable(evt, mu_time_now())) {
+    return 'R';   // this event is ready to run
+  } else {
+    return 'P';   // this event is in the schedule but its time hasn't arrived
+  }
 }
 
 static void task_led(void *self, void *arg) {
@@ -318,7 +333,7 @@ static void task_console(void *self, void *arg) {
       break;
     case 'M':
       task_monitor_pause(true);
-      str_write("- Monitor task suspended.\r\n");
+      str = ("- Monitor task suspended.\r\n");
       break;
     default:
       str = ch;

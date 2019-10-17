@@ -34,7 +34,7 @@
 // <id> rtc_arch_prescaler
 #ifndef CONF_RTC_PRESCALER
 
-#define CONF_RTC_PRESCALER 0xa
+#define CONF_RTC_PRESCALER 0x0
 
 #endif
 

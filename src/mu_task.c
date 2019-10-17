@@ -39,6 +39,7 @@ mu_task_t *mu_task_init(mu_task_t *task,
   task->name = name;
   task->call_count = 0;
   task->runtime = 0;
+  task->max_latency = 0;
 #else
   (void)name;
 #endif
@@ -46,15 +47,20 @@ mu_task_t *mu_task_init(mu_task_t *task,
 }
 
 void mu_task_call(mu_task_t *task, void *arg) {
+  if (task == NULL) return;
 #if (MU_TASK_PROFILING)
+  mu_time_dt duration;
   mu_time_t called_at = mu_time_now();
 #endif
-  if (task && task->fn != NULL) {
+  if (task->fn != NULL) {
     task->fn(task->self, arg);
   }
 #if (MU_TASK_PROFILING)
   task->call_count += 1;
-  task->runtime += mu_time_difference(mu_time_now(), called_at);
+  duration = mu_time_difference(mu_time_now(), called_at);
+  task->runtime += duration;
+  if (duration > task->max_latency) task->max_latency = duration;
+  asm("nop");
 #endif
 }
 
@@ -68,10 +74,12 @@ unsigned int mu_task_call_count(mu_task_t *task) {
   return task->call_count;
 }
 
-float mu_task_runtime(mu_task_t *task) {
-  float sec = mu_time_duration_to_seconds(task->runtime);
-  // printf("\nmu_task_runtime %lu, %f", task->runtime, sec);
-  return sec;
+mu_time_seconds_t mu_task_runtime(mu_task_t *task) {
+  return mu_time_duration_to_seconds(task->runtime);
+}
+
+mu_time_seconds_t mu_task_max_latency(mu_task_t *task) {
+  return mu_time_duration_to_seconds(task->max_latency);
 }
 
 void mu_task_print(mu_task_t *task, char *buf, int buflen) {

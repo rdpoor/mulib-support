@@ -30,8 +30,6 @@ Device_Startup\system_samd21.c
 
 driver_init.c
 
-main.c
-
 examples\driver_examples.c
 
 hal\src\hal_atomic.c
@@ -75,4 +73,6 @@ hpl\rtc\hpl_rtc.c
 hpl\sercom\hpl_sercom.c
 
 hpl\sysctrl\hpl_sysctrl.c
+
+main.c
 

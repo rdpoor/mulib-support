@@ -63,9 +63,9 @@ bool port_time_is_equal(port_time_t t1, port_time_t t2);
 
 bool port_time_is_after(port_time_t t1, port_time_t t2);
 
-port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds);
+port_time_dt port_time_seconds_to_duration(port_time_seconds_t seconds);
 
-port_time_dt port_time_duration_to_seconds(port_time_dt dt);
+port_time_seconds_t port_time_duration_to_seconds(port_time_dt dt);
 
 port_time_t port_time_now();
 

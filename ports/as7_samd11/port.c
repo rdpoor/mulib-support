@@ -77,12 +77,12 @@ bool port_time_is_after(port_time_t t1, port_time_t t2) {
   return port_time_difference(t2, t1) > MAX_DURATION;
 }
 
-port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds) {
+port_time_dt port_time_seconds_to_duration(port_time_seconds_t seconds) {
   return seconds * RTC_FREQUENCY;
 }
 
-port_time_dt port_time_duration_to_seconds(port_time_dt dt) {
-  return (port_time_seconds_t)dt / RTC_FREQUENCY;
+port_time_seconds_t port_time_duration_to_seconds(port_time_dt dt) {
+  return (port_time_seconds_t)dt / (port_time_seconds_t)RTC_FREQUENCY;
 }
 
 port_time_t port_time_now() {

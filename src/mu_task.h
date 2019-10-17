@@ -50,8 +50,8 @@ typedef struct {
 #if (MU_TASK_PROFILING)
   const char *name;
   unsigned int call_count;
-  mu_time_t called_at;
   mu_time_dt runtime;
+  mu_time_dt max_latency;
 #endif
 } mu_task_t;
 
@@ -68,7 +68,9 @@ const char *mu_task_name(mu_task_t *task);
 
 unsigned int mu_task_call_count(mu_task_t *task);
 
-float mu_task_runtime(mu_task_t *task);
+mu_time_seconds_t mu_task_runtime(mu_task_t *task);
+
+mu_time_seconds_t mu_task_max_latency(mu_task_t *task);
 
 void mu_task_print(mu_task_t *task, char *buf, int buflen);
 
