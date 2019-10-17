@@ -31,9 +31,16 @@ void mu_evt_test() {
   mu_time_t now = mu_time_now();
   mu_time_t then = mu_time_offset(now, mu_time_seconds_to_duration(5.0));
 
+
+#if (MU_TASK_PROFILING)
+  mu_evt_init_immed(&event_i, msg_fn_imm, (void *)100, "Event I");
+  mu_evt_init_at(&event_t1, now, msg_fn_t1, (void *)200, "Event T1");
+  mu_evt_init_at(&event_t2, then, msg_fn_t2, (void *)300, "Event T2");
+#else
   mu_evt_init_immed(&event_i, msg_fn_imm, (void *)100);
   mu_evt_init_at(&event_t1, now, msg_fn_t1, (void *)200);
   mu_evt_init_at(&event_t2, then, msg_fn_t2, (void *)300);
+#endif
 
   UTEST_ASSERT(mu_evt_is_immediate(&event_i) == true);
   UTEST_ASSERT(mu_evt_is_immediate(&event_t1) == false);

@@ -57,6 +57,7 @@ mu_sched_t *mu_sched_init(mu_sched_t *sched,
   mu_ring_err_t err;
   mu_ring_t *q = &(sched->isr_queue);
 
+  (void)err;
   sched->events = (mu_evt_t *)NULL;     // event queue starts out empty
   err = mu_ring_init(q, isr_queue_pool, isr_queue_pool_size);
   MU_ASSERT(err == MU_RING_ERR_NONE);
@@ -112,6 +113,7 @@ unsigned int mu_sched_task_count(mu_sched_t *sched) {
 	mu_evt_t *evts = mu_sched_get_events(sched);
 	while(evts) {
 		count += 1;
+    evts = evts->next;
 	}
 	return count;
 }

@@ -29,7 +29,9 @@
 extern "C" {
 #endif
 
-#if (MU_TASK_PROFILING == 1)
+#define MU_TASK_PROFILING (1)
+
+#if (MU_TASK_PROFILING)
 #include "mu_time.h"
 #endif
 
@@ -45,7 +47,7 @@ typedef void (*mu_task_fn)(void *self, void *arg);
 typedef struct {
   mu_task_fn fn;
   void *self;
-#if (MU_TASK_PROFILING == 1)
+#if (MU_TASK_PROFILING)
   const char *name;
   unsigned int call_count;
   mu_time_t called_at;
@@ -53,20 +55,14 @@ typedef struct {
 #endif
 } mu_task_t;
 
-#if (MU_TASK_PROFILING == 1)
 mu_task_t *mu_task_init(mu_task_t *task,
                         mu_task_fn fn,
                         void *self,
                         const char *name);
-#else
-mu_task_t *mu_task_init(mu_task_t *task,
-                        mu_task_fn fn,
-                        void *self);
-#endif
 
 void mu_task_call(mu_task_t *task, void *arg);
 
-#if (MU_TASK_PROFILING == 1)
+#if (MU_TASK_PROFILING)
 
 const char *mu_task_name(mu_task_t *task);
 

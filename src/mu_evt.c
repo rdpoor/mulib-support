@@ -40,7 +40,8 @@ static mu_evt_t *init_event(mu_evt_t *evt,
                             bool is_immediate,
                             port_time_t time,
                             mu_task_fn fn,
-                            void *self);
+                            void *self,
+                            const char *name);
 
 // =============================================================================
 // local storage
@@ -50,15 +51,17 @@ static mu_evt_t *init_event(mu_evt_t *evt,
 
 mu_evt_t *mu_evt_init_immed(mu_evt_t *evt,
                             mu_task_fn fn,
-                            void *self) {
-  return init_event(evt, true, 0, fn, self);
+                            void *self,
+                            const char *name) {
+  return init_event(evt, true, 0, fn, self, name);
 }
 
 mu_evt_t *mu_evt_init_at(mu_evt_t *evt,
-                         port_time_t time,
+                         mu_time_t time,
                          mu_task_fn fn,
-                         void *self) {
-  return init_event(evt, false, time, fn, self);
+                         void *self,
+                         const char *name) {
+  return init_event(evt, false, time, fn, self, name);
 }
 
 bool mu_evt_is_immediate(mu_evt_t *evt) { return evt->is_immediate; }
@@ -98,11 +101,11 @@ static mu_evt_t *init_event(mu_evt_t *evt,
                             bool is_immediate,
                             port_time_t time,
                             mu_task_fn fn,
-                            void *self) {
+                            void *self,
+                            const char *name) {
   evt->next = (mu_evt_t *)NULL;
   evt->is_immediate = is_immediate;
   evt->time = time;
-  evt->task.fn = fn;
-  evt->task.self = self;
+  mu_task_init(&evt->task, fn, self, name);
   return evt;
 }

@@ -77,7 +77,9 @@ port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds) {
 }
 
 port_time_dt port_time_duration_to_seconds(port_time_dt dt) {
-  return (port_time_seconds_t)dt / CLOCKS_PER_SEC;
+  port_time_seconds_t secs = (port_time_seconds_t)dt / (port_time_seconds_t)CLOCKS_PER_SEC;
+  // printf("\nptd2s: %lu => %f, cps=%d", dt, secs, CLOCKS_PER_SEC);
+  return secs;
 }
 
 port_time_t port_time_now() {

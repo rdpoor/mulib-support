@@ -126,14 +126,14 @@ void mu_sched_test() {
 
   // schedule fn1 for time=2.  pass the evt1 object as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_evt_init_at(&evt1, (port_time_t)2, fn1, &evt1)),
+    mu_sched_add(s, mu_evt_init_at(&evt1, (port_time_t)2, fn1, &evt1, "E1")),
     MU_SCHED_ERR_NONE);
 
   // schedule fn2 for time=10.  This is not recommended practice, but for
   // testing, we pass _evt1_ as the "self" argument for the event. We will
   // use that argument in fn2 to remove evt1 from the schedule.  See fn2().
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_evt_init_at(&evt2, (port_time_t)10, fn2, &evt1)),
+    mu_sched_add(s, mu_evt_init_at(&evt2, (port_time_t)10, fn2, &evt1, "E2")),
     MU_SCHED_ERR_NONE);
 
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), false);
@@ -186,7 +186,7 @@ void mu_sched_test() {
 
   // schedule fn3 as an immediate task.  pass evt3 as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_evt_init_immed(&evt3, fn3, &evt3)),
+    mu_sched_add(s, mu_evt_init_immed(&evt3, fn3, &evt3, "E3")),
     MU_SCHED_ERR_NONE);
 
   // now there are three events in the scheduler
@@ -353,7 +353,7 @@ static void disr_fn(void *self, void *arg) {
 
 static void queue_immed_from_interrupt(int s) {
   (void)s;
-  mu_evt_init_immed(&s_immed_event, iisr_fn, NULL);
+  mu_evt_init_immed(&s_immed_event, iisr_fn, NULL, "I");
   mu_sched_from_isr(&s_sched, &s_immed_event);
 }
 
@@ -361,6 +361,6 @@ static void queue_deferred_from_interrupt(int s) {
   (void)s;
   // set time 2 ticks from now
   port_time_t t = port_time_offset(mu_sched_get_time(&s_sched), (port_time_t)2);
-  mu_evt_init_at(&s_deferred_event, t, disr_fn, NULL);
+  mu_evt_init_at(&s_deferred_event, t, disr_fn, NULL, "D");
   mu_sched_from_isr(&s_sched, &s_deferred_event);
 }

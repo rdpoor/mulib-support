@@ -26,6 +26,7 @@
 // includes
 
 #include "mu_ring.h"
+#include <stddef.h>
 
 // =============================================================================
 // private types and definitions
@@ -75,6 +76,7 @@ mu_ring_err_t mu_ring_put(mu_ring_t *q, mu_ring_obj_t obj) {
 
 mu_ring_err_t mu_ring_get(mu_ring_t *q, mu_ring_obj_t *obj) {
   if (mu_ring_count(q) == 0) {
+    *obj = NULL;
     return MU_RING_ERR_EMPTY;
   }
   // Note that tail grows "without bound", but head is guaranteed to grow too.
