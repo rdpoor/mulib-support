@@ -31,7 +31,8 @@
  *
  */
 /*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
+ * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip
+ * Support</a>
  */
 
 // =============================================================================
@@ -40,16 +41,15 @@
 #include "atmel_start.h"
 #include "atmel_start_pins.h"
 #include "driver_init.h"
-#include "utils_ringbuffer.h"
 #include "mu_evt.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 #include "mu_time.h"
 #include "port.h"
-#include <string.h>
+#include "utils_ringbuffer.h"
 #include <stdarg.h>
 #include <stdio.h>
-
+#include <string.h>
 
 // =============================================================================
 // types and definitions
@@ -57,6 +57,13 @@
 // # of interrupts notifications we can handle between calls to sched_step()
 // must be a power of two.
 #define ISR_QUEUE_POOL_SIZE 8
+
+// character sequence to home cursor and clear to end of screen
+#define CLEAR_SCREEN "\e[1;1H\e[2J"
+
+// Define repetition interval for toggling LED and updating display
+#define LED_UPDATE_INTERVAL 0.5
+#define MONITOR_UPDATE_INTERVAL 5.0
 
 // =============================================================================
 // forward declarations
@@ -140,7 +147,10 @@ static mu_evt_t s_console_event;
 
 // The only reason for keeping an array of events is so we can get the status
 // of any events that are NOT in the scheduler (i.e. idle status).
-static mu_evt_t *s_events[] = {&s_led_event, &s_monitor_event, &s_console_event};
+static mu_evt_t *s_events[] = {&s_led_event,
+                               &s_monitor_event,
+                               &s_console_event};
+
 static const int N_EVENTS = sizeof(s_events) / sizeof(mu_evt_t *);
 
 // =============================================================================
@@ -166,18 +176,21 @@ int main(void) {
   mu_time_t now = mu_time_now();
 
   // Queue initial events
-  mu_sched_add(&s_sched,
-               mu_evt_init_at(&s_led_event, now, led_task_fn, NULL, "LED"));
-  mu_sched_add(&s_sched,
-               mu_evt_init_at(&s_monitor_event, now, monitor_task_fn, NULL, "Monitor"));
-  mu_sched_add(&s_sched,
-               mu_evt_init_at(&s_console_event, now, console_task_fn, NULL, "Console"));
+  mu_sched_add(
+      &s_sched,
+      mu_evt_init_at(&s_led_event, now, led_task_fn, NULL, "LED"));
+  mu_sched_add(
+      &s_sched,
+      mu_evt_init_at(&s_monitor_event, now, monitor_task_fn, NULL, "Monitor"));
+  mu_sched_add(
+      &s_sched,
+      mu_evt_init_immed(&s_console_event, console_task_fn, NULL, "Console"));
 
   // Run the scheduler
-  while(1) {
+  while (1) {
     mu_sched_step(&s_sched);
   }
-  return 0;  // Like Charlie on the MTA (no he never returned...)
+  return 0; // Like Charlie on the MTA (no he never returned...)
 }
 
 // =============================================================================
@@ -187,8 +200,11 @@ int main(void) {
  * \brief Write string to console
  */
 static void str_write(const char *s) {
-  io_write(s_usart_io, (const uint8_t *)s, strlen(s));
-  delay_ms(10);  // use sync output instead?
+  int len = strlen(s);
+  while (io_write(s_usart_io, (const uint8_t *)s, len) == ERR_NO_RESOURCE) {
+	  // io_write returns ERR_NO_RESOURCE if it hasn't finished previous write
+    asm("nop");
+  }
 }
 
 /**
@@ -197,9 +213,9 @@ static void str_write(const char *s) {
 static char char_read(void) {
   uint8_t tmp;
   while (ERR_TIMEOUT == io_read(&EDBG_COM.io, &tmp, 1)) {
-    // we always call char_is_available() before calling char_read() so we
+    // We always call char_is_available() before calling char_read() so we
     // should never arrive here.
-    ;
+    asm("nop");
   }
   return (char)tmp;
 }
@@ -217,23 +233,34 @@ static bool char_is_available(void) {
 static void _os_show_statistics(void) {
   mu_evt_t *evt;
   static char szList[128];
-  sprintf(szList, "%c%s%c%s", 0x1B, "[1;1H", 0x1B, "[2J");
-  str_write(szList);
-  sprintf(szList,
-          "\r\n--- Number of tasks: %u",
-          mu_sched_task_count(&s_sched) + 1);   // + 1 to account for current event
-  str_write("\r\n>     Task  State Calls Max Latency     Runtime");
-  str_write("\r\n***********************************************");
-  for (int i=0; i<N_EVENTS; i++) {
+  str_write(CLEAR_SCREEN);
+  str_write("\r\n>     Task: State     At  Calls Max Latency    Runtime");
+  str_write("\r\n******************************************************");
+  for (int i = 0; i < N_EVENTS; i++) {
     evt = s_events[i];
     mu_task_t *task = &evt->task;
     str_write("\r\n");
-    snprintf(szList, 128, "%10s:     %c%6d  %10f  %10f",
-             mu_task_name(task),
-             event_status(evt),
-             mu_task_call_count(task),
-             mu_task_max_latency(task),
-             mu_task_runtime(task));
+    if (mu_evt_is_immediate(evt)) {
+      snprintf(szList,
+               128,
+               "%10s: %c %10s %6d  %10f %10f",
+               mu_task_name(task),
+               event_status(evt),
+               "immediate",
+               mu_task_call_count(task),
+               mu_task_max_latency(task),
+               mu_task_runtime(task));
+    } else {
+      snprintf(szList,
+               128,
+               "%10s: %c %10lu %6d  %10f %10f",
+               mu_task_name(task),
+               event_status(evt),
+               mu_evt_time(evt),
+               mu_task_call_count(task),
+               mu_task_max_latency(task),
+               mu_task_runtime(task));
+    }
     str_write(szList);
   }
   str_write("\r\n--- Press a Key:"
@@ -246,20 +273,20 @@ static void _os_show_statistics(void) {
 }
 
 /*
-* A = active (current)
-* I = inactive (not in sched)
-* P = pending (not yet runnable)
-* R = runnable (ready to run)
-*/
+ * A = active (current)
+ * I = inactive (not in sched)
+ * P = pending (not yet runnable)
+ * R = runnable (ready to run)
+ */
 static char event_status(mu_evt_t *evt) {
   if (mu_sched_current_event(&s_sched) == evt) {
-    return 'A';   // this event is currently running
+    return 'A'; // this event is currently running
   } else if (!mu_sched_has_event(&s_sched, evt)) {
-    return 'I';   // this event is not scheduled
+    return 'I'; // this event is not scheduled
   } else if (mu_evt_is_runnable(evt, mu_time_now())) {
-    return 'R';   // this event is ready to run
+    return 'R'; // this event is ready to run
   } else {
-    return 'P';   // this event is in the schedule but its time hasn't arrived
+    return 'P'; // this event is in the schedule but its time hasn't arrived
   }
 }
 
@@ -276,13 +303,13 @@ static void enable_event(mu_evt_t *evt, bool enable) {
   }
 }
 
-
 static void led_task_fn(void *self, void *arg) {
   (void)self;
   (void)arg;
   gpio_toggle_pin_level(LED0);
   // run again in 500 mSec
-  mu_evt_offset_time(&s_led_event, mu_time_seconds_to_duration(0.5));
+  mu_evt_offset_time(&s_led_event,
+                     mu_time_seconds_to_duration(LED_UPDATE_INTERVAL));
   mu_sched_add(&s_sched, &s_led_event);
 }
 
@@ -291,7 +318,8 @@ static void monitor_task_fn(void *self, void *arg) {
   (void)arg;
   _os_show_statistics();
   // run again in 5 sec
-  mu_evt_offset_time(&s_monitor_event, mu_time_seconds_to_duration(5.0));
+  mu_evt_offset_time(&s_monitor_event,
+                     mu_time_seconds_to_duration(MONITOR_UPDATE_INTERVAL));
   mu_sched_add(&s_sched, &s_monitor_event);
 }
 
@@ -302,7 +330,7 @@ static void console_task_fn(void *self, void *arg) {
   (void)self;
   (void)arg;
 
-  while(char_is_available()) {
+  while (char_is_available()) {
     char *str = "";
     char ch[2] = {0, 0};
     ch[0] = char_read();
