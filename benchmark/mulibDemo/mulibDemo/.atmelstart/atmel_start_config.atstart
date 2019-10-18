@@ -34,7 +34,7 @@ drivers:
       gclk_arch_gen_0_RUNSTDBY: false
       gclk_arch_gen_0_enable: true
       gclk_arch_gen_0_idc: false
-      gclk_arch_gen_0_oe: false
+      gclk_arch_gen_0_oe: true
       gclk_arch_gen_0_oov: false
       gclk_arch_gen_1_RUNSTDBY: false
       gclk_arch_gen_1_enable: false
@@ -49,7 +49,7 @@ drivers:
       gclk_arch_gen_3_RUNSTDBY: false
       gclk_arch_gen_3_enable: true
       gclk_arch_gen_3_idc: false
-      gclk_arch_gen_3_oe: false
+      gclk_arch_gen_3_oe: true
       gclk_arch_gen_3_oov: false
       gclk_arch_gen_4_RUNSTDBY: false
       gclk_arch_gen_4_enable: false
@@ -141,7 +141,7 @@ drivers:
       usart_arch_sampa: 7-8-9 (3-4-5 8-bit over-sampling)
       usart_arch_sampr: 16x arithmetic
       usart_arch_sfde: false
-      usart_baud_rate: 57600
+      usart_baud_rate: 115200
       usart_character_size: 8 bits
       usart_parity: No parity
       usart_rx_enable: true
@@ -534,7 +534,7 @@ drivers:
       osc8m_arch_ondemand: true
       osc8m_arch_overwrite_calibration: false
       osc8m_arch_runstdby: false
-      osc8m_presc: '8'
+      osc8m_presc: '1'
       osculp32k_arch_calib: 0
       osculp32k_arch_overwrite_calibration: false
       osculp32k_arch_wrtlock: false

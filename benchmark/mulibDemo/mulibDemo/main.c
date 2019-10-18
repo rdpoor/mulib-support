@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
  *
- * \asf_license_start
+ * \asf_license_enable
  *
  * \page License
  *
@@ -89,34 +89,28 @@ static void _os_show_statistics(void);
  * P = pending (not yet runnable)
  * R = runnable (ready to run)
  */
- static char event_status(mu_evt_t *evt);
+static char event_status(mu_evt_t *evt);
+
+/**
+ * \brief Start or stop a repeating event
+ * \param[in] enable Set to \c true to enable, \c false to disable
+ */
+static void enable_event(mu_evt_t *evt, bool enable);
 
 /**
  * \brief mulib task that blinks LED
  */
-static void task_led(void *self, void *arg);
+static void led_task_fn(void *self, void *arg);
 
 /**
- * \brief Pause LED blinking
- * \param[in] pause Set to \c true to pause, \c false to start
+ *  \brief mulib task to display system statistics every 5 seconds
  */
-static void task_led_pause(bool pause);
+static void monitor_task_fn(void *self, void *arg);
 
 /**
- *  \brief mulib task that monitor system status and show stats every 5 seconds
+ * \brief mulib task to handle user input
  */
-static void task_monitor(void *self, void *arg);
-
-/**
- * \brief Pause monitor statistics dumping
- * \param[in] pause Set to \c true to pause, \c false to start
- */
-static void task_monitor_pause(bool pause);
-
-/**
- * \brief mulib task to monitor console inputs and do actions
- */
-static void task_console(void *self, void *arg);
+static void console_task_fn(void *self, void *arg);
 
 /**
  * \brief interrupt-level callback when serial data is received.
@@ -145,7 +139,7 @@ static mu_evt_t s_monitor_event;
 static mu_evt_t s_console_event;
 
 // The only reason for keeping an array of events is so we can get the status
-// of those events NOT in the scheduler (i.e. idle status).
+// of any events that are NOT in the scheduler (i.e. idle status).
 static mu_evt_t *s_events[] = {&s_led_event, &s_monitor_event, &s_console_event};
 static const int N_EVENTS = sizeof(s_events) / sizeof(mu_evt_t *);
 
@@ -153,30 +147,37 @@ static const int N_EVENTS = sizeof(s_events) / sizeof(mu_evt_t *);
 // public code
 
 int main(void) {
+  // Perform board-specific initialization
   atmel_start_init();
-  port_init();          // set up rtc, etc.
 
-  // Initialize the scheduler
-  mu_sched_init(&s_sched, s_isr_queue_pool, ISR_QUEUE_POOL_SIZE);
+  // Perform port-specific initialization needed by mulib (RTC)
+  port_init();
 
-  // Queue initial tasks
-  task_led_pause(false);
-  task_monitor_pause(false);
-  mu_sched_add(&s_sched,
-               mu_evt_init_immed(&s_console_event, task_console, NULL, "Console"));
-
+  // Set up the serial I/O system
   usart_async_register_callback(&EDBG_COM, USART_ASYNC_TXC_CB, serial_tx_cb);
   usart_async_register_callback(&EDBG_COM, USART_ASYNC_RXC_CB, serial_rx_cb);
   usart_async_register_callback(&EDBG_COM, USART_ASYNC_ERROR_CB, serial_err_cb);
   usart_async_get_io_descriptor(&EDBG_COM, &s_usart_io);
   usart_async_enable(&EDBG_COM);
 
+  // Initialize the scheduler
+  mu_sched_init(&s_sched, s_isr_queue_pool, ISR_QUEUE_POOL_SIZE);
+
+  mu_time_t now = mu_time_now();
+
+  // Queue initial events
+  mu_sched_add(&s_sched,
+               mu_evt_init_at(&s_led_event, now, led_task_fn, NULL, "LED"));
+  mu_sched_add(&s_sched,
+               mu_evt_init_at(&s_monitor_event, now, monitor_task_fn, NULL, "Monitor"));
+  mu_sched_add(&s_sched,
+               mu_evt_init_at(&s_console_event, now, console_task_fn, NULL, "Console"));
+
+  // Run the scheduler
   while(1) {
     mu_sched_step(&s_sched);
   }
-
-  // Like Charlie on the MTA...
-  return 0;
+  return 0;  // Like Charlie on the MTA (no he never returned...)
 }
 
 // =============================================================================
@@ -262,54 +263,42 @@ static char event_status(mu_evt_t *evt) {
   }
 }
 
-static void task_led(void *self, void *arg) {
+static void enable_event(mu_evt_t *evt, bool enable) {
+  if (!enable) {
+    // remove event from schedule (if it's in the schedule)
+    mu_sched_remove(&s_sched, evt);
+  } else if (!mu_sched_has_event(&s_sched, evt)) {
+    // Event is not scheduled -- enable it now.
+    mu_time_t now = mu_time_now();
+    mu_sched_add(&s_sched, mu_evt_set_time(evt, now));
+  } else {
+    // already in schedule
+  }
+}
+
+
+static void led_task_fn(void *self, void *arg) {
   (void)self;
   (void)arg;
   gpio_toggle_pin_level(LED0);
   // run again in 500 mSec
-  s_led_event.time = mu_time_offset(s_led_event.time,
-                                    mu_time_seconds_to_duration(0.5));
+  mu_evt_offset_time(&s_led_event, mu_time_seconds_to_duration(0.5));
   mu_sched_add(&s_sched, &s_led_event);
 }
 
-static void task_led_pause(bool pause) {
-  if (pause) {
-    // remove LED event from schedule (if it's in the schedule)
-    mu_sched_remove(&s_sched, &s_led_event);
-  } else if (!mu_sched_has_event(&s_sched, &s_led_event)) {
-    // LED task is not scheduled -- start it now.
-    mu_time_t now = mu_time_now();
-    mu_sched_add(&s_sched,
-                 mu_evt_init_at(&s_led_event, now, task_led, NULL, "LED"));
-  }
-}
-
-static void task_monitor(void *self, void *arg) {
+static void monitor_task_fn(void *self, void *arg) {
   (void)self;
   (void)arg;
   _os_show_statistics();
   // run again in 5 sec
-  s_monitor_event.time = mu_time_offset(s_monitor_event.time,
-                                        mu_time_seconds_to_duration(5.0));
+  mu_evt_offset_time(&s_monitor_event, mu_time_seconds_to_duration(5.0));
   mu_sched_add(&s_sched, &s_monitor_event);
-}
-
-static void task_monitor_pause(bool pause) {
-  if (pause) {
-    // remove Monitor event from schedule (if it's in the schedule)
-    mu_sched_remove(&s_sched, &s_monitor_event);
-  } else if (!mu_sched_has_event(&s_sched, &s_monitor_event)) {
-    // Monitor task is not scheduled -- start it now.
-    mu_time_t now = mu_time_now();
-    mu_sched_add(&s_sched,
-                 mu_evt_init_at(&s_monitor_event, now, task_monitor, NULL, "Monitor"));
-  }
 }
 
 /**
  * mulib task to monitor console inputs and do actions
  */
-static void task_console(void *self, void *arg) {
+static void console_task_fn(void *self, void *arg) {
   (void)self;
   (void)arg;
 
@@ -319,20 +308,20 @@ static void task_console(void *self, void *arg) {
     ch[0] = char_read();
     switch (ch[0]) {
     case 'a':
-      task_led_pause(false);
+      enable_event(&s_led_event, true);
       str = ("- LED blink task active.\r\n");
       break;
     case 's':
-      task_led_pause(true);
+      enable_event(&s_led_event, false);
       str = ("- LED OFF and blink task suspended.\r\n");
       gpio_set_pin_level(LED0, true);
       break;
     case 'm':
-      task_monitor_pause(false);
+      enable_event(&s_monitor_event, true);
       str = ("- Monitor task active.\r\n");
       break;
     case 'M':
-      task_monitor_pause(true);
+      enable_event(&s_monitor_event, false);
       str = ("- Monitor task suspended.\r\n");
       break;
     default:
@@ -346,7 +335,7 @@ static void task_console(void *self, void *arg) {
 
 static void serial_rx_cb(const struct usart_async_descriptor *const descr) {
   (void)descr;
-  // a character was received.  start the console task.
+  // A character was received.  Trigger the console task.
   mu_sched_from_isr(&s_sched, &s_console_event);
 }
 

@@ -23,7 +23,7 @@ or [CoolTerm](http://coolterm.org/).
 ### To Launch
 
 1. Connect SAMD21 XPlained board to your computer via USB cable
-2. Launch your Terminal Emulator, configure for 57600 Baud.
+2. Launch your Terminal Emulator, configure for 115200 Baud.
 3. Double click on the mulibDemo.atsln file to launch Studio 7
 4. In Studio 7, click on Debug => Start Without Debugging
 
@@ -55,9 +55,6 @@ on the idle task.  This would be the basis for a very low power system, and
 would port to multiple architectures easily.
 
 * Upgrade `mu_bcast` to manipulate `mu_task` objects.
-
-* When the baud rate was set to 115200, the output was garbled.  It would be
-useful to understand where the problem lies.
 
 * Port to other boards.  [SAME54, SAML22, XMEGA A1U] XPlained boards would be
 good candidates.

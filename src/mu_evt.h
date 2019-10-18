@@ -64,6 +64,12 @@ bool mu_evt_is_after(mu_evt_t *e1, mu_evt_t *e2);
 
 void mu_evt_call(mu_evt_t *evt, void *arg);
 
+// Set the event's time to t
+mu_evt_t *mu_evt_set_time(mu_evt_t *evt, mu_time_t t);
+
+// Offset the event's time by dt
+mu_evt_t *mu_evt_offset_time(mu_evt_t *evt, mu_time_dt dt);
+
 #ifdef __cplusplus
 }
 #endif

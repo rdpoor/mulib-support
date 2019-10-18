@@ -94,6 +94,18 @@ void mu_evt_call(mu_evt_t *evt, void *arg) {
   mu_task_call(mu_evt_task(evt), arg);
 }
 
+// Set the event's time to t
+mu_evt_t *mu_evt_set_time(mu_evt_t *evt, mu_time_t t) {
+  evt->time = t;
+  return evt;
+}
+
+// Advance the event's time by dt
+mu_evt_t *mu_evt_offset_time(mu_evt_t *evt, mu_time_dt dt) {
+  evt->time = mu_time_offset(evt->time, dt);
+  return evt;
+}
+
 // =============================================================================
 // private functions
 

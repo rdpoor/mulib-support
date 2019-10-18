@@ -54,14 +54,14 @@
 // <i> Number of stop bits in USART frame
 // <id> usart_stop_bit
 #ifndef CONF_SERCOM_3_USART_SBMODE
-#define CONF_SERCOM_3_USART_SBMODE 1
+#define CONF_SERCOM_3_USART_SBMODE 0
 #endif
 
 // <o> Baud rate <1-3000000>
 // <i> USART baud rate setting
 // <id> usart_baud_rate
 #ifndef CONF_SERCOM_3_USART_BAUD
-#define CONF_SERCOM_3_USART_BAUD 57600
+#define CONF_SERCOM_3_USART_BAUD 115200
 #endif
 
 // </h>
