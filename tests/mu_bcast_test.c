@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define N_SUBSCRIBERS 5
+#define N_SUBSCRIBERS 4
 
 typedef struct {
   int call_count;
@@ -35,107 +35,130 @@ typedef struct {
 
 static mu_bcast_subscriber_t s_subscribers[N_SUBSCRIBERS];
 
-const uint16_t CHAN_A = 1;
-const uint16_t CHAN_B = 2;
+const mu_bcast_channel_t CHAN_A = MU_BCAST_CH_MIN;
+const mu_bcast_channel_t CHAN_B = CHAN_A + 1;
+const mu_bcast_channel_t CHAN_C = CHAN_B + 1;
 
-const uintptr_t BCAST_ARG = 44;
-const uintptr_t ARG_A1 = 55;
-const uintptr_t ARG_A2 = 66;
+const uintptr_t BCAST_ARG = (uintptr_t)123;
 
-static test_obj_t s_obj1;
-static test_obj_t s_obj2;
-static int s_a3_called;
+static mu_task_t s_task_1;
+static mu_task_t s_task_2;
 
-static void action_a1(void *self, void *arg) {
+static test_obj_t s_test_obj_1;
+static test_obj_t s_test_obj_2;
+
+static void task_1_fn(void *self, void *arg) {
   test_obj_t *obj = (test_obj_t *)self;
   obj->call_count += 1;
   UTEST_ASSERT((uintptr_t)arg == BCAST_ARG);
 }
 
-static void action_a2(void *self, void *arg) {
+static void task_2_fn(void *self, void *arg) {
   test_obj_t *obj = (test_obj_t *)self;
   obj->call_count += 1;
-  UTEST_ASSERT((uintptr_t)arg == BCAST_ARG);
-}
-
-static void action_a3(void *self, void *arg) {
-  s_a3_called += 1;
-  UTEST_ASSERT(self == NULL);
   UTEST_ASSERT((uintptr_t)arg == BCAST_ARG);
 }
 
 void mu_bcast_test() {
   mu_bcast_mgr_t mu_bcast_mgr;
 
-  s_obj1.call_count = 0;
-  s_obj2.call_count = 0;
-  s_a3_called = 0;
+  // initialize the tasks
+  mu_task_init(&s_task_1, task_1_fn, &s_test_obj_1, "Task 1");
+  mu_task_init(&s_task_2, task_2_fn, &s_test_obj_2, "Task 2");
 
+  // initialize the bcast manager
   mu_bcast_init(&mu_bcast_mgr, s_subscribers, N_SUBSCRIBERS);
-  UTEST_ASSERT(mu_bcast_subscribe(&mu_bcast_mgr,
-                                  MU_BCAST_CHANNEL_MIN - 1,
-                                  action_a1,
-                                  &s_obj1) == MU_BCAST_ERR_ILLEGAL_CHANNEL);
 
-  // action_a1 and action_a2 subscribed to CHAN_A
-  // action_a2 and action_a3 subscribed to CHAN_B
-  UTEST_ASSERT(
-      mu_bcast_subscribe(&mu_bcast_mgr, CHAN_A, action_a1, &s_obj1) ==
-      MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(
-      mu_bcast_subscribe(&mu_bcast_mgr, CHAN_A, action_a2, &s_obj2) ==
-      MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(
-      mu_bcast_subscribe(&mu_bcast_mgr, CHAN_B, action_a2, &s_obj2) ==
-      MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(
-      mu_bcast_subscribe(&mu_bcast_mgr, CHAN_B, action_a3, NULL) ==
-      MU_BCAST_ERR_NONE);
+  // mu_bcast_subscribe()
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        MU_BCAST_CH_MIN - 1,
+                                        &s_task_1),
+                     MU_BCAST_ERR_ILLEGAL_CHANNEL);
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        MU_BCAST_CH_MAX + 1,
+                                        &s_task_1),
+                     MU_BCAST_ERR_ILLEGAL_CHANNEL);
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        CHAN_A,
+                                        &s_task_1),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        CHAN_A,
+                                        &s_task_1),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        CHAN_B,
+                                        &s_task_2),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        CHAN_C,
+                                        &s_task_2),
+                     MU_BCAST_ERR_NONE);
+  // at this point:
+  // task1 subscribes to CHAN_A
+  // task1 and task2 subscribes to CHAN_B
+  // task2 subscribes to CHAN_C
+  // ... and the subscriber pool is full...
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        CHAN_C,
+                                        &s_task_1),
+                     MU_BCAST_ERR_FULL);
 
-  // notify with a legal channel
-  UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG) ==
-               MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(s_obj1.call_count == 1);
-  UTEST_ASSERT(s_obj2.call_count == 1);
-  UTEST_ASSERT(s_a3_called == 0);
+  // notification with illegal channel
+  UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr,
+                                     MU_BCAST_CH_UNASSIGNED,
+                                     (void *)BCAST_ARG),
+                     MU_BCAST_ERR_ILLEGAL_CHANNEL);
 
-  // notify with a legal channel
-  UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_B, (void *)BCAST_ARG) ==
-               MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(s_obj1.call_count == 1);
-  UTEST_ASSERT(s_obj2.call_count == 2);
-  UTEST_ASSERT(s_a3_called == 1);
+  // notifications with a legal channel
+  UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(s_test_obj_1.call_count, 1);
+  UTEST_ASSERTEQ_INT(s_test_obj_2.call_count, 0);
+
+  UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr, CHAN_B, (void *)BCAST_ARG),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(s_test_obj_1.call_count, 2);
+  UTEST_ASSERTEQ_INT(s_test_obj_2.call_count, 1);
+
+  UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr, CHAN_C, (void *)BCAST_ARG),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(s_test_obj_1.call_count, 2);
+  UTEST_ASSERTEQ_INT(s_test_obj_2.call_count, 2);
 
   // subscribe when already subscribed
-  UTEST_ASSERT(
-      mu_bcast_subscribe(&mu_bcast_mgr, CHAN_A, action_a1, &s_obj1) ==
-      MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_bcast_subscribe(&mu_bcast_mgr,
+                                        CHAN_A,
+                                        &s_task_1),
+                     MU_BCAST_ERR_NONE);
   // action_a1 should receive only one (additional) notification
-  UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG) ==
-               MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(s_obj1.call_count == 2);
-  UTEST_ASSERT(s_obj2.call_count == 3);
-  UTEST_ASSERT(s_a3_called == 1);
+  UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(s_test_obj_1.call_count, 3);
+  UTEST_ASSERTEQ_INT(s_test_obj_2.call_count, 2);
 
-  // unsubscribe obj2.action_a2 from CHAN_A (only)
-  UTEST_ASSERT(mu_bcast_unsubscribe(&mu_bcast_mgr, CHAN_A, action_a2, &s_obj2) ==
-               MU_BCAST_ERR_NONE);
-  // action_a2 should not receive the notification..
-  UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG) ==
-               MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(s_obj1.call_count == 3);
-  UTEST_ASSERT(s_obj2.call_count == 3);
-  UTEST_ASSERT(s_a3_called == 1);
+  // unsubscribe task1 from CHAN_A (only)
+  UTEST_ASSERTEQ_INT(mu_bcast_unsubscribe(&mu_bcast_mgr, CHAN_A, &s_task_1),
+                     MU_BCAST_ERR_NONE);
+  // at this point:
+  // task1 and task2 subscribes to CHAN_B
+  // task2 subscribes to CHAN_C
+
+  // nobody listening on CHAN_A
+  UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr, CHAN_A, (void *)BCAST_ARG),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERTEQ_INT(s_test_obj_1.call_count, 3);
+  UTEST_ASSERTEQ_INT(s_test_obj_2.call_count, 2);
 
   // notify on all channels
-  UTEST_ASSERT(mu_bcast_notify(&mu_bcast_mgr,
-                               MU_BCAST_ALL_CHANNELS,
-                               (void *)BCAST_ARG) == MU_BCAST_ERR_NONE);
-  UTEST_ASSERT(s_obj1.call_count == 4);
-  UTEST_ASSERT(s_obj2.call_count == 4);
-  UTEST_ASSERT(s_a3_called == 2);
+  UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr,
+                                     MU_BCAST_CH_WILDCARD,
+                                     (void *)BCAST_ARG),
+                     MU_BCAST_ERR_NONE);
+  UTEST_ASSERT(s_test_obj_1.call_count == 4);
+  UTEST_ASSERT(s_test_obj_2.call_count == 4);  // increments on CHAN_B & CHAN_C
 
   // unsubscribe when not subscribed
-  UTEST_ASSERT(mu_bcast_unsubscribe(&mu_bcast_mgr, CHAN_A, action_a3, NULL) ==
-               MU_BCAST_ERR_NOT_FOUND);
+  UTEST_ASSERTEQ_INT(mu_bcast_unsubscribe(&mu_bcast_mgr, CHAN_A, &s_task_1),
+                     MU_BCAST_ERR_NOT_FOUND);
 }

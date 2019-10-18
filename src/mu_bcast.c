@@ -26,6 +26,7 @@
 // includes
 
 #include "mu_bcast.h"
+#include "mu_task.h"
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -37,12 +38,14 @@
 
 static bool channel_is_valid(mu_bcast_channel_t channel);
 
-mu_bcast_err_t subscribe_one(mu_bcast_subscriber_t *subscriber,
-                             mu_bcast_channel_t channel,
-                             mu_task_fn function,
-                             void *self);
+static bool channel_matches(mu_bcast_subscriber_t *subscriber,
+                            mu_bcast_channel_t channel);
 
-mu_bcast_err_t unsubscribe_one(mu_bcast_subscriber_t *subscriber);
+static mu_bcast_err_t subscribe_one(mu_bcast_subscriber_t *subscriber,
+                                    mu_bcast_channel_t channel,
+                                    mu_task_t *task);
+
+static mu_bcast_err_t unsubscribe_one(mu_bcast_subscriber_t *subscriber);
 
 // =============================================================================
 // local storage
@@ -67,8 +70,7 @@ void mu_bcast_reset(mu_bcast_mgr_t *mu_bcast_mgr) {
 
 mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                   mu_bcast_channel_t channel,
-                                  mu_task_fn function,
-                                  void *target) {
+                                  mu_task_t *task) {
   mu_bcast_subscriber_t *subscriber;
   int first_available_slot = -1;
 
@@ -76,53 +78,39 @@ mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
     return MU_BCAST_ERR_ILLEGAL_CHANNEL;
   }
 
+  // See if task is already subscribed, and if not, find the first free slot.
   for (int i = 0; i < mu_bcast_mgr->max_subscribers; i++) {
     subscriber = &(mu_bcast_mgr->subscribers[i]);
 
-    if ((subscriber->channel == channel) && (subscriber->msg.fn == function) && (subscriber->msg.self == target)) {
+    if ((subscriber->channel == channel) && (subscriber->task == task)) {
       // Already subscribed on this channel.
       return MU_BCAST_ERR_NONE;
 
-    } else if (first_available_slot == -1 && subscriber->msg.fn == NULL) {
+    } else if (first_available_slot == -1 && subscriber->task == NULL) {
       // make a note of the first available slot
       first_available_slot = i;
     }
   }
 
-  // endgame: assign target.function to first available slot.
+  // Endgame: assign target.function to first available slot.
   if (first_available_slot != -1) {
     subscriber = &(mu_bcast_mgr->subscribers[first_available_slot]);
-    return subscribe_one(subscriber, channel, function, target);
+    return subscribe_one(subscriber, channel, task);
   }
 
-  return MU_BCAST_ERR_SUBSCRIBERS_EXHAUSTED;
+  // Sorry, no room left
+  return MU_BCAST_ERR_FULL;
 }
 
 mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                     mu_bcast_channel_t channel,
-                                    mu_task_fn function,
-                                    void *target) {
+                                    mu_task_t *task) {
   mu_bcast_subscriber_t *subscriber;
 
   for (int i = 0; i < mu_bcast_mgr->max_subscribers; i++) {
     subscriber = &(mu_bcast_mgr->subscribers[i]);
-    if ((channel == MU_BCAST_ALL_CHANNELS) || (subscriber->channel == channel)) {
-      if ((function == NULL) && (target == NULL)) {
-        // match any target.function combination
-        return unsubscribe_one(subscriber);
-
-      } else if ((function == NULL) && (subscriber->msg.self == target)) {
-        // match on target
-        return unsubscribe_one(subscriber);
-
-      } else if ((target == NULL) && (subscriber->msg.fn == function)) {
-        // match on function
-        return unsubscribe_one(subscriber);
-
-      } else if ((subscriber->msg.fn == function) && (subscriber->msg.self == target)) {
-        // match on target.function
-        return unsubscribe_one(subscriber);
-      }
+    if ((subscriber->task == task) && channel_matches(subscriber, channel)) {
+      return unsubscribe_one(subscriber);
     }
   }
   return MU_BCAST_ERR_NOT_FOUND;
@@ -131,15 +119,16 @@ mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
 mu_bcast_err_t mu_bcast_notify(mu_bcast_mgr_t *mu_bcast_mgr,
                                mu_bcast_channel_t channel,
                                void *arg) {
-  if (!((channel == MU_BCAST_ALL_CHANNELS) || channel_is_valid(channel))) {
+  if (!channel_is_valid(channel)) {
     return MU_BCAST_ERR_ILLEGAL_CHANNEL;
   }
 
   for (int i = 0; i < mu_bcast_mgr->max_subscribers; i++) {
     mu_bcast_subscriber_t *subscriber = &(mu_bcast_mgr->subscribers[i]);
-    if ((channel == MU_BCAST_ALL_CHANNELS) || (subscriber->channel == channel)) {
+
+    if (channel_matches(subscriber, channel)) {
       // mu_task_call handles the case of a null msg.fn
-      mu_task_call(&subscriber->msg, arg);
+      mu_task_call(subscriber->task, arg);
     }
   }
   return MU_BCAST_ERR_NONE;
@@ -149,23 +138,30 @@ mu_bcast_err_t mu_bcast_notify(mu_bcast_mgr_t *mu_bcast_mgr,
 // private code
 
 static bool channel_is_valid(mu_bcast_channel_t channel) {
-  return ((channel >= MU_BCAST_CHANNEL_MIN) &&
-          (channel <= MU_BCAST_CHANNEL_MAX));
+  return ((channel >= MU_BCAST_CH_MIN) && (channel <= MU_BCAST_CH_MAX));
 }
 
-mu_bcast_err_t subscribe_one(mu_bcast_subscriber_t *subscriber,
-                             mu_bcast_channel_t channel,
-                             mu_task_fn function,
-                             void *self) {
+static bool channel_matches(mu_bcast_subscriber_t *subscriber,
+                            mu_bcast_channel_t channel) {
+  if (channel == MU_BCAST_CH_WILDCARD) {
+    // wildcard doesn't match if the subscriber is unassigned
+    return (subscriber->channel != MU_BCAST_CH_UNASSIGNED);
+  } else {
+    // exact match needed
+    return (subscriber->channel == channel);
+  }
+}
+
+static mu_bcast_err_t subscribe_one(mu_bcast_subscriber_t *subscriber,
+                                    mu_bcast_channel_t channel,
+                                    mu_task_t *task) {
   subscriber->channel = channel;
-  subscriber->msg.fn = function;
-  subscriber->msg.self = self;
+  subscriber->task = task;
   return MU_BCAST_ERR_NONE;
 }
 
-mu_bcast_err_t unsubscribe_one(mu_bcast_subscriber_t *subscriber) {
-  subscriber->channel = MU_BCAST_CHANNEL_UNASSIGNED;
-  subscriber->msg.fn = NULL;
-  subscriber->msg.self = NULL;
+static mu_bcast_err_t unsubscribe_one(mu_bcast_subscriber_t *subscriber) {
+  subscriber->channel = MU_BCAST_CH_UNASSIGNED;
+  subscriber->task = NULL;
   return MU_BCAST_ERR_NONE;
 }

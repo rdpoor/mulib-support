@@ -40,22 +40,21 @@ extern "C" {
 
 typedef enum {
   MU_BCAST_ERR_NONE = 0,
-  MU_BCAST_ERR_EVENTS_EXHAUSTED,
-  MU_BCAST_ERR_SUBSCRIBERS_EXHAUSTED,
+  MU_BCAST_ERR_FULL,
   MU_BCAST_ERR_ILLEGAL_CHANNEL,
   MU_BCAST_ERR_NOT_FOUND,
 } mu_bcast_err_t;
 
-typedef uint16_t mu_bcast_channel_t;
-
-#define MU_BCAST_CHANNEL_UNASSIGNED 0
-#define MU_BCAST_ALL_CHANNELS 0
-#define MU_BCAST_CHANNEL_MIN 1
-#define MU_BCAST_CHANNEL_MAX UINT16_MAX
+typedef enum {
+  MU_BCAST_CH_UNASSIGNED  = 0,
+  MU_BCAST_CH_MIN,
+  MU_BCAST_CH_MAX = UINT16_MAX-1,
+  MU_BCAST_CH_WILDCARD = UINT16_MAX  // all channels
+} mu_bcast_channel_t;
 
 typedef struct _subscriber {
   mu_bcast_channel_t channel;
-  mu_task_t msg;
+  mu_task_t *task;
 } mu_bcast_subscriber_t;
 
 typedef struct _manager {
@@ -80,28 +79,26 @@ void mu_bcast_reset(mu_bcast_mgr_t *mu_bcast_mgr);
 
 /**
  * @brief: subscribe to notifications on the specified channel.
- *
  */
 mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                   mu_bcast_channel_t channel,
-                                  mu_task_fn function,
-                                  void *target);
+                                  mu_task_t *task);
 
 /**
  * @brief: stop receiving notifications
  *
- * If function is NULL, all subscribers matching target are unsubscribed.
- * If target is NULL, all subscribers matching function are unsubscribed.
- * if channel == MU_BCAST_ALL_CHANNELS, matching subscribers are removed from
- * all chanels.
+ * If channel == MU_BCAST_CH_WILDCARD, the task is unsubscribed from all
+ * channels.  Otherwise is is removed from the matching channel only.
  */
 mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
                                     mu_bcast_channel_t channel,
-                                    mu_task_fn function,
-                                    void *target);
+                                    mu_task_t *task);
 
 /**
  * @brief: notify every subscriber on the given channel.
+ *
+ * If channel == MU_BCAST_CH_WILDCARD, then all tasks on all channels will be
+ * will be notified (but it is not clear you'd normally want to do that).
  */
 mu_bcast_err_t mu_bcast_notify(mu_bcast_mgr_t *mu_bcast_mgr,
                                mu_bcast_channel_t channel,
