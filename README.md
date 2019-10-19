@@ -13,7 +13,8 @@ mulib strives towards the following design goals.
 * Well-tested and documented: unit tests validate the API and with clear
   documentation in the header files.
 * Fast and Dangerous: mulib favors minimizing time and code space over argument
-  validation.  (Coming soon: MU_ASSERT() will providee a safety net that can be switched on or off at compile time.
+  validation.  (Coming soon: MU_ASSERT() will provide a safety net that can be
+  switched on or off at compile time.
 * Yours to use: The entirety of mulib is covered under the MIT open source
   license.
 
@@ -39,19 +40,22 @@ Status: Passing Tests.
 
 ### mu_log
 
-No-nonsense logging with run-time control on reporting severity and multiple reporting channels.
+No-nonsense logging with run-time control on reporting severity and multiple
+reporting channels.
 
 Status: Passing Tests.
 
 ### mu_ring
 
-Fast, thread-safe queue for void * sized objects, designed for single-producer / single-consumer applications.
+Fast, thread-safe queue for void * sized objects, designed for single-producer /
+single-consumer applications.
 
 Status: Passing Tests.
 
 ### mu_sched
 
-Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion scheduler.
+Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion
+scheduler.
 
 Status: Passing Tests.
 
@@ -61,13 +65,15 @@ Safely append formatted string data to a buffer.
 
 ### mu_task
 
-Simple, versatile, fast message passing.  Commonly used for deferred function calls.
+Simple, versatile, fast message passing.  Commonly used for deferred function
+calls.
 
 Status: Passing Tests.
 
 ### mu_time
 
-Functions to manipulate time values, properly handling roll-over.  Requires platform specific support in port/port.h
+Functions to manipulate time values, properly handling roll-over.  Provides
+interface to platform specific support in port/port.c.
 
 Status: Passing Tests.
 
@@ -96,3 +102,14 @@ Status: In progress.
 Thread safe ring buffer for 8-, 16-, 32- and 64-bit wide objects.
 
 Status: In progress.
+
+## Developer Notes
+
+* TODO: Add gcov coverage tests for unit testing
+
+* TODO: document API for each module
+
+* TODO: create and document a series of demo applications, starting with "blink
+an LED" through more complex ones.  Bonus points for cross platform / cross IDE.
+
+* TODO: Inline some functions

@@ -42,8 +42,11 @@
 
 static mu_evt_t *remove_runnable_event(mu_sched_t *sched, mu_time_t now);
 
-// transfer ISR-initiated events from the ISR queue to the schedule
+// Transfer ISR-initiated events from the ISR queue to the schedule
 static void process_isr_queue(mu_sched_t *sched);
+
+// Return true if evt is in the list of scheduled events
+static bool is_scheduled(mu_sched_t *sched, mu_evt_t *evt);
 
 // =============================================================================
 // local storage
@@ -153,7 +156,13 @@ mu_evt_t *mu_sched_current_event(mu_sched_t *sched) {
 }
 
 mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_evt_t *event) {
-  if (mu_evt_is_immediate(event)) {
+  if (is_scheduled(sched, event)) {
+    // If you schedule an event that's already in the schedule, you get a
+    // circular list.  Since traversing the list adds time, a future version
+    // might set a bit in the event to indicate if it's in the schedule or not.
+    asm("nop");
+
+  } else if (mu_evt_is_immediate(event)) {
     // push onto head of event list
     event->next = sched->events;
     sched->events = event;
@@ -247,4 +256,14 @@ static void process_isr_queue(mu_sched_t *sched) {
   while (MU_RING_ERR_NONE == mu_ring_get(q, (mu_ring_obj_t *)(&evt))) {
     mu_sched_add(sched, evt);
   }
+}
+
+// Return true if evt is present in the scheduled events.
+static bool is_scheduled(mu_sched_t *sched, mu_evt_t *evt) {
+  mu_evt_t *curr = sched->events;
+  while (curr) {
+    if (curr == evt) return true;
+    curr = curr->next;
+  }
+  return false;
 }
