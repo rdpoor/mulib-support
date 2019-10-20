@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "../src/mu_log.h"
+#include "mu_log.h"
 #include "test_utilities.h"
 #include <string.h>
 

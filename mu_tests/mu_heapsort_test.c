@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "../src/mu_heapsort.h"
+#include "mu_heapsort.h"
 #include "test_utilities.h"
 #include <string.h>
 

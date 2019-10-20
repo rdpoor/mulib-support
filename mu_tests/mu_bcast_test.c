@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "../src/mu_bcast.h"
+#include "mu_bcast.h"
 #include "test_utilities.h"
 #include <stdint.h>
 #include <stddef.h>

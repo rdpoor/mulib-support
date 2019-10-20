@@ -25,7 +25,7 @@
  // =============================================================================
  // includes
 
-#include "../src/mu_strbuf.h"
+#include "mu_strbuf.h"
 #include "test_utilities.h"
 #include <string.h>
 

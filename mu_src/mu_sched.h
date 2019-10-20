@@ -32,7 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "port.h"
+#include "mu_port.h"
 #include "mu_evt.h"
 #include "mu_ring.h"
 #include "mu_task.h"

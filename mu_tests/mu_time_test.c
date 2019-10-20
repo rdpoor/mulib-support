@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "../src/mu_time.h"
+#include "mu_time.h"
 #include "test_utilities.h"
 #include <stdio.h>
 

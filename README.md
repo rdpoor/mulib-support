@@ -10,11 +10,18 @@ mulib strives towards the following design goals.
 * Self-contained, pure C code: minimize dependencies on external libraries.
 * Two-file implementation: whenever practical, each mulib module is embodied in
   one header file and one C file.
-* Well-tested and documented: unit tests validate the API and with clear
-  documentation in the header files.
+* Well-documented: API documentation is driven by documentation strings in the
+  header files.
+* Well-tested: unit tests validate the API, coverage tets validate the unit
+  tests.
+* Super portable: One concise mu_ports.c file defines mulib's interface to the
+  target environment.
 * Fast and Dangerous: mulib favors minimizing time and code space over argument
   validation.  (Coming soon: MU_ASSERT() will provide a safety net that can be
   switched on or off at compile time.
+* Low threshold, high ceiling: A suite of demo programs take you from the
+  simplest "flash an LED" example to complex multi-tasking applications.
+*
 * Yours to use: The entirety of mulib is covered under the MIT open source
   license.
 

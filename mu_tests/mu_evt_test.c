@@ -1,5 +1,5 @@
-#include "../src/mu_evt.h"
-#include "../src/mu_task.h"
+#include "mu_evt.h"
+#include "mu_task.h"
 #include "test_utilities.h"
 #include <stddef.h>
 #include <stdio.h>

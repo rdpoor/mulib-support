@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "../src/mu_task.h"
+#include "mu_task.h"
 #include "test_utilities.h"
 #include <stdio.h>
 #include <string.h>

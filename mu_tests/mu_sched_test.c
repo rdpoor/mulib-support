@@ -25,8 +25,8 @@
 // =============================================================================
 // includes
 
-#include "../src/mu_sched.h"
-#include "../src/mu_ring.h"
+#include "mu_sched.h"
+#include "mu_ring.h"
 #include "test_utilities.h"
 #include <signal.h>
 
