@@ -25,6 +25,11 @@
 // =============================================================================
 // includes
 
+// Note: The UTEST_ASSERT forms will fail if logging is disabled, so we force
+// it to be on for this test file before including other files
+
+#define MU_LOG_ENABLED
+
 #include "mu_log.h"
 #include "test_utilities.h"
 #include <string.h>

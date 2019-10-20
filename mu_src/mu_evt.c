@@ -38,7 +38,7 @@
 
 static mu_evt_t *init_event(mu_evt_t *evt,
                             bool is_immediate,
-                            port_time_t time,
+                            mu_time_t time,
                             mu_task_fn fn,
                             void *self,
                             const char *name);
@@ -66,7 +66,7 @@ mu_evt_t *mu_evt_init_at(mu_evt_t *evt,
 
 bool mu_evt_is_immediate(mu_evt_t *evt) { return evt->is_immediate; }
 
-port_time_t mu_evt_time(mu_evt_t *evt) { return evt->time; }
+mu_time_t mu_evt_time(mu_evt_t *evt) { return evt->time; }
 
 mu_task_t *mu_evt_task(mu_evt_t *evt) { return &evt->task; }
 
@@ -76,14 +76,14 @@ bool mu_evt_is_after(mu_evt_t *e1, mu_evt_t *e2) {
   } else if (mu_evt_is_immediate(e2)) {
     return true;
   } else {
-    return port_time_is_after(mu_evt_time(e1), mu_evt_time(e2));
+    return mu_time_is_after(mu_evt_time(e1), mu_evt_time(e2));
   }
 }
 
-bool mu_evt_is_runnable(mu_evt_t *evt, port_time_t at) {
+bool mu_evt_is_runnable(mu_evt_t *evt, mu_time_t at) {
   if (mu_evt_is_immediate(evt)) {
     return true;
-  } else if (!port_time_is_before(at, mu_evt_time(evt))) {
+  } else if (!mu_time_is_before(at, mu_evt_time(evt))) {
     return true;
   } else {
     return false;
@@ -111,7 +111,7 @@ mu_evt_t *mu_evt_offset_time(mu_evt_t *evt, mu_time_dt dt) {
 
 static mu_evt_t *init_event(mu_evt_t *evt,
                             bool is_immediate,
-                            port_time_t time,
+                            mu_time_t time,
                             mu_task_fn fn,
                             void *self,
                             const char *name) {

@@ -22,55 +22,36 @@
  * SOFTWARE.
  */
 
+#ifndef MU_SLEEP_H_
+#define MU_SLEEP_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // includes
 
 #include "mu_time.h"
-#include "mu_port.h"
-#include <stdio.h>
 
 // =============================================================================
-// private types and definitions
+// types and definitions
 
 // =============================================================================
-// private declarations
+// declarations
 
-// =============================================================================
-// local storage
+/**
+ * @brief Sleep the processor until a peripheral interrupt wakes it.
+ */
+void mu_sleep_indefinitely();
 
-// =============================================================================
-// public code
+/**
+ * @brief Sleep until the designated time arrives.
+ */
+void mu_sleep_until(mu_time_t t);
 
-mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt) {
-  return mu_port_time_offset(t1, dt);
+#ifdef __cplusplus
 }
+#endif
 
-mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_difference(t1, t2);
-}
-
-// Return true iff t1 is strictly earlier, equal to or
-// later than t2.
-bool mu_time_is_before(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_before(t1, t2);
-}
-
-bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_equal(t1, t2);
-}
-
-bool mu_time_is_after(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_before(t2, t1);
-}
-
-mu_time_seconds_t mu_time_duration_to_seconds(mu_time_dt dt) {
-  return mu_port_time_duration_to_seconds(dt);
-}
-
-mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_t s) {
-  return mu_port_time_seconds_to_duration(s);
-}
-
-mu_time_t mu_time_now() {
-  return mu_port_time_now();
-}
+#endif // #ifndef MU_SLEEP_H_

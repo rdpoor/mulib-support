@@ -27,7 +27,6 @@
 
 #include "mu_time.h"
 #include "mu_port.h"
-#include <stdio.h>
 
 // =============================================================================
 // private types and definitions
@@ -41,36 +40,10 @@
 // =============================================================================
 // public code
 
-mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt) {
-  return mu_port_time_offset(t1, dt);
+void mu_sleep_indefinitely() {
+  mu_port_sleep_indefinitely();
 }
 
-mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_difference(t1, t2);
-}
-
-// Return true iff t1 is strictly earlier, equal to or
-// later than t2.
-bool mu_time_is_before(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_before(t1, t2);
-}
-
-bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_equal(t1, t2);
-}
-
-bool mu_time_is_after(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_before(t2, t1);
-}
-
-mu_time_seconds_t mu_time_duration_to_seconds(mu_time_dt dt) {
-  return mu_port_time_duration_to_seconds(dt);
-}
-
-mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_t s) {
-  return mu_port_time_seconds_to_duration(s);
-}
-
-mu_time_t mu_time_now() {
-  return mu_port_time_now();
+void mu_sleep_until(mu_time_t t) {
+  mu_port_sleep_until(t);
 }

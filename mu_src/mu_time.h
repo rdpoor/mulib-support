@@ -39,9 +39,9 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-typedef port_time_t mu_time_t;
-typedef port_time_dt mu_time_dt;
-typedef port_time_seconds_t mu_time_seconds_t;
+typedef mu_port_time_t mu_time_t;
+typedef mu_port_time_dt mu_time_dt;
+typedef mu_port_time_seconds_t mu_time_seconds_t;
 
 // =============================================================================
 // declarations
@@ -125,16 +125,6 @@ mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_t s);
  * @return A value representing the current time.
  */
 mu_time_t mu_time_now();
-
-/**
- * @brief Sleep the processor until a peripheral interrupt wakes it.
- */
-void mu_time_sleep_indefinitely();
-
-/**
- * @brief Sleep until the designated time arrives.
- */
-void mu_time_sleep_until(mu_time_t t);
 
 #ifdef __cplusplus
 }

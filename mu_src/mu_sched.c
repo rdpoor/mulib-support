@@ -155,7 +155,7 @@ mu_evt_t *mu_sched_current_event(mu_sched_t *sched) {
   return sched->current_event;
 }
 
-mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_evt_t *event) {
+mu_sched_err_t mu_sched_queue(mu_sched_t *sched, mu_evt_t *event) {
   if (is_scheduled(sched, event)) {
     // If you schedule an event that's already in the schedule, you get a
     // circular list.  Since traversing the list adds time, a future version
@@ -254,7 +254,7 @@ static void process_isr_queue(mu_sched_t *sched) {
   mu_ring_t *q = &(sched->isr_queue);
 
   while (MU_RING_ERR_NONE == mu_ring_get(q, (mu_ring_obj_t *)(&evt))) {
-    mu_sched_add(sched, evt);
+    mu_sched_queue(sched, evt);
   }
 }
 

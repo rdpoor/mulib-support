@@ -32,7 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_port.h"
+#include "mu_time.h"
 #include "mu_evt.h"
 #include "mu_ring.h"
 #include "mu_task.h"
@@ -47,16 +47,15 @@ typedef enum {
   MU_SCHED_ERR_NOT_FOUND,
 } mu_sched_err_t;
 
-// Signature for clock source function.  Returns a port_time_t value.
-typedef port_time_t (*mu_clock_fn)(void);
+// Signature for clock source function.  Returns the current time.
+typedef mu_time_t (*mu_clock_fn)(void);
 
-// TODO:
-// We want a way to queue events from interrupt level.  We can use a thread-
-// safe circular buffer to queue events produced at interrupt level and consumed
-// at foreground level.  For this, we've created mu_ring (q.v).
+// To handle events from interrupt level, we use a thread-safe mu_ring circular
+// buffer to queue events produced at interrupt level and consumed at foreground
+// level.
 //
 // So mu_sched_from_isr() will push an event on the queue.  Then mu_sched_step()
-// will get all events from that queue and add them the regular event list
+// move any events from the queue and add them to the regular scheduler list
 // before processing.
 
 typedef struct {
@@ -91,11 +90,11 @@ mu_evt_t *mu_sched_get_events(mu_sched_t *sched);
 
 mu_sched_err_t mu_sched_step(mu_sched_t *sched);
 
-port_time_t mu_sched_get_time(mu_sched_t *sched);
+mu_time_t mu_sched_get_time(mu_sched_t *sched);
 
 mu_evt_t *mu_sched_current_event(mu_sched_t *sched);
 
-mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_evt_t *event);
+mu_sched_err_t mu_sched_queue(mu_sched_t *sched, mu_evt_t *event);
 
 mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_evt_t *evt);
 

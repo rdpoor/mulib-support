@@ -35,9 +35,14 @@ typedef struct {
 
 static mu_bcast_subscriber_t s_subscribers[N_SUBSCRIBERS];
 
-const mu_bcast_channel_t CHAN_A = MU_BCAST_CH_MIN;
-const mu_bcast_channel_t CHAN_B = CHAN_A + 1;
-const mu_bcast_channel_t CHAN_C = CHAN_B + 1;
+// ARM compiler complains that CHAN_A + 1 is not constant
+// const mu_bcast_channel_t CHAN_A = MU_BCAST_CH_MIN;
+// const mu_bcast_channel_t CHAN_B = CHAN_A + 1;
+// const mu_bcast_channel_t CHAN_C = CHAN_B + 1;
+
+#define CHAN_A (MU_BCAST_CH_MIN)
+#define CHAN_B (CHAN_A + 1)
+#define CHAN_C (CHAN_B + 1)
 
 const uintptr_t BCAST_ARG = (uintptr_t)123;
 

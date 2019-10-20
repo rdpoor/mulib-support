@@ -27,8 +27,8 @@
 
 #include "mu_sched.h"
 #include "mu_ring.h"
+#include "mu_time.h"
 #include "test_utilities.h"
-#include <signal.h>
 
 // =============================================================================
 // private types and definitions
@@ -44,10 +44,10 @@
 static void test_reset();
 
 /**
- * Use a simulated clock for the scheduler instead of `port_time_now()`.
+ * Use a simulated clock for the scheduler instead of `mu_time_now()`.
  * At each call to the idle task, time increments by one unit.
  */
-static port_time_t now_fn();
+static mu_time_t now_fn();
 
 /**
  * Called whenever the scheduler has nothing else to do.  In our test
@@ -69,7 +69,7 @@ static void queue_deferred_from_interrupt(int s);
 
 static mu_sched_t s_sched;
 static mu_ring_obj_t s_isr_queue_pool[ISR_QUEUE_POOL_SIZE];
-static port_time_t s_time = 0;
+static mu_time_t s_time = 0;
 static int s_fn1_call_count;
 static int s_fn2_call_count;
 static int s_fn3_call_count;
@@ -90,25 +90,6 @@ void mu_sched_test() {
   mu_task_t idle_task = {.fn = idle_task_fn, .self = NULL};
   mu_evt_t evt1, evt2, evt3;
 
-  // set up to catch SIGUSR1 and SIGUSR2 interrupts (to be generated from
-  // within the debugger).  SIGUSR1 will call queue_immed_from_interrupt() and
-  // SIGUSR2 will call queue_deferred_from_interrupt().  The point of this is
-  // that you can intiate an event from any point in the code to make sure that
-  // it handles interrupts properly.
-
-  struct sigaction sigUser1Handler;
-  struct sigaction sigUser2Handler;
-
-  sigUser1Handler.sa_handler = queue_immed_from_interrupt;
-  sigemptyset(&sigUser1Handler.sa_mask);
-  sigUser1Handler.sa_flags = 0;
-  sigaction(SIGUSR1, &sigUser1Handler, NULL);
-
-  sigUser2Handler.sa_handler = queue_deferred_from_interrupt;
-  sigemptyset(&sigUser2Handler.sa_mask);
-  sigUser2Handler.sa_flags = 0;
-  sigaction(SIGUSR2, &sigUser2Handler, NULL);
-
   mu_sched_init(s, s_isr_queue_pool, ISR_QUEUE_POOL_SIZE);
   mu_sched_set_clock_source(s, now_fn); // use simulated clock
   mu_sched_set_idle_task(s, &idle_task);
@@ -119,74 +100,74 @@ void mu_sched_test() {
 
   // with no runnable task, sched_step() runs the idle task once
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 1));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 1));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   // schedule fn1 for time=2.  pass the evt1 object as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_evt_init_at(&evt1, (port_time_t)2, fn1, &evt1, "E1")),
+    mu_sched_queue(s, mu_evt_init_at(&evt1, (mu_time_t)2, fn1, &evt1, "E1")),
     MU_SCHED_ERR_NONE);
 
   // schedule fn2 for time=10.  This is not recommended practice, but for
   // testing, we pass _evt1_ as the "self" argument for the event. We will
   // use that argument in fn2 to remove evt1 from the schedule.  See fn2().
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_evt_init_at(&evt2, (port_time_t)10, fn2, &evt1, "E2")),
+    mu_sched_queue(s, mu_evt_init_at(&evt2, (mu_time_t)10, fn2, &evt1, "E2")),
     MU_SCHED_ERR_NONE);
 
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), false);
 
   // step again: fn1 doesn't trigger yet
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 2));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 2));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   // ... but now it does.  assure that fn1 ran instead of the idle task
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 2));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 2));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   // step three more times to make fn1 trigger again...
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 3));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 3));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 4));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 4));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 5));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 5));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   // fn1 should trigger again instead of idle task
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 5));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 5));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 2);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 6));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 6));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 2);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
   // schedule fn3 as an immediate task.  pass evt3 as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_evt_init_immed(&evt3, fn3, &evt3, "E3")),
+    mu_sched_queue(s, mu_evt_init_immed(&evt3, fn3, &evt3, "E3")),
     MU_SCHED_ERR_NONE);
 
   // now there are three events in the scheduler
@@ -194,45 +175,45 @@ void mu_sched_test() {
 
   // assure that fn3 ran rather than the idle task
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 6));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 6));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 2);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
   // stepping, stepping...
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 7));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 7));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 2);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 8));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 8));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 2);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 8));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 8));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 3);      // boom!
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 9));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 9));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 3);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 10));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 10));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 3);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
   // now evt2 will trigger and remove evt1 from the queue
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 10));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 10));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 3);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);      // fn2 fired (and removes evt1)
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
@@ -241,7 +222,7 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), true);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 11));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 11));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 3);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
@@ -249,7 +230,7 @@ void mu_sched_test() {
   // Normally evt1 would have triggered here.  But since it was
   // removed, the idle task runs instead.
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 12));
+  UTEST_ASSERT(mu_time_is_equal(s_time, 12));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 3);
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
@@ -259,27 +240,27 @@ void mu_sched_test() {
   queue_immed_from_interrupt(0);     // fires immediately
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 12)); // idle task has not run
+  UTEST_ASSERT(mu_time_is_equal(s_time, 12)); // idle task has not run
   UTEST_ASSERTEQ_INT(s_iisr_call_count, 1);
   UTEST_ASSERTEQ_INT(s_disr_call_count, 0);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 13)); // idle task ran
+  UTEST_ASSERT(mu_time_is_equal(s_time, 13)); // idle task ran
   UTEST_ASSERTEQ_INT(s_iisr_call_count, 1);
   UTEST_ASSERTEQ_INT(s_disr_call_count, 0);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 14)); // idle task ran
+  UTEST_ASSERT(mu_time_is_equal(s_time, 14)); // idle task ran
   UTEST_ASSERTEQ_INT(s_iisr_call_count, 1);
   UTEST_ASSERTEQ_INT(s_disr_call_count, 0);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 14)); // idle task has not run
+  UTEST_ASSERT(mu_time_is_equal(s_time, 14)); // idle task has not run
   UTEST_ASSERTEQ_INT(s_iisr_call_count, 1);
   UTEST_ASSERTEQ_INT(s_disr_call_count, 1);     // dirq ran instead...
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
-  UTEST_ASSERT(port_time_is_equal(s_time, 15)); // idle task ran
+  UTEST_ASSERT(mu_time_is_equal(s_time, 15)); // idle task ran
   UTEST_ASSERTEQ_INT(s_iisr_call_count, 1);
   UTEST_ASSERTEQ_INT(s_disr_call_count, 1);
 
@@ -299,10 +280,10 @@ static void test_reset() {
 }
 
 /**
- * Use a simulated clock for the scheduler instead of `port_time_now()`.
+ * Use a simulated clock for the scheduler instead of `mu_time_now()`.
  * At each call to the idle task, time increments by one unit.
  */
-static port_time_t now_fn() {
+static mu_time_t now_fn() {
   return s_time;
 }
 
@@ -324,8 +305,8 @@ static void fn1(void *self, void *arg) {
   UTEST_ASSERTEQ_PTR(mu_sched_current_event(s), e);
 
   // reschedule in 3 ticks from now
-  e->time = port_time_offset(e->time, (port_time_dt)3);
-  UTEST_ASSERTEQ_INT(mu_sched_add(s, e), MU_SCHED_ERR_NONE);
+  e->time = mu_time_offset(e->time, (mu_time_dt)3);
+  UTEST_ASSERTEQ_INT(mu_sched_queue(s, e), MU_SCHED_ERR_NONE);
 }
 
 static void fn2(void *self, void *arg) {
@@ -360,7 +341,7 @@ static void queue_immed_from_interrupt(int s) {
 static void queue_deferred_from_interrupt(int s) {
   (void)s;
   // set time 2 ticks from now
-  port_time_t t = port_time_offset(mu_sched_get_time(&s_sched), (port_time_t)2);
+  mu_time_t t = mu_time_offset(mu_sched_get_time(&s_sched), (mu_time_t)2);
   mu_evt_init_at(&s_deferred_event, t, disr_fn, NULL, "D");
   mu_sched_from_isr(&s_sched, &s_deferred_event);
 }
