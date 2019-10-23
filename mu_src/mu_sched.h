@@ -54,8 +54,8 @@ typedef mu_time_t (*mu_clock_fn)(void);
 // buffer to queue events produced at interrupt level and consumed at foreground
 // level.
 //
-// So mu_sched_from_isr() will push an event on the queue.  Then mu_sched_step()
-// move any events from the queue and add them to the regular scheduler list
+// mu_sched_queue_from_isr() pushes an event on the queue, then mu_sched_step()
+// moves any events from the queue and adds them to the regular scheduler list
 // before processing.
 
 typedef struct {
@@ -98,7 +98,7 @@ mu_sched_err_t mu_sched_queue(mu_sched_t *sched, mu_evt_t *event);
 
 mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_evt_t *evt);
 
-mu_sched_err_t mu_sched_from_isr(mu_sched_t *sched, mu_evt_t *event);
+mu_sched_err_t mu_sched_queue_from_isr(mu_sched_t *sched, mu_evt_t *event);
 
 #ifdef __cplusplus
 }

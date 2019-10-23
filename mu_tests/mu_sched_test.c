@@ -335,7 +335,7 @@ static void disr_fn(void *self, void *arg) {
 static void queue_immed_from_interrupt(int s) {
   (void)s;
   mu_evt_init_immed(&s_immed_event, iisr_fn, NULL, "I");
-  mu_sched_from_isr(&s_sched, &s_immed_event);
+  mu_sched_queue_from_isr(&s_sched, &s_immed_event);
 }
 
 static void queue_deferred_from_interrupt(int s) {
@@ -343,5 +343,5 @@ static void queue_deferred_from_interrupt(int s) {
   // set time 2 ticks from now
   mu_time_t t = mu_time_offset(mu_sched_get_time(&s_sched), (mu_time_t)2);
   mu_evt_init_at(&s_deferred_event, t, disr_fn, NULL, "D");
-  mu_sched_from_isr(&s_sched, &s_deferred_event);
+  mu_sched_queue_from_isr(&s_sched, &s_deferred_event);
 }

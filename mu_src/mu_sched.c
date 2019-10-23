@@ -211,7 +211,7 @@ mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_evt_t *evt) {
   return MU_SCHED_ERR_NONE;
 }
 
-mu_sched_err_t mu_sched_from_isr(mu_sched_t *sched, mu_evt_t *event) {
+mu_sched_err_t mu_sched_queue_from_isr(mu_sched_t *sched, mu_evt_t *event) {
   mu_ring_t *q = &(sched->isr_queue);
 
   mu_ring_err_t err = mu_ring_put(q, event);
