@@ -11,8 +11,8 @@ typedef struct {
 
   struct io_descriptor *uart_io;
   struct usart_async_status uart_status;
-  mu_evt_t tx_notification_evt;
-  mu_evt_t rx_notification_evt;
+  mu_task_t tx_notification_evt;
+  mu_task_t rx_notification_evt;
   volatile bool is_tx_pending;
 } mu_uart_proc_t;
 

@@ -43,7 +43,7 @@ static void err_cb(const struct usart_async_descriptor *const descr);
  * This means that you cannot dynamically update the callback function or
  * argument (thought it's rare that you'd want to...)
  *
- * Design note: we could have the user pass in mu_evt_t objects instead.
+ * Design note: we could have the user pass in mu_task_t objects instead.
  */
 mu_uart_proc_err_t mu_uart_proc_init(mu_uart_proc_t *proc,
                                      mu_sched_t *scheduler,
@@ -58,11 +58,11 @@ mu_uart_proc_err_t mu_uart_proc_init(mu_uart_proc_t *proc,
   // bridge the two: At interrupt level, we queue tx_notification with the
   // scheduler.  At foreground level, the next time the scheduler runs, it will
   // call tx_notification, which in turn will call the user's tx_callback.
-  mu_evt_init_immed(&(proc->tx_notification_evt),
+  mu_task_init_immed(&(proc->tx_notification_evt),
                     tx_callback ? tx_callback->fn : NULL,
                     tx_callback ? tx_callback->self : NULL,
                     "TX_CALLBACK");
-  mu_evt_init_immed(&(proc->rx_notification_evt),
+  mu_task_init_immed(&(proc->rx_notification_evt),
                     rx_callback ? rx_callback->fn : NULL,
                     rx_callback ? rx_callback->self : NULL,
                     "RX_CALLBACK");
@@ -82,11 +82,11 @@ struct usart_async_descriptor *mu_uart_proc_uart_descriptor(mu_uart_proc_t *proc
 }
 
 mu_task_t *mu_uart_proc_tx_callback(mu_uart_proc_t *proc) {
-  return mu_evt_task(&(proc->tx_notification_evt));
+  return mu_task_task(&(proc->tx_notification_evt));
 }
 
 mu_task_t *mu_uart_proc_rx_callback(mu_uart_proc_t *proc) {
-  return  mu_evt_task(&(proc->rx_notification_evt));
+  return  mu_task_task(&(proc->rx_notification_evt));
 }
 
 mu_uart_proc_err_t mu_uart_proc_start(mu_uart_proc_t *proc) {

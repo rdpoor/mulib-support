@@ -32,10 +32,10 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_time.h"
-#include "mu_evt.h"
+#include "mu_task.h"
 #include "mu_ring.h"
 #include "mu_task.h"
+#include "mu_time.h"
 #include <stdbool.h>
 
 // =============================================================================
@@ -50,20 +50,20 @@ typedef enum {
 // Signature for clock source function.  Returns the current time.
 typedef mu_time_t (*mu_clock_fn)(void);
 
-// To handle events from interrupt level, we use a thread-safe mu_ring circular
-// buffer to queue events produced at interrupt level and consumed at foreground
+// To handle tasks from interrupt level, we use a thread-safe mu_ring circular
+// buffer to queue tasks produced at interrupt level and consumed at foreground
 // level.
 //
-// mu_sched_queue_from_isr() pushes an event on the queue, then mu_sched_step()
-// moves any events from the queue and adds them to the regular scheduler list
+// mu_sched_queue_from_isr() pushes an task on the queue, then mu_sched_step()
+// moves any tasks from the queue and adds them to the regular scheduler list
 // before processing.
 
 typedef struct {
-  mu_evt_t *events;          // a linked list of events
-  mu_ring_t isr_queue;       // interrupt-safe queue of events to be added
+  mu_task_t *tasks;    // a linked list of tasks
+  mu_ring_t isr_queue; // interrupt-safe queue of tasks to be added
   mu_clock_fn clock_source;
   mu_task_t *idle_task;
-  mu_evt_t *current_event;
+  mu_task_t *current_task;
 } mu_sched_t;
 
 // =============================================================================
@@ -82,23 +82,23 @@ mu_sched_t *mu_sched_set_idle_task(mu_sched_t *sched, mu_task_t *idle_task);
 
 bool mu_sched_is_empty(mu_sched_t *sched);
 
-bool mu_sched_has_event(mu_sched_t *sched, mu_evt_t *event);
+bool mu_sched_has_task(mu_sched_t *sched, mu_task_t *task);
 
 unsigned int mu_sched_task_count(mu_sched_t *sched);
 
-mu_evt_t *mu_sched_get_events(mu_sched_t *sched);
+mu_task_t *mu_sched_get_tasks(mu_sched_t *sched);
 
 mu_sched_err_t mu_sched_step(mu_sched_t *sched);
 
 mu_time_t mu_sched_get_time(mu_sched_t *sched);
 
-mu_evt_t *mu_sched_current_event(mu_sched_t *sched);
+mu_task_t *mu_sched_current_task(mu_sched_t *sched);
 
-mu_sched_err_t mu_sched_queue(mu_sched_t *sched, mu_evt_t *event);
+mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_task_t *task);
 
-mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_evt_t *evt);
+mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_task_t *evt);
 
-mu_sched_err_t mu_sched_queue_from_isr(mu_sched_t *sched, mu_evt_t *event);
+mu_sched_err_t mu_sched_add_from_isr(mu_sched_t *sched, mu_task_t *task);
 
 #ifdef __cplusplus
 }

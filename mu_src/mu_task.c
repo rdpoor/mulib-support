@@ -22,28 +22,88 @@
  * SOFTWARE.
  */
 
-#include "mu_task.h"
-#if (MU_TASK_PROFILING)
-#include "mu_time.h"
-#endif
-#include <stddef.h>
-#include <stdio.h>
+// =============================================================================
+// includes
 
-mu_task_t *mu_task_init(mu_task_t *task,
-                        mu_task_fn fn,
-                        void *self,
-                        const char *name) {
-  task->fn = fn;
-  task->self = self;
-#if (MU_TASK_PROFILING)
-  task->name = name;
-  task->call_count = 0;
-  task->runtime = 0;
-  task->max_latency = 0;
-#else
-  (void)name;
-#endif
+#include "mu_task.h"
+#include "mu_time.h"
+#include <stddef.h>
+
+// =============================================================================
+// private types and definitions
+
+// =============================================================================
+// private declarations
+
+static mu_task_t *init_task(mu_task_t *task,
+                            bool is_immediate,
+                            mu_time_t time,
+                            mu_task_fn fn,
+                            void *self,
+                            const char *name);
+
+// =============================================================================
+// local storage
+
+// =============================================================================
+// public code
+
+mu_task_t *mu_task_init_immed(mu_task_t *task,
+                            mu_task_fn fn,
+                            void *self,
+                            const char *name) {
+  return init_event(task, true, 0, fn, self, name);
+}
+
+mu_task_t *mu_task_init_at(mu_task_t *task,
+                         mu_time_t time,
+                         mu_task_fn fn,
+                         void *self,
+                         const char *name) {
+  return init_event(task, false, time, fn, self, name);
+}
+
+bool mu_task_is_immediate(mu_task_t *task) { return task->is_immediate; }
+
+mu_task_t *mu_task_set_immediate(mu_task_t *task) {
+  task->is_immediate = true;
+  task->time = 0;
   return task;
+}
+
+mu_time_t mu_task_time(mu_task_t *task) { return task->time; }
+
+// Set the event's time to t
+mu_task_t *mu_task_set_time(mu_task_t *task, mu_time_t time) {
+  task->is_immediate = false;
+  task->time = time;
+  return task;
+}
+
+// Advance the event's time by dt
+mu_task_t *mu_task_advance_time(mu_task_t *task, mu_time_dt dt) {
+  task->time = mu_time_offset(task->time, dt);
+  return task;
+}
+
+bool mu_task_is_after(mu_task_t *t1, mu_task_t *t2) {
+  if (mu_task_is_immediate(t1)) {
+    return false;
+  } else if (mu_task_is_immediate(t2)) {
+    return true;
+  } else {
+    return mu_time_is_after(mu_task_time(t1), mu_task_time(t2));
+  }
+}
+
+bool mu_task_is_runnable(mu_task_t *task, mu_time_t at) {
+  if (mu_task_is_immediate(task)) {
+    return true;
+  } else if (!mu_time_is_before(at, mu_task_time(task))) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void mu_task_call(mu_task_t *task, void *arg) {
@@ -60,7 +120,6 @@ void mu_task_call(mu_task_t *task, void *arg) {
   duration = mu_time_difference(mu_time_now(), called_at);
   task->runtime += duration;
   if (duration > task->max_latency) task->max_latency = duration;
-  asm("nop");
 #endif
 }
 
@@ -82,14 +141,30 @@ mu_time_seconds_t mu_task_max_latency(mu_task_t *task) {
   return mu_time_duration_to_seconds(task->max_latency);
 }
 
-void mu_task_print(mu_task_t *task, char *buf, int buflen) {
-  snprintf(buf, buflen, "%s: %d %f\n",
-           mu_task_name(task),
-           mu_task_call_count(task),
-           mu_task_runtime(task));
-}
-
 #endif
 
 // =============================================================================
 // private functions
+
+
+static mu_task_t *init_task(mu_task_t *task,
+                            bool is_immediate,
+                            mu_time_t time,
+                            mu_task_fn fn,
+                            void *self,
+                            const char *name) {
+  task->next = NULL;
+  task->is_immediate = is_immediate;
+  task->time = time;
+  task->fn = fn;
+  task->self = self;
+#if (MU_TASK_PROFILING)
+  task->name = name;
+  task->call_count = 0;
+  task->runtime = 0;
+  task->max_latency = 0;
+#else
+  (void)name;
+#endif
+  return task;
+}

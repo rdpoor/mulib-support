@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef mu_task_H_
-#define mu_task_H_
+#ifndef MU_TASK_H_
+#define MU_TASK_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,9 +44,12 @@ extern "C" {
 // Ths signature of o mu_task function.
 typedef void (*mu_task_fn)(void *self, void *arg);
 
-typedef struct {
+typedef struct _mu_task {
+  struct _mu_task *next;  // link to next older event
   mu_task_fn fn;
   void *self;
+  mu_time_t time;          // time of this event (ignored if is_immediate)
+  bool is_immediate;       // true if this event is scheduled for "now".
 #if (MU_TASK_PROFILING)
   const char *name;
   unsigned int call_count;
@@ -55,10 +58,32 @@ typedef struct {
 #endif
 } mu_task_t;
 
-mu_task_t *mu_task_init(mu_task_t *task,
-                        mu_task_fn fn,
-                        void *self,
-                        const char *name);
+mu_task_t *mu_task_init_immed(mu_task_t *task,
+                            mu_task_fn fn,
+                            void *self,
+                            const char *name);
+
+mu_task_t *mu_task_init_at(mu_task_t *task,
+                         mu_time_t time,
+                         mu_task_fn fn,
+                         void *self,
+                         const char *name);
+
+bool mu_task_is_immediate(mu_task_t *task);
+
+mu_task_t *mu_task_set_immediate(mu_task_t *task);
+
+mu_task_t *mu_task_set_time(mu_task_t *task, mu_time_t time);
+
+// Offset the event's time by dt
+mu_task_t *mu_task_advance_time(mu_task_t *task, mu_time_dt dt);
+
+mu_time_t mu_task_time(mu_task_t *task);
+
+// Return true if t1 occurs after t2
+bool mu_task_is_after(mu_task_t *t1, mu_task_t *t2);
+
+bool mu_task_is_runnable(mu_task_t *task, mu_time_t at);
 
 void mu_task_call(mu_task_t *task, void *arg);
 
@@ -72,12 +97,10 @@ mu_time_seconds_t mu_task_runtime(mu_task_t *task);
 
 mu_time_seconds_t mu_task_max_latency(mu_task_t *task);
 
-void mu_task_print(mu_task_t *task, char *buf, int buflen);
-
 #endif
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef mu_task_H_
+#endif // #ifndef MU_TASK_H_

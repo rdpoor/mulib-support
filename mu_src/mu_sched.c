@@ -28,7 +28,6 @@
 #include "mu_assert.h"
 #include "mu_sched.h"
 #include "mu_port.h"
-#include "mu_evt.h"
 #include "mu_ring.h"
 #include "mu_task.h"
 #include <stdbool.h>
@@ -40,13 +39,13 @@
 // =============================================================================
 // private declarations
 
-static mu_evt_t *remove_runnable_event(mu_sched_t *sched, mu_time_t now);
+static mu_task_t *remove_runnable_task(mu_sched_t *sched, mu_time_t now);
 
-// Transfer ISR-initiated events from the ISR queue to the schedule
+// Transfer ISR-initiated tasks from the ISR queue to the schedule
 static void process_isr_queue(mu_sched_t *sched);
 
-// Return true if evt is in the list of scheduled events
-static bool is_scheduled(mu_sched_t *sched, mu_evt_t *evt);
+// Return true if task is in the list of scheduled tasks
+static bool is_scheduled(mu_sched_t *sched, mu_task_t *task);
 
 // =============================================================================
 // local storage
@@ -55,14 +54,14 @@ static bool is_scheduled(mu_sched_t *sched, mu_evt_t *evt);
 // public code
 
 mu_sched_t *mu_sched_init(mu_sched_t *sched,
-                          mu_ring_obj_t *isr_queue_pool,
-                          unsigned int isr_queue_pool_size) {
+                          mu_ring_obj_t *isr_task_pool,
+                          unsigned int isr_task_pool_size) {
   mu_ring_err_t err;
   mu_ring_t *q = &(sched->isr_queue);
 
   (void)err;
-  sched->events = (mu_evt_t *)NULL;     // event queue starts out empty
-  err = mu_ring_init(q, isr_queue_pool, isr_queue_pool_size);
+  sched->tasks = (mu_task_t *)NULL;     // task queue starts out empty
+  err = mu_ring_init(q, isr_task_pool, isr_task_pool_size);
   MU_ASSERT(err == MU_RING_ERR_NONE);
   sched->clock_source = mu_time_now;  // default clock source
   sched->idle_task = NULL;
@@ -70,16 +69,16 @@ mu_sched_t *mu_sched_init(mu_sched_t *sched,
 }
 
 mu_sched_t *mu_sched_reset(mu_sched_t *sched) {
-  mu_evt_t *evt;
+  mu_task_t *task;
 
-  while ((evt = sched->events) != NULL) {
-    sched->events = evt->next;
-    evt->next = NULL;
+  while ((task = sched->tasks) != NULL) {
+    sched->tasks = task->next;
+    task->next = NULL;
   }
 
-  if (sched->current_event) {
-    sched->current_event->next = NULL;
-    sched->current_event = NULL;
+  if (sched->current_task) {
+    sched->current_task->next = NULL;
+    sched->current_task = NULL;
   }
 
   mu_ring_reset(&(sched->isr_queue));
@@ -99,48 +98,48 @@ mu_sched_t *mu_sched_set_idle_task(mu_sched_t *sched, mu_task_t *idle_task) {
 }
 
 bool mu_sched_is_empty(mu_sched_t *sched) {
-  return sched->events == (mu_evt_t *)NULL;
+  return sched->tasks == (mu_task_t *)NULL;
 }
 
-bool mu_sched_has_event(mu_sched_t *sched, mu_evt_t *event) {
-	mu_evt_t *evts = mu_sched_get_events(sched);
-	while(evts) {
-		if (evts == event) return true;
-		evts = evts->next;
+bool mu_sched_has_task(mu_sched_t *sched, mu_task_t *task) {
+	mu_task_t *tasks = mu_sched_get_tasks(sched);
+	while(tasks) {
+		if (tasks == task) return true;
+		tasks = tasks->next;
 	}
 	return false;
 }
 
 unsigned int mu_sched_task_count(mu_sched_t *sched) {
 	unsigned int count = 0;
-	mu_evt_t *evts = mu_sched_get_events(sched);
-	while(evts) {
+	mu_task_t *tasks = mu_sched_get_tasks(sched);
+	while(tasks) {
 		count += 1;
-    evts = evts->next;
+    tasks = tasks->next;
 	}
 	return count;
 }
 
-mu_evt_t *mu_sched_get_events(mu_sched_t *sched) {
-	return sched->events;
+mu_task_t *mu_sched_get_tasks(mu_sched_t *sched) {
+	return sched->tasks;
 }
 
 mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
-  mu_evt_t *runnable;
+  mu_task_t *runnable;
   mu_time_t now = mu_sched_get_time(sched);
 
-  // add any events that have arrived on the ISR queue
+  // add any tasks that have arrived on the ISR queue
   process_isr_queue(sched);
 
-  if ((runnable = remove_runnable_event(sched, now)) != NULL) {
-    // We've found an event that's runnable and have removed it from the
-    // event queue.  Set current event and call the task.
-    sched->current_event = runnable;
-    mu_evt_call(runnable, sched);
-    sched->current_event = NULL;
+  if ((runnable = remove_runnable_task(sched, now)) != NULL) {
+    // We've found an task that's runnable and have removed it from the
+    // task queue.  Set current task and call the task.
+    sched->current_task = runnable;
+    mu_task_call(runnable, sched);
+    sched->current_task = NULL;
 
   } else {
-    // Nothing ready to run.  Call the idle task.  NOTE: mu_evt_call() handles
+    // Nothing ready to run.  Call the idle task.  NOTE: mu_task_call() handles
     // the case that sched->idle_task is null, so we don't need to check.
     mu_task_call(sched->idle_task, sched);
   }
@@ -151,70 +150,70 @@ mu_time_t mu_sched_get_time(mu_sched_t *sched) {
   return sched->clock_source();
 }
 
-mu_evt_t *mu_sched_current_event(mu_sched_t *sched) {
-  return sched->current_event;
+mu_task_t *mu_sched_current_task(mu_sched_t *sched) {
+  return sched->current_task;
 }
 
-mu_sched_err_t mu_sched_queue(mu_sched_t *sched, mu_evt_t *event) {
-  if (is_scheduled(sched, event)) {
-    // If you schedule an event that's already in the schedule, you get a
+mu_sched_err_t mu_sched_queue(mu_sched_t *sched, mu_task_t *task) {
+  if (is_scheduled(sched, task)) {
+    // If you schedule an task that's already in the schedule, you get a
     // circular list.  Since traversing the list adds time, a future version
-    // might set a bit in the event to indicate if it's in the schedule or not.
+    // might set a bit in the task to indicate if it's in the schedule or not.
     asm("nop");
 
-  } else if (mu_evt_is_immediate(event)) {
-    // push onto head of event list
-    event->next = sched->events;
-    sched->events = event;
+  } else if (mu_task_is_immediate(task)) {
+    // push onto head of task list
+    task->next = sched->tasks;
+    sched->tasks = task;
 
   } else {
     // run down the linked list until we find the insertion point.
-    mu_evt_t *prev = NULL;
-    mu_evt_t *curr = sched->events;
-    while (curr && mu_evt_is_after(event, curr)) {
+    mu_task_t *prev = NULL;
+    mu_task_t *curr = sched->tasks;
+    while (curr && mu_task_is_after(task, curr)) {
       prev = curr;
       curr = curr->next;
     }
     // endgame: if prev is null, insert at head.  else insert after prev
-    event->next = curr;
+    task->next = curr;
     if (prev == NULL) {
-      sched->events = event;
+      sched->tasks = task;
     } else {
-      prev->next = event;
+      prev->next = task;
     }
   }
   return MU_SCHED_ERR_NONE;
 }
 
-mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_evt_t *evt) {
-  mu_evt_t *prev = NULL;
-  mu_evt_t *curr = sched->events;
-  while((curr != NULL) && (curr != evt)) {
+mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_task_t *task) {
+  mu_task_t *prev = NULL;
+  mu_task_t *curr = sched->tasks;
+  while((curr != NULL) && (curr != task)) {
     prev = curr;
     curr = curr->next;
   }
   // endgame
   if (curr == NULL) {
-    // ran out of list without finding evt
+    // ran out of list without finding task
     return MU_SCHED_ERR_NOT_FOUND;
 
   } else if (prev == NULL) {
     // delete from head of list
-    sched->events = curr->next;
+    sched->tasks = curr->next;
 
   } else {
     // delete from mid-list
     prev->next = curr->next;
   }
 
-  evt->next = NULL; // tidy up.
+  task->next = NULL; // tidy up.
   return MU_SCHED_ERR_NONE;
 }
 
-mu_sched_err_t mu_sched_queue_from_isr(mu_sched_t *sched, mu_evt_t *event) {
+mu_sched_err_t mu_sched_queue_from_isr(mu_sched_t *sched, mu_task_t *task) {
   mu_ring_t *q = &(sched->isr_queue);
 
-  mu_ring_err_t err = mu_ring_put(q, event);
+  mu_ring_err_t err = mu_ring_put(q, task);
   (void)err;
   MU_ASSERT(err == MU_RING_ERR_NONE);
   return MU_SCHED_ERR_NONE;
@@ -223,46 +222,46 @@ mu_sched_err_t mu_sched_queue_from_isr(mu_sched_t *sched, mu_evt_t *event) {
 // =============================================================================
 // private code
 
-// Find the "soonest" runnable event, remove it and return it.  If nothing
+// Find the "soonest" runnable task, remove it and return it.  If nothing
 // is runnable, return NULL.
 //
-// Since the event list is always sorted with the "soonest" event first, we
+// Since the task list is always sorted with the "soonest" task first, we
 // only need to check the first element.  Fast.
-static mu_evt_t *remove_runnable_event(mu_sched_t *sched, mu_time_t now) {
-  mu_evt_t *curr = sched->events;
+static mu_task_t *remove_runnable_task(mu_sched_t *sched, mu_time_t now) {
+  mu_task_t *curr = sched->tasks;
 
   if (curr == NULL) {
-    // no events
+    // no tasks
     return NULL;
 
-  } else if (!mu_evt_is_runnable(curr, now)) {
-    // first event not (yet) runnable
+  } else if (!mu_task_is_runnable(curr, now)) {
+    // first task not (yet) runnable
     return NULL;
 
   } else {
     // first element is runnable.  pop and return.
-    sched->events = curr->next;
+    sched->tasks = curr->next;
     curr->next = NULL;
     return curr;
   }
 }
 
-// slurp any events that have been added to the ISR queue and add them to the
-// scheduler's event list.
+// slurp any tasks that have been added to the ISR queue and add them to the
+// scheduler's task list.
 static void process_isr_queue(mu_sched_t *sched) {
-  mu_evt_t *evt;
+  mu_task_t *task;
   mu_ring_t *q = &(sched->isr_queue);
 
-  while (MU_RING_ERR_NONE == mu_ring_get(q, (mu_ring_obj_t *)(&evt))) {
-    mu_sched_queue(sched, evt);
+  while (MU_RING_ERR_NONE == mu_ring_get(q, (mu_ring_obj_t *)(&task))) {
+    mu_sched_queue(sched, task);
   }
 }
 
-// Return true if evt is present in the scheduled events.
-static bool is_scheduled(mu_sched_t *sched, mu_evt_t *evt) {
-  mu_evt_t *curr = sched->events;
+// Return true if task is present in the scheduled tasks.
+static bool is_scheduled(mu_sched_t *sched, mu_task_t *task) {
+  mu_task_t *curr = sched->tasks;
   while (curr) {
-    if (curr == evt) return true;
+    if (curr == task) return true;
     curr = curr->next;
   }
   return false;

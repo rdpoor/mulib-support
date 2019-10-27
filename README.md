@@ -33,7 +33,7 @@ Low-overhead publish / subscribe message passing.
 
 Status: Passing Tests.
 
-### mu_evt
+### mu_task
 
 Event handling.  Associates a `mu_time` with a `mu_task` (q.v.).
 
