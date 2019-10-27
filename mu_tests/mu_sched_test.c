@@ -76,8 +76,8 @@ static int s_fn3_call_count;
 static int s_iisr_call_count;
 static int s_disr_call_count;
 
-static mu_task_t s_immed_event;
-static mu_task_t s_deferred_event;
+static mu_task_t s_immed_task;
+static mu_task_t s_deferred_task;
 
 // =============================================================================
 // public code
@@ -107,14 +107,14 @@ void mu_sched_test() {
 
   // schedule fn1 for time=2.  pass the evt1 object as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_queue(s, mu_task_init_at(&evt1, (mu_time_t)2, fn1, &evt1, "E1")),
+    mu_sched_add(s, mu_task_init_at(&evt1, (mu_time_t)2, fn1, &evt1, "E1")),
     MU_SCHED_ERR_NONE);
 
   // schedule fn2 for time=10.  This is not recommended practice, but for
-  // testing, we pass _evt1_ as the "self" argument for the event. We will
+  // testing, we pass _evt1_ as the "self" argument for the task. We will
   // use that argument in fn2 to remove evt1 from the schedule.  See fn2().
   UTEST_ASSERTEQ_INT(
-    mu_sched_queue(s, mu_task_init_at(&evt2, (mu_time_t)10, fn2, &evt1, "E2")),
+    mu_sched_add(s, mu_task_init_at(&evt2, (mu_time_t)10, fn2, &evt1, "E2")),
     MU_SCHED_ERR_NONE);
 
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), false);
@@ -167,10 +167,10 @@ void mu_sched_test() {
 
   // schedule fn3 as an immediate task.  pass evt3 as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_queue(s, mu_task_init_immed(&evt3, fn3, &evt3, "E3")),
+    mu_sched_add(s, mu_task_init_immed(&evt3, fn3, &evt3, "E3")),
     MU_SCHED_ERR_NONE);
 
-  // now there are three events in the scheduler
+  // now there are three tasks in the scheduler
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), false);
 
   // assure that fn3 ran rather than the idle task
@@ -218,7 +218,7 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);      // fn2 fired (and removes evt1)
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
-  // now there are no events in the scheduler
+  // now there are no tasks in the scheduler
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), true);
 
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
@@ -235,7 +235,7 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
-  // Assure ISR queued events are properly managed
+  // Assure ISR queued tasks are properly managed
   queue_deferred_from_interrupt(0);  // fires at now + 2
   queue_immed_from_interrupt(0);     // fires immediately
 
@@ -297,16 +297,16 @@ static void idle_task_fn(void *self, void *arg) {
 }
 
 static void fn1(void *self, void *arg) {
-  mu_task_t *e = (mu_task_t *)self;    // event is passed as *self
+  mu_task_t *e = (mu_task_t *)self;    // task is passed as *self
   mu_sched_t *s = (mu_sched_t *)arg; // sched is passed as *arg
   s_fn1_call_count += 1;
 
-  // assure that mu_sched_current_event is properly set up.
-  UTEST_ASSERTEQ_PTR(mu_sched_current_event(s), e);
+  // assure that mu_sched_current_task is properly set up.
+  UTEST_ASSERTEQ_PTR(mu_sched_current_task(s), e);
 
   // reschedule in 3 ticks from now
   e->time = mu_time_offset(e->time, (mu_time_dt)3);
-  UTEST_ASSERTEQ_INT(mu_sched_queue(s, e), MU_SCHED_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_sched_add(s, e), MU_SCHED_ERR_NONE);
 }
 
 static void fn2(void *self, void *arg) {
@@ -319,7 +319,7 @@ static void fn2(void *self, void *arg) {
 }
 
 static void fn3(void *self, void *arg) {
-  // mu_task_t *e = (mu_task_t *)self;    // event is passed as *self
+  // mu_task_t *e = (mu_task_t *)self;    // task is passed as *self
   // mu_sched_t *s = (mu_sched_t *)arg; // sched is passed as *arg
   s_fn3_call_count += 1;
 }
@@ -334,14 +334,14 @@ static void disr_fn(void *self, void *arg) {
 
 static void queue_immed_from_interrupt(int s) {
   (void)s;
-  mu_task_init_immed(&s_immed_event, iisr_fn, NULL, "I");
-  mu_sched_queue_from_isr(&s_sched, &s_immed_event);
+  mu_task_init_immed(&s_immed_task, iisr_fn, NULL, "I");
+  mu_sched_add_from_isr(&s_sched, &s_immed_task);
 }
 
 static void queue_deferred_from_interrupt(int s) {
   (void)s;
   // set time 2 ticks from now
   mu_time_t t = mu_time_offset(mu_sched_get_time(&s_sched), (mu_time_t)2);
-  mu_task_init_at(&s_deferred_event, t, disr_fn, NULL, "D");
-  mu_sched_queue_from_isr(&s_sched, &s_deferred_event);
+  mu_task_init_at(&s_deferred_task, t, disr_fn, NULL, "D");
+  mu_sched_add_from_isr(&s_sched, &s_deferred_task);
 }

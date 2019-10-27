@@ -22,49 +22,9 @@
  * SOFTWARE.
  */
 
-#include "mu_task.h"
-#include "test_utilities.h"
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#include "unit_tests.h"
 
-typedef struct {
-  int called;
-} task_state_t;
-
-task_state_t s_t1_self;
-
-void t1_fn(void *self, void *arg) {
-  // on POSIX, can't use sleep or usleep since the cycle timer stops as well.
-  for (int i = 0; i<100000; i++) {
-    asm("nop");
-  }
-  task_state_t *s = (task_state_t *)self;
-  s->called += 1;
-  UTEST_ASSERTEQ_PTR(arg, self);
-}
-
-void mu_task_test() {
-  mu_task_t ti1;
-  mu_task_t *t1 = &ti1;
-  mu_task_t *t2;
-
-  t2 = mu_task_init_immed(t1, t1_fn, &s_t1_self, "Task1");
-
-#if (MU_TASK_PROFILING)
-  UTEST_ASSERTEQ_STR(mu_task_name(t1), "Task1");
-  UTEST_ASSERTEQ_INT(mu_task_call_count(t1), 0);
-  UTEST_ASSERT(mu_task_runtime(t1) == 0.0);
-#endif
-
-  UTEST_ASSERTEQ_PTR(t1, t2);
-  for (int i=0; i<10; i++) {
-    mu_task_call(t1, &s_t1_self);  // for testing assure arg == self
-  }
-
-#if (MU_TASK_PROFILING)
-  UTEST_ASSERTEQ_INT(mu_task_call_count(t1), 10);
-  // not working under POSIX
-  // UTEST_ASSERT(mu_task_runtime(t1) > 0.0);
-#endif
+int main() {
+  unit_tests();
+  return 0;
 }

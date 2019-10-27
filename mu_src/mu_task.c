@@ -25,6 +25,7 @@
 // =============================================================================
 // includes
 
+#include "mu_assert.h"
 #include "mu_task.h"
 #include "mu_time.h"
 #include <stddef.h>
@@ -52,7 +53,7 @@ mu_task_t *mu_task_init_immed(mu_task_t *task,
                             mu_task_fn fn,
                             void *self,
                             const char *name) {
-  return init_event(task, true, 0, fn, self, name);
+  return init_task(task, true, 0, fn, self, name);
 }
 
 mu_task_t *mu_task_init_at(mu_task_t *task,
@@ -60,7 +61,7 @@ mu_task_t *mu_task_init_at(mu_task_t *task,
                          mu_task_fn fn,
                          void *self,
                          const char *name) {
-  return init_event(task, false, time, fn, self, name);
+  return init_task(task, false, time, fn, self, name);
 }
 
 bool mu_task_is_immediate(mu_task_t *task) { return task->is_immediate; }
@@ -73,15 +74,16 @@ mu_task_t *mu_task_set_immediate(mu_task_t *task) {
 
 mu_time_t mu_task_time(mu_task_t *task) { return task->time; }
 
-// Set the event's time to t
+// Set the task's time to t
 mu_task_t *mu_task_set_time(mu_task_t *task, mu_time_t time) {
   task->is_immediate = false;
   task->time = time;
   return task;
 }
 
-// Advance the event's time by dt
+// Advance the task's time by dt
 mu_task_t *mu_task_advance_time(mu_task_t *task, mu_time_dt dt) {
+  MU_ASSERT(task->is_immediate == false);
   task->time = mu_time_offset(task->time, dt);
   return task;
 }

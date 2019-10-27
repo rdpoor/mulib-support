@@ -68,8 +68,8 @@ void mu_bcast_test() {
   mu_bcast_mgr_t mu_bcast_mgr;
 
   // initialize the tasks
-  mu_task_init(&s_task_1, task_1_fn, &s_test_obj_1, "Task 1");
-  mu_task_init(&s_task_2, task_2_fn, &s_test_obj_2, "Task 2");
+  mu_task_init_immed(&s_task_1, task_1_fn, &s_test_obj_1, "Task 1");
+  mu_task_init_immed(&s_task_2, task_2_fn, &s_test_obj_2, "Task 2");
 
   // initialize the bcast manager
   mu_bcast_init(&mu_bcast_mgr, s_subscribers, N_SUBSCRIBERS);

@@ -25,7 +25,8 @@ static void msg_fn_t2(void *self, void *arg) {
   s_msg_t2_called += 1;
 }
 
-void mu_task_test() {
+// historical artifact: move this to mu_task_test.c
+void mu_event_test() {
   mu_task_t event_i, event_t1, event_t2;
   mu_time_t now = mu_time_now();
   mu_time_t then = mu_time_offset(now, mu_time_seconds_to_duration(5.0));

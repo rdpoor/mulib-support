@@ -31,9 +31,7 @@ extern "C" {
 
 #define MU_TASK_PROFILING (1)
 
-#if (MU_TASK_PROFILING)
 #include "mu_time.h"
-#endif
 
 /**
  * A `mu_task` is essentially a function that can be called later.  It comprises
