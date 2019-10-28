@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MU_PORT_H_
-#define MU_PORT_H_
+#ifndef MU_PORT_SLEEP_H_
+#define MU_PORT_SLEEP_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +32,8 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include "mu_port_time.h"
+
 // =============================================================================
 // types and definitions
 
@@ -39,10 +41,14 @@ extern "C" {
 // declarations
 
 // called "very early"
-void mu_port_init();
+void mu_port_sleep_init();
+
+void mu_port_sleep_indefinitely();
+
+void mu_port_sleep_until(mu_port_time_t t);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MU_PORT_H_
+#endif // #ifndef MU_PORT_SLEEP_H_

@@ -27,7 +27,6 @@
 
 #include "mu_assert.h"
 #include "mu_sched.h"
-#include "mu_port.h"
 #include "mu_ring.h"
 #include "mu_task.h"
 #include <stdbool.h>
@@ -43,9 +42,6 @@ static mu_task_t *remove_runnable_task(mu_sched_t *sched, mu_time_t now);
 
 // Transfer ISR-initiated tasks from the ISR queue to the schedule
 static void process_isr_queue(mu_sched_t *sched);
-
-// Return true if task is in the list of scheduled tasks
-static bool is_scheduled(mu_sched_t *sched, mu_task_t *task);
 
 // =============================================================================
 // local storage
@@ -102,7 +98,7 @@ bool mu_sched_is_empty(mu_sched_t *sched) {
 }
 
 bool mu_sched_has_task(mu_sched_t *sched, mu_task_t *task) {
-	mu_task_t *tasks = mu_sched_get_tasks(sched);
+	mu_task_t *tasks = sched->tasks;
 	while(tasks) {
 		if (tasks == task) return true;
 		tasks = tasks->next;
@@ -155,10 +151,9 @@ mu_task_t *mu_sched_current_task(mu_sched_t *sched) {
 }
 
 mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_task_t *task) {
-  if (is_scheduled(sched, task)) {
-    // If you schedule an task that's already in the schedule, you get a
-    // circular list.  Since traversing the list adds time, a future version
-    // might set a bit in the task to indicate if it's in the schedule or not.
+  if (mu_sched_has_task(sched, task)) {
+    // Do not schedule task if already scheduled: it will lead to a circular
+    // list.
     asm("nop");
 
   } else if (mu_task_is_immediate(task)) {
@@ -255,14 +250,4 @@ static void process_isr_queue(mu_sched_t *sched) {
   while (MU_RING_ERR_NONE == mu_ring_get(q, (mu_ring_obj_t *)(&task))) {
     mu_sched_add(sched, task);
   }
-}
-
-// Return true if task is present in the scheduled tasks.
-static bool is_scheduled(mu_sched_t *sched, mu_task_t *task) {
-  mu_task_t *curr = sched->tasks;
-  while (curr) {
-    if (curr == task) return true;
-    curr = curr->next;
-  }
-  return false;
 }

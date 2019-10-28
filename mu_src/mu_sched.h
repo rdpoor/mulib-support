@@ -32,7 +32,6 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_task.h"
 #include "mu_ring.h"
 #include "mu_task.h"
 #include "mu_time.h"
@@ -96,7 +95,7 @@ mu_task_t *mu_sched_current_task(mu_sched_t *sched);
 
 mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_task_t *task);
 
-mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_task_t *evt);
+mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_task_t *task);
 
 mu_sched_err_t mu_sched_add_from_isr(mu_sched_t *sched, mu_task_t *task);
 

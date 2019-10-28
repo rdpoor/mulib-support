@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MU_PORT_H_
-#define MU_PORT_H_
+#ifndef MU_PORT_IOSTREAM_H_
+#define MU_PORT_IOSTREAM_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,6 +31,10 @@ extern "C" {
 
 // =============================================================================
 // includes
+#include <stdint.h>
+#include <stdbool.h>
+#include "mu_iostream.h"
+#include "mu_strbuf.h"
 
 // =============================================================================
 // types and definitions
@@ -38,11 +42,20 @@ extern "C" {
 // =============================================================================
 // declarations
 
-// called "very early"
-void mu_port_init();
+void mu_port_iostream_init(mu_iostream_t *iostream, void *hw);
+
+mu_iostream_err_t mu_port_iostream_write(mu_iostream_t *iostream,
+                                         mu_strbuf_t *sb);
+
+bool mu_port_iostream_write_is_busy(mu_iostream_t *iostream);
+
+mu_iostream_err_t mu_port_iostream_read(mu_iostream_t *iostream,
+                                        mu_strbuf_t *sb);
+
+bool mu_port_iostream_read_is_available(mu_iostream_t *iostream);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MU_PORT_H_
+#endif // #ifndef MU_PORT_IOSTREAM_H_

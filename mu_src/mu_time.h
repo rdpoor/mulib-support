@@ -34,7 +34,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "mu_port.h"
+#include "mu_port_time.h"
 
 // =============================================================================
 // types and definitions

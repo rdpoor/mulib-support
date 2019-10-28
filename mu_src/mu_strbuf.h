@@ -46,12 +46,14 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *str, char *buf, size_t capacity);
-mu_strbuf_t *mu_strbuf_reset(mu_strbuf_t *str);
-size_t mu_strbuf_capacity(mu_strbuf_t *str);
-size_t mu_strbuf_length(mu_strbuf_t *str);
-size_t mu_strbuf_append(mu_strbuf_t *str, const char *fmt, ...);
-char *mu_strbuf_data(mu_strbuf_t *str);
+mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *sb, char *buf, size_t capacity);
+mu_strbuf_t *mu_strbuf_reset(mu_strbuf_t *sb);
+size_t mu_strbuf_capacity(mu_strbuf_t *sb);
+size_t mu_strbuf_length(mu_strbuf_t *sb);
+size_t mu_strbuf_available(mu_strbuf_t *sb);
+size_t mu_strbuf_append(mu_strbuf_t *sb, const char *s);
+size_t mu_strbuf_printf(mu_strbuf_t *sb, const char *fmt, ...);
+char *mu_strbuf_data(mu_strbuf_t *sb);
 
 #ifdef __cplusplus
 }

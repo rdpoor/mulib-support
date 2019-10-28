@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MU_PORT_H_
-#define MU_PORT_H_
+#ifndef MU_PORT_TIME_H_
+#define MU_PORT_TIME_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,18 +31,40 @@ extern "C" {
 
 // =============================================================================
 // includes
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
+
+typedef uint32_t mu_port_time_t;    // an absolute time
+typedef int32_t mu_port_time_dt;   // the interval between two times
+typedef double mu_port_time_seconds_t;
 
 // =============================================================================
 // declarations
 
 // called "very early"
-void mu_port_init();
+void mu_port_time_init();
+
+mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt);
+
+mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2);
+
+bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2);
+
+bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2);
+
+bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2);
+
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_t secs);
+
+mu_port_time_seconds_t mu_port_time_duration_to_seconds(mu_port_time_dt dt);
+
+mu_port_time_t mu_port_time_now();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MU_PORT_H_
+#endif // #ifndef MU_PORT_TIME_H_

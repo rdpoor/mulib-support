@@ -22,27 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef MU_PORT_H_
-#define MU_PORT_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================================
 // includes
 
-// =============================================================================
-// types and definitions
+#include "mu_port_assert.h"
+#include <stdio.h>
 
 // =============================================================================
-// declarations
+// private types and definitions
 
-// called "very early"
-void mu_port_init();
+// =============================================================================
+// private declarations
 
-#ifdef __cplusplus
+// =============================================================================
+// local storage
+
+// =============================================================================
+// public code
+
+void mu_port_assert_init() {
 }
-#endif
 
-#endif // #ifndef MU_PORT_H_
+void mu_port_assert(const bool condition,
+                    const char *const expr,
+                    const char *const file,
+                    const int line) {
+  if (!condition) {
+    printf("Assertion '%s' failed at %s:%d", expr, file, line);
+  }
+}
+
+// =============================================================================
+// private code

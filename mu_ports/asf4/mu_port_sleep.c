@@ -25,10 +25,8 @@
 // =============================================================================
 // includes
 
-#include "mu_strbuf.h"
-#include <stdarg.h>
-#include <string.h>
-#include <stdio.h>
+#include "mu_port_sleep.h"
+#include "driver_init.h"
 
 // =============================================================================
 // private types and definitions
@@ -36,9 +34,9 @@
 // =============================================================================
 // private declarations
 
-#ifndef MIN
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#endif
+static void rtc_callback(struct calendar_dev *const dev);
+static void set_rtc_alarm_for(mu_port_time_t t);
+static void enter_sleep_mode();
 
 // =============================================================================
 // local storage
@@ -46,54 +44,47 @@
 // =============================================================================
 // public code
 
-mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *sb, char *buf, size_t capacity) {
-  sb->data = buf;
-  sb->capacity = capacity-1;  // last byte is always reserved for '\0'
-  buf[sb->capacity] = '\0';
-  return mu_strbuf_reset(sb);
+void mu_port_sleep_init() {
+	calendar_enable(&CALENDAR_0);
+  // see hpl/rtc/hpl_rtc.c -- enables RTC interrupts
+  //
+  // Normally, the CALENDAR object will insert its own callback.  Since we only
+  // use the calendar object for its underlying RTC, we insert our own callback.
+  _calendar_register_callback(&CALENDAR_0.device, rtc_callback);
 }
 
-mu_strbuf_t *mu_strbuf_reset(mu_strbuf_t *sb) {
-  sb->length = 0;
-  sb->data[0] = '\0';
-  return sb;
+void mu_port_sleep_indefinitely() {
+  enter_sleep_mode();
 }
 
-size_t mu_strbuf_capacity(mu_strbuf_t *sb) { return sb->capacity; }
-
-size_t mu_strbuf_length(mu_strbuf_t *sb) {
-  return sb->length;
+void mu_port_sleep_until(mu_port_time_t t) {
+  // TODO: check that t is sufficiently far in the future.
+  set_rtc_alarm_for(t);
+  enter_sleep_mode();
 }
-
-size_t mu_strbuf_available(mu_strbuf_t *sb) {
-  return sb->capacity - sb->length;
-}
-
-size_t mu_strbuf_append(mu_strbuf_t *sb, const char *s) {
-  size_t n_available = mu_strbuf_available(sb);
-  size_t n_written = strlen(s);
-  n_written = MIN(n_written, n_available);
-
-  strncpy(&(sb->data[sb->length]), s, n_written);
-  sb->length += n_written;
-
-  return n_written;
-}
-
-size_t mu_strbuf_printf(mu_strbuf_t *sb, const char *fmt, ...) {
-  va_list ap;
-  size_t n_available = mu_strbuf_available(sb);
-
-  va_start(ap, fmt);
-  // append no more than `available` chars to the end of the buffer
-  int n_written = vsnprintf(&(sb->data[sb->length]), n_available, fmt, ap);
-  va_end(ap);
-
-  sb->length += (n_written < n_available) ? n_written : n_available;
-  return mu_strbuf_length(sb);
-}
-
-char *mu_strbuf_data(mu_strbuf_t *sb) { return sb->data; }
 
 // =============================================================================
 // private code
+
+// Arrive here on RTC comparison interrupt
+static void rtc_callback(struct calendar_dev *const dev) {
+  // it's not clear we need to do anything here -- waking is the desired side
+  // effect.
+  asm("nop");
+}
+
+static void set_rtc_alarm_for(mu_port_time_t t) {
+  // Set the RTC compare register.
+  //
+  // BUGFIX: t must be greater than the RTC COUNT register at the time we enter
+  // sleep mode, else the device will sleep for a very very long time...
+	hri_rtcmode0_write_COMP_COMP_bf(CALENDAR_0.device.hw, 0, t);
+}
+
+#define SLEEP_IDLE_MODE 2
+#define SLEEP_STANDBY_MODE 3
+
+static void enter_sleep_mode() {
+  // see hpl/pm/hpl_pm.c for mapping of mode
+  sleep(SLEEP_STANDBY_MODE);
+}

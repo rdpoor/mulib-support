@@ -26,7 +26,7 @@
 // includes
 
 #include "mu_time.h"
-#include "mu_port.h"
+#include "mu_port_sleep.h"
 
 // =============================================================================
 // private types and definitions

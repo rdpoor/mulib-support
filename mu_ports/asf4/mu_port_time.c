@@ -25,20 +25,18 @@
 // =============================================================================
 // includes
 
-#include "mu_strbuf.h"
-#include <stdarg.h>
-#include <string.h>
+#include "mu_port_time.h"
 #include <stdio.h>
+#include "driver_init.h"
 
 // =============================================================================
 // private types and definitions
 
+#define MAX_DURATION ((uint32_t)0x7fffffff)
+#define RTC_FREQUENCY 32768
+
 // =============================================================================
 // private declarations
-
-#ifndef MIN
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#endif
 
 // =============================================================================
 // local storage
@@ -46,54 +44,43 @@
 // =============================================================================
 // public code
 
-mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *sb, char *buf, size_t capacity) {
-  sb->data = buf;
-  sb->capacity = capacity-1;  // last byte is always reserved for '\0'
-  buf[sb->capacity] = '\0';
-  return mu_strbuf_reset(sb);
+void mu_port_time_init() {
+  // is this needed to start the RTC?
+	// calendar_enable(&CALENDAR_0);
+  // see hpl/rtc/hpl_rtc.c -- enables RTC interrupts
 }
 
-mu_strbuf_t *mu_strbuf_reset(mu_strbuf_t *sb) {
-  sb->length = 0;
-  sb->data[0] = '\0';
-  return sb;
+mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
+  return t + dt;
 }
 
-size_t mu_strbuf_capacity(mu_strbuf_t *sb) { return sb->capacity; }
-
-size_t mu_strbuf_length(mu_strbuf_t *sb) {
-  return sb->length;
+mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
+  return t1 - t2;
 }
 
-size_t mu_strbuf_available(mu_strbuf_t *sb) {
-  return sb->capacity - sb->length;
+bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2) {
+  return mu_port_time_difference(t1, t2) > MAX_DURATION;
 }
 
-size_t mu_strbuf_append(mu_strbuf_t *sb, const char *s) {
-  size_t n_available = mu_strbuf_available(sb);
-  size_t n_written = strlen(s);
-  n_written = MIN(n_written, n_available);
-
-  strncpy(&(sb->data[sb->length]), s, n_written);
-  sb->length += n_written;
-
-  return n_written;
+bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
+  return t1 == t2;
 }
 
-size_t mu_strbuf_printf(mu_strbuf_t *sb, const char *fmt, ...) {
-  va_list ap;
-  size_t n_available = mu_strbuf_available(sb);
-
-  va_start(ap, fmt);
-  // append no more than `available` chars to the end of the buffer
-  int n_written = vsnprintf(&(sb->data[sb->length]), n_available, fmt, ap);
-  va_end(ap);
-
-  sb->length += (n_written < n_available) ? n_written : n_available;
-  return mu_strbuf_length(sb);
+bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2) {
+  return mu_port_time_difference(t2, t1) > MAX_DURATION;
 }
 
-char *mu_strbuf_data(mu_strbuf_t *sb) { return sb->data; }
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_t secs) {
+  return secs * RTC_FREQUENCY;
+}
+
+mu_port_time_seconds_t mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
+  return (mu_port_time_seconds_t)dt / (mu_port_time_seconds_t)RTC_FREQUENCY;
+}
+
+mu_port_time_t mu_port_time_now() {
+  return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
+}
 
 // =============================================================================
 // private code

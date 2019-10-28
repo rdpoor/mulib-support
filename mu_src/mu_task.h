@@ -43,11 +43,11 @@ extern "C" {
 typedef void (*mu_task_fn)(void *self, void *arg);
 
 typedef struct _mu_task {
-  struct _mu_task *next;  // link to next older event
+  struct _mu_task *next; // link to next older event
   mu_task_fn fn;
   void *self;
-  mu_time_t time;          // time of this event (ignored if is_immediate)
-  bool is_immediate;       // true if this event is scheduled for "now".
+  mu_time_t time;    // time of this event (ignored if is_immediate)
+  bool is_immediate; // true if this event is scheduled for "now".
 #if (MU_TASK_PROFILING)
   const char *name;
   unsigned int call_count;
@@ -57,15 +57,15 @@ typedef struct _mu_task {
 } mu_task_t;
 
 mu_task_t *mu_task_init_immed(mu_task_t *task,
-                            mu_task_fn fn,
-                            void *self,
-                            const char *name);
+                              mu_task_fn fn,
+                              void *self,
+                              const char *name);
 
 mu_task_t *mu_task_init_at(mu_task_t *task,
-                         mu_time_t time,
-                         mu_task_fn fn,
-                         void *self,
-                         const char *name);
+                           mu_time_t time,
+                           mu_task_fn fn,
+                           void *self,
+                           const char *name);
 
 bool mu_task_is_immediate(mu_task_t *task);
 

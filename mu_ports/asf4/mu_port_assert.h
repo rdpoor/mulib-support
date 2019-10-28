@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MU_PORT_H_
-#define MU_PORT_H_
+#ifndef MU_PORT_ASSERT_H_
+#define MU_PORT_ASSERT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +32,8 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <stdbool.h>
+
 // =============================================================================
 // types and definitions
 
@@ -39,10 +41,16 @@ extern "C" {
 // declarations
 
 // called "very early"
-void mu_port_init();
+void mu_port_assert_init();
+
+// called only when MU_ASSERT() is enabled
+void mu_port_assert(const bool condition,
+                    const char *const expr,
+                    const char *const file,
+                    const int line);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MU_PORT_H_
+#endif // #ifndef MU_PORT_ASSERT_H_
