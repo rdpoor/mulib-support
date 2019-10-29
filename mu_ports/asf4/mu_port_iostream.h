@@ -34,7 +34,6 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include "mu_iostream.h"
-#include "mu_strbuf.h"
 
 // =============================================================================
 // types and definitions
@@ -44,13 +43,11 @@ extern "C" {
 
 void mu_port_iostream_init(mu_iostream_t *iostream, void *hw);
 
-mu_iostream_err_t mu_port_iostream_write(mu_iostream_t *iostream,
-                                         mu_strbuf_t *sb);
+int mu_port_iostream_write(mu_iostream_t *iostream, const char *src, int n);
 
 bool mu_port_iostream_write_is_busy(mu_iostream_t *iostream);
 
-mu_iostream_err_t mu_port_iostream_read(mu_iostream_t *iostream,
-                                        mu_strbuf_t *sb);
+int mu_port_iostream_read(mu_iostream_t *iostream, char *dst, int n);
 
 bool mu_port_iostream_read_is_available(mu_iostream_t *iostream);
 

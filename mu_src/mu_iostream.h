@@ -34,7 +34,6 @@ extern "C" {
 
 #include "mu_sched.h"
 #include "mu_task.h"
-#include "mu_strbuf.h"
 
 // =============================================================================
 // types and definitions
@@ -66,7 +65,7 @@ mu_iostream_err_t mu_iostream_disable(mu_iostream_t *iostream);
 /**
  * \brief Write the contents of a string buffer to the iostream.
  */
-mu_iostream_err_t mu_iostream_write(mu_iostream_t *iostream, mu_strbuf_t *sb);
+int mu_iostream_write(mu_iostream_t *iostream, const char *src, int n);
 
 /**
  * \brief Return true if the write operation is in progress.
@@ -87,9 +86,9 @@ mu_task_t *mu_iostream_get_write_callback(mu_iostream_t *iostream);
 // reading from the stream
 
 /**
- * \brief Read bytes from the iostream, appending to ethe string buffer.
+ * \brief Read up to nbytes from the iostream.
  */
-mu_iostream_err_t mu_iostream_read(mu_iostream_t *iostream, mu_strbuf_t *sb);
+int mu_iostream_read(mu_iostream_t *iostream, char *dst, int n);
 
 /**
  * \brief Return true if the data is available for reading.

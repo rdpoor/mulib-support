@@ -29,7 +29,7 @@
 #include "mu_port_iostream.h"
 #include "mu_sched.h"
 #include "mu_task.h"
-#include "mu_strbuf.h"
+#include <stddef.h>
 
 // =============================================================================
 // types and definitions
@@ -50,17 +50,17 @@ mu_iostream_t *mu_iostream_init(mu_iostream_t *iostream,
 }
 
 mu_iostream_err_t mu_iostream_enable(mu_iostream_t *iostream) {
-  return MU_IOSTREAM_ERR_NONE;  // TBD
+  return MU_IOSTREAM_ERR_NONE; // TBD
 }
 
 mu_iostream_err_t mu_iostream_disable(mu_iostream_t *iostream) {
-  return MU_IOSTREAM_ERR_NONE;  // TBD
+  return MU_IOSTREAM_ERR_NONE; // TBD
 }
 
 // writing to the stream
 
-mu_iostream_err_t mu_iostream_write(mu_iostream_t *iostream, mu_strbuf_t *sb) {
-  return mu_port_iostream_write(iostream, sb);
+int mu_iostream_write(mu_iostream_t *iostream, const char *src, int n) {
+  return mu_port_iostream_write(iostream, src, n);
 }
 
 /**
@@ -90,8 +90,8 @@ mu_task_t *mu_iostream_get_write_callback(mu_iostream_t *iostream) {
 /**
  * \brief Read bytes from the iostream, appending to ethe string buffer.
  */
-mu_iostream_err_t mu_iostream_read(mu_iostream_t *iostream, mu_strbuf_t *sb) {
-  return mu_port_iostream_read(iostream, sb);
+int mu_iostream_read(mu_iostream_t *iostream, char *dst, int n) {
+  return mu_port_iostream_read(iostream, dst, n);
 }
 
 /**

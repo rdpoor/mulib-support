@@ -546,9 +546,9 @@
     <None Include="edbg_uart_example.c">
       <SubType>compile</SubType>
     </None>
-    <Compile Include="examples\driver_examples.c">
+    <None Include="examples\driver_examples.c">
       <SubType>compile</SubType>
-    </Compile>
+    </None>
     <Compile Include="examples\driver_examples.h">
       <SubType>compile</SubType>
     </Compile>

@@ -34,7 +34,7 @@
 #include "mu_strbuf.h"
 #include "mu_task.h"
 #include "mu_time.h"
-// #include "mu_port.h"
+#include "mu_port.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -57,6 +57,8 @@
 
 // allocate a buffer for writes to the screen
 #define WRITE_STRBUF_POOL_SIZE (60*15)
+
+#define READ_BUF_SIZE 10
 
 // =============================================================================
 // forward declarations
@@ -91,6 +93,8 @@ static const char *cheap_ftoa(float x);
  */
 static void keyboard_monitor_fn(void *self, void *arg);
 
+static void echo_user_string(char *s);
+
 /**
  * \brief Set/get low-power mode.
  *
@@ -123,6 +127,12 @@ static bool screen_update_is_enabled();
  * scheduler.
  */
 static void enable_task(mu_task_t *task, bool enable);
+
+
+/**
+ * Called (from interrupt level) when the user button is pushed
+ */
+static void button_on_PA15_pressed(void);
 
 // =============================================================================
 // local storage
@@ -189,12 +199,22 @@ static mu_task_t *s_tasks[] = {
 
 const size_t N_TASKS = sizeof(s_tasks) / sizeof(mu_task_t *);
 
+static char s_read_buf[READ_BUF_SIZE];
+
 // =============================================================================
 // public code
 
 int main(void) {
   // Perform board-specific initialization
   atmel_start_init();
+
+  gpio_set_pin_pull_mode(USER_BUTTON,
+	                       // <y> Pull configuration
+	                       // <id> pad_pull_config
+	                       // <GPIO_PULL_OFF"> Off
+	                       // <GPIO_PULL_UP"> Pull-up
+	                       // <GPIO_PULL_DOWN"> Pull-down
+	                       GPIO_PULL_UP);
 
   // Perform port-specific initialization needed by mulib
   mu_port_init();
@@ -237,9 +257,11 @@ int main(void) {
   mu_iostream_set_read_callback(&s_iostream, &s_keyboard_monitor_task);
 
   // set up application defaults
-  set_low_power_mode(true);
+  set_low_power_mode(false);
   set_led_task_enable(true);        // start the led task
   set_screen_update_enable(true);   // start the screen update task
+
+	ext_irq_register(PIN_PA15, button_on_PA15_pressed);
 
   // Start the scheduler
   while (1) {
@@ -370,7 +392,7 @@ static void screen_update_fn(void *self, void *arg) {
   // function).  Update the scheduled time.
   mu_task_advance_time(&s_screen_update_task, mu_time_seconds_to_duration(SCREEN_UPDATE_INTERVAL));
   // output the whole string
-  mu_iostream_write(&s_iostream, &s_write_strbuf);
+  mu_iostream_write(&s_iostream, mu_strbuf_data(&s_write_strbuf), mu_strbuf_length(&s_write_strbuf));
 }
 
 static void print_task_status(mu_strbuf_t *sb, mu_task_t *task) {
@@ -453,9 +475,59 @@ static const char *cheap_ftoa(float x) {
   return buf;
 }
 
+/**
+ * Arrive here on a keyboard interrupt
+ */
 void keyboard_monitor_fn(void *self, void *arg) {
-  // Arrive here following a receive interrupt.
-  asm("nop");
+  // pass READ_BUF_SIZE-1 to always leave space for null termination
+  int n_read = mu_iostream_read(&s_iostream, s_read_buf, READ_BUF_SIZE - 1);
+
+  if (n_read <= 0) {
+    // nothing to see here - move along...
+    return;
+  }
+
+  if (n_read > 0) {
+    // null terminate
+    s_read_buf[n_read] = '\0';
+  }
+
+  // In this example, we only pay attention to the first character
+  switch(s_read_buf[0]) {
+    case 'b':  // activate blink
+    set_led_task_enable(true);
+    echo_user_string("b: activate blink task");
+    break;
+    case 'B':  // deactivate blink
+    set_led_task_enable(false);
+    echo_user_string("B: suspend blink task");
+    break;
+    case 'd':  // activate display
+    set_screen_update_enable(true);
+    echo_user_string("d: activate display task");
+    break;
+    case 'D':  // deactivate display
+    set_screen_update_enable(false);
+    echo_user_string("D: suspend display task");
+    break;
+    case 'p':  // low power mode
+    set_low_power_mode(true);
+    echo_user_string("p: enter low-power idle mode");
+    break;
+    default:   // echo typed char
+    echo_user_string(s_read_buf);
+  }
+}
+
+/**
+ * If iostream is available, write now.
+ */
+static void echo_user_string(char *s) {
+  if (!mu_iostream_write_is_busy(&s_iostream)) {
+    mu_iostream_write(&s_iostream, s, strlen(s));
+  } else {
+    // TBD...
+  }
 }
 
 static void set_low_power_mode(bool enable) {
@@ -501,4 +573,9 @@ static void enable_task(mu_task_t *task, bool enable) {
     // remove from schedule (if present)
     mu_sched_remove(&s_sched, task);
   }
+}
+
+static void button_on_PA15_pressed(void) {
+  set_low_power_mode(false);
+  mu_sched_add_from_isr(&s_sched, &s_keyboard_monitor_task);
 }

@@ -57,16 +57,10 @@ void mu_port_iostream_init(mu_iostream_t *iostream, void *hw) {
 	usart_async_enable(&EDBG_COM);
 }
 
-mu_iostream_err_t mu_port_iostream_write(mu_iostream_t *iostream,
-                                         mu_strbuf_t *sb) {
+int mu_port_iostream_write(mu_iostream_t *iostream, const char *src, int n) {
   struct io_descriptor *io;
 	usart_async_get_io_descriptor(&EDBG_COM, &io);
-  // TODO: check return value.  if positive, indicates the number of bytes
-  // actually written to the channel.  if negative, indicates an error.
-  char *src = mu_strbuf_data(sb);
-	io_write(io, (const uint8_t * const)src, mu_strbuf_length(sb));
-
-  return MU_IOSTREAM_ERR_NONE;
+	return io_write(io, (const uint8_t * const)src, n);
 }
 
 bool mu_port_iostream_write_is_busy(mu_iostream_t *iostream) {
@@ -76,19 +70,11 @@ bool mu_port_iostream_write_is_busy(mu_iostream_t *iostream) {
   //        !usart_async_is_tx_empty(&EDBG_COM);
 }
 
-mu_iostream_err_t mu_port_iostream_read(mu_iostream_t *iostream,
-                                        mu_strbuf_t *sb) {
+int mu_port_iostream_read(mu_iostream_t *iostream, char *dst, int n) {
   struct io_descriptor *io;
   usart_async_get_io_descriptor(&EDBG_COM, &io);
 
-  // This is a blatant violation of strbuf abstraction.  Figure out how to
-  // provide a function to do this.
-  size_t available = sb->capacity - sb->length;
-  char *dst = &(sb->data[sb->length]);
-  int32_t n_read = io_read(io, (uint8_t * const)dst, available);
-  sb->length += n_read;
-
-  return MU_IOSTREAM_ERR_NONE;
+  return io_read(io, (uint8_t * const)dst, n);
 }
 
 bool mu_port_iostream_read_is_available(mu_iostream_t *iostream) {
