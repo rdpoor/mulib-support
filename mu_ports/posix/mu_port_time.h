@@ -22,58 +22,51 @@
  * SOFTWARE.
  */
 
-#ifndef MU_PORT_H_
-#define MU_PORT_H_
+#ifndef MU_PORT_TIME_H_
+#define MU_PORT_TIME_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <time.h>
-
 // =============================================================================
 // includes
+
+#include <time.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 // =============================================================================
 // types and definitions
 
-typedef clock_t port_time_t;    // an absolute time
-typedef clock_t port_time_dt;   // the interval between two times
-typedef double port_time_seconds_t;
+typedef clock_t mu_port_time_t;    // an absolute time
+typedef clock_t mu_port_time_dt;   // the interval between two times
+typedef double mu_port_time_seconds_t;
 
 // =============================================================================
 // declarations
 
-// called only when MU_ASSERT() is enabled
-void port_assert(const bool condition,
-                 const char *const expr,
-                 const char *const file,
-                 const int line);
+// called "very early"
+void mu_port_time_init();
 
-port_time_t port_time_offset(port_time_t t, port_time_dt dt);
+mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt);
 
-port_time_dt port_time_difference(port_time_t t1, port_time_t t2);
+mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2);
 
-bool port_time_is_before(port_time_t t1, port_time_t t2);
+bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2);
 
-bool port_time_is_equal(port_time_t t1, port_time_t t2);
+bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2);
 
-bool port_time_is_after(port_time_t t1, port_time_t t2);
+bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2);
 
-port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds);
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_t secs);
 
-port_time_dt port_time_duration_to_seconds(port_time_dt dt);
+mu_port_time_seconds_t mu_port_time_duration_to_seconds(mu_port_time_dt dt);
 
-port_time_t port_time_now();
-
-void port_time_sleep_indefinitely();
-
-void port_time_sleep_until(port_time_t t);
+mu_port_time_t mu_port_time_now();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef PORT_H_
+#endif // #ifndef MU_PORT_TIME_H_

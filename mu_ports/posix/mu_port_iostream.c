@@ -25,42 +25,38 @@
 // =============================================================================
 // includes
 
-#include "template.h"
+#include "mu_port_iostream.h"
 
 // =============================================================================
-// local types and definitions
-
-#define TEMPLATE_DEBUG (0)
-
-typedef struct {
-  template_state_t state;
-  uint32_t call_count;
-} template_t;
+// private types and definitions
 
 // =============================================================================
-// local (forward) declarations
-
-static void template_reset(void);
+// private declarations
 
 // =============================================================================
 // local storage
 
-static template_t s_template;
-
 // =============================================================================
 // public code
 
-void template_init() {
-  template_reset(&s_template);
+void mu_port_iostream_init(mu_iostream_t *iostream, void *hw) {
 }
 
-uint8_t template_get_call_count() {
-  return s_template.call_count;
+int mu_port_iostream_write(mu_iostream_t *iostream, const char *src, int n) {
+  return 0;
 }
+
+bool mu_port_iostream_write_is_busy(mu_iostream_t *iostream) {
+  return false;
+}
+
+int mu_port_iostream_read(mu_iostream_t *iostream, char *dst, int n) {
+  return 0;
+}
+
+bool mu_port_iostream_read_is_available(mu_iostream_t *iostream) {
+  return false;
+}
+
 // =============================================================================
-// local (static) code
-
-static void template_reset(template_t *template) {
-  template->state = TEMPLATE_STATE_0;
-  template->call_count = 0;
-}
+// private code

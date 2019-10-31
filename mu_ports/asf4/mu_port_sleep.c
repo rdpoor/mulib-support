@@ -26,6 +26,7 @@
 // includes
 
 #include "mu_port_sleep.h"
+#include "mu_port_time.h"
 #include "driver_init.h"
 
 // =============================================================================

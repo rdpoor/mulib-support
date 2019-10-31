@@ -26,13 +26,12 @@
 // includes
 
 #include "mu_port.h"
-#include <stdio.h>
-#include <time.h>
+#include "mu_port_assert.h"
+#include "mu_port_sleep.h"
+#include "mu_port_time.h"
 
 // =============================================================================
 // private types and definitions
-
-#define MAX_DURATION ((uint32_t)0x7fffffff)
 
 // =============================================================================
 // private declarations
@@ -43,59 +42,10 @@
 // =============================================================================
 // public code
 
-void port_assert(const bool condition,
-                 const char *const expr,
-                 const char *const file,
-                 const int line) {
-  if (!condition) {
-    printf("Assertion '%s' failed at %s:%d", expr, file, line);
-  }
-}
-
-mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
-  return t + dt;
-}
-
-mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
-  return t1 - t2;
-}
-
-bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2) {
-  return mu_port_time_difference(t1, t2) > MAX_DURATION;
-}
-
-bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
-  return t1 == t2;
-}
-
-bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2) {
-  return mu_port_time_difference(t2, t1) > MAX_DURATION;
-}
-
-mu_port_time_seconds_t mu_port_time_seconds_to_duration(mu_port_time_seconds_t seconds) {
-  return seconds * CLOCKS_PER_SEC;
-}
-
-mu_port_time_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
-  mu_port_time_seconds_t secs = (mu_port_time_seconds_t)dt / (mu_port_time_seconds_t)CLOCKS_PER_SEC;
-  // printf("\nptd2s: %lu => %f, cps=%d", dt, secs, CLOCKS_PER_SEC);
-  return secs;
-}
-
-mu_port_time_t mu_port_time_now() {
-  return clock();
-}
-
-void mu_port_sleep_indefinitely() {
-  while (1) {
-    ;
-  }
-}
-
-void mu_port_sleep_until(mu_port_time_t t) {
-  while (mu_port_time_is_before(mu_port_time_now(), t)) {
-    ;  // buzz
-  }
+void mu_port_init() {
+  mu_port_assert_init();
+  mu_port_sleep_init();
+  mu_port_time_init();
 }
 
 // =============================================================================

@@ -22,45 +22,35 @@
  * SOFTWARE.
  */
 
+#ifndef MU_PORT_ASSERT_H_
+#define MU_PORT_ASSERT_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // includes
 
-#include "template.h"
+#include <stdbool.h>
 
 // =============================================================================
-// local types and definitions
-
-#define TEMPLATE_DEBUG (0)
-
-typedef struct {
-  template_state_t state;
-  uint32_t call_count;
-} template_t;
+// types and definitions
 
 // =============================================================================
-// local (forward) declarations
+// declarations
 
-static void template_reset(void);
+// called "very early"
+void mu_port_assert_init();
 
-// =============================================================================
-// local storage
+// called only when MU_ASSERT() is enabled
+void mu_port_assert(const bool condition,
+                    const char *const expr,
+                    const char *const file,
+                    const int line);
 
-static template_t s_template;
-
-// =============================================================================
-// public code
-
-void template_init() {
-  template_reset(&s_template);
+#ifdef __cplusplus
 }
+#endif
 
-uint8_t template_get_call_count() {
-  return s_template.call_count;
-}
-// =============================================================================
-// local (static) code
-
-static void template_reset(template_t *template) {
-  template->state = TEMPLATE_STATE_0;
-  template->call_count = 0;
-}
+#endif // #ifndef MU_PORT_ASSERT_H_

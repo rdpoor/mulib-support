@@ -83,10 +83,10 @@ size_t mu_strbuf_append(mu_strbuf_t *sb, const char *s) {
 size_t mu_strbuf_printf(mu_strbuf_t *sb, const char *fmt, ...) {
   va_list ap;
   size_t n_available = mu_strbuf_available(sb);
-
   va_start(ap, fmt);
   // append no more than `available` chars to the end of the buffer
-  int n_written = vsnprintf(&(sb->data[sb->length]), n_available, fmt, ap);
+  // (+1 for a null byte)
+  int n_written = vsnprintf(&(sb->data[sb->length]), n_available+1, fmt, ap);
   va_end(ap);
 
   sb->length += (n_written < n_available) ? n_written : n_available;

@@ -25,14 +25,14 @@
 // =============================================================================
 // includes
 
-#include "mu_port.h"
+#include "mu_port_time.h"
 #include <stdio.h>
-#include <time.h>
 
 // =============================================================================
 // private types and definitions
 
 #define MAX_DURATION ((uint32_t)0x7fffffff)
+#define RTC_FREQUENCY 32768
 
 // =============================================================================
 // private declarations
@@ -43,59 +43,44 @@
 // =============================================================================
 // public code
 
-void port_assert(const bool condition,
-                 const char *const expr,
-                 const char *const file,
-                 const int line) {
-  if (!condition) {
-    printf("Assertion '%s' failed at %s:%d", expr, file, line);
-  }
+void mu_port_time_init() {
+  // is this needed to start the RTC?
+	// calendar_enable(&CALENDAR_0);
+  // see hpl/rtc/hpl_rtc.c -- enables RTC interrupts
 }
 
-port_time_t port_time_offset(port_time_t t, port_time_dt dt) {
+mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
   return t + dt;
 }
 
-port_time_dt port_time_difference(port_time_t t1, port_time_t t2) {
+mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 - t2;
 }
 
-bool port_time_is_before(port_time_t t1, port_time_t t2) {
-  return port_time_difference(t1, t2) > MAX_DURATION;
+bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2) {
+  return mu_port_time_difference(t1, t2) > MAX_DURATION;
 }
 
-bool port_time_is_equal(port_time_t t1, port_time_t t2) {
+bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 == t2;
 }
 
-bool port_time_is_after(port_time_t t1, port_time_t t2) {
-  return port_time_difference(t2, t1) > MAX_DURATION;
+bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2) {
+  return mu_port_time_difference(t2, t1) > MAX_DURATION;
 }
 
-port_time_seconds_t port_time_seconds_to_duration(port_time_seconds_t seconds) {
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_t seconds) {
   return seconds * CLOCKS_PER_SEC;
 }
 
-port_time_dt port_time_duration_to_seconds(port_time_dt dt) {
-  port_time_seconds_t secs = (port_time_seconds_t)dt / (port_time_seconds_t)CLOCKS_PER_SEC;
+mu_port_time_seconds_t mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
+  mu_port_time_seconds_t secs = (mu_port_time_seconds_t)dt / (mu_port_time_seconds_t)CLOCKS_PER_SEC;
   // printf("\nptd2s: %lu => %f, cps=%d", dt, secs, CLOCKS_PER_SEC);
   return secs;
 }
 
-port_time_t port_time_now() {
+mu_port_time_t mu_port_time_now() {
   return clock();
-}
-
-void port_time_sleep_indefinitely() {
-  while (1) {
-    ;
-  }
-}
-
-void port_time_sleep_until(port_time_t t) {
-  while (port_time_is_before(port_time_now(), t)) {
-    ;  // buzz
-  }
 }
 
 // =============================================================================

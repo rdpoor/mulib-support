@@ -22,9 +22,38 @@
  * SOFTWARE.
  */
 
-#include "unit_tests.h"
+// =============================================================================
+// includes
 
-int main() {
-  unit_tests();
-  return 0;
+#include "mu_port_sleep.h"
+#include "mu_port_time.h"
+
+// =============================================================================
+// private types and definitions
+
+// =============================================================================
+// private declarations
+
+// =============================================================================
+// local storage
+
+// =============================================================================
+// public code
+
+void mu_port_sleep_init() {
 }
+
+void mu_port_sleep_indefinitely() {
+  while (1) {
+    ;
+  }
+}
+
+void mu_port_sleep_until(mu_port_time_t t) {
+  while (mu_port_time_is_before(mu_port_time_now(), t)) {
+    ;  // buzz
+  }
+}
+
+// =============================================================================
+// private code

@@ -51,7 +51,7 @@ void mu_strbuf_test() {
   memset(s_buf, '5', BUF_SIZE);  // make sure null chars get written
 
   UTEST_ASSERTEQ_PTR(mu_strbuf_init(&str, s_buf, BUF_SIZE), &str);
-  UTEST_ASSERTEQ_INT(mu_strbuf_capacity(&str), BUF_SIZE);
+  UTEST_ASSERTEQ_INT(mu_strbuf_capacity(&str), BUF_SIZE-1);
   UTEST_ASSERTEQ_INT(mu_strbuf_length(&str), 0);
   UTEST_ASSERTEQ_STR(mu_strbuf_data(&str), "");
 

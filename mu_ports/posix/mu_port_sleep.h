@@ -22,45 +22,33 @@
  * SOFTWARE.
  */
 
+#ifndef MU_PORT_SLEEP_H_
+#define MU_PORT_SLEEP_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // includes
 
-#include "template.h"
+#include "mu_port_time.h"
 
 // =============================================================================
-// local types and definitions
-
-#define TEMPLATE_DEBUG (0)
-
-typedef struct {
-  template_state_t state;
-  uint32_t call_count;
-} template_t;
+// types and definitions
 
 // =============================================================================
-// local (forward) declarations
+// declarations
 
-static void template_reset(void);
+// called "very early"
+void mu_port_sleep_init();
 
-// =============================================================================
-// local storage
+void mu_port_sleep_indefinitely();
 
-static template_t s_template;
+void mu_port_sleep_until(mu_port_time_t t);
 
-// =============================================================================
-// public code
-
-void template_init() {
-  template_reset(&s_template);
+#ifdef __cplusplus
 }
+#endif
 
-uint8_t template_get_call_count() {
-  return s_template.call_count;
-}
-// =============================================================================
-// local (static) code
-
-static void template_reset(template_t *template) {
-  template->state = TEMPLATE_STATE_0;
-  template->call_count = 0;
-}
+#endif // #ifndef MU_PORT_SLEEP_H_

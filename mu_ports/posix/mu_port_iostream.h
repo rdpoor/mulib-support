@@ -22,45 +22,37 @@
  * SOFTWARE.
  */
 
+#ifndef MU_PORT_IOSTREAM_H_
+#define MU_PORT_IOSTREAM_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // includes
-
-#include "template.h"
-
-// =============================================================================
-// local types and definitions
-
-#define TEMPLATE_DEBUG (0)
-
-typedef struct {
-  template_state_t state;
-  uint32_t call_count;
-} template_t;
+#include <stdint.h>
+#include <stdbool.h>
+#include "mu_iostream.h"
 
 // =============================================================================
-// local (forward) declarations
-
-static void template_reset(void);
+// types and definitions
 
 // =============================================================================
-// local storage
+// declarations
 
-static template_t s_template;
+void mu_port_iostream_init(mu_iostream_t *iostream, void *hw);
 
-// =============================================================================
-// public code
+int mu_port_iostream_write(mu_iostream_t *iostream, const char *src, int n);
 
-void template_init() {
-  template_reset(&s_template);
+bool mu_port_iostream_write_is_busy(mu_iostream_t *iostream);
+
+int mu_port_iostream_read(mu_iostream_t *iostream, char *dst, int n);
+
+bool mu_port_iostream_read_is_available(mu_iostream_t *iostream);
+
+#ifdef __cplusplus
 }
+#endif
 
-uint8_t template_get_call_count() {
-  return s_template.call_count;
-}
-// =============================================================================
-// local (static) code
-
-static void template_reset(template_t *template) {
-  template->state = TEMPLATE_STATE_0;
-  template->call_count = 0;
-}
+#endif // #ifndef MU_PORT_IOSTREAM_H_

@@ -25,42 +25,32 @@
 // =============================================================================
 // includes
 
-#include "template.h"
+#include "mu_port_assert.h"
+#include <stdio.h>
 
 // =============================================================================
-// local types and definitions
-
-#define TEMPLATE_DEBUG (0)
-
-typedef struct {
-  template_state_t state;
-  uint32_t call_count;
-} template_t;
+// private types and definitions
 
 // =============================================================================
-// local (forward) declarations
-
-static void template_reset(void);
+// private declarations
 
 // =============================================================================
 // local storage
 
-static template_t s_template;
-
 // =============================================================================
 // public code
 
-void template_init() {
-  template_reset(&s_template);
+void mu_port_assert_init() {
 }
 
-uint8_t template_get_call_count() {
-  return s_template.call_count;
+void port_assert(const bool condition,
+                 const char *const expr,
+                 const char *const file,
+                 const int line) {
+  if (!condition) {
+    printf("Assertion '%s' failed at %s:%d", expr, file, line);
+  }
 }
+
 // =============================================================================
-// local (static) code
-
-static void template_reset(template_t *template) {
-  template->state = TEMPLATE_STATE_0;
-  template->call_count = 0;
-}
+// private code

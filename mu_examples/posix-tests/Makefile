@@ -4,7 +4,7 @@
 #   $ make clean
 
 vpath %.h .
-MULIB_DIR = ../../mulib
+MULIB_DIR = ../../../mulib
 
 SUITE_DIR = $(MULIB_DIR)/mu_src
 SUITE_SRCS = $(wildcard $(SUITE_DIR)/*.c)
@@ -14,8 +14,8 @@ TESTS_DIR = $(MULIB_DIR)/mu_tests
 TESTS_SRCS = $(wildcard $(TESTS_DIR)/*.c)
 TESTS_OBJS := $(patsubst %.c,%.o,$(TESTS_SRCS))
 
-PORT_DIR = .
-PORT_SRCS = mu_port.c
+PORT_DIR = $(MULIB_DIR)/mu_ports/posix
+PORT_SRCS = $(wildcard $(PORT_DIR)/*.c)
 PORT_OBJS := $(patsubst %.c,%.o,$(PORT_SRCS))
 
 CC = gcc

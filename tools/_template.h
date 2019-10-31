@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MULIB_TEMPLATE_H_
-#define MULIB_TEMPLATE_H_
+#ifndef TEMPLATE_H_
+#define TEMPLATE_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,14 +32,24 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <stdint.h>
+
 // =============================================================================
 // types and definitions
 
+typedef enum {
+  TEMPLATE_STATE_0,
+} template_state_t;
+
 // =============================================================================
 // declarations
+
+void template_init();
+template_state_t template_get_state()
+uint32_t template_get_call_count();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MULIB_TEMPLATE_H_
+#endif /* #ifndef TEMPLATE_H_ */
