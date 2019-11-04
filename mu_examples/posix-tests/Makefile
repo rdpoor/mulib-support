@@ -44,7 +44,7 @@ make-gcov: clean
 	$(MAKE) CFLAGS='-g -O0 -DMU_LOG_ENABLED -fprofile-arcs -ftest-coverage'
 	$(MAKE) run-tests
 
-run-gcov: make-gcov
+run-coverage: make-gcov
 	gcov -o $(SUITE_DIR) $(SUITE_SRCS)
 
 clean:

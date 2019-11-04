@@ -27,15 +27,17 @@
 
 #include "mu_port_time.h"
 #include <stdio.h>
+#include <time.h>
 
 // =============================================================================
 // private types and definitions
 
-#define MAX_DURATION ((uint32_t)0x7fffffff)
-#define RTC_FREQUENCY 32768
+const bool TIME_IS_SIGNED = (mu_port_time_t)-1 < 0;
 
 // =============================================================================
 // private declarations
+
+static bool is_msb_set(mu_port_time_t t);
 
 // =============================================================================
 // local storage
@@ -58,7 +60,7 @@ mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
 }
 
 bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2) {
-  return mu_port_time_difference(t1, t2) > MAX_DURATION;
+  return is_msb_set(t1 - t2);
 }
 
 bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
@@ -66,7 +68,7 @@ bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
 }
 
 bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2) {
-  return mu_port_time_difference(t2, t1) > MAX_DURATION;
+  return is_msb_set(t2 - t1);
 }
 
 mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_t seconds) {
@@ -85,3 +87,7 @@ mu_port_time_t mu_port_time_now() {
 
 // =============================================================================
 // private code
+
+static bool is_msb_set(mu_port_time_t t) {
+  return TIME_IS_SIGNED ? (t < 0) : ((t << 1) >> 1) ^ t;
+}
