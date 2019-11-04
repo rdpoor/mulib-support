@@ -31,6 +31,7 @@ void mu_log_test();
 void mu_ring_test();
 void mu_sched_test();
 void mu_strbuf_test();
+void mu_string_test();
 void mu_substring_test();
 void mu_task_test();
 void mu_time_test();
@@ -62,6 +63,10 @@ void unit_tests() {
 
   printf("\r\n     starting mu_strbuf_test()...");
   mu_strbuf_test();
+  printf("completed");
+
+  printf("\r\n     starting mu_string_test()...");
+  mu_string_test();
   printf("completed");
 
   printf("\r\n     starting mu_substring_test()...");

@@ -36,10 +36,6 @@
 // =============================================================================
 // private declarations
 
-#ifndef MIN
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#endif
-
 // =============================================================================
 // local storage
 
@@ -115,21 +111,21 @@ mu_string_t *mu_string_duplicate(mu_string_t *dst, mu_string_t *src) {
 // take a string of the underlying string.  negative end counts from end.
 mu_string_t *mu_string_slice(mu_string_t *s, int start, int end, mu_string_t *dst) {
   mu_string_t *d = dst ? mu_string_duplicate(dst, s) : s;
-  d->start = start;
-  d->end = (end >= 0) ? end : mu_string_buf_length(d) - end;
+  d->start = (start >= 0) ? start : mu_string_buf_length(d) + start + 1;
+  d->end = (end >= 0) ? end : mu_string_buf_length(d) + end + 1;
   return d;
 }
 
 // Find cstring within s.  Returns null if not found, else return sliced results
 // in dst (if given) or s (if not).
 mu_string_t *mu_string_find(mu_string_t *s, const mu_cstring_t *cstring, mu_string_t *dst) {
-  mu_cstring_t *found = (mu_cstring_t *)strstr((const char *)mu_string_cstring(s), (const char *)cstring);
+  mu_cstring_t *found = (mu_cstring_t *)strstr((const char *)mu_string_buf(s), (const char *)cstring);
   if (found == NULL) {
     return NULL;
   }
   // make sure that found lies within the [start, end] boundaries
   size_t len = strlen((const char *)cstring);
-  int s1 = found - mu_string_cstring(s);  // starting index of found string
+  int s1 = found - mu_string_buf(s);  // starting index of found string
   int e1 = s1 + len;                      // ending index of found string
   if (e1 > mu_string_end(s)) {
     return NULL;                          // found string exceeded bounds of s
