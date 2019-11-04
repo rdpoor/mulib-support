@@ -447,13 +447,13 @@
       <SubType>compile</SubType>
       <Link>mu_src\mu_log.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_ring.c">
+    <Compile Include="..\..\..\..\mu_src\mu_queue.c">
       <SubType>compile</SubType>
-      <Link>mu_src\mu_ring.c</Link>
+      <Link>mu_src\mu_queue.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_ring.h">
+    <Compile Include="..\..\..\..\mu_src\mu_queue.h">
       <SubType>compile</SubType>
-      <Link>mu_src\mu_ring.h</Link>
+      <Link>mu_src\mu_queue.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\mu_src\mu_sched.c">
       <SubType>compile</SubType>

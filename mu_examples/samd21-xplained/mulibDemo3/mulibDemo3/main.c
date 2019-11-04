@@ -146,7 +146,7 @@ static mu_sched_t s_sched;
 /**
  * \brief Allocate storage for the ISR task queue.
  */
-static mu_ring_obj_t s_isr_queue_pool[ISR_QUEUE_POOL_SIZE];
+static mu_queue_obj_t s_isr_queue_pool[ISR_QUEUE_POOL_SIZE];
 
 /**
  * An iostream for serial I/O.  This works in conjunction with the scheduler

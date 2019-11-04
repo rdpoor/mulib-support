@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_ring.h"
+#include "mu_queue.h"
 #include <stddef.h>
 
 // =============================================================================
@@ -42,46 +42,46 @@
 // =============================================================================
 // public code
 
-mu_ring_err_t mu_ring_init(mu_ring_t *q,
-                             mu_ring_obj_t *pool,
+mu_queue_err_t mu_queue_init(mu_queue_t *q,
+                             mu_queue_obj_t *pool,
                              unsigned int capacity) {
   if ((capacity == 0) || !IS_POWER_OF_TWO(capacity)) {
-    return MU_RING_ERR_SIZE;
+    return MU_QUEUE_ERR_SIZE;
   }
   q->mask = capacity - 1;
   q->pool = pool;
-  return mu_ring_reset(q);
+  return mu_queue_reset(q);
 }
 
-mu_ring_err_t mu_ring_reset(mu_ring_t *q) {
+mu_queue_err_t mu_queue_reset(mu_queue_t *q) {
   q->head = 0;
   q->tail = 0;
-  return MU_RING_ERR_NONE;
+  return MU_QUEUE_ERR_NONE;
 }
 
-unsigned int mu_ring_capacity(mu_ring_t *q) { return q->mask + 1; }
+unsigned int mu_queue_capacity(mu_queue_t *q) { return q->mask + 1; }
 
-unsigned int mu_ring_count(mu_ring_t *q) {
+unsigned int mu_queue_count(mu_queue_t *q) {
   return q->head - q->tail; // thank you, twos-compliment arithmetic
 }
 
-mu_ring_err_t mu_ring_put(mu_ring_t *q, mu_ring_obj_t obj) {
-  if (mu_ring_count(q) == mu_ring_capacity(q)) {
-    return MU_RING_ERR_FULL;
+mu_queue_err_t mu_queue_put(mu_queue_t *q, mu_queue_obj_t obj) {
+  if (mu_queue_count(q) == mu_queue_capacity(q)) {
+    return MU_QUEUE_ERR_FULL;
   }
   // Note that head grows "without bound", but tail is guarateed to grow too.
   q->pool[q->head++ & q->mask] = obj;
-  return MU_RING_ERR_NONE;
+  return MU_QUEUE_ERR_NONE;
 }
 
-mu_ring_err_t mu_ring_get(mu_ring_t *q, mu_ring_obj_t *obj) {
-  if (mu_ring_count(q) == 0) {
+mu_queue_err_t mu_queue_get(mu_queue_t *q, mu_queue_obj_t *obj) {
+  if (mu_queue_count(q) == 0) {
     *obj = NULL;
-    return MU_RING_ERR_EMPTY;
+    return MU_QUEUE_ERR_EMPTY;
   }
   // Note that tail grows "without bound", but head is guaranteed to grow too.
   *obj = q->pool[q->tail++ & q->mask];
-  return MU_RING_ERR_NONE;
+  return MU_QUEUE_ERR_NONE;
 }
 
 // =============================================================================

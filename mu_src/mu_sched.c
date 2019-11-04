@@ -27,7 +27,7 @@
 
 #include "mu_assert.h"
 #include "mu_sched.h"
-#include "mu_ring.h"
+#include "mu_queue.h"
 #include "mu_task.h"
 #include <stdbool.h>
 #include <string.h>
@@ -50,15 +50,15 @@ static void process_isr_queue(mu_sched_t *sched);
 // public code
 
 mu_sched_t *mu_sched_init(mu_sched_t *sched,
-                          mu_ring_obj_t *isr_task_pool,
+                          mu_queue_obj_t *isr_task_pool,
                           unsigned int isr_task_pool_size) {
-  mu_ring_err_t err;
-  mu_ring_t *q = &(sched->isr_queue);
+  mu_queue_err_t err;
+  mu_queue_t *q = &(sched->isr_queue);
 
   (void)err;
   sched->tasks = (mu_task_t *)NULL;     // task queue starts out empty
-  err = mu_ring_init(q, isr_task_pool, isr_task_pool_size);
-  MU_ASSERT(err == MU_RING_ERR_NONE);
+  err = mu_queue_init(q, isr_task_pool, isr_task_pool_size);
+  MU_ASSERT(err == MU_QUEUE_ERR_NONE);
   sched->clock_source = mu_time_now;  // default clock source
   sched->idle_task = NULL;
   return mu_sched_reset(sched);
@@ -77,7 +77,7 @@ mu_sched_t *mu_sched_reset(mu_sched_t *sched) {
     sched->current_task = NULL;
   }
 
-  mu_ring_reset(&(sched->isr_queue));
+  mu_queue_reset(&(sched->isr_queue));
 
   return sched;
 }
@@ -154,7 +154,7 @@ mu_sched_err_t mu_sched_add(mu_sched_t *sched, mu_task_t *task) {
   if (mu_sched_has_task(sched, task)) {
     // Do not schedule task if already scheduled: it will lead to a circular
     // list.
-    asm("nop");
+    return MU_SCHED_ERR_ALREADY_SCHEDULED;
 
   } else if (mu_task_is_immediate(task)) {
     // push onto head of task list
@@ -206,11 +206,11 @@ mu_sched_err_t mu_sched_remove(mu_sched_t *sched, mu_task_t *task) {
 }
 
 mu_sched_err_t mu_sched_add_from_isr(mu_sched_t *sched, mu_task_t *task) {
-  mu_ring_t *q = &(sched->isr_queue);
+  mu_queue_t *q = &(sched->isr_queue);
 
-  mu_ring_err_t err = mu_ring_put(q, task);
+  mu_queue_err_t err = mu_queue_put(q, task);
   (void)err;
-  MU_ASSERT(err == MU_RING_ERR_NONE);
+  MU_ASSERT(err == MU_QUEUE_ERR_NONE);
   return MU_SCHED_ERR_NONE;
 }
 
@@ -245,9 +245,9 @@ static mu_task_t *remove_runnable_task(mu_sched_t *sched, mu_time_t now) {
 // scheduler's task list.
 static void process_isr_queue(mu_sched_t *sched) {
   mu_task_t *task;
-  mu_ring_t *q = &(sched->isr_queue);
+  mu_queue_t *q = &(sched->isr_queue);
 
-  while (MU_RING_ERR_NONE == mu_ring_get(q, (mu_ring_obj_t *)(&task))) {
+  while (MU_QUEUE_ERR_NONE == mu_queue_get(q, (mu_queue_obj_t *)(&task))) {
     mu_sched_add(sched, task);
   }
 }

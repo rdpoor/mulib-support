@@ -28,7 +28,7 @@
 void mu_bvec_test();
 void mu_heapsort_test();
 void mu_log_test();
-void mu_ring_test();
+void mu_queue_test();
 void mu_sched_test();
 void mu_strbuf_test();
 void mu_string_test();
@@ -53,8 +53,8 @@ void unit_tests() {
   mu_log_test();
   printf("completed");
 
-  printf("\r\n     starting mu_ring_test()...");
-  mu_ring_test();
+  printf("\r\n     starting mu_queue_test()...");
+  mu_queue_test();
   printf("completed");
 
   printf("\r\n     starting mu_sched_test()...");

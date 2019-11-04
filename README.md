@@ -53,7 +53,7 @@ reporting channels.
 
 Status: 98% test coverage.
 
-### mu_ring
+### mu_queue
 
 Fast, thread-safe queue for void * sized objects, designed for single-producer /
 single-consumer applications.
@@ -65,7 +65,7 @@ Status: 100% test coverage.
 Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion
 scheduler.
 
-Status: 83% test coverage.
+Status: 100% test coverage.
 
 ### mu_strbuf
 
@@ -121,7 +121,7 @@ Dynamically allocate and free fixed-sized objects from a static storage pool.
 
 Status: In progress.
 
-### mu_ring8, mu_ring16, mu_ring32, mu_ring64
+### mu_queue8, mu_queue16, mu_queue32, mu_queue64
 
 Thread safe ring buffer for 8-, 16-, 32- and 64-bit wide objects.
 

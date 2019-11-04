@@ -32,7 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_ring.h"
+#include "mu_queue.h"
 #include "mu_task.h"
 #include "mu_time.h"
 #include <stdbool.h>
@@ -44,12 +44,13 @@ typedef enum {
   MU_SCHED_ERR_NONE,
   MU_SCHED_ERR_FULL,
   MU_SCHED_ERR_NOT_FOUND,
+  MU_SCHED_ERR_ALREADY_SCHEDULED,
 } mu_sched_err_t;
 
 // Signature for clock source function.  Returns the current time.
 typedef mu_time_t (*mu_clock_fn)(void);
 
-// To handle tasks from interrupt level, we use a thread-safe mu_ring circular
+// To handle tasks from interrupt level, we use a thread-safe mu_queue circular
 // buffer to queue tasks produced at interrupt level and consumed at foreground
 // level.
 //
@@ -59,7 +60,7 @@ typedef mu_time_t (*mu_clock_fn)(void);
 
 typedef struct {
   mu_task_t *tasks;    // a linked list of tasks
-  mu_ring_t isr_queue; // interrupt-safe queue of tasks to be added
+  mu_queue_t isr_queue; // interrupt-safe queue of tasks to be added
   mu_clock_fn clock_source;
   mu_task_t *idle_task;
   mu_task_t *current_task;
@@ -70,7 +71,7 @@ typedef struct {
 
 // isr_queue_size must be a power of two
 mu_sched_t *mu_sched_init(mu_sched_t *sched,
-                          mu_ring_obj_t *isr_queue_pool,
+                          mu_queue_obj_t *isr_queue_pool,
                           unsigned int isr_queue_pool_size);
 
 mu_sched_t *mu_sched_reset(mu_sched_t *sched);

@@ -43,21 +43,21 @@ extern "C" {
 //   void get(char* c) { if (inuse() != 0) { *c = buffer[tail++%N]; } }
 
 typedef enum {
-  MU_RING_ERR_NONE,
-  MU_RING_ERR_EMPTY,
-  MU_RING_ERR_FULL,
-  MU_RING_ERR_SIZE,
-} mu_ring_err_t;
+  MU_QUEUE_ERR_NONE,
+  MU_QUEUE_ERR_EMPTY,
+  MU_QUEUE_ERR_FULL,
+  MU_QUEUE_ERR_SIZE,
+} mu_queue_err_t;
 
-// mu_ring manages pointer-sized objects
-typedef void * mu_ring_obj_t;
+// mu_queue manages pointer-sized objects
+typedef void * mu_queue_obj_t;
 
 typedef struct {
   unsigned int mask;
   volatile unsigned int head;
   volatile unsigned int tail;
-  mu_ring_obj_t *pool;
-} mu_ring_t;
+  mu_queue_obj_t *pool;
+} mu_queue_t;
 
 // =============================================================================
 // declarations
@@ -66,11 +66,11 @@ typedef struct {
 }
 #endif
 
-mu_ring_err_t mu_ring_init(mu_ring_t *q, mu_ring_obj_t *pool, unsigned int capacity);
-mu_ring_err_t mu_ring_reset(mu_ring_t *q);
-unsigned int mu_ring_capacity(mu_ring_t *q);
-unsigned int mu_ring_count(mu_ring_t *q);
-mu_ring_err_t mu_ring_put(mu_ring_t *q, mu_ring_obj_t obj);
-mu_ring_err_t mu_ring_get(mu_ring_t *q, mu_ring_obj_t *obj);
+mu_queue_err_t mu_queue_init(mu_queue_t *q, mu_queue_obj_t *pool, unsigned int capacity);
+mu_queue_err_t mu_queue_reset(mu_queue_t *q);
+unsigned int mu_queue_capacity(mu_queue_t *q);
+unsigned int mu_queue_count(mu_queue_t *q);
+mu_queue_err_t mu_queue_put(mu_queue_t *q, mu_queue_obj_t obj);
+mu_queue_err_t mu_queue_get(mu_queue_t *q, mu_queue_obj_t *obj);
 
 #endif // #ifndef MU_QUEUE_H_

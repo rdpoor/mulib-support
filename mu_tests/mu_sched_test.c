@@ -26,7 +26,7 @@
 // includes
 
 #include "mu_sched.h"
-#include "mu_ring.h"
+#include "mu_queue.h"
 #include "mu_time.h"
 #include "test_utilities.h"
 
@@ -60,7 +60,7 @@ static void fn2(void *self, void *arg);
 static void fn3(void *self, void *arg);
 static void iisr_fn(void *self, void *arg); // immediate ISR function
 static void disr_fn(void *self, void *arg); // deferred ISR function
-
+static void reset_fn(void *self, void *arg); // resets the scheduler when called
 static void queue_immed_from_interrupt(int s);
 static void queue_deferred_from_interrupt(int s);
 
@@ -68,7 +68,7 @@ static void queue_deferred_from_interrupt(int s);
 // local storage
 
 static mu_sched_t s_sched;
-static mu_ring_obj_t s_isr_queue_pool[ISR_QUEUE_POOL_SIZE];
+static mu_queue_obj_t s_isr_queue_pool[ISR_QUEUE_POOL_SIZE];
 static mu_time_t s_time = 0;
 static int s_fn1_call_count;
 static int s_fn2_call_count;
@@ -88,7 +88,8 @@ void mu_sched_test() {
   // statically allocated.
   mu_sched_t *s = &s_sched;
   mu_task_t idle_task = {.fn = idle_task_fn, .self = NULL};
-  mu_task_t evt1, evt2, evt3;
+  mu_task_t task1, task2, task3;
+  mu_task_t reset_task;
 
   mu_sched_init(s, s_isr_queue_pool, ISR_QUEUE_POOL_SIZE);
   mu_sched_set_clock_source(s, now_fn); // use simulated clock
@@ -105,16 +106,16 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
-  // schedule fn1 for time=2.  pass the evt1 object as *self
+  // schedule fn1 for time=2.  pass the task1 object as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_task_init_at(&evt1, (mu_time_t)2, fn1, &evt1, "E1")),
+    mu_sched_add(s, mu_task_init_at(&task1, (mu_time_t)2, fn1, &task1, "E1")),
     MU_SCHED_ERR_NONE);
 
   // schedule fn2 for time=10.  This is not recommended practice, but for
-  // testing, we pass _evt1_ as the "self" argument for the task. We will
-  // use that argument in fn2 to remove evt1 from the schedule.  See fn2().
+  // testing, we pass _task1_ as the "self" argument for the task. We will
+  // use that argument in fn2 to remove task1 from the schedule.  See fn2().
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_task_init_at(&evt2, (mu_time_t)10, fn2, &evt1, "E2")),
+    mu_sched_add(s, mu_task_init_at(&task2, (mu_time_t)10, fn2, &task1, "E2")),
     MU_SCHED_ERR_NONE);
 
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), false);
@@ -165,9 +166,9 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 0);
 
-  // schedule fn3 as an immediate task.  pass evt3 as *self
+  // schedule fn3 as an immediate task.  pass task3 as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_task_init_immed(&evt3, fn3, &evt3, "E3")),
+    mu_sched_add(s, mu_task_init_immed(&task3, fn3, &task3, "E3")),
     MU_SCHED_ERR_NONE);
 
   // now there are three tasks in the scheduler
@@ -211,11 +212,11 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 0);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
-  // now evt2 will trigger and remove evt1 from the queue
+  // now task2 will trigger and remove task1 from the queue
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
   UTEST_ASSERT(mu_time_is_equal(s_time, 10));
   UTEST_ASSERTEQ_INT(s_fn1_call_count, 3);
-  UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);      // fn2 fired (and removes evt1)
+  UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);      // fn2 fired (and removes task1)
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
   // now there are no tasks in the scheduler
@@ -227,7 +228,7 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_INT(s_fn2_call_count, 1);
   UTEST_ASSERTEQ_INT(s_fn3_call_count, 1);
 
-  // Normally evt1 would have triggered here.  But since it was
+  // Normally task1 would have triggered here.  But since it was
   // removed, the idle task runs instead.
   UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
   UTEST_ASSERT(mu_time_is_equal(s_time, 12));
@@ -264,6 +265,64 @@ void mu_sched_test() {
   UTEST_ASSERTEQ_INT(s_iisr_call_count, 1);
   UTEST_ASSERTEQ_INT(s_disr_call_count, 1);
 
+  UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), true);
+
+  // mu_sched_get_tasks
+  UTEST_ASSERTEQ_INT(
+    mu_sched_add(s, mu_task_init_at(&reset_task,
+                                    mu_time_offset(now_fn(), 2),
+                                    reset_fn,
+                                    &reset_task,
+                                    "Reset")),
+    MU_SCHED_ERR_NONE);
+  UTEST_ASSERTEQ_PTR(mu_sched_get_tasks(s), &reset_task);
+  UTEST_ASSERTEQ_INT(mu_sched_task_count(s), 1);
+
+  // don't allow double booking
+  UTEST_ASSERTEQ_INT(
+    mu_sched_add(s, mu_task_init_at(&reset_task,
+                                    mu_time_offset(now_fn(), 2),
+                                    reset_fn,
+                                    &reset_task,
+                                    "Reset")),
+    MU_SCHED_ERR_ALREADY_SCHEDULED);
+  UTEST_ASSERTEQ_INT(mu_sched_task_count(s), 1);
+
+  // mu_sched_remove()
+  UTEST_ASSERTEQ_INT(
+    mu_sched_add(s, mu_task_init_immed(&task3, fn3, &task3, "E3")),
+    MU_SCHED_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_sched_task_count(s), 2);
+  // remove not in list
+  UTEST_ASSERTEQ_INT(mu_sched_remove(s, &task1), MU_SCHED_ERR_NOT_FOUND);
+  UTEST_ASSERTEQ_INT(mu_sched_task_count(s), 2);
+  // remove not at head of list
+  UTEST_ASSERTEQ_INT(mu_sched_remove(s, &reset_task), MU_SCHED_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_sched_task_count(s), 1);
+  // remove at head of list
+  UTEST_ASSERTEQ_INT(mu_sched_remove(s, &task3), MU_SCHED_ERR_NONE);
+  UTEST_ASSERTEQ_INT(mu_sched_task_count(s), 0);
+
+  // mu_sched_t mu_sched_reset()
+  UTEST_ASSERTEQ_INT(
+    mu_sched_add(s, mu_task_init_at(&reset_task,
+                                    mu_time_offset(now_fn(), 2),
+                                    reset_fn,
+                                    &reset_task,
+                                    "Reset")),
+    MU_SCHED_ERR_NONE);
+  UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), false);
+  UTEST_ASSERTEQ_PTR(mu_sched_reset(s), s);
+  UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), true);
+  UTEST_ASSERTEQ_INT(
+    mu_sched_add(s, mu_task_init_at(&reset_task,
+                                    now_fn(),
+                                    reset_fn,
+                                    &reset_task,
+                                    "Reset")),
+    MU_SCHED_ERR_NONE);
+  // step the scheduler to run the reset task
+  UTEST_ASSERTEQ_INT(mu_sched_step(s), MU_SCHED_ERR_NONE);
   UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), true);
 }
 
@@ -310,12 +369,12 @@ static void fn1(void *self, void *arg) {
 }
 
 static void fn2(void *self, void *arg) {
-  mu_task_t *evt1 = (mu_task_t *)self;    // NOTE: _evt1_ is passed as *self
+  mu_task_t *task1 = (mu_task_t *)self;    // NOTE: _task1_ is passed as *self
   mu_sched_t *s = (mu_sched_t *)arg;    // sched is passed as *arg
   s_fn2_call_count += 1;
 
-  // remove evt1 from the schedule
-  UTEST_ASSERTEQ_INT(mu_sched_remove(s, evt1), MU_SCHED_ERR_NONE);
+  // remove task1 from the schedule
+  UTEST_ASSERTEQ_INT(mu_sched_remove(s, task1), MU_SCHED_ERR_NONE);
 }
 
 static void fn3(void *self, void *arg) {
@@ -330,6 +389,16 @@ static void iisr_fn(void *self, void *arg) {
 
 static void disr_fn(void *self, void *arg) {
   s_disr_call_count += 1;
+}
+
+static void reset_fn(void *self, void *arg) {
+  mu_task_t *reset_task = (mu_task_t *)self;
+  mu_sched_t *s = (mu_sched_t *)arg;
+
+  UTEST_ASSERTEQ_PTR(mu_sched_current_task(s), reset_task);
+  UTEST_ASSERTEQ_PTR(mu_sched_reset(s), s);
+  UTEST_ASSERTEQ_BOOL(mu_sched_is_empty(s), true);
+  UTEST_ASSERTEQ_PTR(mu_sched_current_task(s), NULL);
 }
 
 static void queue_immed_from_interrupt(int s) {

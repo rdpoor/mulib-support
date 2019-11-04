@@ -34,12 +34,18 @@
 *.x86_64
 *.hex
 main
+unit_tests
 
 # Debug files
 *.dSYM/
 *.su
 *.idb
 *.pdb
+
+# coverage & profiling files
+*.gcno
+*.gcda
+*.gcov
 
 # Kernel Module Compile Results
 *.mod*

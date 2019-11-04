@@ -47,11 +47,10 @@
 void mu_string_test() {
   char src_cstring[] = "The quick brown fox jumps over the lazy dog.";
   char dst_buf[BUF_SIZE];
-  mu_string_t str_1, str_2, str_3;
+  mu_string_t str_1, str_2;
 
   mu_string_t *s1 = &str_1;
   mu_string_t *s2 = &str_2;
-  mu_string_t *s3 = &str_3;
 
   // mu_string_t *mu_string_init(mu_string_t *s, mu_cstring_t *buf, size_t buf_length);
   // mu_cstring_t *mu_string_buf(mu_string_t *s);
