@@ -31,62 +31,75 @@ mulib strives towards the following design goals.
 
 Low-overhead publish / subscribe message passing.
 
-Status: Passing Tests.
+Status: 0% test coverage
 
-### mu_task
+### mu_bvec
 
-Event handling.  Associates a `mu_time` with a `mu_task` (q.v.).
+Bit vector module: set, clear, test of course but also bulk operations, such as
+test for all zeros or ones, `and` two vectors together, etc.
 
-Status: Passing Tests.
+Status: 82% test coverage.
 
 ### mu_heapsort
 
 O(log N) in-place sorting of pointer-sized objects.
 
-Status: Passing Tests.
+Status: 100% test coverage.
 
 ### mu_log
 
 No-nonsense logging with run-time control on reporting severity and multiple
 reporting channels.
 
-Status: Passing Tests.
+Status: 98% test coverage.
 
 ### mu_ring
 
 Fast, thread-safe queue for void * sized objects, designed for single-producer /
 single-consumer applications.
 
-Status: Passing Tests.
+Status: 100% test coverage.
 
 ### mu_sched
 
 Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion
 scheduler.
 
-Status: Passing Tests.
+Status: 83% test coverage.
 
 ### mu_strbuf
 
 Safely append formatted string data to a buffer.
 
+Status: superceded by mu_string.
+
+### mu_string
+
+For reading, perform in-place "zero copy" operations on strings.  Take slices of
+substrings, compare them.  For writing, perform safe sprintf() and efficient
+append operations.
+
+Status: 83% test coverage.
+
 ### mu_substring
 
 Test and manipulate substrings in-place within a larger string.
 
+Status: superceded by mu_string.
+
 ### mu_task
 
 Simple, versatile, fast message passing.  Commonly used for deferred function
-calls.
+calls, used extensively by mu_sched.
 
-Status: Passing Tests.
+Status: 74% test coverage.
 
 ### mu_time
 
 Functions to manipulate time values, properly handling roll-over.  Provides
 interface to platform specific support in port/port.c.
 
-Status: Passing Tests.
+Status: 100% test coverage.
 
 ## Under Consideration
 
