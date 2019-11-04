@@ -121,71 +121,9 @@ Status: In progress.
 * TODO: create and document a series of demo applications, starting with "blink
 an LED" through more complex ones.  Bonus points for cross platform / cross IDE.
 
-* TODO: Inline some functions
+* Update subscribers of mu_strbuf and mu_substring to use mu_string.
 
 ### Future work
-
-#### mu_string
-
-Merge mu_strbuf and mu_substring into a single mu_string object.  The idea is
-that a mu_string points to the start and end of the null-terminated C string.
-You can use this either as a "cursor" (for writing) or a "view" (for reading)
-into the underlying string.  
-
-Implementation note: always carry the length of the underlying string so that
-mu_strings are always safe.
-
-```
-typedef struct {
-  uint8_t *buf;    // underlying data
-  size_t length;   // length of buf
-  int i0;          // 0 <= i0 <= i1
-  int i1;          // i0 <= i1 < length
-} mu_string_t;
-
-// initialize s from src.  i0 = i1 = 0.
-mu_string_t *mu_string_init(mu_string_t *s, char *c_str, size_t c_str_length);
-
-// return &string[i0]
-char *mu_string_data(mu_string_t *s);
-
-// return length
-size_t mu_string_capacity(mu_string_t *s);
-
-// return length - i1
-size_t mu_string_available(mu_string_t *s);
-
-// return i1-i0
-int mu_string_length(mu_string_t *s) { return s->i1 - s->i0; }
-
-// reset i0 = i1 = 0;
-mu_string_t *mu_string_reset(mu_string_t *s);
-
-// take a substring of the underlying string.  negative end counts from end.
-mu_string *mu_string_slice(mu_string *s, int start, int end);
-
-// make a copy of src into dst.
-mu_string_t *mu_string_duplicate(mu_string *dst, mu_string *src);
-
-// Compare the referenced string to a C string
-int mu_string_cmp(mu_string_t *s, const char *cstring);
-
-// Return true if the referenced string is equal to a C string.
-bool mu_string_eq(mu_string_t *s, const char *cstring);
-
-// the following functions copy bytes:
-
-// Copy data from string[i0] to string[i1] (plus null termination) into c_str.
-char *mu_string_extract(mu_string_t *s, char *c_str, size_t c_str_length);
-
-// append string referred to by src onto dst
-char *mu_string_append(mu_string_t *dst, mu_string_t *src);
-
-// sprintf() into &string[i1]
-int mu_string_sprintf(mu_string_t *s, const char *fmt, ...);
-
-
-```
 
 #### double buffered async writes
 
