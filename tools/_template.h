@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef TEMPLATE_H_
-#define TEMPLATE_H_
+#ifndef MU_TEMPLATE_H_
+#define MU_TEMPLATE_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,23 +33,35 @@ extern "C" {
 // includes
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
 
 typedef enum {
-  TEMPLATE_STATE_0,
-} template_state_t;
+  MU_TEMPLATE_ERR_NONE,
+} mu_template_err_t;
+
+typedef struct {
+  mu_template_state_t state;
+} mu_template_t;
+
 
 // =============================================================================
 // declarations
 
-void template_init();
-template_state_t template_get_state()
-uint32_t template_get_call_count();
+/**
+ * \brief initialize the template module.
+ */
+mu_template_t *mu_template_init(mu_template_t *template);
+
+/**
+ * \brief  Reset the template.
+ */
+mu_template_t *mu_template_reset(mu_template_t *template);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef TEMPLATE_H_ */
+#endif /* #ifndef MU_TEMPLATE_H_ */

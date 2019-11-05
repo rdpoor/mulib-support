@@ -71,7 +71,7 @@ Status: 100% test coverage.
 
 Safely append formatted string data to a buffer.
 
-Status: superceded by mu_string.
+Status: superseded by mu_string.
 
 ### mu_string
 
@@ -85,7 +85,7 @@ Status: 83% test coverage.
 
 Test and manipulate substrings in-place within a larger string.
 
-Status: superceded by mu_string.
+Status: superseded by mu_string.
 
 ### mu_task
 
@@ -135,6 +135,20 @@ Status: In progress.
 an LED" through more complex ones.  Bonus points for cross platform / cross IDE.
 
 * Update subscribers of mu_strbuf and mu_substring to use mu_string.
+
+* In mu_string, create functions that modify underlying buffer: insert, delete,
+  replace.  These are actually all the same function: insert has a non-empty
+  src slice and empty dst slice, delete has an empty src slice and a non-empty
+  dst slice, replace has non-empty src and dst.
+
+* In several cases, we pass the scheduler object, but only use it to queue
+  asynchronous (interrupt) events.  Refactor that into two parts: the
+  scheduler and the isr_queue.  Pass the isr_queue as an optional argument to mu_sched_init().
+
+* Documentation: find a c-based project on github with great documentation and
+  emulate its documentation structure.
+
+* Refactor: all chars should be unsigned chars (or uint8_t)
 
 ### Future work
 

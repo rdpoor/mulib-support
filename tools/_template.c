@@ -25,42 +25,48 @@
 // =============================================================================
 // includes
 
-#include "template.h"
+#include "mu_template.h"
 
 // =============================================================================
 // local types and definitions
 
-#define TEMPLATE_DEBUG (0)
+#define MU_TEMPLATE_DEBUG (0)
 
-typedef struct {
-  template_state_t state;
-  uint32_t call_count;
-} template_t;
+typedef enum {
+  MU_TEMPLATE_STATE_0,
+} mu_template_state_t;
 
 // =============================================================================
 // local (forward) declarations
 
-static void template_reset(void);
+mu_template_state_t get_state(mu_template_t *template);
+mu_template_t *set_state(mu_template_t *template, mu_template_state_t state);
 
 // =============================================================================
 // local storage
 
-static template_t s_template;
+static mu_template_t s_template;
 
 // =============================================================================
 // public code
 
-void template_init() {
-  template_reset(&s_template);
+mu_template_t *mu_template_init() {
+  return template_reset(&s_template);
 }
 
-uint8_t template_get_call_count() {
-  return s_template.call_count;
-}
 // =============================================================================
 // local (static) code
 
-static void template_reset(template_t *template) {
-  template->state = TEMPLATE_STATE_0;
-  template->call_count = 0;
+static mu_template_t *template_reset(template_t *template) {
+  template_set_state(MU_TEMPLATE_STATE_0);
+  return template;
+}
+
+mu_template_state_t get_state(mu_template_t *template) {
+  return template->state;
+}
+
+mu_template_t *set_state(mu_template_t *template, mu_template_state_t state) {
+  template->state = state;
+  return template;
 }
