@@ -28,10 +28,10 @@
 #include "atmel_start.h"
 #include "atmel_start_pins.h"
 #include "driver_init.h"
-#include "mu_iostream.h"
+#include "mu_async.h"
 #include "mu_sched.h"
 #include "mu_sleep.h"
-#include "mu_strbuf.h"
+#include "mu_string.h"
 #include "mu_task.h"
 #include "mu_time.h"
 #include "mu_port.h"
@@ -56,9 +56,9 @@
 #define CLEAR_SCREEN "\e[1;1H\e[2J"
 
 // allocate a buffer for writes to the screen
-#define WRITE_STRBUF_POOL_SIZE (60*15)
+#define WRITE_BUFFER_SIZE (80*2)
 
-#define READ_BUF_SIZE 10
+#define READ_BUFFER_SIZE 10
 
 // =============================================================================
 // forward declarations
@@ -73,26 +73,34 @@ static void idle_task_fn(void *self, void *arg);
  * below).  It will toggle the LED on the SAMD21 XPlained board and then
  * reschedule s_led_task to be called again.
  */
+static void led_task_start();
+static void led_task_stop();
 static void led_task_fn(void *self, void *arg);
 
 /**
- * \brief screen_update_fn is called when the s_screen_update task triggers.
- * It will update the display to show the state of the mulib tasks and then
- * reschedule itself to be called again.
+ * \brief screen_update_fn starts the screen_redraw task.
+ *
+ * If screen updates are enabled, screen_update_fn starts the screen_redraw
+ * task and reschedules itself to trigger in SCREEN_UPDATE_INTERVAL seconds.
  */
-static void screen_update_fn(void *self, void *arg);
+ static void screen_update_task_start();
+ static void screen_update_task_stop();
+ static void screen_update_fn(void *self, void *arg);
 
-static void print_task_status(mu_strbuf_t *sb, mu_task_t *task);
+/**
+ * \brief screen_redraw_fn is called when the s_screen_redraw task triggers.
+ * It will update the display to show the state of the mulib tasks.
+ */
+static void screen_redraw_task_start();
+static void screen_redraw_fn(void *self, void *arg);
+static void sprintf_task_status(mu_string_t *s, mu_task_t *task);
 static char get_task_state(mu_task_t *task);
-static const char *rjust(const char *s, int width, char padchar);
-static const char *cheap_ftoa(float x);
 
 /**
  * \brief keyboard_monitor_fn is called whenever the s_keyboard_task is called.
  * It will read keyboard input and update the state of the demo program.
  */
 static void keyboard_monitor_fn(void *self, void *arg);
-
 static void echo_user_string(char *s);
 
 /**
@@ -105,34 +113,23 @@ static void echo_user_string(char *s);
 static void set_low_power_mode(bool enable);
 static bool is_low_power_mode();
 
-/**
- * \brief Set/get the enable flag for the LED task.
- *
- * When set, the LED task will run.  When cleared, the LED task is suspended.
- */
-static void set_led_task_enable(bool enable);
-static bool led_task_is_enabled();
-
-/**
- * \brief Set/get the enable flag for the screen update task.
- *
- * When set, the screen update task will run.  When cleared, the screen update
- * task is suspended.
- */
-static void set_screen_update_enable(bool enable);
-static bool screen_update_is_enabled();
-
-/**
- * \brief Enable or disable a task, adding it to or removing it from the
- * scheduler.
- */
-static void enable_task(mu_task_t *task, bool enable);
-
+static void start_periodic_task(mu_task_t *task);
+static void stop_periodic_task(mu_task_t *task);
 
 /**
  * Called (from interrupt level) when the user button is pushed
  */
 static void button_on_PA15_pressed(void);
+
+/**
+ * Right justify a string within a field, padding on left with padchar.
+ */
+static const char *rjust(const char *s, int width, char padchar);
+
+/**
+ * Print a float without using the %f directive.
+ */
+static const char *cheap_ftoa(float x);
 
 // =============================================================================
 // local storage
@@ -149,11 +146,10 @@ static mu_sched_t s_sched;
 static mu_queue_obj_t s_isr_queue_pool[ISR_QUEUE_POOL_SIZE];
 
 /**
- * An iostream for serial I/O.  This works in conjunction with the scheduler
- * to handle events generated at interrupt level and trigger tasks in the
- * foreground.
+ * Serial I/O.  This works in conjunction with the scheduler to provide double
+ * buffered writes and to handle serial I/O events generated at interrupt level.
  */
-static mu_iostream_t s_iostream;
+static mu_async_t s_async;
 
 /*
  * \brief s_idle_task is the task that the scheduler runs when nothing else is
@@ -169,8 +165,13 @@ static mu_task_t s_idle_task;
 static mu_task_t s_led_task;
 
 /**
- * \brief s_screen_update_task is responsible for periodically updating the
- * screen.
+ * \brief s_screen_redraw_task is responsible for updating the screen.
+ */
+static mu_task_t s_screen_redraw_task;
+
+/**
+ * \brief s_screen_update_task is responsible for periodically starting the
+ * screen redraw task.
  */
 static mu_task_t s_screen_update_task;
 
@@ -184,22 +185,30 @@ static mu_task_t s_keyboard_monitor_task;
  * \brief State flags for the application.
  */
 static bool s_low_power_mode;
-static bool s_led_task_enabled;
-static bool s_screen_update_enabled;
 
-static char s_write_strbuf_pool[WRITE_STRBUF_POOL_SIZE];
-static mu_strbuf_t s_write_strbuf;
+static char s_write_buffer[WRITE_BUFFER_SIZE];
 
+static char s_read_buffer[READ_BUFFER_SIZE];
+static mu_string_t s_read_string;
+
+/**
+ * We create an explicit list of tasks for the sole purpose of being able to
+ * display their status.
+ */
 static mu_task_t *s_tasks[] = {
   &s_idle_task,
   &s_led_task,
+  &s_screen_redraw_task,
   &s_screen_update_task,
   &s_keyboard_monitor_task
 };
 
 const size_t N_TASKS = sizeof(s_tasks) / sizeof(mu_task_t *);
 
-static char s_read_buf[READ_BUF_SIZE];
+/**
+ * Track which line is being printed to the screen.
+ */
+int s_screen_state;
 
 // =============================================================================
 // public code
@@ -215,8 +224,8 @@ int main(void) {
   // Perform port-specific initialization needed by mulib
   mu_port_init();
 
-  // set up the string buffer for screen write operations
-  mu_strbuf_init(&s_write_strbuf, s_write_strbuf_pool, WRITE_STRBUF_POOL_SIZE);
+  // set up a string buffer for read operations
+  mu_string_init(&s_read_string, s_read_buffer, READ_BUFFER_SIZE);
 
   // Initialize the scheduler along with storage for tasks queued from interrupt
   // level.
@@ -230,34 +239,42 @@ int main(void) {
   // set_led_task_enable(true).  Thereafter, led_task_fn() will reschedule it.
   mu_task_init_immed(&s_led_task, led_task_fn, NULL, "LED");
 
-  // Initialize the screen update task.  The task will be initially be scheduled
-  // by a call to set_screen_update_enable(true).  Thereafter, it will be
-  // rescheduled whenever the write to the serial port completes via the
-  // iostream write callback.
-  mu_task_init_immed(&s_screen_update_task, screen_update_fn, NULL, "Screen");
+  // Initialize the screen update task.  It will be triggered from within the
+  // screen_update task.
+  mu_task_init_immed(&s_screen_redraw_task, screen_redraw_fn, NULL, "Redraw");
+  s_screen_state = 0;
+
+  // Initialize the screen update task.  It will initially be scheduled by a
+  // call to set_screen_update_enabled(true), thereafter it will reschedule
+  // itself.
+  mu_task_init_immed(&s_screen_update_task, screen_update_fn, NULL, "Update");
 
   // Initialize the keyboard monitor task.  This task is called whenever a
-  // serial character becomes available via the iostream read callback.
+  // serial character becomes available via the async read callback.
   mu_task_init_immed(&s_keyboard_monitor_task,
                      keyboard_monitor_fn,
                      NULL,
                      "Keyboard");
 
   // Initialize the I/O stream for the serial port.  TBD: port-specific hw arg.
-  mu_iostream_init(&s_iostream, &s_sched, NULL);
+  mu_async_init(&s_async, &s_sched, NULL, s_write_buffer, WRITE_BUFFER_SIZE);
+
   // Upon completion of a write to the serial port, schedule a call to the
-  // screen_update_task to produce the next update.
-  mu_iostream_set_write_callback(&s_iostream, &s_screen_update_task);
+  // screen_redraw_task to produce the next update.
+  mu_async_set_write_cb(&s_async, &s_screen_redraw_task);
+
   // Upon receiving a character on the serial port, schedule a call to the
   // keyboard_monitor_task to read and process the character.
-  mu_iostream_set_read_callback(&s_iostream, &s_keyboard_monitor_task);
+  mu_async_set_read_cb(&s_async, &s_keyboard_monitor_task);
 
   // set up application defaults
   set_low_power_mode(false);
-  set_led_task_enable(true);        // start the led task
-  set_screen_update_enable(true);   // start the screen update task
 
-	ext_irq_register(PIN_PA15, button_on_PA15_pressed);
+  ext_irq_register(PIN_PA15, button_on_PA15_pressed);
+
+  // queue initial tasks
+  led_task_start();
+  screen_update_task_start();
 
   // Start the scheduler
   while (1) {
@@ -269,6 +286,10 @@ int main(void) {
 
 // =============================================================================
 // private code
+
+// ==========
+// Idle task
+// ==========
 
 // Arrive here when the schedule has nothing runnable.  It puts the processor
 // into standby mode until an interrupt wakes the processor again.  Using this
@@ -296,7 +317,7 @@ static void idle_task_fn(void *self, void *arg) {
   if (!is_low_power_mode()) {
     // Don't sleep if we are not in low-power mode
     return;
-  } else if (mu_iostream_write_is_busy(&s_iostream)) {
+  } else if (mu_async_is_busy(&s_async)) {
   // Don't sleep until the serial port finishes writing data
     return;
   }
@@ -311,105 +332,149 @@ static void idle_task_fn(void *self, void *arg) {
   asm("nop");
 }
 
+// ==========
+// LED task
+// ==========
+
+static void led_task_start() {
+  start_periodic_task(&s_led_task);
+}
+
+static void led_task_stop() {
+  gpio_set_pin_level(LED0, true);  // turn off LED (low-true logic)
+  stop_periodic_task(&s_led_task);
+}
+
 // This is the function that gets called whenever the s_led_task is triggered.
 static void led_task_fn(void *self, void *arg) {
   // Inhibit compiler warning about unused variables
   (void)self;
   (void)arg;
 
-  if (led_task_is_enabled()) {
-    // Toggle the LED pin
-    gpio_toggle_pin_level(LED0);
-    // Reschedule the LED task to trigger LED_UPDATE_INTERVAL seconds in the
-    // future. Note that in order to prevent timing drift, the task time is
-    // computed as (prev_task_time + interval) rather than (now + interval).
-    mu_task_advance_time(&s_led_task,
-                         mu_time_seconds_to_duration(LED_UPDATE_INTERVAL));
-    mu_sched_add(&s_sched, &s_led_task);
+  // Toggle the LED pin
+  gpio_toggle_pin_level(LED0);
 
-  } else {
-    // LED task is disabled.  Turn off the LED and don't reschedule.
-    gpio_set_pin_level(LED0, false);
-  }
+  // Reschedule the LED task to trigger LED_UPDATE_INTERVAL seconds in the
+  // future. Note that in order to prevent timing drift, the task time is
+  // computed as (prev_task_time + interval) rather than (now + interval).
+  mu_task_advance_time(&s_led_task,
+                       mu_time_seconds_to_duration(LED_UPDATE_INTERVAL));
 
+  mu_sched_add(&s_sched, &s_led_task);
 }
 
-// Implementation note: This function builds up the entire string to be written
-// to the screen and then writes it in a single operation.  This requires a
-// rather large buffer to contain the string.  A future version could use a
-// simple state machine to output a line a time, so the buffer would only need
-// to be one line long.
+// ==========
+// Screen Update task
+// ==========
+
+static void screen_update_task_start() {
+  start_periodic_task(&s_screen_update_task);
+}
+
+static void screen_update_task_stop() {
+  stop_periodic_task(&s_screen_update_task);
+}
+
 static void screen_update_fn(void *self, void *arg) {
+  screen_redraw_task_start();
+
+  // Reschedule the screen update task to trigger SCREEN_UPDATE_INTERVAL
+  // seconds in the future.
+  mu_task_advance_time(&s_screen_update_task,
+                       mu_time_seconds_to_duration(SCREEN_UPDATE_INTERVAL));
+  mu_sched_add(&s_sched, &s_screen_update_task);
+ }
+
+// ==========
+// Screen Redraw Task
+// ==========
+
+static void screen_redraw_task_start() {
+  s_screen_state = 0;
+  mu_task_set_immediate(&s_screen_redraw_task);
+  mu_sched_add(&s_sched, &s_screen_redraw_task);
+}
+
+/**
+ * The screen redraw task.  Uses s_screen_state to control behavior.
+ */
+static void screen_redraw_fn(void *self, void *arg) {
+  static const char *strings[] = {
+    CLEAR_SCREEN,                                                     // 0
+    "\r\nmulibDemo3\r\n",                                             // 1
+    "\r\n>     Task: State    At     Calls  MaxLatency     Runtime",  // 2
+    "\r\n*********************************************************",  // 3
+    "\r\n\r\nLow-power idle mode: press user button to enter full-power mode.",  // 4 + NTASKS
+    "\r\n\r\nFull-power mode. Select one:",                      //  4 + NTASKS
+    "\r\n b: activate blink task",                               //  5 + NTASKS
+    "\r\n B: suspend blink task",                                //  6 + NTASKS
+    "\r\n d: activate display task",                             //  7 + NTASKS
+    "\r\n D: suspend display task",                              //  8 + NTASKS
+    "\r\n p: enter low-power idle mode"                          //  9 + NTASKS
+  };
+  mu_string_t *buf;
   // Inhibit compiler warning about unused variables
   (void)self;
   (void)arg;
 
-  if (!screen_update_is_enabled()) {
-    // return immediately if not updating the screen
-    return;
-
-  } else if (mu_iostream_write_is_busy(&s_iostream)) {
-    // return immediately if previous write operation is in progress.  This
-    // task will be re-queued from interrupt level when the previous write
-    // operation completes.
+  if (s_screen_state == -1) {
+    // waiting for someone to start this task.
     return;
   }
 
-  // Format the report in the write string buffer and then pass it to
-  // mu_iostream_write() for printing to the screen.
-  mu_strbuf_reset(&s_write_strbuf);
-  mu_strbuf_append(&s_write_strbuf, CLEAR_SCREEN);
-  mu_strbuf_append(
-    &s_write_strbuf,
-    "\r\n>     Task: State    At     Calls  MaxLatency     Runtime");
-  mu_strbuf_append(
-    &s_write_strbuf,
-    "\r\n*********************************************************");
-  for (int i=0; i<N_TASKS; i++) {
-    print_task_status(&s_write_strbuf, s_tasks[i]);
-  }
-  if (is_low_power_mode()) {
-    mu_strbuf_append(
-      &s_write_strbuf,
-      "\r\n- Low-power idle mode: press user button to enter full-power mode.");
+  // From here: get a buffer to write into, write into it and post it.
+  // The async driver will print the contents and re-trigger this task
+  // when the next buffer comes available.
+
+  if (MU_ASYNC_ERR_NONE != mu_async_reserve_write_buffer(&s_async, &buf)) {
+    // no write buffer is available yet.  A callback will restart the task.
+    return;
+  };
+
+  if (s_screen_state < 4) {
+    // display the first three lines
+    mu_string_sprintf(buf, "%s", strings[s_screen_state]);
+    s_screen_state += 1;
+
+  } else if (s_screen_state < 4 + N_TASKS) {
+    // display the task info for eacn of N tasks
+    sprintf_task_status(buf, s_tasks[s_screen_state - 4]);
+    s_screen_state += 1;
+
+  } else if (is_low_power_mode()) {
+      mu_string_sprintf(buf, "%s", strings[s_screen_state - N_TASKS]);
+      s_screen_state = -1;  // no more text to display -- return to idle state
+
   } else {
-    mu_strbuf_append(
-      &s_write_strbuf,
-      "\r\n- Full-power mode. Select one:"
-      "\r\n b: activate blink task"
-      "\r\n B: suspend blink task"
-      "\r\n d: activate display task"
-      "\r\n D: suspend display task"
-      "\r\n p: enter low-power idle mode"
-      "\r\n others: Echo back"
-      "\r\n# ");
+      mu_string_sprintf(buf, "%s", strings[s_screen_state - N_TASKS + 1]);
+      s_screen_state += 1;
+      if (s_screen_state > N_TASKS + 9) {
+        s_screen_state = -1;  // no more text to display -- return to idle state
+      }
   }
-  // The write completion callback will queue s_screen_update_task (which will call this
-  // function).  Update the scheduled time.
-  mu_task_advance_time(&s_screen_update_task, mu_time_seconds_to_duration(SCREEN_UPDATE_INTERVAL));
-  // output the whole string
-  mu_iostream_write(&s_iostream, mu_strbuf_data(&s_write_strbuf), mu_strbuf_length(&s_write_strbuf));
+  // Pass the buffer to mu_async for printing to the screen.
+  mu_async_post_write_buffer(&s_async);
 }
 
-static void print_task_status(mu_strbuf_t *sb, mu_task_t *task) {
+static void sprintf_task_status(mu_string_t *s, mu_task_t *task) {
   static char buf[128];
 
-  mu_strbuf_printf(sb,
-                   "\r\n%s: %c",
-                   rjust(mu_task_name(task), 10, ' '),
-                   get_task_state(task));
+  mu_string_sprintf(s,
+                    "\r\n%s: %c",
+                    rjust(mu_task_name(task), 10, ' '),
+                    get_task_state(task));
   if (mu_task_is_immediate(task)) {
-    mu_strbuf_append(sb, rjust("immediate", 10, ' '));
+    mu_string_sprintf(s, "%s", rjust("immediate", 10, ' '));
   } else {
     sprintf(buf, "%u", (int)mu_task_time(task));
-    mu_strbuf_append(sb, rjust(buf, 10, ' '));
+    mu_string_sprintf(s, "%s", rjust(buf, 10, ' '));
   }
   sprintf(buf, " %u", mu_task_call_count(task));
-  mu_strbuf_append(sb, rjust(buf, 10, ' '));
+  mu_string_sprintf(s, "%s", rjust(buf, 10, ' '));
   sprintf(buf, " %s", cheap_ftoa(mu_task_max_latency(task)));
-  mu_strbuf_append(sb, rjust(buf, 12, ' '));
+  mu_string_sprintf(s, "%s", rjust(buf, 12, ' '));
   sprintf(buf, " %s", cheap_ftoa(mu_task_runtime(task)));
-  mu_strbuf_append(sb, rjust(buf, 12, ' '));
+  mu_string_sprintf(s, "%s", rjust(buf, 12, ' '));
 }
 
 /*
@@ -430,6 +495,98 @@ static char get_task_state(mu_task_t *task) {
   }
 }
 
+// ==========
+// Keyboard Monitor task
+// ==========
+
+/**
+ * Arrive here on a keyboard interrupt
+ */
+void keyboard_monitor_fn(void *self, void *arg) {
+  char buf[READ_BUFFER_SIZE];
+  mu_string_t s;
+  mu_string_init(&s, buf, READ_BUFFER_SIZE);
+
+  mu_async_err_t err = mu_async_read(&s_async, &s);
+  if (MU_ASYNC_ERR_NONE != err) {
+    // nothing to see here - move along...
+    return;
+  }
+
+  int n_read = mu_string_length(&s);
+  if (n_read == 0) {
+	  return;
+  }
+
+  if (n_read > 0) {
+	mu_string_buf(&s)[mu_string_end(&s)] = '\0';  // Null terminate
+  }
+
+  // In this example, we only pay attention to the first character
+  switch(mu_string_buf(&s)[0]) {
+    case 'b':  // activate blink
+    led_task_start();
+    echo_user_string("b: activate blink task");
+    break;
+    case 'B':  // deactivate blink
+    led_task_stop(false);
+    echo_user_string("B: suspend blink task");
+    break;
+    case 'd':  // activate display
+    screen_update_task_start();
+    echo_user_string("d: activate display task");
+    break;
+    case 'D':  // deactivate display
+    screen_update_task_stop();
+    echo_user_string("D: suspend display task");
+    break;
+    case 'p':  // low power mode
+    set_low_power_mode(true);
+    echo_user_string("p: enter low-power idle mode");
+    break;
+    default:   // echo typed char
+    echo_user_string(mu_string_buf(&s));
+  }
+}
+
+/**
+ * If async is available, write now.
+ */
+static void echo_user_string(char *s) {
+  // TBD...
+}
+
+static void set_low_power_mode(bool enable) {
+  s_low_power_mode = enable;
+}
+
+static bool is_low_power_mode() {
+  return s_low_power_mode;
+}
+
+static void start_periodic_task(mu_task_t *task) {
+  if (mu_sched_has_task(&s_sched, task)) {
+    // already in schedule -- no action needed
+  } else {
+    // set initial time and add to schedule
+    mu_sched_add(&s_sched, mu_task_set_time(task, mu_time_now()));
+  }
+}
+
+static void stop_periodic_task(mu_task_t *task) {
+  // remove from schedule (if present)
+  mu_sched_remove(&s_sched, task);
+}
+
+static void button_on_PA15_pressed(void) {
+  set_low_power_mode(false);
+  mu_sched_add_from_isr(&s_sched, &s_keyboard_monitor_task);
+}
+
+// ==========
+// utilities
+// ==========
+
 /**
  * /brief Right justify s to width chars wide, padding on left with spaces.
  *
@@ -447,8 +604,9 @@ static const char *rjust(const char *s, int width, char padchar) {
   return buf;
 }
 
-// print six digits to the right of the decimal point
-#define FTOA_PRECISION 1000000
+// print five digits to the right of the decimal point
+#define FTOA_PRECISION 100000
+
 /**
  * \brief cheap float to ascii conversion
  *
@@ -462,116 +620,11 @@ static const char *rjust(const char *s, int width, char padchar) {
  */
 static const char *cheap_ftoa(float x) {
   static char buf[20];
-  static char fbuf[7];                           // six digits plus null
+  static char fbuf[6];                           // five digits plus null
   int c = (x * FTOA_PRECISION) + 0.5;            // handle rounding
-  int d = c / FTOA_PRECISION;                    // the integer part
-  int f = c - (d * FTOA_PRECISION);              // the fractional part
+  int i = c / FTOA_PRECISION;                    // the integer part
+  int f = c - (i * FTOA_PRECISION);              // the fractional part
   sprintf(fbuf, "%u", f);                        // fractional part as ascii
-  sprintf(buf, "%u.%s", d, rjust(fbuf, 6, '0')); // pad with leading '0'
+  sprintf(buf, "%u.%s", i, rjust(fbuf, 5, '0')); // pad with leading '0'
   return buf;
-}
-
-/**
- * Arrive here on a keyboard interrupt
- */
-void keyboard_monitor_fn(void *self, void *arg) {
-  // pass READ_BUF_SIZE-1 to always leave space for null termination
-  int n_read = mu_iostream_read(&s_iostream, s_read_buf, READ_BUF_SIZE - 1);
-
-  if (n_read <= 0) {
-    // nothing to see here - move along...
-    return;
-  }
-
-  if (n_read > 0) {
-    // null terminate
-    s_read_buf[n_read] = '\0';
-  }
-
-  // In this example, we only pay attention to the first character
-  switch(s_read_buf[0]) {
-    case 'b':  // activate blink
-    set_led_task_enable(true);
-    echo_user_string("b: activate blink task");
-    break;
-    case 'B':  // deactivate blink
-    set_led_task_enable(false);
-    echo_user_string("B: suspend blink task");
-    break;
-    case 'd':  // activate display
-    set_screen_update_enable(true);
-    echo_user_string("d: activate display task");
-    break;
-    case 'D':  // deactivate display
-    set_screen_update_enable(false);
-    echo_user_string("D: suspend display task");
-    break;
-    case 'p':  // low power mode
-    set_low_power_mode(true);
-    echo_user_string("p: enter low-power idle mode");
-    break;
-    default:   // echo typed char
-    echo_user_string(s_read_buf);
-  }
-}
-
-/**
- * If iostream is available, write now.
- */
-static void echo_user_string(char *s) {
-  if (!mu_iostream_write_is_busy(&s_iostream)) {
-    mu_iostream_write(&s_iostream, s, strlen(s));
-  } else {
-    // TBD...
-  }
-}
-
-static void set_low_power_mode(bool enable) {
-  s_low_power_mode = enable;
-}
-
-static bool is_low_power_mode() {
-  return s_low_power_mode;
-}
-
-static void set_led_task_enable(bool enable) {
-  s_led_task_enabled = enable;
-  enable_task(&s_led_task, enable);
-  if (!enable) {
-    // make sure LED is off when deactivating the task
-    gpio_set_pin_level(LED0, false);
-  }
-}
-
-static bool led_task_is_enabled() {
-  return s_led_task_enabled;
-}
-
-static void set_screen_update_enable(bool enable) {
-  s_screen_update_enabled = enable;
-  enable_task(&s_screen_update_task, enable);
-}
-
-static bool screen_update_is_enabled() {
-  return s_screen_update_enabled;
-}
-
-static void enable_task(mu_task_t *task, bool enable) {
-  // TODO: consider promoting this function to mu_sched().
-  if (enable) {
-    if (mu_sched_has_task(&s_sched, task)) {
-      // already in schedule -- no action needed
-    } else {
-      // set initial time and add to schedule
-      mu_sched_add(&s_sched, mu_task_set_time(task, mu_time_now()));
-    }
-  } else {
-    // remove from schedule (if present)
-    mu_sched_remove(&s_sched, task);
-  }
-}
-
-static void button_on_PA15_pressed(void) {
-  set_low_power_mode(false);
-  mu_sched_add_from_isr(&s_sched, &s_keyboard_monitor_task);
 }

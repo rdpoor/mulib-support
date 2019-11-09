@@ -67,12 +67,6 @@ scheduler.
 
 Status: 100% test coverage.
 
-### mu_strbuf
-
-Safely append formatted string data to a buffer.
-
-Status: superseded by mu_string.
-
 ### mu_string
 
 For reading, perform in-place "zero copy" operations on strings.  Take slices of
@@ -80,12 +74,6 @@ substrings, compare them.  For writing, perform safe sprintf() and efficient
 append operations.
 
 Status: 83% test coverage.
-
-### mu_substring
-
-Test and manipulate substrings in-place within a larger string.
-
-Status: superseded by mu_string.
 
 ### mu_task
 
@@ -102,6 +90,13 @@ interface to platform specific support in port/port.c.
 Status: 100% test coverage.
 
 ## Under Consideration
+
+### mu_async
+
+Asynchronous I/O with double-buffered write operations.
+
+Status: Working proof-of-concept in mulibDemo4.  Needs refactoring for platform
+specific I/O functions.
 
 ### mu_jemi
 
@@ -134,70 +129,18 @@ Status: In progress.
 * TODO: create and document a series of demo applications, starting with "blink
 an LED" through more complex ones.  Bonus points for cross platform / cross IDE.
 
-* Update subscribers of mu_strbuf and mu_substring to use mu_string.
-
 * In mu_string, create functions that modify underlying buffer: insert, delete,
   replace.  These are actually all the same function: insert has a non-empty
   src slice and empty dst slice, delete has an empty src slice and a non-empty
   dst slice, replace has non-empty src and dst.
 
-* In several cases, we pass the scheduler object, but only use it to queue
-  asynchronous (interrupt) events.  Refactor that into two parts: the
-  scheduler and the isr_queue.  Pass the isr_queue as an optional argument to mu_sched_init().
-
 * Documentation: find a c-based project on github with great documentation and
   emulate its documentation structure.
 
-* Refactor: all chars should be unsigned chars (or uint8_t)
+* Refactor: all chars should be unsigned chars (or uint8_t).  Pick one.
 
 ### Future work
 
-#### double buffered async writes
+* Can we sensibly emulate Scheme-style continuations or Note-style promises?
 
-Imagine the following task.  The idea is that mu_async handles double-buffered
-writes, calling the target task when a buffer becomes available.
-
-```
-typedef struct {
-  int state;
-  mu_async_t async;
-} writer_state_t;
-
-mu_writer_state_t s_writer_state;
-mu_task_t s_writer_task;
-
-void init() {
-  mu_async_init(&s_writer_state.async, s_sched, async_driver, async_buf, ASYNC_BUF_SIZE);
-
-  writer_state.state = 0;
-  mu_task_init_at(&s_writer_task, mu_time_now(), writer_fn, s_write_state, "W");
-  mu_sched_add(&s_sched, &s_writer_task);
-}
-
-void writer_fn(void *self, void *arg) {
-  writer_state_t *s = (writer_state_t *)self;
-
-  if (s->state < 3) {
-    // For states 0, 1, 2: get a buffer from the async driver.  Set up to call
-    // s_writer_task if no buffer is immediately available.
-    strbuf_t *sbuf = mu_async_get_buffer(s->async, &s_writer_task);
-    if (sbuf == NULL) {
-      return;
-    }
-    // Got a buffer.  Print some data into it, post it to the async driver for
-    // printing to the screen and set up to call s_writer_task when the next
-    // buffer becomes available.  (Note that we don't pass sbuf as an argument
-    // because it must be the one we were given in `mu_async_get_buffer()`.)
-    sbuf_printf("%d\r\n", s->state);
-    mu_async_post_write_buffer(s->async, &s_writer_task);
-    s->state += 1;
-
-  } else {
-    // after printing out three things, wait for 5 seconds and start again...
-    mu_task_advance_time(&s_writer_task, mu_seconds_to_dt(5.0));
-    mu_sched_add(&s_sched, &s_writer_task);
-    s->state = 0;
-  }
-}
-
-```
+* Can we sensibly emulate functional list operations (map, collect, etc)?

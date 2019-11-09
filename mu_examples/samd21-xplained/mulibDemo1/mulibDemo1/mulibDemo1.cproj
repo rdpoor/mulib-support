@@ -280,7 +280,7 @@
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
       <Value>%24(PackRepoDir)\arm\cmsis\5.4.0\CMSIS\Core\Include\</Value>
-      <Value>../../../../../mulib/mu_src</Value>
+      <Value>../../../../../mu_src</Value>
       <Value>../Config</Value>
       <Value>../</Value>
       <Value>../examples</Value>
@@ -297,6 +297,7 @@
       <Value>../hpl/sysctrl</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
+      <Value>../../../../../mu_ports/asf4</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
@@ -370,79 +371,159 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_assert.h">
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port.c">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port.h">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_assert.c">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_assert.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_assert.h">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_assert.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_iostream.c">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_iostream.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_iostream.h">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_iostream.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_sleep.c">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_sleep.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_sleep.h">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_sleep.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_time.c">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_time.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_ports\asf4\mu_port_time.h">
+      <SubType>compile</SubType>
+      <Link>mu_ports\mu_port_time.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_assert.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_assert.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_bcast.c">
+    <Compile Include="..\..\..\..\mu_src\mu_async.c">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_async.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_async.h">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_async.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_bcast.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_bcast.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_bcast.h">
+    <Compile Include="..\..\..\..\mu_src\mu_bcast.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_bcast.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_heapsort.c">
+    <Compile Include="..\..\..\..\mu_src\mu_bvec.c">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_bvec.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_bvec.h">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_bvec.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_heapsort.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_heapsort.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_heapsort.h">
+    <Compile Include="..\..\..\..\mu_src\mu_heapsort.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_heapsort.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_log.c">
+    <Compile Include="..\..\..\..\mu_src\mu_iostream.c">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_iostream.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_iostream.h">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_iostream.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_log.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_log.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_log.h">
+    <Compile Include="..\..\..\..\mu_src\mu_log.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_log.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_queue.c">
+    <Compile Include="..\..\..\..\mu_src\mu_queue.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_queue.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_queue.h">
+    <Compile Include="..\..\..\..\mu_src\mu_queue.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_queue.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_sched.c">
+    <Compile Include="..\..\..\..\mu_src\mu_sched.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_sched.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_sched.h">
+    <Compile Include="..\..\..\..\mu_src\mu_sched.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_sched.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_sleep.c">
+    <Compile Include="..\..\..\..\mu_src\mu_sleep.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_sleep.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_sleep.h">
+    <Compile Include="..\..\..\..\mu_src\mu_sleep.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_sleep.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_strbuf.c">
+    <Compile Include="..\..\..\..\mu_src\mu_strbuf.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_strbuf.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_strbuf.h">
+    <Compile Include="..\..\..\..\mu_src\mu_strbuf.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_strbuf.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_task.c">
+    <Compile Include="..\..\..\..\mu_src\mu_string.c">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_string.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_string.h">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_string.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_substring.c">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_substring.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_substring.h">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_substring.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\mu_src\mu_task.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_task.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_task.h">
+    <Compile Include="..\..\..\..\mu_src\mu_task.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_task.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_time.c">
+    <Compile Include="..\..\..\..\mu_src\mu_time.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_time.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mulib\mu_src\mu_time.h">
+    <Compile Include="..\..\..\..\mu_src\mu_time.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_time.h</Link>
     </Compile>
@@ -494,6 +575,10 @@
     <Compile Include="driver_init.h">
       <SubType>compile</SubType>
     </Compile>
+    <None Include="..\..\..\..\mu_src\mu_ring.o">
+      <SubType>compile</SubType>
+      <Link>mu_src\mu_ring.o</Link>
+    </None>
     <None Include="edbg_uart_example.c">
       <SubType>compile</SubType>
     </None>
@@ -815,12 +900,6 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="mu_port.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="mu_port.h">
-      <SubType>compile</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
@@ -844,6 +923,7 @@
     <Folder Include="hpl\sysctrl\" />
     <Folder Include="hri\" />
     <Folder Include="mu_src" />
+    <Folder Include="mu_ports" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Device_Startup\samd21j18a_flash.ld">

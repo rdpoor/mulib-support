@@ -107,14 +107,13 @@ mu_task_t *mu_async_get_read_cb(mu_async_t *async) {
 }
 
 mu_async_err_t mu_async_read(mu_async_t *async, mu_string_t *s) {
-  int n_read = port_async_read(async,
-                               &(mu_string_cstring(s)[mu_string_end(s)]),
-                               mu_string_available(s));
+  int n_read = port_async_read(
+      async, &(mu_string_cstring(s)[mu_string_end(s)]), mu_string_available(s));
   if (n_read > 0) {
     s->end += n_read;
     mu_string_cstring(s)[mu_string_end(s)] = '\0';
   }
-  return MU_ASYNC_ERR_NONE;  // could be better
+  return MU_ASYNC_ERR_NONE; // could be better
 }
 
 mu_async_t *mu_async_set_write_cb(mu_async_t *async, mu_task_t *write_cb) {
@@ -128,8 +127,8 @@ mu_task_t *mu_async_get_write_cb(mu_async_t *async) {
 
 mu_async_err_t mu_async_reserve_write_buffer(mu_async_t *async,
                                              mu_string_t **buffer) {
-   mu_async_owner_t a_own = get_buffer_a_owner(async);
-   mu_async_owner_t b_own = get_buffer_b_owner(async);
+  mu_async_owner_t a_own = get_buffer_a_owner(async);
+  mu_async_owner_t b_own = get_buffer_b_owner(async);
 
   if (a_own == MU_ASYNC_AVAILABLE) {
     set_buffer_a_owner(async, MU_ASYNC_USER_OWNS);
@@ -176,11 +175,10 @@ mu_async_err_t mu_async_post_write_buffer(mu_async_t *async) {
   }
 }
 
-bool mu_async_write_is_busy(mu_async_t *async) {
-  return usart_async_get_status(&EDBG_COM, NULL) == ERR_BUSY;
-  // We might need to check that the tx buffer is empty as well:
-  // return (usart_async_get_status(&EDBG_COM, NULL) == ERR_BUSY) &&
-  //        !usart_async_is_tx_empty(&EDBG_COM);
+bool mu_async_is_busy(mu_async_t *async) {
+  // Return true if the underlying driver is still processing the buffer.
+  return (get_buffer_a_owner(async) == MU_ASYNC_ISR_OWNS) ||
+         (get_buffer_b_owner(async) == MU_ASYNC_ISR_OWNS);
 }
 
 // =============================================================================
@@ -220,7 +218,7 @@ static void set_buffer_b_owner(mu_async_t *async, mu_async_owner_t owner) {
 // port specific code -- to be refactored later
 
 static void port_async_init(mu_async_t *async, void *hw) {
-  s_async = async;  // needed for ISR level callbacks
+  s_async = async; // needed for ISR level callbacks
 
   usart_async_register_callback(&EDBG_COM, USART_ASYNC_RXC_CB, rxc_cb);
   usart_async_register_callback(&EDBG_COM, USART_ASYNC_TXC_CB, txc_cb);
@@ -235,14 +233,14 @@ int port_async_read(mu_async_t *async, char *dst, int n) {
   struct io_descriptor *io;
   usart_async_get_io_descriptor(&EDBG_COM, &io);
 
-  return io_read(io, (uint8_t * const)dst, n);
+  return io_read(io, (uint8_t *const)dst, n);
 }
 
 // Initiate a write operation.  the txc_cb will be called on completion.
 int port_async_write(mu_async_t *async, const char *src, int n) {
   struct io_descriptor *io;
-	usart_async_get_io_descriptor(&EDBG_COM, &io);
-	return io_write(io, (const uint8_t * const)src, n);
+  usart_async_get_io_descriptor(&EDBG_COM, &io);
+  return io_write(io, (const uint8_t *const)src, n);
 }
 
 // rxc_cb is called from interrupt level when a character becomes available

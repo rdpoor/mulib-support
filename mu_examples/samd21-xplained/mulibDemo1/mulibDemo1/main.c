@@ -52,6 +52,11 @@
  */
 static void led_task_fn(void *self, void *arg);
 
+/**
+ * \brief Toggle the LED.
+ */
+static void toggle_led();
+
 // =============================================================================
 // local storage
 
@@ -77,7 +82,7 @@ int main(void) {
   // Perform port-specific initialization needed by mulib (RTC)
   mu_port_init();
 
-  // Initialize the scheduler.  In this demo, we don't need to provide a pool
+  // Initialize the scheduler.  In this demo, we don't need to provide a queue
   // for ISR tasks so we pass NULL and 0.
   mu_sched_init(&s_sched, NULL, 0);
 
@@ -108,11 +113,16 @@ static void led_task_fn(void *self, void *arg) {
   (void)self;
   (void)arg;
   // Toggle the LED pin
-  gpio_toggle_pin_level(LED0);
+  toggle_led();
   // Reschedule the LED task to trigger LED_UPDATE_INTERVAL seconds in the
   // future. Note that in order to prevent timing drift, the task time is
   // computed as (prev_task_time + interval) rather than (now + interval).
   mu_task_advance_time(&s_led_task,
                        mu_time_seconds_to_duration(LED_UPDATE_INTERVAL));
   mu_sched_add(&s_sched, &s_led_task);
+}
+
+// Toggle the LED.
+static void toggle_led() {
+  gpio_toggle_pin_level(LED0);
 }

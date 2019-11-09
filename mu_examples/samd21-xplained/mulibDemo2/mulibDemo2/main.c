@@ -28,11 +28,11 @@
 #include "atmel_start.h"
 #include "atmel_start_pins.h"
 #include "driver_init.h"
+#include "mu_port.h"
 #include "mu_sched.h"
 #include "mu_sleep.h"
 #include "mu_task.h"
 #include "mu_time.h"
-#include "mu_port.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -58,7 +58,10 @@ static void idle_task_fn(void *self, void *arg);
  */
 static void led_task_fn(void *self, void *arg);
 
-
+/**
+ * \brief Toggle the LED.
+ */
+static void toggle_led();
 
 // =============================================================================
 // local storage
@@ -127,7 +130,7 @@ static void led_task_fn(void *self, void *arg) {
   (void)self;
   (void)arg;
   // Toggle the LED pin
-  gpio_toggle_pin_level(LED0);
+  toggle_led();
   // Reschedule the LED task to trigger LED_UPDATE_INTERVAL seconds in the
   // future. Note that in order to prevent timing drift, the task time is
   // computed as (prev_task_time + interval) rather than (now + interval).
@@ -159,12 +162,17 @@ static void idle_task_fn(void *self, void *arg) {
   mu_sched_t *sched = (mu_sched_t *)arg;
   mu_task_t *next_task = mu_sched_get_tasks(sched);
 
-  // TODO: bcast will sleep to inform other that we're just about to sleep
   if (next_task == NULL) {
+    // No future tasks are scheduled.  Sleep until an external interrupt wakes
+    // the processor.
     mu_sleep_indefinitely();
+
   } else {
+    // Set the RTC to generate an interrupt and wake the processor in time for
+    // the next task.
     mu_sleep_until(mu_task_time(next_task));
   }
-  // TODO: bcast did waketo inform others that we just woke up
-  asm("nop");
 }
+
+// Toggle the LED.
+static void toggle_led() { gpio_toggle_pin_level(LED0); }

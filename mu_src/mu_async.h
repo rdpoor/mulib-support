@@ -125,7 +125,7 @@ mu_async_err_t mu_async_post_write_buffer(mu_async_t *async);
 /**
  * Return true if the hardware is actively writing.
  */
-bool mu_async_write_is_busy(mu_async_t *async);
+bool mu_async_is_busy(mu_async_t *async);
 
 #ifdef __cplusplus
 }
