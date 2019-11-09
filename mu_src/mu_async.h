@@ -55,6 +55,7 @@ typedef enum {
 typedef struct {
   mu_sched_t *sched;
   void *port_driver;
+  mu_task_t *user_read_cb;
   mu_task_t *user_write_cb;
   mu_task_t internal_write_cb;
   mu_string_t buffer_a;
@@ -79,36 +80,52 @@ mu_async_t *mu_async_init(mu_async_t *async,
                           size_t buf_size);
 
 /**
- * \brief  Reset the internal state of the async processor
+ * \brief  Reset the internal state of the async processor.
+ *
+ * This will also stop any actve read or write operations in progress.
  */
 mu_async_t *mu_async_reset(mu_async_t *async);
+
+/**
+ * \brief set/get a taks to be called when new read data is available.
+ */
+mu_async_t *mu_async_set_read_cb(mu_async_t *async, mu_task_t *read_cb);
+mu_task_t *mu_async_get_read_cb(mu_async_t *async);
+
+/**
+ * Read any available data and append to the given string buffer.
+ *
+ * If the low-level read operation has not yet started, this will start it.
+ */
+mu_async_err_t mu_async_read(mu_async_t *async, mu_string_t *buf);
 
 /**
  * \brief Set/get a task to be called when a buffer comes available.
  */
 mu_async_t *mu_async_set_write_cb(mu_async_t *async, mu_task_t *write_cb);
-
 mu_task_t *mu_async_get_write_cb(mu_async_t *async);
 
 /**
  * \brief Get a buffer for write operations.
  *
- * If a buffer is available, it is returned.  If not, NULL is returned and if
- * the on_available task is provided, async will trigger that task when a
- * buffer comes available.
+ * If a buffer is available, it is returned.  If not, NULL is returned.
  */
-mu_async_err_t mu_async_reserve_buffer(mu_async_t *async,
-                                       mu_string_t **buffer);
+mu_async_err_t mu_async_reserve_write_buffer(mu_async_t *async,
+                                             mu_string_t **buffer);
 
 /**
  * \brief Post current buffer for writing.
  *
  * After writing data into the string buffer previously acquired by a call to
  * mu_async_get_buffer, you post it for writing here.  You will get an error
- * return if the buffer cannot be posted.  If the on_completion argument is
- * given, it will be triggered when the next buffer becomes available.
+ * return if the buffer cannot be posted.
  */
-mu_async_err_t mu_async_post_buffer(mu_async_t *async);
+mu_async_err_t mu_async_post_write_buffer(mu_async_t *async);
+
+/**
+ * Return true if the hardware is actively writing.
+ */
+bool mu_async_write_is_busy(mu_async_t *async);
 
 #ifdef __cplusplus
 }

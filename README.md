@@ -189,7 +189,7 @@ void writer_fn(void *self, void *arg) {
     // buffer becomes available.  (Note that we don't pass sbuf as an argument
     // because it must be the one we were given in `mu_async_get_buffer()`.)
     sbuf_printf("%d\r\n", s->state);
-    mu_async_post_buffer(s->async, &s_writer_task);
+    mu_async_post_write_buffer(s->async, &s_writer_task);
     s->state += 1;
 
   } else {
