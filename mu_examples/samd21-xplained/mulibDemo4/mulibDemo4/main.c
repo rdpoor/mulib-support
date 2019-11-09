@@ -43,7 +43,7 @@
 // types and definitions
 
 // Define repetition interval for toggling LED
-#define LED_UPDATE_INTERVAL 0.05
+#define LED_UPDATE_INTERVAL 0.5
 
 // Define repetition interval for updating the display
 #define SCREEN_UPDATE_INTERVAL 5.0
@@ -451,7 +451,7 @@ static void screen_redraw_fn(void *self, void *arg) {
       mu_string_sprintf(buf, "%s", strings[s_screen_state - N_TASKS + 1]);
       mu_async_post_write_buffer(&s_async);
       s_screen_state += 1;
-      if (s_screen_state == N_TASKS + 8) {
+      if (s_screen_state == N_TASKS + 8 + 1) {
         s_screen_state = -1;
       }
   }
