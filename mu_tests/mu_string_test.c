@@ -54,10 +54,10 @@ void mu_string_test() {
 
   // mu_string_t *mu_string_init(mu_string_t *s, mu_cstring_t *buf, size_t buf_length);
   // mu_cstring_t *mu_string_buf(mu_string_t *s);
-  // size_t mu_string_buf_length(mu_string_t *s);
+  // size_t mu_string_capacity(mu_string_t *s);
   UTEST_ASSERTEQ_PTR(mu_string_init(s1, src_cstring, strlen(src_cstring)), s1);
   UTEST_ASSERTEQ_PTR(mu_string_buf(s1), src_cstring);
-  UTEST_ASSERTEQ_INT(mu_string_buf_length(s1), strlen(src_cstring));
+  UTEST_ASSERTEQ_INT(mu_string_capacity(s1), strlen(src_cstring));
 
   // start and end pointers are initially zero
   UTEST_ASSERTEQ_INT(mu_string_start(s1), 0);

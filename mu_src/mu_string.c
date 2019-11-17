@@ -45,18 +45,18 @@
 // initialize a mu_string from a C string
 mu_string_t *mu_string_init(mu_string_t *s, mu_cstring_t *buf, size_t buf_length) {
   s->buf = buf;
-  s->buf_length = buf_length;
+  s->capacity = buf_length;
   return mu_string_reset(s);
 }
 
-// return the underlying C string
+// return the underlying buffer
 mu_cstring_t *mu_string_buf(mu_string_t *s) {
   return s->buf;
 }
 
-// return the length of the underlying C string
-size_t mu_string_buf_length(mu_string_t *s) {
-  return s->buf_length;
+// return the length of the underlying buffer
+size_t mu_string_capacity(mu_string_t *s) {
+  return s->capacity;
 }
 
 // reset start = end = 0
@@ -70,28 +70,40 @@ int mu_string_start(mu_string_t *s) {
   return s->start;
 }
 
-// return the start index
+// return the end index
 int mu_string_end(mu_string_t *s) {
   return s->end;
 }
 
-mu_cstring_t *mu_string_cstring(mu_string_t *s) {
-  return &(s->buf[s->start]);
-}
-
-// return i1-i0
+// return end-start
 int mu_string_length(mu_string_t *s) {
   return s->end - s->start;
 }
 
-// return length - i1
+// Return a pointer to a string starting at buf[start]
+mu_cstring_t *mu_string_cstring(mu_string_t *s) {
+  return &(s->buf[s->start]);
+}
+
+mu_string_t *mu_string_set_length(mu_string_t *s, size_t length) {
+  s->end = s->start + length;
+  return s;
+}
+
+// return how many bytes remain available in the string.
 size_t mu_string_available(mu_string_t *s) {
-  return s->buf_length - s->end;
+  return s->capacity - s->end;
 }
 
 // compare substring with a c string
 int mu_string_cmp(mu_string_t *s, const mu_cstring_t *cstring) {
-  return strncmp((const char *)mu_string_cstring(s), (const char *)cstring, mu_string_length(s));
+	const char *s1 = (const char *)mu_string_cstring(s);
+	const char *s2 = (const char *)cstring;
+	int len = mu_string_length(s);
+	int cmp = strncmp(s1, s2, len);
+	printf("mu_string_cmp(\"%s\", \"%s\", %d) => %d\n", s1, s2, len, cmp);
+	return cmp;
+    // return strncmp((const char *)mu_string_cstring(s), (const char *)cstring, mu_string_length(s));
 }
 
 // return true if the string equals the given string
@@ -109,10 +121,11 @@ mu_string_t *mu_string_duplicate(mu_string_t *dst, mu_string_t *src) {
 // provided.
 
 // take a string of the underlying string.  negative end counts from end.
+// TODO: should start and end arguments be relative to s?
 mu_string_t *mu_string_slice(mu_string_t *s, int start, int end, mu_string_t *dst) {
   mu_string_t *d = dst ? mu_string_duplicate(dst, s) : s;
-  d->start = (start >= 0) ? start : mu_string_buf_length(d) + start + 1;
-  d->end = (end >= 0) ? end : mu_string_buf_length(d) + end + 1;
+  d->start = (start >= 0) ? start : mu_string_capacity(d) + start + 1;
+  d->end = (end >= 0) ? end : mu_string_capacity(d) + end + 1;
   return d;
 }
 
@@ -167,7 +180,7 @@ mu_string_t *mu_string_append(mu_string_t *dst, mu_string_t *src) {
   return dst;
 }
 
-// sprintf() into &string[i1]
+// sprintf() into &string[end]
 mu_string_t *mu_string_sprintf(mu_string_t *s, const char *fmt, ...) {
   va_list ap;
   size_t n_available = mu_string_available(s);

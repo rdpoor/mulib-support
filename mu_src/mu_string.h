@@ -43,7 +43,7 @@ typedef char mu_cstring_t;
 
 typedef struct {
   mu_cstring_t *buf;
-  size_t buf_length;
+  size_t capacity;
   int start;
   int end;
 } mu_string_t;
@@ -54,11 +54,11 @@ typedef struct {
 // initialize a mu_string from a C string
 mu_string_t *mu_string_init(mu_string_t *s, mu_cstring_t *buf, size_t buf_length);
 
-// return the underlying C string
+// return the underlying buffer
 mu_cstring_t *mu_string_buf(mu_string_t *s);
 
 // return the length of the underlying C string
-size_t mu_string_buf_length(mu_string_t *s);
+size_t mu_string_capacity(mu_string_t *s);
 
 // reset start = end = 0
 mu_string_t *mu_string_reset(mu_string_t *s);
@@ -71,7 +71,12 @@ int mu_string_end(mu_string_t *s);
 
 mu_cstring_t *mu_string_cstring(mu_string_t *s);
 
-// return i1-i0
+// Set the length of the string.  Designed specifically after appending data
+// to the underlying c string, as in:
+//     mu_string_set_length(s, strlen(mu_string_cstring(s)));
+mu_string_t *mu_string_set_length(mu_string_t *s, size_t length);
+
+// return end-start
 int mu_string_length(mu_string_t *s);
 
 // return length - i1
