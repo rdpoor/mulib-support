@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef HTTP_CONN_H_
-#define HTTP_CONN_H_
+#ifndef TCP_CLIENT_H_
+#define TCP_CLIENT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,42 +43,42 @@ extern "C" {
 // types and definitions
 
 // This block defines the possible states for the process_transaction() state
-// machine.  (`HCS` stands for HTTP Client State).
-#define DEFINE_HCS_STATES                                                      \
-  DEFINE_HCS_STATE(HCS_ENTRY)                                                  \
-  DEFINE_HCS_STATE(HCS_INITIATING_AP_CONNECTION)                               \
-  DEFINE_HCS_STATE(HCS_AWAITING_AP_CONNECTION)                                 \
-  DEFINE_HCS_STATE(HCS_AP_CONNECT_FAILURE)                                     \
-  DEFINE_HCS_STATE(HCS_INITIATING_DNS_RESOLUTION)                              \
-  DEFINE_HCS_STATE(HCS_AWAITING_DNS_RESOLUTION)                                \
-  DEFINE_HCS_STATE(HCS_GETHOSTBYNAME_FAILURE)                                  \
-  DEFINE_HCS_STATE(HCS_DNS_RESOLUTION_FAILURE)                                 \
-  DEFINE_HCS_STATE(HCS_INITIATING_SOCKET_CONNECTION)                           \
-  DEFINE_HCS_STATE(HCS_AWAITING_SOCKET_CONNECTION)                             \
-  DEFINE_HCS_STATE(HCS_SOCKET_FAILURE)                                         \
-  DEFINE_HCS_STATE(HCS_CONNECT_FAILURE)                                        \
-  DEFINE_HCS_STATE(HCS_INITIATING_SEND)                                        \
-  DEFINE_HCS_STATE(HCS_AWAITING_SEND_CONFIRMATION)                             \
-  DEFINE_HCS_STATE(HCS_SEND_FAILURE)                                           \
-  DEFINE_HCS_STATE(HCS_INITIATING_RECEIVE)                                     \
-  DEFINE_HCS_STATE(HCS_AWAITING_RECEIVE_CONFIRMATION)                          \
-  DEFINE_HCS_STATE(HCS_RECEIVE_FAILURE)                                        \
-  DEFINE_HCS_STATE(HCS_SUCCESS)
+// machine.  (`TCS` stands for HTTP Client State).
+#define DEFINE_TCS_STATES                                                      \
+  DEFINE_TCS_STATE(TCS_ENTRY)                                                  \
+  DEFINE_TCS_STATE(TCS_INITIATING_AP_CONNECTION)                               \
+  DEFINE_TCS_STATE(TCS_AWAITING_AP_CONNECTION)                                 \
+  DEFINE_TCS_STATE(TCS_AP_CONNECT_FAILURE)                                     \
+  DEFINE_TCS_STATE(TCS_INITIATING_DNS_RESOLUTION)                              \
+  DEFINE_TCS_STATE(TCS_AWAITING_DNS_RESOLUTION)                                \
+  DEFINE_TCS_STATE(TCS_GETHOSTBYNAME_FAILURE)                                  \
+  DEFINE_TCS_STATE(TCS_DNS_RESOLUTION_FAILURE)                                 \
+  DEFINE_TCS_STATE(TCS_INITIATING_SOCKET_CONNECTION)                           \
+  DEFINE_TCS_STATE(TCS_AWAITING_SOCKET_CONNECTION)                             \
+  DEFINE_TCS_STATE(TCS_SOCKET_FAILURE)                                         \
+  DEFINE_TCS_STATE(TCS_CONNECT_FAILURE)                                        \
+  DEFINE_TCS_STATE(TCS_INITIATING_SEND)                                        \
+  DEFINE_TCS_STATE(TCS_AWAITING_SEND_CONFIRMATION)                             \
+  DEFINE_TCS_STATE(TCS_SEND_FAILURE)                                           \
+  DEFINE_TCS_STATE(TCS_INITIATING_RECEIVE)                                     \
+  DEFINE_TCS_STATE(TCS_AWAITING_RECEIVE_CONFIRMATION)                          \
+  DEFINE_TCS_STATE(TCS_RECEIVE_FAILURE)                                        \
+  DEFINE_TCS_STATE(TCS_SUCCESS)
 
-// Expand DEFINE_HCS_STATES to generate an enum for each state
-#undef DEFINE_HCS_STATE
-#define DEFINE_HCS_STATE(x) x,
-typedef enum { DEFINE_HCS_STATES } hcs_t;
+// Expand DEFINE_TCS_STATES to generate an enum for each state
+#undef DEFINE_TCS_STATE
+#define DEFINE_TCS_STATE(x) x,
+typedef enum { DEFINE_TCS_STATES } hcs_t;
 
-#undef DEFINE_HCS_STATE
+#undef DEFINE_TCS_STATE
 
 struct tcp_client_; // defined in tcp_client.c
 
 typedef struct tcp_client_ tcp_client_t;
 
 typedef enum {
-  HTTP_CLIENT_ERR_NONE,
-  HTTP_CLIENT_ERR_BAD_FORMAT,
+  TCP_CLIENT_ERR_NONE,
+  TCP_CLIENT_ERR_BAD_FORMAT,
 } tcp_client_err_t;
 
 #define DEFINE_HTTP_METHODS                                                    \
@@ -95,7 +95,7 @@ typedef enum {
 #undef DEFINE_HTTP_METHOD
 #define DEFINE_HTTP_METHOD(x) HTTP_METHOD_##x,
 typedef enum { DEFINE_HTTP_METHODS } http_method_t;
-#undef DEFINE_HCS_STATE
+#undef DEFINE_TCS_STATE
 
 // =============================================================================
 // declarations
@@ -119,7 +119,7 @@ tcp_client_t *tcp_client_get_instance();
  * \param timeout If timeout is non-zero, a call to  `tcp_client_request()`
  *        will timeout affter that many seconds.
  *
- * \return HTTP_CLIENT_ERR_NONE on success, other values as appropriate.
+ * \return TCP_CLIENT_ERR_NONE on success, other values as appropriate.
  */
 tcp_client_err_t tcp_client_init(tcp_client_t *tcp_client,
 mu_sched_t *sched,
@@ -168,8 +168,8 @@ const char *tcp_client_get_state_name(tcp_client_t *tcp_client);
  * can use this to access the response status and headers and body.
  *
  * \param tcp_client An instance of tcp_client.
- * \param method One of the HTTP method verbs: HTTP_CLIENT_GET,
- *        HTTP_CLIENT_POST, etc. \param url The URL for the request
+ * \param method One of the HTTP method verbs: TCP_CLIENT_GET,
+ *        TCP_CLIENT_POST, etc. \param url The URL for the request
  * \param response_task A task to trigger upon recieving a response or timeout.
  * \param req_headers A mu_string containing headers for the request.  May be
  *        null.

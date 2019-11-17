@@ -228,10 +228,10 @@ static char *format_ipv4_octets(uint8_t o1,
 // Expand DEFINE_TCS_STATES to generate a table of state names
 #undef DEFINE_TCS_STATE
 #define DEFINE_TCS_STATE(x) #x,
-static const char *s_hcs_names[] = {DEFINE_TCS_STATES};
+static const char *s_tcs_names[] = {DEFINE_TCS_STATES};
 #undef DEFINE_TCS_STATE
 
-const size_t N_TCS_STATES = sizeof(s_hcs_names) / sizeof(const char *);
+const size_t N_TCS_STATES = sizeof(s_tcs_names) / sizeof(const char *);
 
 // A singleton instance of tcp_client
 static tcp_client_t s_tcp_client;
@@ -351,7 +351,7 @@ hcs_t tcp_client_get_state(tcp_client_t *tcp_client) {
 const char *tcp_client_get_state_name(tcp_client_t *tcp_client) {
   hcs_t state = tcp_client->_state;
   if (state < N_TCS_STATES) {
-    return s_hcs_names[state];
+    return s_tcs_names[state];
   } else {
     return "Unknown State";
   }
@@ -727,7 +727,7 @@ static hcs_t update_state(hcs_t from, hcs_t to) {
   return to;
 }
 
-static const char *state_name(hcs_t s) { return s_hcs_names[s]; }
+static const char *state_name(hcs_t s) { return s_tcs_names[s]; }
 
 /**
  * Extract the basic hostname with protocol and port number stripped off, e.g.
