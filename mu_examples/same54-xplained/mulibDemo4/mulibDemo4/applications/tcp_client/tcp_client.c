@@ -424,6 +424,7 @@ static tcp_client_err_t parse_hostname(tcp_client_t *tcp_client,
   mu_string_set_length(hostname_string, mu_string_capacity(hostname_string));
 
   mu_string_init(&temp_string, (char *)hostname, strlen(hostname));
+  mu_string_set_length(&temp_string, strlen(hostname));
 
   if (mu_string_find(&temp_string, "://", NULL)) {
     // found :// protocol prefix.  capture string before :// in protocol_string

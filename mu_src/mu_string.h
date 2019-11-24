@@ -25,6 +25,14 @@
 #ifndef MU_STRING_H_
 #define MU_STRING_H_
 
+/**
+ * @file String management.
+ *
+ * The mu_string module provides methods for manipulating arrays of byte-sized
+ * values.  Two flavors of string are provvided:
+ *   mu_string supports mutable strings
+ *   mu_cstring supports constant (read-only) strings
+ */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,17 +40,21 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include <stddef.h>
-#include <stdbool.h>
 #include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 // =============================================================================
 // types and definitions
 
-typedef char mu_cstring_t;
+// the underlying data type.  May be modified for uint8_t, char, etc.
+typedef char mu_string_data_t;
 
-typedef struct {
-  mu_cstring_t *buf;
+typedef struct _mu_string {
+  union {
+    mu_string_data_t* mbuf;        // modifiable / mutable buffer
+    const mu_string_data_t* cbuf;  // constant buffer
+  };
   size_t capacity;
   int start;
   int end;
@@ -51,69 +63,98 @@ typedef struct {
 // =============================================================================
 // declarations
 
-// initialize a mu_string from a C string
-mu_string_t *mu_string_init(mu_string_t *s, mu_cstring_t *buf, size_t buf_length);
+// initialize a mu_string (writeable).  Sets start and end to 0.
+mu_string_t* mu_string_init(mu_string_t* s,
+                            mu_string_data_t* buf,
+                            size_t buf_length);
 
-// return the underlying buffer
-mu_cstring_t *mu_string_buf(mu_string_t *s);
+// initialize a mu_cstring (read-only).  Sets start to 0 and end to buf_length.
+mu_string_t* mu_cstring_init(mu_string_t* s,
+                              const mu_string_data_t* buf,
+                              size_t buf_length);
 
-// return the length of the underlying C string
-size_t mu_string_capacity(mu_string_t *s);
+// return the underlying buffer.  Use with caution.
+mu_string_data_t* mu_string_buf(mu_string_t* s);
+const mu_string_data_t* mu_cstring_buf(mu_string_t* s);
+
+// return the length of the underlying buffer.  Use for either constant or
+// mutable strings.
+size_t mu_string_capacity(mu_string_t* s);
 
 // reset start = end = 0
-mu_string_t *mu_string_reset(mu_string_t *s);
+mu_string_t* mu_string_reset(mu_string_t* s);
+
+// reset start = 0, end = capacity
+mu_string_t* mu_cstring_reset(mu_string_t* s);
 
 // return the start index
-int mu_string_start(mu_string_t *s);
+int mu_string_start(mu_string_t* s);
 
 // return the start index
-int mu_string_end(mu_string_t *s);
+int mu_string_end(mu_string_t* s);
 
-mu_cstring_t *mu_string_cstring(mu_string_t *s);
-
-// Set the length of the string.  Designed specifically after appending data
-// to the underlying c string, as in:
-//     mu_string_set_length(s, strlen(mu_string_cstring(s)));
-mu_string_t *mu_string_set_length(mu_string_t *s, size_t length);
+// return &buf[start]
+mu_string_data_t* mu_string_data(mu_string_t* s);
+const mu_string_data_t* mu_cstring_data(mu_string_t* s);
 
 // return end-start
-int mu_string_length(mu_string_t *s);
+int mu_string_length(mu_string_t* s);
 
-// return length - i1
-size_t mu_string_available(mu_string_t *s);
+// return capacity-end.
+size_t mu_string_available(mu_string_t* s);
 
 // compare substring with a c string
-int mu_string_cmp(mu_string_t *s, const mu_cstring_t *cstring);
+int mu_string_cmp(mu_string_t* s, const mu_string_data_t* cstring);
 
 // return true if the string equals the given string
-bool mu_string_eq(mu_string_t *s, const mu_cstring_t *cstring);
+bool mu_string_eq(mu_string_t* s, const mu_string_data_t* cstring);
 
-// make a copy of s into dst (shallow copy - doesn't copy chars)
-mu_string_t *mu_string_duplicate(mu_string_t *dst, mu_string_t *src);
+// make a copy of src into dst (shallow copy - doesn't copy data buffer)
+mu_string_t* mu_string_duplicate(mu_string_t* dst, mu_string_t* src);
 
-// The following manipulate the string object s directly unless a dst object is
-// provided.
+// ======
+// The following functons modify s directly unless a dst object is
+// provided.  The underlying data buffer is not modified.
 
-// take a string of the underlying string.  negative end counts from end.
-mu_string_t *mu_string_slice(mu_string_t *s, int start, int end, mu_string_t *dst);
+// Create a substring from the underlying string.  Negative indeces end counts
+// from end, so:
+//      slice("discover", 0, 5) => "disco"
+//      slice("discover", 3, -1) => "cover"
+//      slice("discover", -4, -1) => "over"
+// Returns sliced results in dst if given, s it not.
+mu_string_t* mu_string_slice(mu_string_t* s,
+                             int start,
+                             int end,
+                             mu_string_t* dst);
 
-// Find cstring within s.  Returns null if not found, else return sliced results
-// in dst (if given) or s (if not).
-mu_string_t *mu_string_find(mu_string_t *s, const mu_cstring_t *cstring, mu_string_t *dst);
+// Search for cstring within s.  Returns null if not found, else return sliced
+// results in dst (if given) or s (if not).
+mu_string_t* mu_string_find(mu_string_t* s,
+                            const mu_string_data_t* cstring,
+                            mu_string_t* dst);
 
-// the following functions copy bytes:
-
-// Copy data from string[i0] to string[i1] (plus null termination) into c_str.
-mu_cstring_t *mu_string_extract(mu_string_t *s, mu_cstring_t *c_str, size_t c_str_length);
+// ======
+// The following modify the string object as well as the underlying buffer. Note
+// that these only apply to mu_string objects, not mu_cstring_objects (since
+// mu_cstring objects cannot be modified).
 
 // append string referred to by src onto dst
-mu_string_t *mu_string_append(mu_string_t *dst, mu_string_t *src);
+mu_string_t* mu_string_append(mu_string_t* dst, mu_string_t* src);
 
-// sprintf() into &string[i1]
-mu_string_t *mu_string_sprintf(mu_string_t *s, const char *fmt, ...);
+// sprintf() into &string[start]
+mu_string_t* mu_string_sprintf(mu_string_t* s, const char* fmt, ...);
+
+// ======
+// the following functions copy bytes:
+
+// Copy data from string[start] to string[end] (plus null termination if
+// there's room) into c_str. Copies at most c_str_length bytes.  Returns c_str.
+mu_string_data_t* mu_string_extract(mu_string_t* s,
+                                    mu_string_data_t* c_str,
+                                    size_t c_str_length);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef MU_STRING_H_
+#endif  // #ifndef MU_STRING_H_

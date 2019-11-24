@@ -50,14 +50,15 @@
   #define SOCKET_FLAGS SOCKET_FLAGS_SSL
 #else
   #define SERVER_IP_PORT 80
-  #define SERVER_NAME "api.traxxekg.com"
+  #define SERVER_NAME "http://128.30.16.91"
   #define SOCKET_FLAGS 0
 #endif
 
 #define SERVER_REQUEST                                                         \
-  "GET /ping HTTP/1.1\r\n"                                                     \
-  "Host: api.traxxekg.com\r\n"                                                 \
-  "Accept: application/json\r\n"                                               \
+  "GET / HTTP/1.1\r\n"                                                         \
+  "Host: lambda.ai.mit.edu\r\n"                                                \
+  "User-Agent: Robert Poor <r@alum.mit.edu> is testing a tiny tcp client\r\n"  \
+  "Accept: */*\r\n"                                                            \
   "\r\n"
 
 #define MAIN_WIFI_M2M_BUFFER_SIZE 1460
