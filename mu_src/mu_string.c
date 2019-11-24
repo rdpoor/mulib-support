@@ -188,12 +188,13 @@ mu_string_t* mu_string_find(mu_string_t* s,
   int s1, e1;
 
   mu_string_data_t* found = strstr(mu_cstring_data(s), cstring);
+
   if (found == NULL) {
     // Didn't find string
     return NULL;
   }
 
-  s1 = found - mu_cstring_data(s);
+  s1 = mu_string_start(s) + found - mu_cstring_data(s);
   if ((s1 < s->start) || (s1 >= s->end)) {
     // start of found string lies outside of s
     return NULL;
