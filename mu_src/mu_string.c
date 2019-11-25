@@ -57,8 +57,8 @@ mu_string_t* mu_string_init(mu_string_t* s,
 
 // initialize a mu_cstring (read-only).  Sets start to 0 and end to buf_length.
 mu_string_t* mu_cstring_init(mu_string_t* s,
-                              const mu_string_data_t* buf,
-                              size_t buf_length) {
+                             const mu_string_data_t* buf,
+                             size_t buf_length) {
   s->cbuf = buf;
   s->capacity = buf_length;
   return mu_cstring_reset(s);
@@ -123,9 +123,14 @@ size_t mu_string_available(mu_string_t* s) {
 
 // compare substring with a c string
 int mu_string_cmp(mu_string_t* s, const mu_string_data_t* cstring) {
-  // A  char buffer may be assigned to a const char * pointer, so we use the
-  // const accessor here, since it will work with constant or mutable data.
-  return strncmp(mu_cstring_data(s), cstring, mu_string_length(s));
+  int dlen = mu_string_length(s) - strlen(cstring);
+  if (dlen != 0) {
+    return dlen;   // string lengths differ
+  } else {
+    // A  char buffer may be assigned to a const char * pointer, so we use the
+    // const accessor here, since it will work with constant or mutable data.
+    return strncmp(mu_cstring_data(s), cstring, mu_string_length(s));
+  }
 }
 
 // return true if the string equals the given string
@@ -174,10 +179,8 @@ mu_string_t* mu_string_slice(mu_string_t* s,
     e1 = s1;
   }
 
-  return init_or_slice(s,
-                       clamp(s->start, s1, s->end),
-                       clamp(s->start, e1, s->end),
-                       dst);
+  return init_or_slice(s, clamp(s->start, s1, s->end),
+                       clamp(s->start, e1, s->end), dst);
 }
 
 // Search for cstring within s.  Returns null if not found, else return sliced
@@ -235,7 +238,8 @@ mu_string_t* mu_string_sprintf(mu_string_t* s, const char* fmt, ...) {
   va_start(ap, fmt);
   // append no more than `available` chars to the end of the buffer
   // (+1 for a null byte)
-  int n_written = vsnprintf((char*)&(s->mbuf[s->end]), n_available + 1, fmt, ap);
+  int n_written =
+      vsnprintf((char*)&(s->mbuf[s->end]), n_available + 1, fmt, ap);
   va_end(ap);
   s->end += (n_written < n_available) ? n_written : n_available;
 
@@ -266,11 +270,12 @@ mu_string_data_t* mu_string_extract(mu_string_t* s,
 // =============================================================================
 // private code
 
+// Limit val to be lo <= val <= hi
 int clamp(int lo, int val, int hi) {
   if (val < lo) {
     return lo;
-  } else if (val >= hi) {
-    return hi - 1;
+  } else if (val > hi) {
+    return hi;
   } else {
     return val;
   }

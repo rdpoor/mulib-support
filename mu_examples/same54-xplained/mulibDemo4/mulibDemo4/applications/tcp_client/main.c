@@ -152,5 +152,5 @@ int main(void) {
 static void response_task_fn(void *self, void *arg) {
   tcp_client_t *tcp_client = (tcp_client_t *)arg;
   mu_string_t *response = tcp_client_get_response(tcp_client);
-  printf("====\r\n%s\r\n====\r\n", mu_string_cstring(response));
+  printf("====\r\n%s\r\n====\r\n", mu_string_data(response));
 }
