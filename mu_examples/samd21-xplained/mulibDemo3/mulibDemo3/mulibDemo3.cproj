@@ -415,14 +415,6 @@
       <SubType>compile</SubType>
       <Link>mu_src\mu_assert.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_async.c">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_async.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_async.h">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_async.h</Link>
-    </Compile>
     <Compile Include="..\..\..\..\mu_src\mu_bcast.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_bcast.c</Link>

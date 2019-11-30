@@ -28,7 +28,6 @@
 #include "atmel_start.h"
 #include "atmel_start_pins.h"
 #include "driver_init.h"
-#include "mu_async.h"
 #include "mu_sched.h"
 #include "mu_sleep.h"
 #include "mu_string.h"
@@ -56,9 +55,9 @@
 #define CLEAR_SCREEN "\e[1;1H\e[2J"
 
 // allocate a buffer for writes to the screen
-#define WRITE_BUFFER_SIZE (80*2)
+#define WRITE_BUFFER_SIZE (80)
 
-#define READ_BUFFER_SIZE 10
+#define READ_BUFFER_SIZE (10)
 
 // =============================================================================
 // forward declarations
@@ -131,6 +130,15 @@ static const char *rjust(const char *s, int width, char padchar);
  */
 static const char *cheap_ftoa(float x);
 
+/**
+ * power-specific functions for serial I/O
+ */
+static void board_serial_setup();
+static int board_serial_initiate_write(mu_string_t *src);
+static void board_serial_write_completed();
+static int board_serial_initiate_read(mu_string_t *dst);
+static void board_serial_read_completed();
+
 // =============================================================================
 // local storage
 
@@ -144,12 +152,6 @@ static mu_sched_t s_sched;
  * \brief Allocate storage for the ISR task queue.
  */
 static mu_queue_obj_t s_isr_queue_pool[ISR_QUEUE_POOL_SIZE];
-
-/**
- * Serial I/O.  This works in conjunction with the scheduler to provide double
- * buffered writes and to handle serial I/O events generated at interrupt level.
- */
-static mu_async_t s_async;
 
 /*
  * \brief s_idle_task is the task that the scheduler runs when nothing else is
@@ -186,7 +188,12 @@ static mu_task_t s_keyboard_monitor_task;
  */
 static bool s_low_power_mode;
 
-static char s_write_buffer[WRITE_BUFFER_SIZE];
+/**
+ * \brief storage for double-buffered writes
+ */
+static char s_write_buffer_a[WRITE_BUFFER_SIZE];
+static char s_write_buffer_b[WRITE_BUFFER_SIZE];
+static mu_string_t *s_write_string;
 
 static char s_read_buffer[READ_BUFFER_SIZE];
 static mu_string_t s_read_string;
@@ -208,7 +215,7 @@ const size_t N_TASKS = sizeof(s_tasks) / sizeof(mu_task_t *);
 /**
  * Track which line is being printed to the screen.
  */
-int s_screen_state;
+static int s_screen_state;
 
 // =============================================================================
 // public code
@@ -224,8 +231,11 @@ int main(void) {
   // Perform port-specific initialization needed by mulib
   mu_port_init();
 
+  // set up a initial string buffer for write operations
+  mu_string_init(&s_write_string, s_write_buffer_a, WRITE_BUFFER_SIZE);
+
   // set up a string buffer for read operations
-  mu_string_init(&s_read_string, s_read_buffer, READ_BUFFER_SIZE);
+  mu_cstring_init(&s_read_string, s_read_buffer, READ_BUFFER_SIZE);
 
   // Initialize the scheduler along with storage for tasks queued from interrupt
   // level.
@@ -239,8 +249,8 @@ int main(void) {
   // set_led_task_enable(true).  Thereafter, led_task_fn() will reschedule it.
   mu_task_init_immed(&s_led_task, led_task_fn, NULL, "LED");
 
-  // Initialize the screen update task.  It will be triggered from within the
-  // screen_update task.
+  // Initialize the screen redraw task.  It will be periodically triggered by
+  // the screen_update task.
   mu_task_init_immed(&s_screen_redraw_task, screen_redraw_fn, NULL, "Redraw");
   s_screen_state = 0;
 
@@ -255,17 +265,6 @@ int main(void) {
                      keyboard_monitor_fn,
                      NULL,
                      "Keyboard");
-
-  // Initialize the I/O stream for the serial port.  TBD: port-specific hw arg.
-  mu_async_init(&s_async, &s_sched, NULL, s_write_buffer, WRITE_BUFFER_SIZE);
-
-  // Upon completion of a write to the serial port, schedule a call to the
-  // screen_redraw_task to produce the next update.
-  mu_async_set_write_cb(&s_async, &s_screen_redraw_task);
-
-  // Upon receiving a character on the serial port, schedule a call to the
-  // keyboard_monitor_task to read and process the character.
-  mu_async_set_read_cb(&s_async, &s_keyboard_monitor_task);
 
   // set up application defaults
   set_low_power_mode(false);

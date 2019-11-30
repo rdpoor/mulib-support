@@ -7,23 +7,15 @@ tailored for microcontrollers and other resource-constrained environments.
 
 mulib strives towards the following design goals.
 
-* Self-contained, pure C code: minimize dependencies on external libraries.
-* Two-file implementation: whenever practical, each mulib module is embodied in
-  one header file and one C file.
-* Well-documented: API documentation is driven by documentation strings in the
-  header files.
-* Well-tested: unit tests validate the API, coverage tets validate the unit
-  tests.
-* Super portable: One concise mu_ports.c file defines mulib's interface to the
-  target environment.
-* Fast and Dangerous: mulib favors minimizing time and code space over argument
-  validation.  (Coming soon: MU_ASSERT() will provide a safety net that can be
-  switched on or off at compile time.
-* Low threshold, high ceiling: A suite of demo programs take you from the
-  simplest "flash an LED" example to complex multi-tasking applications.
-*
-* Yours to use: The entirety of mulib is covered under the MIT open source
-  license.
+* **Self-contained, pure C code:** minimize dependencies on external libraries.
+* **Two-file implementation:** whenever practical, each mulib module is embodied in one header file and one C file.
+* **Well-documented:** API documentation is driven by documentation strings in the header files.
+* **Well-tested:** unit tests validate the API, coverage tets validate the unit tests.
+* **Super portable:** One concise mu_ports.c file defines mulib's interface to the target environment.
+* **Fast and Dangerous:** mulib favors minimizing time and code space over argument validation.  But note that `MU_ASSERT()` provides a safety net that can be switched on or off at compile time.
+* **Single-threaded scheduler:** There are many benefits to a single-threaded scheduler -- see [About Run To Completion Schedulers](./RunToCompletion.md) for the reasons behind this choice.
+* **Low threshold, high ceiling:** A suite of demo programs take you from the simplest "flash an LED" example to complex multi-tasking applications.
+* **Yours to use:** The entirety of mulib is covered under the MIT open source license.
 
 ## The modules
 
@@ -35,8 +27,7 @@ Status: 0% test coverage
 
 ### mu_bvec
 
-Bit vector module: set, clear, test of course but also bulk operations, such as
-test for all zeros or ones, `and` two vectors together, etc.
+Bit vector module to `set`, `clear`, `test` individual bits.  Includes functions that operate on the entire vector, including test for all zeros or ones, `and`, `or`, `xor` bit vectors, etc.
 
 Status: 82% test coverage.
 
@@ -48,55 +39,47 @@ Status: 100% test coverage.
 
 ### mu_log
 
-No-nonsense logging with run-time control on reporting severity and multiple
-reporting channels.
+No-nonsense logging with run-time control on reporting severity and multiple reporting channels.
 
 Status: 98% test coverage.
 
 ### mu_queue
 
-Fast, thread-safe queue for void * sized objects, designed for single-producer /
-single-consumer applications.
+Fast, thread-safe queue for void * sized objects, designed for single-producer / single-consumer applications.  Used by the scheduler to transfer between interrupt and foreground level.
 
 Status: 100% test coverage.
 
 ### mu_sched
 
-Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion
-scheduler.
+Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion scheduler.
 
 Status: 100% test coverage.
 
 ### mu_string
 
-For reading, perform in-place "zero copy" operations on strings.  Take slices of
-substrings, compare them.  For writing, perform safe sprintf() and efficient
-append operations.
+For reading, perform in-place "zero copy" operations on strings.  Take slices of substrings, compare them.  For writing, perform safe sprintf() and efficient append operations.
 
 Status: 83% test coverage.
 
 ### mu_task
 
-Simple, versatile, fast message passing.  Commonly used for deferred function
-calls, used extensively by mu_sched.
+Simple, versatile, fast message passing.  Commonly used for deferred function calls, used extensively by `mu_sched`.
 
 Status: 74% test coverage.
 
 ### mu_time
 
-Functions to manipulate time values, properly handling roll-over.  Provides
-interface to platform specific support in port/port.c.
+Functions to manipulate time values, properly handling roll-over.  Provides interface to platform specific support in port/port.c.
 
 Status: 100% test coverage.
 
-## Under Consideration
+## In the laboratory
 
-### mu_async
+### mu_iostream
 
-Asynchronous I/O with double-buffered write operations.
+General purpose asynchronous I/O streaming operations.  For read operations, call a consumer task when more data is available, for write operations, call a producer task when more data is requested.
 
-Status: Working proof-of-concept in mulibDemo4.  Needs refactoring for platform
-specific I/O functions.
+Status: concept only.  The design challenge will be finding the best boundaries into platform specific I/O operations.
 
 ### mu_jemi
 

@@ -415,14 +415,6 @@
       <SubType>compile</SubType>
       <Link>mu_src\mu_assert.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_async.c">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_async.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_async.h">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_async.h</Link>
-    </Compile>
     <Compile Include="..\..\..\..\mu_src\mu_bcast.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_bcast.c</Link>
@@ -446,14 +438,6 @@
     <Compile Include="..\..\..\..\mu_src\mu_heapsort.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_heapsort.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_iostream.c">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_iostream.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_iostream.h">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_iostream.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\mu_src\mu_log.c">
       <SubType>compile</SubType>
@@ -487,14 +471,6 @@
       <SubType>compile</SubType>
       <Link>mu_src\mu_sleep.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_strbuf.c">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_strbuf.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_strbuf.h">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_strbuf.h</Link>
-    </Compile>
     <Compile Include="..\..\..\..\mu_src\mu_string.c">
       <SubType>compile</SubType>
       <Link>mu_src\mu_string.c</Link>
@@ -502,14 +478,6 @@
     <Compile Include="..\..\..\..\mu_src\mu_string.h">
       <SubType>compile</SubType>
       <Link>mu_src\mu_string.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_substring.c">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_substring.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\mu_src\mu_substring.h">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_substring.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\mu_src\mu_task.c">
       <SubType>compile</SubType>
@@ -575,10 +543,6 @@
     <Compile Include="driver_init.h">
       <SubType>compile</SubType>
     </Compile>
-    <None Include="..\..\..\..\mu_src\mu_ring.o">
-      <SubType>compile</SubType>
-      <Link>mu_src\mu_ring.o</Link>
-    </None>
     <None Include="edbg_uart_example.c">
       <SubType>compile</SubType>
     </None>
