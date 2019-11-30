@@ -389,8 +389,8 @@
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
-      <Value>MAIN_WLAN_SSID=\"pichincha\"</Value>
-      <Value>MAIN_WLAN_PSK=\"robandmarisol\"</Value>
+      <Value>MAIN_WLAN_SSID=\"CHANGE_ME\"</Value>
+      <Value>MAIN_WLAN_PSK=\"CHANGE_ME\"</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
