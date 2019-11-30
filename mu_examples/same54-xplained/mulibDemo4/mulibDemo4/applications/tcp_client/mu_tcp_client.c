@@ -94,19 +94,19 @@ return because we're waiting on some external event.
 // =============================================================================
 // includes
 
-#include "tcp_client.h"
-#include <ctype.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 #include "driver/include/m2m_wifi.h"
 #include "driver/source/m2m_hif.h"
 #include "mu_sched.h"
 #include "mu_string.h"
 #include "mu_task.h"
+#include "mu_tcp_client.h"
 #include "mu_time.h"
 #include "socket/include/socket.h"
 #include "winc_init.h"
+#include <ctype.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 // =============================================================================
 // local types and definitions
@@ -167,8 +167,8 @@ struct tcp_client_ {
   uint16_t _port;             // port number derived from hostname (8080)
   uint32_t _host_ip_address;  // set from hostname or resolve_cb (DNS lookup)
 
-  mu_task_t _request_task;  // main request / response processor
-  tcpc_state_t _state;      // request task internal state
+  mu_task_t _request_task;       // main request / response processor
+  mu_tcp_client_state_t _state;  // request task internal state
 
   wifi_state_t _wifi_state;      // set in wifi_cb
   socket_state_t _socket_state;  // set in socket_cb
@@ -191,9 +191,10 @@ static uint32_t parse_ipv4_dotted(mu_string_t* hostname_string);
 
 static void request_task_fn(void* self_, void* arg);
 
-static tcpc_state_t update_state(tcpc_state_t from, tcpc_state_t to);
+static mu_tcp_client_state_t update_state(mu_tcp_client_state_t from,
+                                          mu_tcp_client_state_t to);
 
-static const char* state_name(tcpc_state_t s);
+static const char* state_name(mu_tcp_client_state_t s);
 
 static int tcp_client_socket(tcp_client_t* tcp_client);
 
@@ -215,23 +216,19 @@ static void resolve_cb(uint8_t* pu8DomainName, uint32_t u32ServerIP);
 
 static char* format_ipv4_addr(uint32_t ipv4_addr, char* dst, int dst_len);
 
-static char* format_ipv4_octets(uint8_t o1,
-                                uint8_t o2,
-                                uint8_t o3,
-                                uint8_t o4,
-                                char* dst,
-                                int dst_len);
+static char* format_ipv4_octets(uint8_t o1, uint8_t o2, uint8_t o3, uint8_t o4,
+                                char* dst, int dst_len);
 
 // =============================================================================
 // local storage
 
-// Expand DEFINE_TCPC_STATES to generate a table of state names
-#undef DEFINE_TCPC_STATE
-#define DEFINE_TCPC_STATE(x) #x,
-static const char* s_tcs_names[] = {DEFINE_TCPC_STATES};
-#undef DEFINE_TCPC_STATE
+// Expand DEFINE_MU_TCP_CLIENT_STATES to generate a table of state names
+#undef DEFINE_MU_TCP_CLIENT_STATE
+#define DEFINE_MU_TCP_CLIENT_STATE(x) #x,
+static const char* s_tstate_names[] = {DEFINE_MU_TCP_CLIENT_STATES};
+#undef DEFINE_MU_TCP_CLIENT_STATE
 
-const size_t N_TCPC_STATES = sizeof(s_tcs_names) / sizeof(const char*);
+const size_t N_TSTATES = sizeof(s_tstate_names) / sizeof(const char*);
 
 // A singleton instance of tcp_client
 static tcp_client_t s_tcp_client;
@@ -239,12 +236,9 @@ static tcp_client_t s_tcp_client;
 // =============================================================================
 // public code
 
-tcp_client_t* tcp_client_get_instance() {
-  return &s_tcp_client;
-}
+tcp_client_t* tcp_client_get_instance() { return &s_tcp_client; }
 
-tcp_client_err_t tcp_client_init(tcp_client_t* tcp_client,
-                                 mu_sched_t* sched,
+tcp_client_err_t tcp_client_init(tcp_client_t* tcp_client, mu_sched_t* sched,
                                  const char* hostname,
                                  mu_time_seconds_t timeout) {
   tcp_client_err_t err = TCP_CLIENT_ERR_NONE;
@@ -342,30 +336,27 @@ mu_string_t* tcp_client_get_hostname_string(tcp_client_t* tcp_client) {
   return &tcp_client->_hostname_string;
 }
 
-bool tcp_client_is_tls(tcp_client_t* tcp_client) {
-  return tcp_client->_is_tls;
-}
+bool tcp_client_is_tls(tcp_client_t* tcp_client) { return tcp_client->_is_tls; }
 
 uint16_t tcp_client_get_host_ip_address(tcp_client_t* tcp_client) {
   return tcp_client->_host_ip_address;
 }
 
-tcpc_state_t tcp_client_get_state(tcp_client_t* tcp_client) {
+mu_tcp_client_state_t tcp_client_get_state(tcp_client_t* tcp_client) {
   return tcp_client->_state;
 }
 
 const char* tcp_client_get_state_name(tcp_client_t* tcp_client) {
-  tcpc_state_t state = tcp_client->_state;
-  if (state < N_TCPC_STATES) {
-    return s_tcs_names[state];
+  mu_tcp_client_state_t state = tcp_client->_state;
+  if (state < N_TSTATES) {
+    return s_tstate_names[state];
   } else {
     return "Unknown State";
   }
 }
 
 tcp_client_err_t tcp_client_request(tcp_client_t* tcp_client,
-                                    mu_string_t* request,
-                                    mu_string_t* response,
+                                    mu_string_t* request, mu_string_t* response,
                                     mu_task_t* response_task) {
   tcp_client->_request = request;
   tcp_client->_response = response;
@@ -381,7 +372,7 @@ tcp_client_err_t tcp_client_request(tcp_client_t* tcp_client,
 // local (static) code
 
 static tcp_client_t* tcp_client_reset(tcp_client_t* tcp_client) {
-  tcp_client->_state = TCPC_ENTRY;
+  tcp_client->_state = MU_TSTATE_ENTRY;
   tcp_client->_wifi_state = WIFI_STATE_ENTRY;
   tcp_client->_socket_state = SOCKET_STATE_ENTRY;
 
@@ -407,7 +398,7 @@ static tcp_client_t* tcp_client_reset(tcp_client_t* tcp_client) {
  * @param tcp_client The tcp client object
  * @param hostname The hostname
  *
- * TODO: move port_string field into tcp_client, return after separateing the
+ * TODO: move port_string field into tcp_client, return after separating the
  * protocol / hostname / port fields and continue processing at a higher level
  * (because this function is too long and does more than just parse).
  */
@@ -520,9 +511,9 @@ static uint32_t parse_ipv4_dotted(mu_string_t* hostname_string) {
 // and the socket connection.
 static void request_task_fn(void* self, void* arg) {
   tcp_client_t* tcp_client = (tcp_client_t*)self;
-  tcpc_state_t next_state = tcp_client->_state;  //
-  tcpc_state_t curr_state;                       //
-  bool completed = false;                        // true for terminal states.
+  mu_tcp_client_state_t next_state = tcp_client->_state;  //
+  mu_tcp_client_state_t curr_state;                       //
+  bool completed = false;  // true for terminal states.
 
   do {
     // process network controller events first: this may cause one of the
@@ -532,55 +523,61 @@ static void request_task_fn(void* self, void* arg) {
     curr_state = next_state;
 
     switch (curr_state) {
-      case TCPC_ENTRY:
-        next_state = update_state(curr_state, TCPC_INITIATING_AP_CONNECTION);
+      case MU_TSTATE_ENTRY:
+        next_state =
+            update_state(curr_state, MU_TSTATE_INITIATING_AP_CONNECTION);
         break;
 
-      case TCPC_INITIATING_AP_CONNECTION:
+      case MU_TSTATE_INITIATING_AP_CONNECTION:
         if (tcp_client->_wifi_state != WIFI_STATE_CONNECTED) {
           // Request a connection with the WiFi Access Point
           m2m_wifi_connect(
               (char*)tcp_client->_wifi_ssid, strlen(tcp_client->_wifi_ssid),
               tcp_client->_wifi_sec_type, (char*)tcp_client->_wifi_psk,
               tcp_client->_wifi_channel);
-          next_state = update_state(curr_state, TCPC_AWAITING_AP_CONNECTION);
+          next_state =
+              update_state(curr_state, MU_TSTATE_AWAITING_AP_CONNECTION);
         } else {
           // Already connected to the AP.  Skip ahead to DNS resolution
-          next_state = update_state(curr_state, TCPC_INITIATING_DNS_RESOLUTION);
+          next_state =
+              update_state(curr_state, MU_TSTATE_INITIATING_DNS_RESOLUTION);
         }
         break;
 
-      case TCPC_AWAITING_AP_CONNECTION:
+      case MU_TSTATE_AWAITING_AP_CONNECTION:
         // Here, we've previously requested a connection to the AP
         if (tcp_client->_wifi_state == WIFI_STATE_CONNECTED) {
           // wifi_cb has indicated that the connection is made
-          next_state = update_state(curr_state, TCPC_INITIATING_DNS_RESOLUTION);
+          next_state =
+              update_state(curr_state, MU_TSTATE_INITIATING_DNS_RESOLUTION);
         } else if (tcp_client->_wifi_state == WIFI_STATE_DISCONNECTED) {
           // wifi_cb has indicated a problem creating the connection.
-          next_state = update_state(curr_state, TCPC_AP_CONNECT_FAILURE);
+          next_state = update_state(curr_state, MU_TSTATE_AP_CONNECT_FAILURE);
         } else {
           // no change yet: keep waiting for notification from wifi_cb
         }
         break;
 
-      case TCPC_INITIATING_DNS_RESOLUTION:
+      case MU_TSTATE_INITIATING_DNS_RESOLUTION:
         if (tcp_client->_host_ip_address != IP_ADDRESS_UNRESOLVED) {
           // if we already have a server IP address we can skip DNS
           next_state =
-              update_state(curr_state, TCPC_INITIATING_SOCKET_CONNECTION);
+              update_state(curr_state, MU_TSTATE_INITIATING_SOCKET_CONNECTION);
 
         } else if (gethostbyname((uint8_t*)get_base_hostname(tcp_client)) ==
                    SOCK_ERR_NO_ERROR) {
           // We have initiazed a request for DNS resolution.
-          next_state = update_state(curr_state, TCPC_AWAITING_DNS_RESOLUTION);
+          next_state =
+              update_state(curr_state, MU_TSTATE_AWAITING_DNS_RESOLUTION);
 
         } else {
           // call to gethostbyname() failed.
-          next_state = update_state(curr_state, TCPC_GETHOSTBYNAME_FAILURE);
+          next_state =
+              update_state(curr_state, MU_TSTATE_GETHOSTBYNAME_FAILURE);
         }
         break;
 
-      case TCPC_AWAITING_DNS_RESOLUTION:
+      case MU_TSTATE_AWAITING_DNS_RESOLUTION:
         // Arrive here after making a call to gethostbyname().
         if (tcp_client->_host_ip_address == IP_ADDRESS_UNRESOLVED) {
           // no change: still awaiting resolve_cb to trigger.
@@ -588,97 +585,99 @@ static void request_task_fn(void* self, void* arg) {
 
         } else if (tcp_client->_host_ip_address == 0) {
           // DNS failed to resolve the address
-          next_state = update_state(curr_state, TCPC_DNS_RESOLUTION_FAILURE);
+          next_state =
+              update_state(curr_state, MU_TSTATE_DNS_RESOLUTION_FAILURE);
 
         } else {
           // resolve_cb has triggered and given us the server ip address
           next_state =
-              update_state(curr_state, TCPC_INITIATING_SOCKET_CONNECTION);
+              update_state(curr_state, MU_TSTATE_INITIATING_SOCKET_CONNECTION);
         }
         break;
 
-      case TCPC_INITIATING_SOCKET_CONNECTION:
+      case MU_TSTATE_INITIATING_SOCKET_CONNECTION:
         if (tcp_client_socket(tcp_client) < 0) {
           // failed to create TCP client socket
-          next_state = update_state(curr_state, TCPC_SOCKET_FAILURE);
+          next_state = update_state(curr_state, MU_TSTATE_SOCKET_FAILURE);
         } else if (tcp_client_connect(tcp_client) < 0) {
           // failed to connect TCP client socket.
-          next_state = update_state(curr_state, TCPC_CONNECT_FAILURE);
+          next_state = update_state(curr_state, MU_TSTATE_CONNECT_FAILURE);
         } else {
           // successfully created and connected socket
           next_state =
-              update_state(curr_state, TCPC_AWAITING_SOCKET_CONNECTION);
+              update_state(curr_state, MU_TSTATE_AWAITING_SOCKET_CONNECTION);
         }
         break;
 
-      case TCPC_AWAITING_SOCKET_CONNECTION:
+      case MU_TSTATE_AWAITING_SOCKET_CONNECTION:
         if (tcp_client->_socket_state == SOCKET_STATE_CONNECTION_SUCCEEDED) {
-          next_state = update_state(curr_state, TCPC_INITIATING_SEND);
+          next_state = update_state(curr_state, MU_TSTATE_INITIATING_SEND);
         } else if (tcp_client->_socket_state ==
                    SOCKET_STATE_CONNECTION_FAILED) {
-          next_state = update_state(curr_state, TCPC_CONNECT_FAILURE);
+          next_state = update_state(curr_state, MU_TSTATE_CONNECT_FAILURE);
         } else {
           // no change yet: keep waiting for notification from socket_cb
         }
         break;
 
-      case TCPC_INITIATING_SEND:
-        printf("--->>> sending:\r\n%s\r\n------\r\n",
+      case MU_TSTATE_INITIATING_SEND:
+        printf("\r\n--->>> sending:\r\n%s\r\n------",
                mu_string_data(tcp_client->_request));
         send(tcp_client->_socket, (void*)mu_string_data(tcp_client->_request),
              mu_string_length(tcp_client->_request), 0);
-        next_state = update_state(curr_state, TCPC_AWAITING_SEND_CONFIRMATION);
+        next_state =
+            update_state(curr_state, MU_TSTATE_AWAITING_SEND_CONFIRMATION);
         break;
 
-      case TCPC_AWAITING_SEND_CONFIRMATION:
+      case MU_TSTATE_AWAITING_SEND_CONFIRMATION:
         if (tcp_client->_socket_state == SOCKET_STATE_SEND_SUCCEEDED) {
-          next_state = update_state(curr_state, TCPC_INITIATING_RECEIVE);
+          next_state = update_state(curr_state, MU_TSTATE_INITIATING_RECEIVE);
         } else if (tcp_client->_socket_state == SOCKET_STATE_SEND_FAILED) {
-          next_state = update_state(curr_state, TCPC_SEND_FAILURE);
+          next_state = update_state(curr_state, MU_TSTATE_SEND_FAILURE);
         } else {
           // no change yet: keep waiting for notification from socket_cb
         }
         break;
 
-      case TCPC_INITIATING_RECEIVE:
+      case MU_TSTATE_INITIATING_RECEIVE:
         recv(tcp_client->_socket, mu_string_data(tcp_client->_response),
-             mu_string_length(tcp_client->_response), 0);
+             mu_string_capacity(tcp_client->_response), 0);
         next_state =
-            update_state(curr_state, TCPC_AWAITING_RECEIVE_CONFIRMATION);
+            update_state(curr_state, MU_TSTATE_AWAITING_RECEIVE_CONFIRMATION);
         break;
 
-      case TCPC_AWAITING_RECEIVE_CONFIRMATION:
+      case MU_TSTATE_AWAITING_RECEIVE_CONFIRMATION:
         if (tcp_client->_socket_state == SOCKET_STATE_RECEIVE_SUCCEEDED) {
-          printf("<<<--- received:\r\n%s\r\n------\r\n",
+          printf("\r\n<<<--- received:\r\n%s\r\n------\r\n",
                  mu_string_data(tcp_client->_response));
           mu_string_slice(tcp_client->_response, 0,
                           tcp_client->_response_length, NULL);
-          next_state = update_state(curr_state, TCPC_SUCCESS);
+          next_state = update_state(curr_state, MU_TSTATE_SUCCESS);
         } else if (tcp_client->_socket_state == SOCKET_STATE_RECEIVE_FAILED) {
-          next_state = update_state(curr_state, TCPC_RECEIVE_FAILURE);
+          next_state = update_state(curr_state, MU_TSTATE_RECEIVE_FAILURE);
         } else {
           // no change yet: keep waiting for notification from socket_cb
         }
         break;
 
-      case TCPC_RECEIVE_FAILURE:
-      case TCPC_SEND_FAILURE:
-      case TCPC_CONNECT_FAILURE:
-      case TCPC_SOCKET_FAILURE:
+      case MU_TSTATE_RECEIVE_FAILURE:
+      case MU_TSTATE_SEND_FAILURE:
+      case MU_TSTATE_CONNECT_FAILURE:
+      case MU_TSTATE_SOCKET_FAILURE:
         close(tcp_client->_socket);
         tcp_client->_socket = -1;
         tcp_client->_socket_state = SOCKET_STATE_ENTRY;
         completed = true;
         break;
 
-      case TCPC_DNS_RESOLUTION_FAILURE:
-      case TCPC_GETHOSTBYNAME_FAILURE:
-      case TCPC_AP_CONNECT_FAILURE:
+      case MU_TSTATE_DNS_RESOLUTION_FAILURE:
+      case MU_TSTATE_GETHOSTBYNAME_FAILURE:
+      case MU_TSTATE_AP_CONNECT_FAILURE:
         tcp_client->_wifi_state = WIFI_STATE_ENTRY;
         completed = true;
         break;
 
-      case TCPC_SUCCESS:
+      case MU_TSTATE_SUCCESS:
         // success.
         // This may not be the best way, but we want to keep using the socket.
         tcp_client->_socket_state = SOCKET_STATE_CONNECTION_SUCCEEDED;
@@ -689,7 +688,7 @@ static void request_task_fn(void* self, void* arg) {
   } while ((next_state != curr_state) && (completed == false));
 
   tcp_client->_state =
-      next_state;  // Don't forget to de-cache the state!  (Doh!)
+      next_state;  // Don't forget to de-cache the state! (Doh!)
 
   // Arrive here because state did not advance or completed was set to true.
   // If completed was set to true, it's time to call the user's callback.
@@ -708,8 +707,9 @@ static void request_task_fn(void* self, void* arg) {
   }
 }
 
-static tcpc_state_t update_state(tcpc_state_t from, tcpc_state_t to) {
-  printf("%s => %s\r\n", state_name(from), state_name(to));
+static mu_tcp_client_state_t update_state(mu_tcp_client_state_t from,
+                                          mu_tcp_client_state_t to) {
+  printf("\r\ntcp_client: %s => %s", state_name(from), state_name(to));
 
   // state_telemetry_t *t_from = &state_telemetry[from];
   // state_telemetry_t *t_to = &state_telemetry[to];
@@ -727,8 +727,8 @@ static tcpc_state_t update_state(tcpc_state_t from, tcpc_state_t to) {
   return to;
 }
 
-static const char* state_name(tcpc_state_t s) {
-  return s_tcs_names[s];
+static const char* state_name(mu_tcp_client_state_t s) {
+  return s_tstate_names[s];
 }
 
 /**
@@ -749,7 +749,6 @@ static int tcp_client_socket(tcp_client_t* tcp_client) {
     // need to get a socket #
     uint8_t flags = tcp_client->_is_tls ? SOCKET_FLAGS_SSL : 0;
     int sock = socket(AF_INET, SOCK_STREAM, flags);
-    printf("\r\nsocket(%d, %d, 0x%x) => %d", AF_INET, SOCK_STREAM, flags, sock);
     tcp_client->_socket = sock;
   }
   return tcp_client->_socket;
@@ -759,12 +758,9 @@ static int tcp_client_connect(tcp_client_t* tcp_client) {
   struct sockaddr_in sockaddr;
   sockaddr.sin_family = AF_INET;
   sockaddr.sin_port = _htons(tcp_client->_port);
-  sockaddr.sin_addr.s_addr = tcp_client->_host_ip_address;
+  sockaddr.sin_addr.s_addr = _htonl(tcp_client->_host_ip_address);
   int conn = connect(tcp_client->_socket, (struct sockaddr*)&sockaddr,
                      sizeof(sockaddr));
-  printf("\r\nconnect(sock=%d, fam=%d, port=%d, addr=0x%x) => %d",
-         tcp_client->_socket, sockaddr.sin_family, sockaddr.sin_port,
-         sockaddr.sin_addr.s_addr, conn);
   return conn;
 }
 
@@ -801,12 +797,12 @@ static void wifi_cb(uint8_t u8MsgType, void* pvMsg) {
       tstrM2mWifiStateChanged* pstrWifiState = (tstrM2mWifiStateChanged*)pvMsg;
 
       if (pstrWifiState->u8CurrState == M2M_WIFI_CONNECTED) {
-        printf("wifi_cb: M2M_WIFI_RESP_CON_STATE_CHANGED: CONNECTED\r\n");
+        printf("\r\n   wifi_cb: connected.");
         tcp_client->_wifi_state = WIFI_STATE_REQUESTING_DHCP;
         m2m_wifi_request_dhcp_client();
 
       } else if (pstrWifiState->u8CurrState == M2M_WIFI_DISCONNECTED) {
-        printf("wifi_cb: M2M_WIFI_RESP_CON_STATE_CHANGED: DISCONNECTED\r\n");
+        printf("\r\n   wifi_cb: disconnected.");
         tcp_client->_wifi_state = WIFI_STATE_DISCONNECTED;
       }
     } break;
@@ -817,7 +813,7 @@ static void wifi_cb(uint8_t u8MsgType, void* pvMsg) {
       tcp_client->_wifi_state = WIFI_STATE_CONNECTED;
       format_ipv4_octets(pu8IPAddress[0], pu8IPAddress[1], pu8IPAddress[2],
                          pu8IPAddress[3], buf, 16);
-      printf("wifi_cb: M2M_WIFI_REQ_DHCP_CONF: IP is %s\r\n", buf);
+      printf("\r\n   wifi_cb: My DHCP address resolves to%s", buf);
     } break;
 
     default:
@@ -853,17 +849,17 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void* pvMsg) {
     case SOCKET_MSG_CONNECT: {
       tstrSocketConnectMsg* pstrConnect = (tstrSocketConnectMsg*)pvMsg;
       if (pstrConnect && pstrConnect->s8Error >= 0) {
-        printf("socket_cb: connect success!\r\n");
+        printf("\r\n socket_cb: connect succeeded.");
         tcp_client->_socket_state = SOCKET_STATE_CONNECTION_SUCCEEDED;
       } else {
-        printf("socket_cb: connect error!\r\n");
+        printf("\r\n socket_cb: connection error.");
         tcp_client->_socket_state = SOCKET_STATE_CONNECTION_FAILED;
       }
     } break;
 
     /* Message send */
     case SOCKET_MSG_SEND: {
-      printf("socket_cb: send success!\r\n");
+      printf("\r\n socket_cb: send succeeded.");
       tcp_client->_socket_state = SOCKET_STATE_SEND_SUCCEEDED;
     } break;
 
@@ -871,13 +867,13 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void* pvMsg) {
     case SOCKET_MSG_RECV: {
       tstrSocketRecvMsg* pstrRecv = (tstrSocketRecvMsg*)pvMsg;
       if (pstrRecv && pstrRecv->s16BufferSize > 0) {
-        printf("socket_cb: recv success!\r\n");
+        printf("\r\n socket_cb: recv succeeded.");
         tcp_client->_socket_state = SOCKET_STATE_RECEIVE_SUCCEEDED;
         // note how many bytes were received
         tcp_client->_response_length = pstrRecv->s16BufferSize;
 
       } else {
-        printf("socket_cb: recv error!\r\n");
+        printf("\r\n socket_cb: recv error.");
         tcp_client->_socket_state = SOCKET_STATE_RECEIVE_FAILED;
       }
     } break;
@@ -908,9 +904,9 @@ static void resolve_cb(uint8_t* pu8DomainName, uint32_t u32ServerIP) {
   tcp_client_t* tcp_client = &s_tcp_client;
   char buf[16];
 
-  format_ipv4_addr(u32ServerIP, buf, sizeof(buf));
-  printf("resolve_cb: %s => %s\r\n", pu8DomainName, buf);
-  tcp_client->_host_ip_address = u32ServerIP;
+  tcp_client->_host_ip_address = _ntohl(u32ServerIP);
+  format_ipv4_addr(tcp_client->_host_ip_address, buf, sizeof(buf));
+  printf("\r\nresolve_cb: %s => %s", pu8DomainName, buf);
 }
 
 /**
@@ -929,12 +925,8 @@ static char* format_ipv4_addr(uint32_t ipv4_addr, char* dst, int dst_len) {
  *
  * Note: dst_len should be at least 16 bytes long
  */
-static char* format_ipv4_octets(uint8_t o1,
-                                uint8_t o2,
-                                uint8_t o3,
-                                uint8_t o4,
-                                char* dst,
-                                int dst_len) {
+static char* format_ipv4_octets(uint8_t o1, uint8_t o2, uint8_t o3, uint8_t o4,
+                                char* dst, int dst_len) {
   snprintf(dst, dst_len, "%u.%u.%u.%u", o1, o2, o3, o4);
   return dst;
 }

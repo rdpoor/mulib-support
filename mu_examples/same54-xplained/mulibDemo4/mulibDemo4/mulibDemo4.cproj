@@ -389,6 +389,8 @@
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
+      <Value>MAIN_WLAN_SSID=\"pichincha\"</Value>
+      <Value>MAIN_WLAN_PSK=\"robandmarisol\"</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
@@ -626,10 +628,10 @@
       <SubType>compile</SubType>
       <Link>mu_src\mu_time.h</Link>
     </Compile>
-    <Compile Include="applications\tcp_client\tcp_client.c">
+    <Compile Include="applications\tcp_client\mu_tcp_client.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="applications\tcp_client\tcp_client.h">
+    <Compile Include="applications\tcp_client\mu_tcp_client.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="applications\tcp_client\main.c">
