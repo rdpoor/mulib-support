@@ -41,6 +41,8 @@
 // =============================================================================
 // types and definitions
 
+// #define USE_CHEAP_FTOA
+
 // Define repetition interval for toggling LED
 #define LED_UPDATE_INTERVAL 0.5
 
@@ -152,7 +154,9 @@ static const char *rjust(const char *s, int width, char padchar);
 /**
  * Print a float without using the %f directive.
  */
+#ifdef USE_CHEAP_FTOA
 static const char *cheap_ftoa(float x);
+#endif
 
 // ==========
 // Board specific serial IO functions
@@ -313,6 +317,9 @@ static void idle_task_fn(void *self, void *arg) {
     return;
   } else if (board_serial_tx_is_active()) {
     // Don't sleep until the serial port finishes writing data
+    return;
+  } else if (demo3->screen_state != -1) {
+    // don't sleep if we're haven't completed the screen update
     return;
   }
 
@@ -488,10 +495,15 @@ static void sprintf_task_status(demo3_t *demo3, mu_string_t *s, mu_task_t *task)
   }
   sprintf(buf, " %u", mu_task_call_count(task));
   mu_string_sprintf(s, "%s", rjust(buf, 10, ' '));
+#ifdef USE_CHEAP_FTOA
   sprintf(buf, " %s", cheap_ftoa(mu_task_max_latency(task)));
   mu_string_sprintf(s, "%s", rjust(buf, 12, ' '));
   sprintf(buf, " %s", cheap_ftoa(mu_task_runtime(task)));
   mu_string_sprintf(s, "%s", rjust(buf, 12, ' '));
+#else
+mu_string_sprintf(s, " %11.5f", mu_task_max_latency(task));
+mu_string_sprintf(s, " %11.5f", mu_task_runtime(task));
+#endif
 }
 
 /*
@@ -625,6 +637,7 @@ static const char *rjust(const char *s, int width, char padchar) {
   return buf;
 }
 
+#ifdef USE_CHEAP_FTOA
 // print five digits to the right of the decimal point
 #define FTOA_PRECISION 100000
 
@@ -649,6 +662,7 @@ static const char *cheap_ftoa(float x) {
   sprintf(buf, "%u.%s", i, rjust(fbuf, 5, '0')); // pad with leading '0'
   return buf;
 }
+#endif
 
 // ==========
 // board-specific serial IO
@@ -709,6 +723,8 @@ static int board_serial_write(mu_string_t *s) {
 static bool board_serial_tx_is_active(void) {
   return s_demo3.tx_buffer_owner_a == TX_BUFFER_ISR_OWNS ||
          s_demo3.tx_buffer_owner_b == TX_BUFFER_ISR_OWNS;
+  // return (usart_async_get_status(&EDBG_COM, NULL) == ERR_BUSY) &&
+  //        !usart_async_is_tx_empty(&EDBG_COM);
 }
 
 /**
