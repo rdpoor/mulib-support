@@ -157,7 +157,7 @@ void mu_bcast_test() {
 
   // notify on all channels
   UTEST_ASSERTEQ_INT(mu_bcast_notify(&mu_bcast_mgr,
-                                     MU_BCAST_CH_WILDCARD,
+                                     MU_BCAST_CH_ALL,
                                      (void *)BCAST_ARG),
                      MU_BCAST_ERR_NONE);
   UTEST_ASSERT(s_test_obj_1.call_count == 4);

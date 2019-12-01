@@ -49,7 +49,7 @@ typedef enum {
   MU_BCAST_CH_UNASSIGNED  = 0,
   MU_BCAST_CH_MIN,
   MU_BCAST_CH_MAX = UINT16_MAX-1,
-  MU_BCAST_CH_WILDCARD = UINT16_MAX  // all channels
+  MU_BCAST_CH_ALL = UINT16_MAX  // all channels
 } mu_bcast_channel_t;
 
 typedef struct _subscriber {
@@ -87,7 +87,7 @@ mu_bcast_err_t mu_bcast_subscribe(mu_bcast_mgr_t *mu_bcast_mgr,
 /**
  * @brief: stop receiving notifications
  *
- * If channel == MU_BCAST_CH_WILDCARD, the task is unsubscribed from all
+ * If channel == MU_BCAST_CH_ALL, the task is unsubscribed from all
  * channels.  Otherwise is is removed from the matching channel only.
  */
 mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
@@ -97,8 +97,8 @@ mu_bcast_err_t mu_bcast_unsubscribe(mu_bcast_mgr_t *mu_bcast_mgr,
 /**
  * @brief: notify every subscriber on the given channel.
  *
- * If channel == MU_BCAST_CH_WILDCARD, then all tasks on all channels will be
- * will be notified (but it is not clear you'd normally want to do that).
+ * If channel == MU_BCAST_CH_ALL, then all tasks on all channels will be
+ * notified (but it is not clear you'd normally want to do that).
  */
 mu_bcast_err_t mu_bcast_notify(mu_bcast_mgr_t *mu_bcast_mgr,
                                mu_bcast_channel_t channel,

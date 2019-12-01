@@ -143,7 +143,7 @@ static bool channel_is_valid(mu_bcast_channel_t channel) {
 
 static bool channel_matches(mu_bcast_subscriber_t *subscriber,
                             mu_bcast_channel_t channel) {
-  if (channel == MU_BCAST_CH_WILDCARD) {
+  if (channel == MU_BCAST_CH_ALL) {
     // wildcard doesn't match if the subscriber is unassigned
     return (subscriber->channel != MU_BCAST_CH_UNASSIGNED);
   } else {
