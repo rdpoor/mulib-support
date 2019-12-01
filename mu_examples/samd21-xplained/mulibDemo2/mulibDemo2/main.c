@@ -100,7 +100,7 @@ int main(void) {
   mu_sched_init(&s_sched, NULL, 0);
 
   // Initialize and install the idle task in the scheduler.
-  mu_task_init_immed(&s_idle_task, idle_task_fn, NULL, "Idle");
+  mu_task_init(&s_idle_task, idle_task_fn, NULL, "Idle");
   mu_sched_set_idle_task(&s_sched, &s_idle_task);
 
   // Get the current time.  This demo uses the RTC as a common time source for

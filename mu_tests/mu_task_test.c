@@ -49,7 +49,7 @@ void mu_task_test() {
   mu_task_t *t1 = &ti1;
   mu_task_t *t2;
 
-  t2 = mu_task_init_immed(t1, t1_fn, &s_t1_self, "Task1");
+  t2 = mu_task_init(t1, t1_fn, &s_t1_self, "Task1");
 
 #if (MU_TASK_PROFILING)
   UTEST_ASSERTEQ_STR(mu_task_name(t1), "Task1");

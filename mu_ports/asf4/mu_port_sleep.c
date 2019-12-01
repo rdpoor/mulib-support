@@ -28,9 +28,12 @@
 #include "mu_port_sleep.h"
 #include "mu_port_time.h"
 #include "driver_init.h"
+#include "hal_atomic.h"
 
 // =============================================================================
 // private types and definitions
+
+#define RTC_SLEEP_MARGIN 50
 
 // =============================================================================
 // private declarations
@@ -59,8 +62,19 @@ void mu_port_sleep_indefinitely() {
 }
 
 void mu_port_sleep_until(mu_port_time_t t) {
-  // TODO: check that t is sufficiently far in the future.
+  // If the alarm time has passed by the time we enter sleep mote, the device
+  // will sleep "forever" (until the RTC completes one full roll-over).  So we
+  // assure that `t` is greater than `now` plus a little extra:
+
+  mu_port_time_t t1;
+
+  CRITICAL_SECTION_ENTER()
+  t1 = mu_port_time_offset(mu_port_time_now(), RTC_SLEEP_MARGIN);
+  if (mu_port_time_is_before(t, t1)) {
+    t = t1;
+  }
   set_rtc_alarm_for(t);
+  CRITICAL_SECTION_LEAVE()
   enter_sleep_mode();
 }
 
@@ -77,7 +91,7 @@ static void rtc_callback(struct calendar_dev *const dev) {
 static void set_rtc_alarm_for(mu_port_time_t t) {
   // Set the RTC compare register.
   //
-  // BUGFIX: t must be greater than the RTC COUNT register at the time we enter
+  // NOTE: t must be greater than the RTC COUNT register at the time we enter
   // sleep mode, else the device will sleep for a very very long time...
 	hri_rtcmode0_write_COMP_COMP_bf(CALENDAR_0.device.hw, 0, t);
 }

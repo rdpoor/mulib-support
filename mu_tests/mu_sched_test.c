@@ -168,7 +168,7 @@ void mu_sched_test() {
 
   // schedule fn3 as an immediate task.  pass task3 as *self
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_task_init_immed(&task3, fn3, &task3, "E3")),
+    mu_sched_add(s, mu_task_init(&task3, fn3, &task3, "E3")),
     MU_SCHED_ERR_NONE);
 
   // now there are three tasks in the scheduler
@@ -290,7 +290,7 @@ void mu_sched_test() {
 
   // mu_sched_remove()
   UTEST_ASSERTEQ_INT(
-    mu_sched_add(s, mu_task_init_immed(&task3, fn3, &task3, "E3")),
+    mu_sched_add(s, mu_task_init(&task3, fn3, &task3, "E3")),
     MU_SCHED_ERR_NONE);
   UTEST_ASSERTEQ_INT(mu_sched_task_count(s), 2);
   // remove not in list
@@ -403,7 +403,7 @@ static void reset_fn(void *self, void *arg) {
 
 static void queue_immed_from_interrupt(int s) {
   (void)s;
-  mu_task_init_immed(&s_immed_task, iisr_fn, NULL, "I");
+  mu_task_init(&s_immed_task, iisr_fn, NULL, "I");
   mu_sched_add_from_isr(&s_sched, &s_immed_task);
 }
 

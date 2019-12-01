@@ -217,7 +217,7 @@ const size_t N_HCS_STATES = sizeof(s_state_names) / sizeof(const char *);
 
 tcp_task_t *tcp_task_init(tcp_task_t *tcp_task, mu_sched_t *sched) {
   tcp_task->sched = sched;
-  mu_task_init_immed(&(tcp_task->task), tcp_task);
+  mu_task_init(&(tcp_task->task), tcp_task);
   tcp_task->completion_cb = NULL;
   tcp_task->server_name = NULL;
   return tcp_task_reset(tcp_task);

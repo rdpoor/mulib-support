@@ -79,7 +79,7 @@ mu_async_t *mu_async_init(mu_async_t *async,
   async->user_write_cb = NULL;
   mu_string_init(&(async->buffer_a), buf, n2);
   mu_string_init(&(async->buffer_b), &buf[n2], n2);
-  mu_task_init_immed(&(async->internal_write_cb),
+  mu_task_init(&(async->internal_write_cb),
                      internal_write_cb_fn,
                      async,
                      "Async Write CB");

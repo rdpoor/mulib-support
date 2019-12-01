@@ -58,11 +58,11 @@ mu_uart_proc_err_t mu_uart_proc_init(mu_uart_proc_t *proc,
   // bridge the two: At interrupt level, we queue tx_notification with the
   // scheduler.  At foreground level, the next time the scheduler runs, it will
   // call tx_notification, which in turn will call the user's tx_callback.
-  mu_task_init_immed(&(proc->tx_notification_evt),
+  mu_task_init(&(proc->tx_notification_evt),
                     tx_callback ? tx_callback->fn : NULL,
                     tx_callback ? tx_callback->self : NULL,
                     "TX_CALLBACK");
-  mu_task_init_immed(&(proc->rx_notification_evt),
+  mu_task_init(&(proc->rx_notification_evt),
                     rx_callback ? rx_callback->fn : NULL,
                     rx_callback ? rx_callback->self : NULL,
                     "RX_CALLBACK");

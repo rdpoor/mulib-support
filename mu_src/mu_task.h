@@ -56,7 +56,7 @@ typedef struct _mu_task {
 #endif
 } mu_task_t;
 
-mu_task_t *mu_task_init_immed(mu_task_t *task,
+mu_task_t *mu_task_init(mu_task_t *task,
                               mu_task_fn fn,
                               void *self,
                               const char *name);

@@ -33,11 +33,11 @@ void mu_event_test() {
 
 
 #if (MU_TASK_PROFILING)
-  mu_task_init_immed(&event_i, msg_fn_imm, (void *)100, "Event I");
+  mu_task_init(&event_i, msg_fn_imm, (void *)100, "Event I");
   mu_task_init_at(&event_t1, now, msg_fn_t1, (void *)200, "Event T1");
   mu_task_init_at(&event_t2, then, msg_fn_t2, (void *)300, "Event T2");
 #else
-  mu_task_init_immed(&event_i, msg_fn_imm, (void *)100);
+  mu_task_init(&event_i, msg_fn_imm, (void *)100);
   mu_task_init_at(&event_t1, now, msg_fn_t1, (void *)200);
   mu_task_init_at(&event_t2, then, msg_fn_t2, (void *)300);
 #endif

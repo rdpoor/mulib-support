@@ -43,8 +43,13 @@
 
 // #define USE_CHEAP_FTOA
 
+// the LED is on when its GPIO pin is low
+#define LED_ON false
+#define LED_OFF true
+
 // Define repetition interval for toggling LED
-#define LED_UPDATE_INTERVAL 0.5
+#define LED_ON_TIME 0.005
+#define LED_OFF_TIME 0.995
 
 // Define repetition interval for updating the display
 #define SCREEN_UPDATE_INTERVAL 5.0
@@ -242,26 +247,26 @@ int main(void) {
   mu_sched_init(&demo3->sched, s_isr_queue_pool, ISR_QUEUE_POOL_SIZE);
 
   // Initialize and install the idle task in the scheduler.
-  mu_task_init_immed(&demo3->idle_task, idle_task_fn, demo3, "Idle");
+  mu_task_init(&demo3->idle_task, idle_task_fn, demo3, "Idle");
   mu_sched_set_idle_task(&demo3->sched, &demo3->idle_task);
 
   // Initialize the LED task.  The task will be initially scheduled in a call to
   // set_led_task_enable(true).  Thereafter, led_task_fn() will reschedule it.
-  mu_task_init_immed(&demo3->led_task, led_task_fn, demo3, "LED");
+  mu_task_init(&demo3->led_task, led_task_fn, demo3, "LED");
 
   // Initialize the screen redraw task.  It will be periodically triggered by
   // the screen_update task.
-  mu_task_init_immed(&demo3->screen_redraw_task, screen_redraw_fn, demo3, "Redraw");
+  mu_task_init(&demo3->screen_redraw_task, screen_redraw_fn, demo3, "Redraw");
   demo3->screen_state = 0;
 
   // Initialize the screen update task.  It will initially be scheduled by a
   // call to set_screen_update_enabled(true), thereafter it will reschedule
   // itself.
-  mu_task_init_immed(&demo3->screen_update_task, screen_update_fn, demo3, "Update");
+  mu_task_init(&demo3->screen_update_task, screen_update_fn, demo3, "Update");
 
   // Initialize the keyboard monitor task.  This task is called whenever a
   // serial character becomes available via the read callback.
-  mu_task_init_immed(&demo3->keyboard_monitor_task,
+  mu_task_init(&demo3->keyboard_monitor_task,
                      keyboard_monitor_fn,
                      demo3,
                      "Keyboard");
@@ -351,16 +356,20 @@ static void led_task_stop(demo3_t *demo3) {
 static void led_task_fn(void *self, void *arg) {
   demo3_t *demo3 = (demo3_t *)self;
   mu_sched_t *sched = (mu_sched_t *)arg;
+  float duration;
 
-  // Toggle the LED pin
+  if (gpio_get_pin_level(LED0) == LED_ON) {
+    duration = LED_OFF_TIME;
+  } else {
+    duration = LED_ON_TIME;
+  }
   gpio_toggle_pin_level(LED0);
 
-  // Reschedule the LED task to trigger LED_UPDATE_INTERVAL seconds in the
-  // future. Note that in order to prevent timing drift, the task time is
-  // computed as (prev_task_time + interval) rather than (now + interval).
+  // Reschedule the LED task to trigger duration seconds in the future. Note
+  // that in order to prevent timing drift, the task time is computed as
+  // (prev_task_time + interval) rather than (now + interval).
   mu_task_advance_time(&demo3->led_task,
-                       mu_time_seconds_to_duration(LED_UPDATE_INTERVAL));
-
+                       mu_time_seconds_to_duration(duration));
   mu_sched_add(sched, &demo3->led_task);
 }
 
@@ -400,7 +409,8 @@ static void screen_redraw_task_start(demo3_t *demo3) {
 }
 
 /**
- * The screen redraw task.  Uses demo3->screen_state to control behavior.
+ * The screen redraw task.  Draws one line of text at each call, using
+ * demo3->screen_state to determine which line.
  */
 static void screen_redraw_fn(void *self, void *arg) {
   demo3_t *demo3 = (demo3_t *)self;
@@ -580,6 +590,8 @@ void keyboard_monitor_fn(void *self, void *arg) {
     default:   // echo typed char
     echo_user_string(mu_string_buf(&s));
   }
+  // force an immediate update to the screen
+  screen_redraw_task_start(demo3);
 }
 
 /**

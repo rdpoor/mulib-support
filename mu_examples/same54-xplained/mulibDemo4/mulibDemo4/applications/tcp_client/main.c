@@ -115,7 +115,7 @@ int main(void) {
 
   tcp_client_init(tcp_client, &s_sched, SERVER_NAME, 0);
 
-  mu_task_init_immed(&s_response_task, response_task_fn, NULL, "Response Task");
+  mu_task_init(&s_response_task, response_task_fn, NULL, "Response Task");
 
   tcp_client_set_wlan_params(tcp_client, MAIN_WLAN_SSID, MAIN_WLAN_AUTH,
                              MAIN_WLAN_PSK, M2M_WIFI_CH_ALL);

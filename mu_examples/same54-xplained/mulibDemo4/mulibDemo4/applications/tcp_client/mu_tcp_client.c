@@ -279,7 +279,7 @@ tcp_client_err_t tcp_client_init(tcp_client_t* tcp_client, mu_sched_t* sched,
   tcp_client->_request = NULL;
   tcp_client->_response = NULL;
 
-  mu_task_init_immed(&(tcp_client->_request_task), request_task_fn, tcp_client,
+  mu_task_init(&(tcp_client->_request_task), request_task_fn, tcp_client,
                      "TCP Client");
 
   tcp_client_reset(tcp_client);
