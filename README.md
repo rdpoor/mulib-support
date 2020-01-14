@@ -1,4 +1,4 @@
-# mulib - A library for microcontrollers  # [![Build Status](https://travis-ci.com/rdpoor/mulib.svg?branch=master)](https://travis-ci.com/rdpoor/mulib)
+# mulib - A library for microcontrollers  [![Build Status](https://travis-ci.com/rdpoor/mulib.svg?branch=master)](https://travis-ci.com/rdpoor/mulib)
 
 `mulib` is curated collection of software modules written in C, specifically
 tailored for microcontrollers and other resource-constrained environments.
