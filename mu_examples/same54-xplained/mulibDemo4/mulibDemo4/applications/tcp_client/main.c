@@ -49,7 +49,10 @@
 #define MAIN_WLAN_PSK "YOUR_WIFI_PASSWORD"
 #endif
 
+// #define DO_GOOGLE
+#ifdef DO_GOOGLE
 #define SERVER_NAME "https://google.com"
+// #define SERVER_NAME "https://172.217.11.78"
 
 #define SERVER_REQUEST                                                  \
   "GET / HTTP/1.1\r\n"                                                  \
@@ -58,6 +61,19 @@
   "Accept: "                                                            \
   "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" \
   "\r\n"
+
+#else
+
+#define SERVER_NAME "https://financialmodelingprep.com"
+
+#define SERVER_REQUEST                                                  \
+  "GET /api/v3/stock/real-time-price/MSFT HTTP/1.1\r\n"                 \
+  "Host: financialmodelingprep.com\r\n"                                 \
+  "User-Agent: mulib tcp client/1.0\r\n"                                \
+  "Accept: application/json\r\n"                                        \
+  "\r\n"
+
+#endif
 
 #define MAIN_WIFI_M2M_BUFFER_SIZE 1460
 

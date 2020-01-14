@@ -25,18 +25,18 @@
 // =============================================================================
 // includes
 
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 #include "atmel_start.h"
 #include "atmel_start_pins.h"
 #include "driver_init.h"
+#include "mu_port.h"
 #include "mu_sched.h"
 #include "mu_sleep.h"
 #include "mu_string.h"
 #include "mu_task.h"
 #include "mu_time.h"
-#include "mu_port.h"
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
 
 // =============================================================================
 // types and definitions
@@ -113,9 +113,9 @@ static void led_task_fn(void *self, void *arg);
  * If screen updates are enabled, screen_update_fn starts the screen_redraw
  * task and reschedules itself to trigger in SCREEN_UPDATE_INTERVAL seconds.
  */
- static void screen_update_task_start(demo3_t *demo3);
- static void screen_update_task_stop(demo3_t *demo3);
- static void screen_update_fn(void *self, void *arg);
+static void screen_update_task_start(demo3_t *demo3);
+static void screen_update_task_stop(demo3_t *demo3);
+static void screen_update_fn(void *self, void *arg);
 
 /**
  * \brief screen_redraw_fn is called when the s_screen_redraw task triggers.
@@ -123,7 +123,8 @@ static void led_task_fn(void *self, void *arg);
  */
 static void screen_redraw_task_start(demo3_t *demo3);
 static void screen_redraw_fn(void *self, void *arg);
-static void sprintf_task_status(demo3_t *demo3, mu_string_t *s, mu_task_t *task);
+static void sprintf_task_status(demo3_t *demo3, mu_string_t *s,
+                                mu_task_t *task);
 static char get_task_state(demo3_t *demo3, mu_task_t *task);
 
 /**
@@ -266,10 +267,8 @@ int main(void) {
 
   // Initialize the keyboard monitor task.  This task is called whenever a
   // serial character becomes available via the read callback.
-  mu_task_init(&demo3->keyboard_monitor_task,
-                     keyboard_monitor_fn,
-                     demo3,
-                     "Keyboard");
+  mu_task_init(&demo3->keyboard_monitor_task, keyboard_monitor_fn, demo3,
+               "Keyboard");
 
   // set up application defaults
   set_low_power_mode(demo3, false);
@@ -368,8 +367,7 @@ static void led_task_fn(void *self, void *arg) {
   // Reschedule the LED task to trigger duration seconds in the future. Note
   // that in order to prevent timing drift, the task time is computed as
   // (prev_task_time + interval) rather than (now + interval).
-  mu_task_advance_time(&demo3->led_task,
-                       mu_time_seconds_to_duration(duration));
+  mu_task_advance_time(&demo3->led_task, mu_time_seconds_to_duration(duration));
   mu_sched_add(sched, &demo3->led_task);
 }
 
@@ -396,7 +394,7 @@ static void screen_update_fn(void *self, void *arg) {
   mu_task_advance_time(&demo3->screen_update_task,
                        mu_time_seconds_to_duration(SCREEN_UPDATE_INTERVAL));
   mu_sched_add(sched, &demo3->screen_update_task);
- }
+}
 
 // ==========
 // Screen Redraw Task
@@ -417,17 +415,18 @@ static void screen_redraw_fn(void *self, void *arg) {
   // mu_sched_t *sched = (mu_sched_t *)arg;
 
   static const char *strings[] = {
-    CLEAR_SCREEN,                                                     // 0
-    "\r\nmulibDemo3\r\n",                                             // 1
-    "\r\n>     Task: State    At     Calls  MaxLatency     Runtime",  // 2
-    "\r\n*********************************************************",  // 3
-    "\r\n\r\nLow-power idle mode: press user button to enter full-power mode.",  // 4 + NTASKS
-    "\r\n\r\nFull-power mode. Select one:",                      //  4 + NTASKS
-    "\r\n b: activate blink task",                               //  5 + NTASKS
-    "\r\n B: suspend blink task",                                //  6 + NTASKS
-    "\r\n d: activate display task",                             //  7 + NTASKS
-    "\r\n D: suspend display task",                              //  8 + NTASKS
-    "\r\n p: enter low-power idle mode"                          //  9 + NTASKS
+      CLEAR_SCREEN,                                                     // 0
+      "\r\nmulibDemo3\r\n",                                             // 1
+      "\r\n>     Task: State    At     Calls  MaxLatency     Runtime",  // 2
+      "\r\n*********************************************************",  // 3
+      "\r\n\r\nLow-power idle mode: press user button to enter full-power "
+      "mode.",                                 // 4 + NTASKS
+      "\r\n\r\nFull-power mode. Select one:",  //  4 + NTASKS
+      "\r\n b: activate blink task",           //  5 + NTASKS
+      "\r\n B: suspend blink task",            //  6 + NTASKS
+      "\r\n d: activate display task",         //  7 + NTASKS
+      "\r\n D: suspend display task",          //  8 + NTASKS
+      "\r\n p: enter low-power idle mode"      //  9 + NTASKS
   };
   mu_string_t *buf;
 
@@ -451,51 +450,52 @@ static void screen_redraw_fn(void *self, void *arg) {
     demo3->screen_state += 1;
 
   } else if (demo3->screen_state == 4) {
-  // display info on the idle task
-  sprintf_task_status(demo3, buf, &demo3->idle_task);
-  demo3->screen_state += 1;
+    // display info on the idle task
+    sprintf_task_status(demo3, buf, &demo3->idle_task);
+    demo3->screen_state += 1;
 
   } else if (demo3->screen_state == 5) {
-  // display info on the led task
-  sprintf_task_status(demo3, buf, &demo3->led_task);
-  demo3->screen_state += 1;
+    // display info on the led task
+    sprintf_task_status(demo3, buf, &demo3->led_task);
+    demo3->screen_state += 1;
 
   } else if (demo3->screen_state == 6) {
-  // display info on the screen redraw task
-  sprintf_task_status(demo3, buf, &demo3->screen_redraw_task);
-  demo3->screen_state += 1;
+    // display info on the screen redraw task
+    sprintf_task_status(demo3, buf, &demo3->screen_redraw_task);
+    demo3->screen_state += 1;
 
   } else if (demo3->screen_state == 7) {
-  // display info on the screen update task
-  sprintf_task_status(demo3, buf, &demo3->screen_update_task);
-  demo3->screen_state += 1;
+    // display info on the screen update task
+    sprintf_task_status(demo3, buf, &demo3->screen_update_task);
+    demo3->screen_state += 1;
 
   } else if (demo3->screen_state == 8) {
-  // display info on the keyboard task
-  sprintf_task_status(demo3, buf, &demo3->keyboard_monitor_task);
-  demo3->screen_state += 1;
+    // display info on the keyboard task
+    sprintf_task_status(demo3, buf, &demo3->keyboard_monitor_task);
+    demo3->screen_state += 1;
 
   } else if (is_low_power_mode(demo3)) {
-      mu_string_sprintf(buf, "%s", strings[demo3->screen_state - N_TASKS]);
-      demo3->screen_state = -1;  // no more text to display -- return to idle state
+    mu_string_sprintf(buf, "%s", strings[demo3->screen_state - N_TASKS]);
+    demo3->screen_state =
+        -1;  // no more text to display -- return to idle state
 
   } else {
-      mu_string_sprintf(buf, "%s", strings[demo3->screen_state - N_TASKS + 1]);
-      demo3->screen_state += 1;
-      if (demo3->screen_state > N_TASKS + 9) {
-        demo3->screen_state = -1;  // no more text to display -- return to idle state
-      }
+    mu_string_sprintf(buf, "%s", strings[demo3->screen_state - N_TASKS + 1]);
+    demo3->screen_state += 1;
+    if (demo3->screen_state > N_TASKS + 9) {
+      demo3->screen_state =
+          -1;  // no more text to display -- return to idle state
+    }
   }
   // Pass the buffer for printing to the screen.
   board_serial_write(buf);
 }
 
-static void sprintf_task_status(demo3_t *demo3, mu_string_t *s, mu_task_t *task) {
+static void sprintf_task_status(demo3_t *demo3, mu_string_t *s,
+                                mu_task_t *task) {
   static char buf[128];
 
-  mu_string_sprintf(s,
-                    "\r\n%s: %c",
-                    rjust(mu_task_name(task), 10, ' '),
+  mu_string_sprintf(s, "\r\n%s: %c", rjust(mu_task_name(task), 10, ' '),
                     get_task_state(demo3, task));
   if (mu_task_is_immediate(task)) {
     mu_string_sprintf(s, "%s", rjust("immediate", 10, ' '));
@@ -511,8 +511,8 @@ static void sprintf_task_status(demo3_t *demo3, mu_string_t *s, mu_task_t *task)
   sprintf(buf, " %s", cheap_ftoa(mu_task_runtime(task)));
   mu_string_sprintf(s, "%s", rjust(buf, 12, ' '));
 #else
-mu_string_sprintf(s, " %11.5f", mu_task_max_latency(task));
-mu_string_sprintf(s, " %11.5f", mu_task_runtime(task));
+  mu_string_sprintf(s, " %11.5f", mu_task_max_latency(task));
+  mu_string_sprintf(s, " %11.5f", mu_task_runtime(task));
 #endif
 }
 
@@ -524,13 +524,13 @@ mu_string_sprintf(s, " %11.5f", mu_task_runtime(task));
  */
 static char get_task_state(demo3_t *demo3, mu_task_t *task) {
   if (mu_sched_current_task(&demo3->sched) == task) {
-    return 'A'; // this task is currently running
+    return 'A';  // this task is currently running
   } else if (!mu_sched_has_task(&demo3->sched, task)) {
-    return 'I'; // this task is not scheduled
+    return 'I';  // this task is not scheduled
   } else if (mu_task_is_runnable(task, mu_time_now())) {
-    return 'R'; // this task is ready to run
+    return 'R';  // this task is ready to run
   } else {
-    return 'P'; // this task is in the schedule but its time hasn't arrived
+    return 'P';  // this task is in the schedule but its time hasn't arrived
   }
 }
 
@@ -558,37 +558,37 @@ void keyboard_monitor_fn(void *self, void *arg) {
 
   int n_read = mu_string_length(&s);
   if (n_read == 0) {
-	  return;
+    return;
   }
 
   if (n_read < mu_string_capacity(&s)) {
-	mu_string_buf(&s)[n_read] = '\0';  // Null terminate
+    mu_string_buf(&s)[n_read] = '\0';  // Null terminate
   }
 
   // In this example, we only pay attention to the first character
-  switch(mu_string_buf(&s)[0]) {
+  switch (mu_string_buf(&s)[0]) {
     case 'b':  // activate blink
-    led_task_start(demo3);
-    echo_user_string("b: activate blink task");
-    break;
+      led_task_start(demo3);
+      echo_user_string("b: activate blink task");
+      break;
     case 'B':  // deactivate blink
-    led_task_stop(demo3);
-    echo_user_string("B: suspend blink task");
-    break;
+      led_task_stop(demo3);
+      echo_user_string("B: suspend blink task");
+      break;
     case 'd':  // activate display
-    screen_update_task_start(demo3);
-    echo_user_string("d: activate display task");
-    break;
+      screen_update_task_start(demo3);
+      echo_user_string("d: activate display task");
+      break;
     case 'D':  // deactivate display
-    screen_update_task_stop(demo3);
-    echo_user_string("D: suspend display task");
-    break;
+      screen_update_task_stop(demo3);
+      echo_user_string("D: suspend display task");
+      break;
     case 'p':  // low power mode
-    set_low_power_mode(demo3, true);
-    echo_user_string("p: enter low-power idle mode");
-    break;
-    default:   // echo typed char
-    echo_user_string(mu_string_buf(&s));
+      set_low_power_mode(demo3, true);
+      echo_user_string("p: enter low-power idle mode");
+      break;
+    default:  // echo typed char
+      echo_user_string(mu_string_buf(&s));
   }
   // force an immediate update to the screen
   screen_redraw_task_start(demo3);
@@ -605,9 +605,7 @@ static void set_low_power_mode(demo3_t *demo3, bool enable) {
   demo3->low_power_mode = enable;
 }
 
-static bool is_low_power_mode(demo3_t *demo3) {
-  return demo3->low_power_mode;
-}
+static bool is_low_power_mode(demo3_t *demo3) { return demo3->low_power_mode; }
 
 static void start_periodic_task(demo3_t *demo3, mu_task_t *task) {
   if (mu_sched_has_task(&demo3->sched, task)) {
@@ -641,8 +639,7 @@ static void button_on_PA15_pressed(void) {
 static const char *rjust(const char *s, int width, char padchar) {
   static char buf[32];
   int padding = width - strlen(s);
-  if (padding <= 0)
-    return s;
+  if (padding <= 0) return s;
 
   memset(buf, padchar, padding);
   strcpy(&buf[padding], s);
@@ -666,12 +663,12 @@ static const char *rjust(const char *s, int width, char padchar) {
  */
 static const char *cheap_ftoa(float x) {
   static char buf[20];
-  static char fbuf[6];                           // five digits plus null
-  int c = (x * FTOA_PRECISION) + 0.5;            // handle rounding
-  int i = c / FTOA_PRECISION;                    // the integer part
-  int f = c - (i * FTOA_PRECISION);              // the fractional part
-  sprintf(fbuf, "%u", f);                        // fractional part as ascii
-  sprintf(buf, "%u.%s", i, rjust(fbuf, 5, '0')); // pad with leading '0'
+  static char fbuf[6];                            // five digits plus null
+  int c = (x * FTOA_PRECISION) + 0.5;             // handle rounding
+  int i = c / FTOA_PRECISION;                     // the integer part
+  int f = c - (i * FTOA_PRECISION);               // the fractional part
+  sprintf(fbuf, "%u", f);                         // fractional part as ascii
+  sprintf(buf, "%u.%s", i, rjust(fbuf, 5, '0'));  // pad with leading '0'
   return buf;
 }
 #endif
@@ -727,7 +724,8 @@ static int board_serial_write(mu_string_t *s) {
 
   // initiate asynchronous write
   usart_async_get_io_descriptor(&EDBG_COM, &io);
-  ret = io_write(io, (const uint8_t *const)mu_cstring_data(s), mu_string_length(s));
+  ret = io_write(io, (const uint8_t *const)mu_cstring_data(s),
+                 mu_string_length(s));
 
   return ret;
 }
@@ -747,7 +745,7 @@ static int board_serial_read(mu_string_t *s) {
   struct io_descriptor *io;
 
   usart_async_get_io_descriptor(&EDBG_COM, &io);
-  ret = io_read(io, (uint8_t *const )mu_string_buf(s), mu_string_capacity(s));
+  ret = io_read(io, (uint8_t *const)mu_string_buf(s), mu_string_capacity(s));
 
   if (ret >= 0) {
     mu_string_slice(s, 0, ret, NULL);
