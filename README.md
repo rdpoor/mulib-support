@@ -3,9 +3,14 @@
 `mulib` is curated collection of software modules written in C, specifically
 tailored for microcontrollers and other resource-constrained environments.
 
-`mulib` features a fast and lithe run-to-completion scheduler, an in-memory
-publish / subscribe system, advanced in-place string handling, flexible logging
-and a list of other useful modules.
+`mulib` features:
+
+* a fast and lithe run-to-completion scheduler
+* low-overhead timing and event handling
+* advanced in-place string handling
+* an in-memory publish / subscribe system
+* flexible logging
+* ... and a variety of other useful modules
 
 ## mulib's design philosophy
 
