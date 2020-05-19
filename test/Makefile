@@ -21,3 +21,4 @@ test: mu_test
 
 clean:
 	rm -f $(OBJECTS)
+	rm -f mu_test
