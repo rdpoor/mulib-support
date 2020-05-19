@@ -28,6 +28,10 @@ mulib strives towards the following design goals.
 
 ## The modules
 
+## In the laboratory
+
+These are modles yet to be written and tested (or in some cases, ported from a previous version of mulib).
+
 ### mu_bcast
 
 Low-overhead publish / subscribe message passing.
@@ -82,8 +86,6 @@ Functions to manipulate time values, properly handling roll-over.  Provides inte
 
 Status: 100% test coverage.
 
-## In the laboratory
-
 ### mu_iostream
 
 General purpose asynchronous I/O streaming operations.  For read operations, call a consumer task when more data is available, for write operations, call a producer task when more data is requested.
@@ -130,6 +132,24 @@ an LED" through more complex ones.  Bonus points for cross platform / cross IDE.
   emulate its documentation structure.
 
 * Refactor: all chars should be unsigned chars (or uint8_t).  Pick one.
+
+### Thoughts on Time
+
+Design idea: The native port provides a few core functions:
+
+* typedef xxx port_rtc_t;
+* void port_rtc_init(void);
+* port_rtc_t port_rtc_now();
+* port_rtc_t port_rtc_difference(port_rtc_t t1, port_rtc_t t2);
+* port_rtc_t port_rtc_offset(port_rtc_t, port_rtc_dt);
+* bool port_rtc_precedes(port_rtc_t t0, port_rtc_t t1);
+* bool port_rtc_equals(port_rtc_t t0, port_rtc_t t1);
+* bool port_rtc_follows(port_rtc_t t0, port_rtc_t t1);
+* float port_rtc_to_seconds(port_rtc_t dt);
+
+void mu_rtc_init(void);
+mu_rtc_t mu_rtc_now();
+float mu_rtc_seconds_since_init();
 
 ### Future work
 
