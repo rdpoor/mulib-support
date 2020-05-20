@@ -28,12 +28,23 @@
 #include "mu_buf.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 // =============================================================================
 // local types and definitions
 
 // =============================================================================
 // local (forward) declarations
+
+/**
+ * @brief return the smaller of the two sizes.
+ */
+static size_t min_size(size_t a, size_t b);
+
+/**
+ * @brief enforce the relation 0 <= buf->start <= buf->end <= buf->capacity
+ */
+static mu_buf_t *validate_indeces(mu_buf_t *buf);
 
 // =============================================================================
 // local storage
@@ -97,5 +108,73 @@ size_t mu_buf_length(mu_buf_t *buf) {
   return  buf->end - buf->start;
 }
 
+mu_buf_t *mu_buf_copy(mu_buf_t *dst, mu_buf_t *src) {
+  if (dst != src) {
+    memcpy(dst, src, sizeof(mu_buf_t));
+  }
+  return dst;
+}
+
+int mu_buf_cmp(mu_buf_t *b1, mu_buf_t *b2) {
+  size_t n_items = min_size(mu_buf_length(b1), mu_buf_length(b2));
+
+  // An empty string always matches
+  if (n_items == 0) {
+    return 0;
+  }
+
+  const mu_buf_item_t *p1 = &mu_robuf_items(b1)[b1->start];
+  const mu_buf_item_t *p2 = &mu_robuf_items(b2)[b2->start];
+
+  do {
+    if (*p1 != *p2) {
+      return *p1 - *p2;
+    }
+    p1++;
+    p2++;
+  } while (--n_items != 0);
+
+  return 0;
+}
+
+mu_buf_t *mu_buf_slice(mu_buf_t *dst, mu_buf_t *src, int start, int end) {
+  size_t src_len = mu_buf_length(src);
+
+  // A slice shares the same backing store and capacity as the parent...
+  mu_buf_copy(dst, src);
+
+  // only the start and end indeces are different
+  if (start >= 0) {
+    dst->start = src->start + start;
+  } else {
+    dst->start = src->end + start + 1;
+  }
+  if (end >= 0) {
+    dst->end = src->start + end;
+  } else {
+    dst->end = src->end + end + 1;
+  }
+  return validate_indeces(dst);
+}
+
+
 // =============================================================================
 // local (static) code
+
+static size_t min_size(size_t a, size_t b) {
+  return (a < b) ? a : b;
+}
+
+static mu_buf_t *validate_indeces(mu_buf_t *buf) {
+  if (buf->start < 0) {
+    buf->start = 0;
+  } else if (buf->start > buf->capacity) {
+    buf->start = buf->capacity;
+  }
+  if (buf->end < buf->start) {
+    buf->end = buf->start;
+  } else if (buf->end > buf->capacity) {
+    buf->end = buf->end;
+  }
+  return buf;
+}

@@ -172,6 +172,50 @@ int mu_buf_end(mu_buf_t *buf);
  */
 size_t mu_buf_length(mu_buf_t *buf);
 
+/**
+ * \brief Make a copy of a mu_buf.
+ *
+ * The dst mu_buf is initialized to the same fields as the src mu_buf, i.e. a
+ * shallow copy.
+ *
+ * \param dst Pointer to a mu_buf structure to copy into.
+ * \param src Pointer to a mu_buf structure to copy from.
+ * \return Pointer to dst.
+ */
+mu_buf_t *mu_buf_copy(mu_buf_t *dst, mu_buf_t *src);
+
+/**
+ * \brief Compare two slices.
+ *
+ * Returns a negative, zero, or positive integer if b1 is lexographically less
+ * than, equal to, or greater than b2.
+ * \param b1 Pointer to a mu_buf structure.
+ * \param b2 Pointer to a mu_buf structure.
+ * \return Integer whose sign indicates b1<b2, b1=b2, b1>b2.
+ */
+int mu_buf_cmp(mu_buf_t *b1, mu_buf_t *b2);
+
+/**
+ * \brief take a slice of a mu_buf.
+ *
+ * Create a slice from the underlying buffer.  Negative indeces count from the
+ * end of the buffer.  A slice of a slice is relative to the source slice, not
+ * the underlying buffer.
+ *
+ *  mu_buf_t src, dst, dst2;
+ *  mu_buf_from_cstr(&src, "discovers");
+ *  mu_buf_slice(&dst, &src, 0, 5);   // => "disco"
+ *  mu_buf_slice(&dst, &src, -6, -2); // => "over"
+ *  mu_buf_slice(&dst2, &dst, 1, 3);  // => "is"
+ *
+ * \param dst Pointer to the destination buffer to receive the results.
+ * \param src Pointer to the source buffer being sliced.
+ * \param start The starting index, relative to the source buffer.
+ * \param end The ending index, relative to the source buffer.
+ * \return dst
+ */
+mu_buf_t *mu_buf_slice(mu_buf_t *dst, mu_buf_t *src, int start, int end);
+
 #ifdef __cplusplus
 }
 #endif
