@@ -26,6 +26,8 @@
 // includes
 
 #include "mu_buf.h"
+#include <string.h>
+#include <stdlib.h>
 
 // =============================================================================
 // local types and definitions
@@ -38,6 +40,62 @@
 
 // =============================================================================
 // public code
+
+mu_buf_t *mu_robuf_init(mu_buf_t *buf,
+                        const mu_buf_item_t const *items,
+                        size_t capacity) {
+  buf->ro_items = items;
+  buf->capacity = capacity;
+  return mu_robuf_reset(buf);
+}
+
+mu_buf_t *mu_robuf_init_from_cstr(mu_buf_t *buf, const char *cstr) {
+  return mu_robuf_init(buf, cstr, strlen(cstr));
+}
+
+mu_buf_t *mu_robuf_reset(mu_buf_t *buf) {
+  buf->start = 0;
+  buf->end = buf->capacity;
+  return buf;
+}
+
+mu_buf_t *mu_rwbuf_init(mu_buf_t *buf,
+                       const mu_buf_item_t const *items,
+                       size_t capacity) {
+  buf->rw_items = items;
+  buf->capacity = capacity;
+  return mu_rwbuf_reset(buf);
+}
+
+mu_buf_t *mu_rwbuf_reset(mu_buf_t *buf) {
+  buf->start = 0;
+  buf->end = 0;
+  return buf;
+}
+
+const mu_buf_item_t const *mu_robuf_items(mu_buf_t *buf) {
+  return buf->ro_items;
+}
+
+mu_buf_item_t const *mu_rwbuf_items(mu_buf_t *buf) {
+  return buf->rw_items;
+}
+
+size_t mu_buf_capacity(mu_buf_t *buf) {
+  return buf->capacity;
+}
+
+int mu_buf_start(mu_buf_t *buf) {
+  return buf->start;
+}
+
+int mu_buf_end(mu_buf_t *buf) {
+  return buf->end;
+}
+
+size_t mu_buf_length(mu_buf_t *buf) {
+  return  buf->end - buf->start;
+}
 
 // =============================================================================
 // local (static) code

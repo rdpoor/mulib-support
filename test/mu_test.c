@@ -46,9 +46,11 @@ int main() {
   printf("\r\nstarting mu_test...");
   mu_test_init();
   mu_buf_test();
-  printf("\r\nending mu_test: %d error out of %d tests\r\n",
+  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
          mu_test_error_count(),
-         mu_test_count());
+         mu_test_error_count() == 1 ? "" : "s",
+         mu_test_count(),
+         mu_test_count() == 1 ? "" : "s");
 
   return mu_test_error_count();
 }

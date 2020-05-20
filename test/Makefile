@@ -6,7 +6,7 @@ SOURCES := \
 	mu_test.c
 
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
-LIBOBJS := $()
+LIBOBJS := $(wildcard ../source/*.o)
 
 IFLAGS = -I../include -I../test
 
