@@ -216,6 +216,20 @@ int mu_buf_cmp(mu_buf_t *b1, mu_buf_t *b2);
  */
 mu_buf_t *mu_buf_slice(mu_buf_t *dst, mu_buf_t *src, int start, int end);
 
+/**
+ * \brief Find a substring in a larger string
+ *
+ * mu_buf_find finds the first occurance of needle in the mu_buf haystack,
+ * returning the result in dst.  If no occurance is found, an empty mu_buf
+ * is returned.
+ *
+ * \param dst Pointer to the destination buffer to receive the results.
+ * \param haystack Pointer to the enveloping string.
+ * \param needle Pointer to the target substring
+ * \return dst
+ */
+mu_buf_t *mu_buf_find(mu_buf_t *dst, mu_buf_t *haystack, mu_buf_t *needle);
+
 #ifdef __cplusplus
 }
 #endif

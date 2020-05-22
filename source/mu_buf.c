@@ -28,7 +28,6 @@
 #include "mu_buf.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 // =============================================================================
 // local types and definitions
@@ -118,23 +117,20 @@ mu_buf_t *mu_buf_copy(mu_buf_t *dst, mu_buf_t *src) {
 int mu_buf_cmp(mu_buf_t *b1, mu_buf_t *b2) {
   size_t n_items = min_size(mu_buf_length(b1), mu_buf_length(b2));
 
-  // An empty string always matches
-  if (n_items == 0) {
-    return 0;
-  }
-
   const mu_buf_item_t *p1 = &mu_robuf_items(b1)[b1->start];
   const mu_buf_item_t *p2 = &mu_robuf_items(b2)[b2->start];
 
-  do {
+  while(n_items-- > 0) {
     if (*p1 != *p2) {
       return *p1 - *p2;
     }
     p1++;
     p2++;
-  } while (--n_items != 0);
+  }
 
-  return 0;
+  // here, the shorter of the two strings has matched.  account for difference
+  // in length.
+  return mu_buf_length(b1) - mu_buf_length(b2);
 }
 
 mu_buf_t *mu_buf_slice(mu_buf_t *dst, mu_buf_t *src, int start, int end) {
@@ -157,6 +153,31 @@ mu_buf_t *mu_buf_slice(mu_buf_t *dst, mu_buf_t *src, int start, int end) {
   return validate_indeces(dst);
 }
 
+mu_buf_t *mu_buf_find(mu_buf_t *dst, mu_buf_t *haystack, mu_buf_t *needle) {
+  size_t needle_len = mu_buf_length(needle);
+  mu_buf_copy(dst, haystack);
+
+  // shorten dst so its length equals that of needle
+  mu_buf_slice(dst, dst, 0, needle_len);
+
+  while(true) {
+    if (dst->end > dst->capacity) {
+      // ran off the end of haystack: cannot match.  Return empty mu_buf.
+      return mu_rwbuf_reset(dst);
+    }
+
+    if (mu_buf_cmp(dst, needle) == 0) {
+      // dst equals needle.  return it.
+      return dst;
+
+    } else {
+      // No match yet.  Slide right by one.  NOTE: adding 1 to dst->end can
+      // exceed dst->capacity, but we check for that at the top of the loop.
+      dst->start += 1;
+      dst->end += 1;
+    }
+  }
+}
 
 // =============================================================================
 // local (static) code

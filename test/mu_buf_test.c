@@ -97,13 +97,13 @@ void mu_buf_test() {
   ASSERT(mu_buf_cmp(mu_robuf_init_from_cstr(robuf1, "bbb"),
                     mu_robuf_init_from_cstr(robuf2, "bbb")) == 0);
   ASSERT(mu_buf_cmp(mu_robuf_init_from_cstr(robuf1, "abc"),
-                    mu_robuf_init_from_cstr(robuf2, "ab")) == 0);
+                    mu_robuf_init_from_cstr(robuf2, "ab")) > 0);
   ASSERT(mu_buf_cmp(mu_robuf_init_from_cstr(robuf1, "ab"),
-                    mu_robuf_init_from_cstr(robuf2, "abc")) == 0);
+                    mu_robuf_init_from_cstr(robuf2, "abc")) < 0);
   ASSERT(mu_buf_cmp(mu_robuf_init_from_cstr(robuf1, ""),
-                    mu_robuf_init_from_cstr(robuf2, "anything")) == 0);
+                    mu_robuf_init_from_cstr(robuf2, "anything")) < 0);
   ASSERT(mu_buf_cmp(mu_robuf_init_from_cstr(robuf1, "anything"),
-                    mu_robuf_init_from_cstr(robuf2, "")) == 0);
+                    mu_robuf_init_from_cstr(robuf2, "")) > 0);
 
   // mu_buf_slice()
   mu_robuf_init_from_cstr(robuf1, "discovers");
@@ -111,8 +111,20 @@ void mu_buf_test() {
   ASSERT(test_equal(mu_buf_slice(robuf2, robuf1, 0, 5), "disco") == 0);
   ASSERT(test_equal(mu_buf_slice(robuf2, robuf1, 3, 8), "cover") == 0);
   ASSERT(test_equal(mu_buf_slice(robuf2, robuf1, -7, -2), "cover") == 0);
-  ASSERT(test_equal(mu_buf_slice(robuf2, robuf1, 1, -3), "is") == 0);
+  ASSERT(test_equal(mu_buf_slice(robuf2, robuf1, 1, -7), "is") == 0);
   ASSERT(test_equal(mu_buf_slice(robuf2, robuf1, 0, 0), "") == 0);
+
+  // mu_buf_find()
+  mu_robuf_init_from_cstr(robuf1, "discovers");
+
+  mu_robuf_init_from_cstr(robuf2, "cove");
+  ASSERT(mu_buf_find(rwbuf1, robuf1, robuf2) == rwbuf1);
+  ASSERT(mu_buf_start(rwbuf1) == 3);
+  ASSERT(mu_rwbuf_items(rwbuf1) == mu_robuf_items(robuf1));
+
+  mu_robuf_init_from_cstr(robuf2, "cave");
+  ASSERT(mu_buf_find(rwbuf1, robuf1, robuf2) == rwbuf1);
+  ASSERT(mu_buf_length(rwbuf1) == 0);
 }
 
 // =============================================================================
