@@ -26,8 +26,8 @@
  * @file Manipulate arrays of byte-sized data.
  */
 
-#ifndef MU_BUF_H_
-#define MU_BUF_H_
+#ifndef _MU_BUF_H_
+#define _MU_BUF_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,195 +43,43 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-// the underlying data type.  May be modified for uint8_t, char, etc.
-typedef uint8_t mu_buf_item_t;
+typedef enum {
+  MU_BUF_ERR_NONE = 0,
+  MU_BUF_ERR_ILLEGAL_ARG,
+} mu_buf_err_t;
 
-// mu_buf_t accesses a subset of the bytes in a buffer, which can be either
-// mutable or immutable.  The only difference is in the accessor functions.
-typedef struct _mu_buf {
-  union {
-    const mu_buf_item_t const *ro_items; // read-only data
-    mu_buf_item_t const *rw_items;       // modifiable / mutable data
-  };
-  size_t capacity; // number of elements in items
-  int start;       // start of slice (inclusive)
-  int end;         // end of slice (exclusive)
+typedef struct {
+  void *elements;                  // backing store
+  unsigned int is_readonly : 1;    // true if elements is read-only
+  unsigned int element_size : 7;   // sizeof(element) in bytes
+  unsigned int element_count : 24; // number of elements
 } mu_buf_t;
+
+// upper bounds (exclusive)
+#define MU_BUF_MAX_ELEMENT_SIZE (1 << 7)
+#define MU_BUF_MAX_ELEMENT_COUNT (1 << 24)
 
 // =============================================================================
 // declarations
 
-/**
- * \brief Initialize a read-only mu_buf from an array of items.
- *
- * Upon return, mu_buf->start is set to zero and mu_buf->end is set to capacity.
- *
- * \param buf Pointer to a mu_buf structure to be initialized.
- * \param items Pointer to an array of items.
- * \param capacity The number of items in the array.
- * \return Pointer to the mu_buf structure.
- */
-mu_buf_t *mu_robuf_init(mu_buf_t *buf,
-                        const mu_buf_item_t const *items,
-                        size_t capacity);
+mu_buf_err_t mu_buf_init(mu_buf_t *b,
+                         void *elements,
+                         bool is_readonly,
+                         size_t element_size,
+                         size_t n_elements);
 
-/**
- * \brief Initialize a read-only mu_buf from a null-terminated C style string.
- *
- * Upon return, mu_buf->start is set to zero and mu_buf->end is set to capacity.
- *
- * \param buf Pointer to a mu_buf structure to be initialized.
- * \param items Pointer to a null-terminated string.
- * \return Pointer to the mu_buf structure.
- */
-mu_buf_t *mu_robuf_init_from_cstr(mu_buf_t *buf, const char *cstr);
+void *mu_buf_elements(mu_buf_t *b);
 
-/**
- * \brief Reset a read-only mu_buf to span the entire array of items.
- *
- * This sets mu_buf->start to zero and mu_buf->end to capacity.
- *
- * \param buf Pointer to a mu_buf structure.
- * \return Pointer to the mu_buf structure.
- */
-mu_buf_t *mu_robuf_reset(mu_buf_t *buf);
+bool mu_buf_is_read_only(mu_buf_t *b);
 
-/**
- * \brief Initialize a read/write mu_buf with a backing store.
- *
- * Upon return, mu_buf->start and mu_buf->end are set to zero.
- *
- * \param buf Pointer to a mu_buf structure to be initialized.
- * \param items Pointer to a backing store.
- * \param capacity The number of items in the backing store.
- * \return Pointer to the mu_buf structure.
- */
-mu_buf_t *mu_rwbuf_init(mu_buf_t *buf,
-                       const mu_buf_item_t const *items,
-                       size_t capacity);
+size_t mu_buf_element_size(mu_buf_t *b);
 
-/**
- * \brief Reset mu_buf to span the entire array of items.
- *
- * This sets mu_buf->start and mu_buf->end to zero.
- *
- * \param buf Pointer to a mu_buf structure.
- * \return Pointer to the mu_buf structure.
- */
-mu_buf_t *mu_rwbuf_reset(mu_buf_t *buf);
+size_t mu_buf_element_count(mu_buf_t *b);
 
-/**
- * \brief Return a pointer to the underlying read-only array of items.
- *
- * \param buf Pointer to a mu_buf structure.
- * \return Pointer to the underlying array of items.
- */
-const mu_buf_item_t const *mu_robuf_items(mu_buf_t *buf);
-
-/**
- * \brief Return a pointer to the underlying read-write array of items.
- *
- * \param buf Pointer to a mu_buf structure.
- * \return Pointer to the underlying array of items.
- */
-mu_buf_item_t const *mu_rwbuf_items(mu_buf_t *buf);
-
-/**
- * \brief Return the capacity of a mu_buf
- *
- * \param buf Pointer to a mu_buf structure.
- * \return The capacity of the mu_buf.
- */
-size_t mu_buf_capacity(mu_buf_t *buf);
-
-/**
- * \brief Return the starting index of a mu_buf
- *
- * The starting index is 0-based and can range from 0 to capacity-1.
- *
- * \param buf Pointer to a mu_buf structure.
- * \return The starting index of the mu_buf.
- */
-int mu_buf_start(mu_buf_t *buf);
-
-/**
- * \brief Return the ending index of a mu_buf
- *
- * The ending index indicates the first element past the substring.
- *
- * \param buf Pointer to a mu_buf structure.
- * \return The ending index of the mu_buf.
- */
-int mu_buf_end(mu_buf_t *buf);
-
-/**
- * \brief Return the length of the array slice of a mu_buf.
- *
- * \param buf Pointer to a mu_buf structure.
- * \return The length of the slice.
- */
-size_t mu_buf_length(mu_buf_t *buf);
-
-/**
- * \brief Make a copy of a mu_buf.
- *
- * The dst mu_buf is initialized to the same fields as the src mu_buf, i.e. a
- * shallow copy.
- *
- * \param dst Pointer to a mu_buf structure to copy into.
- * \param src Pointer to a mu_buf structure to copy from.
- * \return Pointer to dst.
- */
-mu_buf_t *mu_buf_copy(mu_buf_t *dst, mu_buf_t *src);
-
-/**
- * \brief Compare two slices.
- *
- * Returns a negative, zero, or positive integer if b1 is lexographically less
- * than, equal to, or greater than b2.
- * \param b1 Pointer to a mu_buf structure.
- * \param b2 Pointer to a mu_buf structure.
- * \return Integer whose sign indicates b1<b2, b1=b2, b1>b2.
- */
-int mu_buf_cmp(mu_buf_t *b1, mu_buf_t *b2);
-
-/**
- * \brief take a slice of a mu_buf.
- *
- * Create a slice from the underlying buffer.  Negative indeces count from the
- * end of the buffer.  A slice of a slice is relative to the source slice, not
- * the underlying buffer.
- *
- *  mu_buf_t src, dst, dst2;
- *  mu_buf_from_cstr(&src, "discovers");
- *  mu_buf_slice(&dst, &src, 0, 5);   // => "disco"
- *  mu_buf_slice(&dst, &src, -6, -2); // => "over"
- *  mu_buf_slice(&dst2, &dst, 1, 3);  // => "is"
- *
- * \param dst Pointer to the destination buffer to receive the results.
- * \param src Pointer to the source buffer being sliced.
- * \param start The starting index, relative to the source buffer.
- * \param end The ending index, relative to the source buffer.
- * \return dst
- */
-mu_buf_t *mu_buf_slice(mu_buf_t *dst, mu_buf_t *src, int start, int end);
-
-/**
- * \brief Find a substring in a larger string
- *
- * mu_buf_find finds the first occurance of needle in the mu_buf haystack,
- * returning the result in dst.  If no occurance is found, an empty mu_buf
- * is returned.
- *
- * \param dst Pointer to the destination buffer to receive the results.
- * \param haystack Pointer to the enveloping string.
- * \param needle Pointer to the target substring
- * \return dst
- */
-mu_buf_t *mu_buf_find(mu_buf_t *dst, mu_buf_t *haystack, mu_buf_t *needle);
+mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef MU_BUF_H_ */
+#endif /* #ifndef _MU_BUF_H_ */

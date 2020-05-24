@@ -35,167 +35,62 @@
 // =============================================================================
 // local (forward) declarations
 
-/**
- * @brief return the smaller of the two sizes.
- */
-static size_t min_size(size_t a, size_t b);
-
-/**
- * @brief enforce the relation 0 <= buf->start <= buf->end <= buf->capacity
- */
-static mu_buf_t *validate_indeces(mu_buf_t *buf);
-
 // =============================================================================
 // local storage
 
 // =============================================================================
 // public code
 
-mu_buf_t *mu_robuf_init(mu_buf_t *buf,
-                        const mu_buf_item_t const *items,
-                        size_t capacity) {
-  buf->ro_items = items;
-  buf->capacity = capacity;
-  return mu_robuf_reset(buf);
-}
+// =============================================================================
+// declarations
 
-mu_buf_t *mu_robuf_init_from_cstr(mu_buf_t *buf, const char *cstr) {
-  return mu_robuf_init(buf, cstr, strlen(cstr));
-}
-
-mu_buf_t *mu_robuf_reset(mu_buf_t *buf) {
-  buf->start = 0;
-  buf->end = buf->capacity;
-  return buf;
-}
-
-mu_buf_t *mu_rwbuf_init(mu_buf_t *buf,
-                       const mu_buf_item_t const *items,
-                       size_t capacity) {
-  buf->rw_items = items;
-  buf->capacity = capacity;
-  return mu_rwbuf_reset(buf);
-}
-
-mu_buf_t *mu_rwbuf_reset(mu_buf_t *buf) {
-  buf->start = 0;
-  buf->end = 0;
-  return buf;
-}
-
-const mu_buf_item_t const *mu_robuf_items(mu_buf_t *buf) {
-  return buf->ro_items;
-}
-
-mu_buf_item_t const *mu_rwbuf_items(mu_buf_t *buf) {
-  return buf->rw_items;
-}
-
-size_t mu_buf_capacity(mu_buf_t *buf) {
-  return buf->capacity;
-}
-
-int mu_buf_start(mu_buf_t *buf) {
-  return buf->start;
-}
-
-int mu_buf_end(mu_buf_t *buf) {
-  return buf->end;
-}
-
-size_t mu_buf_length(mu_buf_t *buf) {
-  return  buf->end - buf->start;
-}
-
-mu_buf_t *mu_buf_copy(mu_buf_t *dst, mu_buf_t *src) {
-  if (dst != src) {
-    memcpy(dst, src, sizeof(mu_buf_t));
+mu_buf_err_t mu_buf_init(mu_buf_t *b,
+                         void *elements,
+                         bool is_readonly,
+                         size_t element_size,
+                         size_t element_count) {
+  if (b == NULL) {
+    return MU_BUF_ERR_ILLEGAL_ARG;
   }
-  return dst;
+  if (elements == NULL) {
+    return MU_BUF_ERR_ILLEGAL_ARG;
+  }
+  if (element_size >= MU_BUF_MAX_ELEMENT_SIZE) {
+    return MU_BUF_ERR_ILLEGAL_ARG;
+  }
+  if (element_count >= MU_BUF_MAX_ELEMENT_COUNT) {
+    return MU_BUF_ERR_ILLEGAL_ARG;
+  }
+  b->elements = elements;
+  b->is_readonly = is_readonly;
+  b->element_size = element_size;
+  b->element_count = element_count;
+
+  return MU_BUF_ERR_NONE;
 }
 
-int mu_buf_cmp(mu_buf_t *b1, mu_buf_t *b2) {
-  size_t n_items = min_size(mu_buf_length(b1), mu_buf_length(b2));
-
-  const mu_buf_item_t *p1 = &mu_robuf_items(b1)[b1->start];
-  const mu_buf_item_t *p2 = &mu_robuf_items(b2)[b2->start];
-
-  while(n_items-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
-    }
-    p1++;
-    p2++;
-  }
-
-  // here, the shorter of the two strings has matched.  account for difference
-  // in length.
-  return mu_buf_length(b1) - mu_buf_length(b2);
+void *mu_buf_elements(mu_buf_t *b) {
+  return b->elements;
 }
 
-mu_buf_t *mu_buf_slice(mu_buf_t *dst, mu_buf_t *src, int start, int end) {
-  size_t src_len = mu_buf_length(src);
-
-  // A slice shares the same backing store and capacity as the parent...
-  mu_buf_copy(dst, src);
-
-  // only the start and end indeces are different
-  if (start >= 0) {
-    dst->start = src->start + start;
-  } else {
-    dst->start = src->end + start + 1;
-  }
-  if (end >= 0) {
-    dst->end = src->start + end;
-  } else {
-    dst->end = src->end + end + 1;
-  }
-  return validate_indeces(dst);
+bool mu_buf_is_read_only(mu_buf_t *b) {
+  return b->is_readonly;
 }
 
-mu_buf_t *mu_buf_find(mu_buf_t *dst, mu_buf_t *haystack, mu_buf_t *needle) {
-  size_t needle_len = mu_buf_length(needle);
-  mu_buf_copy(dst, haystack);
+size_t mu_buf_element_size(mu_buf_t *b) {
+  return b->element_size;
+}
 
-  // shorten dst so its length equals that of needle
-  mu_buf_slice(dst, dst, 0, needle_len);
+size_t mu_buf_element_count(mu_buf_t *b) {
+  return b->element_count;
+}
 
-  while(true) {
-    if (dst->end > dst->capacity) {
-      // ran off the end of haystack: cannot match.  Return empty mu_buf.
-      return mu_rwbuf_reset(dst);
-    }
-
-    if (mu_buf_cmp(dst, needle) == 0) {
-      // dst equals needle.  return it.
-      return dst;
-
-    } else {
-      // No match yet.  Slide right by one.  NOTE: adding 1 to dst->end can
-      // exceed dst->capacity, but we check for that at the top of the loop.
-      dst->start += 1;
-      dst->end += 1;
-    }
+mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr) {
+  if (cstr == NULL) {
+    return MU_BUF_ERR_ILLEGAL_ARG;
   }
+  return mu_buf_init(b, (void *)cstr, true, sizeof(char), strlen(cstr));
 }
 
 // =============================================================================
 // local (static) code
-
-static size_t min_size(size_t a, size_t b) {
-  return (a < b) ? a : b;
-}
-
-static mu_buf_t *validate_indeces(mu_buf_t *buf) {
-  if (buf->start < 0) {
-    buf->start = 0;
-  } else if (buf->start > buf->capacity) {
-    buf->start = buf->capacity;
-  }
-  if (buf->end < buf->start) {
-    buf->end = buf->start;
-  } else if (buf->end > buf->capacity) {
-    buf->end = buf->end;
-  }
-  return buf;
-}

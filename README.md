@@ -72,7 +72,32 @@ Status: 100% test coverage.
 
 For reading, perform in-place "zero copy" operations on strings.  Take slices of substrings, compare them.  For writing, perform safe sprintf() and efficient append operations.
 
-Status: 83% test coverage.
+Notes: consider `mu_strbuf` as the underlying storage with length:
+
+    typedef struct {
+      strbuf_type_t *bytes;
+      size_t capacity;
+    } mu_strbuf_t;
+
+and most string operations use a `mu_strbuf_t` as follows:
+
+    typedef struct {
+      mu_strbuf_t *strbuf;
+      size_t start;
+      size_t end;
+    } mu_str_t;
+
+This creates an extra level of indirection, but allows multiple views onto the
+same string.  This also means that mu_strbuf object could be use for circular
+buffers, read-only strings, extensible strings, etc.  Also, strbuf can have its
+on (simpler) API and unit tests.
+
+#### Attribute bits
+
+We could steal a few high-order bits from the capacity field to store attribute
+bits, such as:
+  - is_readonly [1 bit]
+  - item_width [1, 2, 4, 8] mapped to [0, 1, 2, 3] [2 bits]
 
 ### mu_task
 

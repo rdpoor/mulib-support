@@ -1,7 +1,8 @@
 MU_ROOT ?= ..
 
 SOURCES := \
-  mu_buf_test.c \
+  mu_bufx_test.c \
+	mu_buf_test.c \
 	mu_test_utils.c \
 	mu_test.c
 

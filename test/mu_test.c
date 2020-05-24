@@ -36,6 +36,7 @@
 
 extern int error_count;  // in mu_test_utils
 
+int mu_bufx_test();
 int mu_buf_test();
 
 // =============================================================================
@@ -44,8 +45,11 @@ int mu_buf_test();
 int main() {
 
   printf("\r\nstarting mu_test...");
+
   mu_test_init();
+  mu_bufx_test();
   mu_buf_test();
+
   printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
          mu_test_error_count(),
          mu_test_error_count() == 1 ? "" : "s",
