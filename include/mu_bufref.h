@@ -22,8 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef MU_TEMPLATE_H_
-#define MU_TEMPLATE_H_
+/**
+ * @file Manipulate arrays of byte-sized data.
+ */
+
+#ifndef _MU_BUFREF_H_
+#define _MU_BUFREF_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,36 +36,55 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include "mu_buf.h"
 
 // =============================================================================
 // types and definitions
 
-typedef enum {
-  MU_TEMPLATE_ERR_NONE,
-} mu_template_err_t;
-
 typedef struct {
-  mu_template_state_t state;
-} mu_template_t;
-
+  mu_buf_t *buf;  // pointer to mu_buf
+  size_t start;
+  size_t end;
+} mu_bufref_t;
 
 // =============================================================================
 // declarations
 
-/**
- * \brief initialize the template module.
- */
-mu_template_t *mu_template_init(mu_template_t *template);
+mu_buf_err_t mu_bufref_init(mu_bufref_t *ref, mu_buf_t *buf);
+
+mu_buf_err_t mu_bufref_slice_buf(mu_bufref_t *ref, mu_buf_t *src, ssize_t start, ssize_t end);
+
+mu_buf_err_t mu_bufref_slice_bufref(mu_bufref_t *ref, mu_bufref_t *src, ssize_t start, ssize_t end);
 
 /**
- * \brief  Reset the template.
+ * @brief reset this buffer reference.
+ *
+ * Note: Sets end to zero if this is a read-write buffer and to capacity if this
+ * is a read-only buffer.  (I might regret this design decision.)
  */
-mu_template_t *mu_template_reset(mu_template_t *template);
+mu_bufref_t *mu_bufref_reset(mu_bufref_t *ref);
+
+mu_buf_t *mu_bufref_buf(mu_bufref_t *ref);
+
+void *mu_bufref_elements(mu_bufref_t *ref);
+
+bool mu_bufref_is_read_only(mu_bufref_t *ref);
+
+size_t mu_bufref_element_size(mu_bufref_t *ref);
+
+size_t mu_bufref_capacity(mu_bufref_t *ref);
+
+size_t mu_bufref_start(mu_bufref_t *ref);
+
+size_t mu_bufref_end(mu_bufref_t *ref);
+
+size_t mu_bufref_count(mu_bufref_t *ref);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef MU_TEMPLATE_H_ */
+#endif /* #ifndef _MU_BUFREF_H_ */

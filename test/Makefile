@@ -1,15 +1,16 @@
 MU_ROOT ?= ..
 
 SOURCES := \
-  mu_bufx_test.c \
+  mu_test_utils.c \
+  mu_test.c \
 	mu_buf_test.c \
-	mu_test_utils.c \
-	mu_test.c
+	mu_bufref_test.c
 
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 LIBOBJS := $(wildcard ../source/*.o)
 
 IFLAGS = -I../include -I../test
+CFLAGS = -Wall
 
 %.o : %.c
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@

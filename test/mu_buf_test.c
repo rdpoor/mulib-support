@@ -52,26 +52,26 @@ void mu_buf_test() {
 
   ASSERT(mu_buf_init(b, NULL, true, sizeof(char), sizeof(s1) / sizeof(char)) == MU_BUF_ERR_ILLEGAL_ARG);
   ASSERT(mu_buf_init(b, (void *)s1, true, MU_BUF_MAX_ELEMENT_SIZE, sizeof(s1) / sizeof(char)) == MU_BUF_ERR_ILLEGAL_ARG);
-  ASSERT(mu_buf_init(b, (void *)s1, true, sizeof(char), MU_BUF_MAX_ELEMENT_COUNT) == MU_BUF_ERR_ILLEGAL_ARG);
+  ASSERT(mu_buf_init(b, (void *)s1, true, sizeof(char), MU_BUF_MAX_CAPACITY) == MU_BUF_ERR_ILLEGAL_ARG);
 
   ASSERT(mu_buf_init(b, (void *)s1, true, sizeof(char), sizeof(s1) / sizeof(char)) == MU_BUF_ERR_NONE);
   ASSERT(mu_buf_elements(b) == s1);
   ASSERT(mu_buf_is_read_only(b) == true);
   ASSERT(mu_buf_element_size(b) == sizeof(char));
-  ASSERT(mu_buf_element_count(b) == sizeof(s1) / sizeof(char));
+  ASSERT(mu_buf_capacity(b) == sizeof(s1) / sizeof(char));
 
   ASSERT(mu_buf_init(b, (void *)s2, false, sizeof(char), sizeof(s2) / sizeof(char)) == MU_BUF_ERR_NONE);
   ASSERT(mu_buf_elements(b) == s2);
   ASSERT(mu_buf_is_read_only(b) == false);
   ASSERT(mu_buf_element_size(b) == sizeof(char));
-  ASSERT(mu_buf_element_count(b) == sizeof(s2) / sizeof(char));
+  ASSERT(mu_buf_capacity(b) == sizeof(s2) / sizeof(char));
 
   ASSERT(mu_buf_from_cstr(b, NULL) == MU_BUF_ERR_ILLEGAL_ARG);
   ASSERT(mu_buf_from_cstr(b, s1) == MU_BUF_ERR_NONE);
   ASSERT(mu_buf_elements(b) == s1);
   ASSERT(mu_buf_is_read_only(b) == true);
   ASSERT(mu_buf_element_size(b) == sizeof(char));
-  ASSERT(mu_buf_element_count(b) == strlen(s1));
+  ASSERT(mu_buf_capacity(b) == strlen(s1));
 }
 
 // =============================================================================

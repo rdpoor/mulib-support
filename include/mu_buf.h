@@ -52,12 +52,12 @@ typedef struct {
   void *elements;                  // backing store
   unsigned int is_readonly : 1;    // true if elements is read-only
   unsigned int element_size : 7;   // sizeof(element) in bytes
-  unsigned int element_count : 24; // number of elements
+  unsigned int capacity : 24; // number of elements
 } mu_buf_t;
 
 // upper bounds (exclusive)
 #define MU_BUF_MAX_ELEMENT_SIZE (1 << 7)
-#define MU_BUF_MAX_ELEMENT_COUNT (1 << 24)
+#define MU_BUF_MAX_CAPACITY (1 << 24)
 
 // =============================================================================
 // declarations
@@ -66,7 +66,7 @@ mu_buf_err_t mu_buf_init(mu_buf_t *b,
                          void *elements,
                          bool is_readonly,
                          size_t element_size,
-                         size_t n_elements);
+                         size_t capacity);
 
 void *mu_buf_elements(mu_buf_t *b);
 
@@ -74,7 +74,7 @@ bool mu_buf_is_read_only(mu_buf_t *b);
 
 size_t mu_buf_element_size(mu_buf_t *b);
 
-size_t mu_buf_element_count(mu_buf_t *b);
+size_t mu_buf_capacity(mu_buf_t *b);
 
 mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr);
 

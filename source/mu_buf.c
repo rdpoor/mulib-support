@@ -48,7 +48,7 @@ mu_buf_err_t mu_buf_init(mu_buf_t *b,
                          void *elements,
                          bool is_readonly,
                          size_t element_size,
-                         size_t element_count) {
+                         size_t capacity) {
   if (b == NULL) {
     return MU_BUF_ERR_ILLEGAL_ARG;
   }
@@ -58,13 +58,13 @@ mu_buf_err_t mu_buf_init(mu_buf_t *b,
   if (element_size >= MU_BUF_MAX_ELEMENT_SIZE) {
     return MU_BUF_ERR_ILLEGAL_ARG;
   }
-  if (element_count >= MU_BUF_MAX_ELEMENT_COUNT) {
+  if (capacity >= MU_BUF_MAX_CAPACITY) {
     return MU_BUF_ERR_ILLEGAL_ARG;
   }
   b->elements = elements;
   b->is_readonly = is_readonly;
   b->element_size = element_size;
-  b->element_count = element_count;
+  b->capacity = capacity;
 
   return MU_BUF_ERR_NONE;
 }
@@ -81,8 +81,8 @@ size_t mu_buf_element_size(mu_buf_t *b) {
   return b->element_size;
 }
 
-size_t mu_buf_element_count(mu_buf_t *b) {
-  return b->element_count;
+size_t mu_buf_capacity(mu_buf_t *b) {
+  return b->capacity;
 }
 
 mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr) {

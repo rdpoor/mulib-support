@@ -34,21 +34,19 @@
 // =============================================================================
 // declarations
 
-extern int error_count;  // in mu_test_utils
-
-int mu_bufx_test();
 int mu_buf_test();
+int mu_bufref_test();
 
 // =============================================================================
 // public code
 
 int main() {
 
+  mu_test_init();
   printf("\r\nstarting mu_test...");
 
-  mu_test_init();
-  mu_bufx_test();
   mu_buf_test();
+  mu_bufref_test();
 
   printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
          mu_test_error_count(),
