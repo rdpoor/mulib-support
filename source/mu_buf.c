@@ -45,7 +45,7 @@
 // declarations
 
 mu_buf_err_t mu_buf_init(mu_buf_t *b,
-                         void *elements,
+                         char *elements,
                          bool is_readonly,
                          size_t element_size,
                          size_t capacity) {
@@ -69,7 +69,7 @@ mu_buf_err_t mu_buf_init(mu_buf_t *b,
   return MU_BUF_ERR_NONE;
 }
 
-void *mu_buf_elements(mu_buf_t *b) {
+char *mu_buf_elements(mu_buf_t *b) {
   return b->elements;
 }
 

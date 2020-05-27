@@ -51,16 +51,16 @@ void mu_buf_test() {
   char s2[ELEMENT_COUNT];
 
   ASSERT(mu_buf_init(b, NULL, true, sizeof(char), sizeof(s1) / sizeof(char)) == MU_BUF_ERR_ILLEGAL_ARG);
-  ASSERT(mu_buf_init(b, (void *)s1, true, MU_BUF_MAX_ELEMENT_SIZE, sizeof(s1) / sizeof(char)) == MU_BUF_ERR_ILLEGAL_ARG);
-  ASSERT(mu_buf_init(b, (void *)s1, true, sizeof(char), MU_BUF_MAX_CAPACITY) == MU_BUF_ERR_ILLEGAL_ARG);
+  ASSERT(mu_buf_init(b, (char *)s1, true, MU_BUF_MAX_ELEMENT_SIZE, sizeof(s1) / sizeof(char)) == MU_BUF_ERR_ILLEGAL_ARG);
+  ASSERT(mu_buf_init(b, (char *)s1, true, sizeof(char), MU_BUF_MAX_CAPACITY) == MU_BUF_ERR_ILLEGAL_ARG);
 
-  ASSERT(mu_buf_init(b, (void *)s1, true, sizeof(char), sizeof(s1) / sizeof(char)) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_init(b, (char *)s1, true, sizeof(char), sizeof(s1) / sizeof(char)) == MU_BUF_ERR_NONE);
   ASSERT(mu_buf_elements(b) == s1);
   ASSERT(mu_buf_is_read_only(b) == true);
   ASSERT(mu_buf_element_size(b) == sizeof(char));
   ASSERT(mu_buf_capacity(b) == sizeof(s1) / sizeof(char));
 
-  ASSERT(mu_buf_init(b, (void *)s2, false, sizeof(char), sizeof(s2) / sizeof(char)) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_init(b, (char *)s2, false, sizeof(char), sizeof(s2) / sizeof(char)) == MU_BUF_ERR_NONE);
   ASSERT(mu_buf_elements(b) == s2);
   ASSERT(mu_buf_is_read_only(b) == false);
   ASSERT(mu_buf_element_size(b) == sizeof(char));
@@ -72,6 +72,10 @@ void mu_buf_test() {
   ASSERT(mu_buf_is_read_only(b) == true);
   ASSERT(mu_buf_element_size(b) == sizeof(char));
   ASSERT(mu_buf_capacity(b) == strlen(s1));
+
+  uint32_t a32[] = {1, 2, 3};
+  ASSERT(mu_buf_init(b, (char *)a32, true, sizeof(uint32_t), sizeof(a32) / sizeof(uint32_t)) == MU_BUF_ERR_NONE);
+
 }
 
 // =============================================================================
