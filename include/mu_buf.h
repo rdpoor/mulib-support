@@ -46,10 +46,11 @@ extern "C" {
 typedef enum {
   MU_BUF_ERR_NONE = 0,
   MU_BUF_ERR_ILLEGAL_ARG,
+  MU_BUF_ERR_INDEX_BOUNDS,
 } mu_buf_err_t;
 
 typedef struct {
-  char *elements;                  // backing store
+  void *elements;                  // backing store
   unsigned int is_readonly : 1;    // true if elements is read-only
   unsigned int element_size : 7;   // sizeof(element) in bytes
   unsigned int capacity : 24; // number of elements
@@ -63,18 +64,22 @@ typedef struct {
 // declarations
 
 mu_buf_err_t mu_buf_init(mu_buf_t *b,
-                         char *elements,
+                         void *elements,
                          bool is_readonly,
                          size_t element_size,
                          size_t capacity);
 
-char *mu_buf_elements(mu_buf_t *b);
+void *mu_buf_elements(mu_buf_t *b);
 
 bool mu_buf_is_read_only(mu_buf_t *b);
 
 size_t mu_buf_element_size(mu_buf_t *b);
 
 size_t mu_buf_capacity(mu_buf_t *b);
+
+mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst);
+
+mu_buf_err_t mu_buf_set(mu_buf_t *b, size_t index, void *src);
 
 mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr);
 

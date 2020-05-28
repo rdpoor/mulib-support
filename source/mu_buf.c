@@ -29,6 +29,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <stdio.h>
 // =============================================================================
 // local types and definitions
 
@@ -45,7 +46,7 @@
 // declarations
 
 mu_buf_err_t mu_buf_init(mu_buf_t *b,
-                         char *elements,
+                         void *elements,
                          bool is_readonly,
                          size_t element_size,
                          size_t capacity) {
@@ -69,7 +70,7 @@ mu_buf_err_t mu_buf_init(mu_buf_t *b,
   return MU_BUF_ERR_NONE;
 }
 
-char *mu_buf_elements(mu_buf_t *b) {
+void *mu_buf_elements(mu_buf_t *b) {
   return b->elements;
 }
 
@@ -84,6 +85,29 @@ size_t mu_buf_element_size(mu_buf_t *b) {
 size_t mu_buf_capacity(mu_buf_t *b) {
   return b->capacity;
 }
+
+mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst) {
+  size_t size = mu_buf_element_size(b);
+  if (index >= mu_buf_capacity(b)) {
+    return MU_BUF_ERR_INDEX_BOUNDS;
+  }
+  // Slow but safe memcpy.  Can special case as needed.
+  char *bsrc = (char *)mu_buf_elements(b);
+  memcpy(dst, &bsrc[index * size], size);
+  return MU_BUF_ERR_NONE;
+}
+
+mu_buf_err_t mu_buf_set(mu_buf_t *b, size_t index, void *src) {
+  size_t size = mu_buf_element_size(b);
+  if (index >= mu_buf_capacity(b)) {
+    return MU_BUF_ERR_INDEX_BOUNDS;
+  }
+  // Slow but safe memcpy.  Can special case as needed.
+  char *bdst = (char *)mu_buf_elements(b);
+  memcpy(&bdst[index * size], src, size);
+  return MU_BUF_ERR_NONE;
+}
+
 
 mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr) {
   if (cstr == NULL) {
