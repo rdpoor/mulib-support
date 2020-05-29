@@ -106,8 +106,11 @@ mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst) {
   return ret;
 }
 
-mu_buf_err_t mu_buf_set(mu_buf_t *b, size_t index, void *src) {
+mu_buf_err_t mu_buf_put(mu_buf_t *b, size_t index, void *src) {
   void *p;
+  if (mu_buf_is_read_only(b)) {
+    return MU_BUF_ERR_READ_ONLY;
+  }
   mu_buf_err_t ret = mu_buf_ref(b, index, &p);
   if (ret == MU_BUF_ERR_NONE) {
     memcpy(p, src, mu_buf_element_size(b));

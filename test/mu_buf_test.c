@@ -74,6 +74,12 @@ void mu_buf_test() {
   ASSERT(mu_buf_element_size(b) == sizeof(char));
   ASSERT(mu_buf_capacity(b) == sizeof(s1) / sizeof(char));
 
+  char c1;
+  ASSERT(mu_buf_get(b, 6, &c1) == MU_BUF_ERR_NONE);
+  ASSERT(c1 == 'i');
+  c1 = 'a';
+  ASSERT(mu_buf_put(b, 6, &c1) == MU_BUF_ERR_READ_ONLY);
+
   ASSERT(mu_buf_init(b, s2, false, sizeof(char), sizeof(s2) / sizeof(char)) == MU_BUF_ERR_NONE);
   ASSERT(mu_buf_elements(b) == s2);
   ASSERT(mu_buf_is_read_only(b) == false);
@@ -90,7 +96,7 @@ void mu_buf_test() {
   uint8_t d8;
   uint8_t s8[] = {1, 2, 3};
   uint8_t *p8;
-  mu_buf_init(b, s8, true, sizeof(uint8_t), sizeof(s8) / sizeof(uint8_t));
+  mu_buf_init(b, s8, false, sizeof(uint8_t), sizeof(s8) / sizeof(uint8_t));
 
   ASSERT(mu_buf_ref(b, 3, (void **)&p8) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(p8 == NULL);
@@ -102,14 +108,14 @@ void mu_buf_test() {
   ASSERT(d8 == 3);
 
   d8 = 4;
-  ASSERT(mu_buf_set(b, 3, &d8) == MU_BUF_ERR_INDEX_BOUNDS);
-  ASSERT(mu_buf_set(b, 2, &d8) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_put(b, 3, &d8) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(mu_buf_put(b, 2, &d8) == MU_BUF_ERR_NONE);
   ASSERT(s8[2] == 4);
 
   uint16_t d16;
   uint16_t s16[] = {11, 22, 33};
   uint16_t *p16;
-  mu_buf_init(b, s16, true, sizeof(uint16_t), sizeof(s16) / sizeof(uint16_t));
+  mu_buf_init(b, s16, false, sizeof(uint16_t), sizeof(s16) / sizeof(uint16_t));
 
   ASSERT(mu_buf_ref(b, 3, (void **)&p16) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(p16 == NULL);
@@ -121,14 +127,14 @@ void mu_buf_test() {
   ASSERT(d16 == 33);
 
   d16 = 44;
-  ASSERT(mu_buf_set(b, 3, &d16) == MU_BUF_ERR_INDEX_BOUNDS);
-  ASSERT(mu_buf_set(b, 2, &d16) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_put(b, 3, &d16) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(mu_buf_put(b, 2, &d16) == MU_BUF_ERR_NONE);
   ASSERT(s16[2] == 44);
 
   uint32_t d32;
   uint32_t s32[] = {111, 222, 333};
   uint32_t *p32;
-  mu_buf_init(b, s32, true, sizeof(uint32_t), sizeof(s32) / sizeof(uint32_t));
+  mu_buf_init(b, s32, false, sizeof(uint32_t), sizeof(s32) / sizeof(uint32_t));
 
   ASSERT(mu_buf_ref(b, 3, (void **)&p32) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(p32 == NULL);
@@ -140,13 +146,13 @@ void mu_buf_test() {
   ASSERT(d32 == 333);
 
   d32 = 444;
-  ASSERT(mu_buf_set(b, 3, &d32) == MU_BUF_ERR_INDEX_BOUNDS);
-  ASSERT(mu_buf_set(b, 2, &d32) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_put(b, 3, &d32) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(mu_buf_put(b, 2, &d32) == MU_BUF_ERR_NONE);
   ASSERT(s32[2] == 444);
 
   inventory_t dinv;
   inventory_t *pinv;
-  ASSERT(mu_buf_init(b, s_inventory, true, sizeof(inventory_t), sizeof(s_inventory)/sizeof(inventory_t)) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_init(b, s_inventory, false, sizeof(inventory_t), sizeof(s_inventory)/sizeof(inventory_t)) == MU_BUF_ERR_NONE);
 
   ASSERT(mu_buf_ref(b, 3, (void **)&pinv) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(pinv == NULL);
@@ -159,8 +165,8 @@ void mu_buf_test() {
   ASSERT(strcmp(dinv.name, s_inventory[2].name) == 0);
 
   dinv.id = 11;
-  ASSERT(mu_buf_set(b, 3, &dinv) == MU_BUF_ERR_INDEX_BOUNDS);
-  ASSERT(mu_buf_set(b, 2, &dinv) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_put(b, 3, &dinv) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(mu_buf_put(b, 2, &dinv) == MU_BUF_ERR_NONE);
   ASSERT(s_inventory[2].id == 11);
   ASSERT(strcmp(dinv.name, s_inventory[2].name) == 0);  // unchanged
 }

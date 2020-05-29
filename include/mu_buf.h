@@ -47,6 +47,7 @@ typedef enum {
   MU_BUF_ERR_NONE = 0,
   MU_BUF_ERR_ILLEGAL_ARG,
   MU_BUF_ERR_INDEX_BOUNDS,
+  MU_BUF_ERR_READ_ONLY,
 } mu_buf_err_t;
 
 typedef struct {
@@ -81,7 +82,7 @@ mu_buf_err_t mu_buf_ref(mu_buf_t *b, size_t index, void **p);
 
 mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst);
 
-mu_buf_err_t mu_buf_set(mu_buf_t *b, size_t index, void *src);
+mu_buf_err_t mu_buf_put(mu_buf_t *b, size_t index, void *src);
 
 mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr);
 
