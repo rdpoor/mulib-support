@@ -35,6 +35,31 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
+/**
+ * @brief Signature for comparison function.
+ *
+ * A comparison function should return a negative, zero, or positive value if
+ * the item referred to by item1 is less than, equal to , or greater than the
+ * item referred to by item2.
+ */
+typedef int (*mu_compare_fn)(void *item1, void *item2);
+
+/**
+ * @brief Signature for a deferred function.
+ *
+ * A deferred function will be called with its context argument and a user-
+ * supplied argument.  The value returned is implementation dependent, but two
+ * common choices are the context and NULL.
+ */
+typedef void *(*mu_deferred_fn)(void *context, void *arg);
+
+/**
+ * @brief Signature for swap function.
+ *
+ * A swap function should exchange the items referred to by item1 and item2.
+ */
+typedef void (*mu_swap_fn)(void *item1, void *item2);
+
 // =============================================================================
 // declarations
 

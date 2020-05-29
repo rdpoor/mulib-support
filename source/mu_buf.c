@@ -86,26 +86,33 @@ size_t mu_buf_capacity(mu_buf_t *b) {
   return b->capacity;
 }
 
-mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst) {
-  size_t size = mu_buf_element_size(b);
+mu_buf_err_t mu_buf_ref(mu_buf_t *b, size_t index, void **p) {
   if (index >= mu_buf_capacity(b)) {
+    *p = NULL;
     return MU_BUF_ERR_INDEX_BOUNDS;
   }
-  // Slow but safe memcpy.  Can special case as needed.
+  size_t size = mu_buf_element_size(b);
   char *bsrc = (char *)mu_buf_elements(b);
-  memcpy(dst, &bsrc[index * size], size);
+  *p = &bsrc[index * size];
   return MU_BUF_ERR_NONE;
 }
 
-mu_buf_err_t mu_buf_set(mu_buf_t *b, size_t index, void *src) {
-  size_t size = mu_buf_element_size(b);
-  if (index >= mu_buf_capacity(b)) {
-    return MU_BUF_ERR_INDEX_BOUNDS;
+mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst) {
+  void *p;
+  mu_buf_err_t ret = mu_buf_ref(b, index, &p);
+  if (ret == MU_BUF_ERR_NONE) {
+    memcpy(dst, p, mu_buf_element_size(b));
   }
-  // Slow but safe memcpy.  Can special case as needed.
-  char *bdst = (char *)mu_buf_elements(b);
-  memcpy(&bdst[index * size], src, size);
-  return MU_BUF_ERR_NONE;
+  return ret;
+}
+
+mu_buf_err_t mu_buf_set(mu_buf_t *b, size_t index, void *src) {
+  void *p;
+  mu_buf_err_t ret = mu_buf_ref(b, index, &p);
+  if (ret == MU_BUF_ERR_NONE) {
+    memcpy(p, src, mu_buf_element_size(b));
+  }
+  return ret;
 }
 
 

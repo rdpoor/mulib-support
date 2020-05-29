@@ -63,10 +63,6 @@ void mu_buf_test() {
   mu_buf_t *b = &bi;
   const char *s1 = "the quick brown fox jumps over the lazy dog.";
   char s2[ELEMENT_COUNT];
-  uint8_t d8;
-  uint16_t d16;
-  uint32_t d32;
-  inventory_t dinv;
 
   ASSERT(mu_buf_init(b, NULL, true, sizeof(char), sizeof(s1) / sizeof(char)) == MU_BUF_ERR_ILLEGAL_ARG);
   ASSERT(mu_buf_init(b, (char *)s1, true, MU_BUF_MAX_ELEMENT_SIZE, sizeof(s1) / sizeof(char)) == MU_BUF_ERR_ILLEGAL_ARG);
@@ -91,8 +87,16 @@ void mu_buf_test() {
   ASSERT(mu_buf_element_size(b) == sizeof(char));
   ASSERT(mu_buf_capacity(b) == strlen(s1));
 
+  uint8_t d8;
   uint8_t s8[] = {1, 2, 3};
+  uint8_t *p8;
   mu_buf_init(b, s8, true, sizeof(uint8_t), sizeof(s8) / sizeof(uint8_t));
+
+  ASSERT(mu_buf_ref(b, 3, (void **)&p8) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(p8 == NULL);
+  ASSERT(mu_buf_ref(b, 2, (void **)&p8) == MU_BUF_ERR_NONE);
+  ASSERT(p8 == &s8[2]);
+
   ASSERT(mu_buf_get(b, 3, &d8) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(mu_buf_get(b, 2, &d8) == MU_BUF_ERR_NONE);
   ASSERT(d8 == 3);
@@ -102,8 +106,16 @@ void mu_buf_test() {
   ASSERT(mu_buf_set(b, 2, &d8) == MU_BUF_ERR_NONE);
   ASSERT(s8[2] == 4);
 
+  uint16_t d16;
   uint16_t s16[] = {11, 22, 33};
+  uint16_t *p16;
   mu_buf_init(b, s16, true, sizeof(uint16_t), sizeof(s16) / sizeof(uint16_t));
+
+  ASSERT(mu_buf_ref(b, 3, (void **)&p16) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(p16 == NULL);
+  ASSERT(mu_buf_ref(b, 2, (void **)&p16) == MU_BUF_ERR_NONE);
+  ASSERT(p16 == &s16[2]);
+
   ASSERT(mu_buf_get(b, 3, &d16) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(mu_buf_get(b, 2, &d16) == MU_BUF_ERR_NONE);
   ASSERT(d16 == 33);
@@ -113,8 +125,16 @@ void mu_buf_test() {
   ASSERT(mu_buf_set(b, 2, &d16) == MU_BUF_ERR_NONE);
   ASSERT(s16[2] == 44);
 
+  uint32_t d32;
   uint32_t s32[] = {111, 222, 333};
+  uint32_t *p32;
   mu_buf_init(b, s32, true, sizeof(uint32_t), sizeof(s32) / sizeof(uint32_t));
+
+  ASSERT(mu_buf_ref(b, 3, (void **)&p32) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(p32 == NULL);
+  ASSERT(mu_buf_ref(b, 2, (void **)&p32) == MU_BUF_ERR_NONE);
+  ASSERT(p32 == &s32[2]);
+
   ASSERT(mu_buf_get(b, 3, &d32) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(mu_buf_get(b, 2, &d32) == MU_BUF_ERR_NONE);
   ASSERT(d32 == 333);
@@ -124,7 +144,15 @@ void mu_buf_test() {
   ASSERT(mu_buf_set(b, 2, &d32) == MU_BUF_ERR_NONE);
   ASSERT(s32[2] == 444);
 
+  inventory_t dinv;
+  inventory_t *pinv;
   ASSERT(mu_buf_init(b, s_inventory, true, sizeof(inventory_t), sizeof(s_inventory)/sizeof(inventory_t)) == MU_BUF_ERR_NONE);
+
+  ASSERT(mu_buf_ref(b, 3, (void **)&pinv) == MU_BUF_ERR_INDEX_BOUNDS);
+  ASSERT(pinv == NULL);
+  ASSERT(mu_buf_ref(b, 2, (void **)&pinv) == MU_BUF_ERR_NONE);
+  ASSERT(pinv == &s_inventory[2]);
+
   ASSERT(mu_buf_get(b, 3, &dinv) == MU_BUF_ERR_INDEX_BOUNDS);
   ASSERT(mu_buf_get(b, 2, &dinv) == MU_BUF_ERR_NONE);
   ASSERT(dinv.id == s_inventory[2].id);

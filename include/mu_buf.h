@@ -77,6 +77,8 @@ size_t mu_buf_element_size(mu_buf_t *b);
 
 size_t mu_buf_capacity(mu_buf_t *b);
 
+mu_buf_err_t mu_buf_ref(mu_buf_t *b, size_t index, void **p);
+
 mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst);
 
 mu_buf_err_t mu_buf_set(mu_buf_t *b, size_t index, void *src);
