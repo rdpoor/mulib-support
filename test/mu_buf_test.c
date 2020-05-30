@@ -36,9 +36,6 @@
 // =============================================================================
 // private types and definitions
 
-// =============================================================================
-// private declarations
-
 #define ELEMENT_COUNT 10
 
 typedef struct {
@@ -47,12 +44,21 @@ typedef struct {
 } inventory_t;
 
 // =============================================================================
+// private declarations
+
+static int sort_str_a(void *a, void *b);
+static int sort_inventory_a(void *a, void *b);
+static int sort_inventory_b(void *a, void *b);
+
+// static void print_inventories(void);
+
+// =============================================================================
 // local storage
 
 static inventory_t s_inventory[] = {
   {.id = 1, .name="cat"},
   {.id = 2, .name="emu"},
-  {.id = 3, .name="eel"},
+  {.id = 3, .name="auk"},
 };
 
 // =============================================================================
@@ -169,7 +175,60 @@ void mu_buf_test() {
   ASSERT(mu_buf_put(b, 2, &dinv) == MU_BUF_ERR_NONE);
   ASSERT(s_inventory[2].id == 11);
   ASSERT(strcmp(dinv.name, s_inventory[2].name) == 0);  // unchanged
+
+  // mu_sort
+  // char *s3 = "decaf";  // creates readonly string?
+  char s3[6];
+  strcpy(s3, "decaf");
+  ASSERT(mu_buf_init(b, (char *)s3, false, sizeof(char), strlen(s3)) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_sort(b, NULL) == MU_BUF_ERR_ILLEGAL_ARG);
+  ASSERT(mu_buf_sort(b, sort_str_a) == MU_BUF_ERR_NONE);
+  ASSERT(strcmp(s3, "acdef") == 0);
+
+  // printf("\r\ninventory before:");
+  // print_inventories();
+
+  ASSERT(mu_buf_init(b, s_inventory, false, sizeof(inventory_t), sizeof(s_inventory)/sizeof(inventory_t)) == MU_BUF_ERR_NONE);
+  ASSERT(mu_buf_sort(b, sort_inventory_a) == MU_BUF_ERR_NONE);
+  ASSERT(strcmp(s_inventory[0].name, "auk") == 0);
+  ASSERT(strcmp(s_inventory[1].name, "cat") == 0);
+  ASSERT(strcmp(s_inventory[2].name, "emu") == 0);
+
+  // printf("\r\ninventory after sort_inventory_a:");
+  // print_inventories();
+
+  ASSERT(mu_buf_sort(b, sort_inventory_b) == MU_BUF_ERR_NONE);
+  ASSERT(s_inventory[0].id == 11);
+  ASSERT(s_inventory[1].id == 2);
+  ASSERT(s_inventory[2].id == 1);
+
+  // printf("\r\ninventory after sort_inventory_b:");
+  // print_inventories();
 }
 
 // =============================================================================
 // private code
+
+static int sort_str_a(void *a, void *b) {
+  char *ca = (char *)a;
+  char *cb = (char *)b;
+  return *ca - *cb;
+}
+
+static int sort_inventory_a(void *a, void *b) {
+  // one way to do casting
+  inventory_t *ia = (inventory_t *)a;
+  inventory_t *ib = (inventory_t *)b;
+  return strcmp(ia->name, ib->name);
+}
+
+static int sort_inventory_b(void *a, void *b) {
+  // another way to do casting
+  return ((inventory_t *)b)->id - ((inventory_t *)a)->id;
+}
+
+// static void print_inventories() {
+//   for (int i=0; i<3; i++) {
+//     printf("\r\n  inventory@%p: index=%d, name=%s", &s_inventory[i], s_inventory[i].id, s_inventory[i].name);
+//   }
+// }

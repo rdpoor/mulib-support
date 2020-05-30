@@ -10,7 +10,7 @@ OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 LIBOBJS := $(wildcard ../source/*.o)
 
 IFLAGS = -I../include -I../test
-CFLAGS = -Wall
+CFLAGS = -g -Wall
 
 %.o : %.c
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@

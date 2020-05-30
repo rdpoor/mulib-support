@@ -39,6 +39,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "mu_types.h"
 
 // =============================================================================
 // types and definitions
@@ -83,6 +84,8 @@ mu_buf_err_t mu_buf_ref(mu_buf_t *b, size_t index, void **p);
 mu_buf_err_t mu_buf_get(mu_buf_t *b, size_t index, void *dst);
 
 mu_buf_err_t mu_buf_put(mu_buf_t *b, size_t index, void *src);
+
+mu_buf_err_t mu_buf_sort(mu_buf_t *b, mu_compare_fn cmp);
 
 mu_buf_err_t mu_buf_from_cstr(mu_buf_t *b, const char *cstr);
 

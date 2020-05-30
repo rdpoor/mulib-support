@@ -11,7 +11,7 @@ INCLUDES := \
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 HEADERS := $(patsubst %.c, %.h, $(SOURCES))
 
-CFLAGS = -I../include -Wall
+CFLAGS = -g -I../include -Wall
 
 all: $(OBJECTS)
 
