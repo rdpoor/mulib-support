@@ -22,8 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef MU_TYPES_H_
-#define MU_TYPES_H_
+/**
+ * @file Support for singly linked-list queues.
+ */
+
+#ifndef _MU_QUEUE_H_
+#define _MU_QUEUE_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,49 +36,36 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <stdbool.h>
+#include "mu_types.h"
+
 // =============================================================================
 // types and definitions
 
-/**
- * @brief Signature for comparison function.
- *
- * A comparison function should return a negative, zero, or positive value if
- * the item referred to by item1 is less than, equal to , or greater than the
- * item referred to by item2.
- */
-typedef int (*mu_compare_fn)(void *item1, void *item2);
-
-/**
- * @brief Signature for a deferred function.
- *
- * A deferred function will be called with its context argument and a user-
- * supplied argument.  The value returned is implementation dependent, but two
- * common choices are the context and NULL.
- */
-typedef void *(*mu_deferred_fn)(void *context, void *arg);
-
-/**
- * @brief Signature for filter function.
- *
- * A filter function should return true if the indicated item matches a user-
- * specified criterion.
- */
-typedef bool (*mu_filter_fn)(void *item);
-
-/**
- * @brief General purpose link for singly linked list.
- *
- * This will typically be a union as the first element of a struct.
- */
-typedef struct _mu_link {
-  struct _mu_link *next;
-} mu_link_t;
+typedef struct {
+  mu_link_t *head;   // items are removed from the head
+  mu_link_t *tail;   // items are added to the tail
+} mu_queue_t;
 
 // =============================================================================
 // declarations
+
+mu_queue_t *mu_queue_init(mu_queue_t *q);
+
+mu_link_t *mu_queue_head(mu_queue_t *q);
+
+mu_link_t *mu_queue_tail(mu_queue_t *q);
+
+mu_queue_t *mu_queue_add(mu_queue_t *q, mu_link_t *item);
+
+mu_link_t *mu_queue_remove(mu_queue_t *q);
+
+bool mu_queue_is_empty(mu_queue_t *q);
+
+bool mu_queue_contains(mu_queue_t *q, mu_link_t *item);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef MU_TYPES_H_ */
+#endif /* #ifndef _MU_QUEUE_H_ */

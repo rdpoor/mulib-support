@@ -50,9 +50,6 @@ static void swap(char *items, size_t item_size, int a, int b);
 // =============================================================================
 // public code
 
-// =============================================================================
-// declarations
-
 mu_buf_err_t mu_buf_init(mu_buf_t *b,
                          void *elements,
                          bool is_readonly,

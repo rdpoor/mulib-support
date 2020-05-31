@@ -4,7 +4,8 @@ SOURCES := \
   mu_test_utils.c \
   mu_test.c \
 	mu_buf_test.c \
-	mu_bufref_test.c
+	mu_bufref_test.c \
+	mu_queue_test.c
 
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 LIBOBJS := $(wildcard ../source/*.o)

@@ -36,6 +36,7 @@
 
 int mu_buf_test();
 int mu_bufref_test();
+int mu_queue_test();
 
 // =============================================================================
 // public code
@@ -47,6 +48,7 @@ int main() {
 
   mu_buf_test();
   mu_bufref_test();
+  mu_queue_test();
 
   printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
          mu_test_error_count(),

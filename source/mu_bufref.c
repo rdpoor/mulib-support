@@ -25,16 +25,27 @@
 // =============================================================================
 // includes
 
-#include "mu_buf.h"
 #include "mu_bufref.h"
-#include <string.h>
+#include "mu_buf.h"
 #include <stdlib.h>
+#include <string.h>
 
 // =============================================================================
 // local types and definitions
 
 // =============================================================================
 // local (forward) declarations
+
+/**
+ * @brief Take a slice of a buf or of a bufref.  Slice limits are taken relative
+ * to the "containing" src_start and src_end parameters.
+ */
+static mu_buf_err_t slice(mu_bufref_t *ref,
+                          mu_buf_t *buf,
+                          ssize_t start,
+                          ssize_t end,
+                          size_t src_start,
+                          size_t src_end);
 
 /**
  * @brief Clamp start and end as needed assure
@@ -63,56 +74,27 @@ mu_buf_err_t mu_bufref_init(mu_bufref_t *ref, mu_buf_t *buf) {
   return MU_BUF_ERR_NONE;
 }
 
-mu_buf_err_t mu_bufref_slice_buf(mu_bufref_t *ref, mu_buf_t *buf, ssize_t start, ssize_t end) {
-  if (ref == NULL) {
-    return MU_BUF_ERR_ILLEGAL_ARG;
-  }
+mu_buf_err_t mu_bufref_slice_buf(mu_bufref_t *ref,
+                                 mu_buf_t *buf,
+                                 ssize_t start,
+                                 ssize_t end) {
   if (buf == NULL) {
-    return MU_BUF_ERR_ILLEGAL_ARG;
-  }
-  ref->buf = buf;
-  size_t capacity = mu_buf_capacity(buf);
-
-  if (start >= 0) {
-    ref->start = start;
-  }  else {
-    ref->start = capacity + start;
-  }
-
-  if (end >= 0) {
-    ref->end = end;
+   return MU_BUF_ERR_ILLEGAL_ARG;
   } else {
-    ref->end = capacity + end;
+    return slice(ref, buf, start, end, 0, mu_buf_capacity(buf));
   }
-
-  validate_indeces(ref, capacity);
-  return MU_BUF_ERR_NONE;
 }
 
-mu_buf_err_t mu_bufref_slice_bufref(mu_bufref_t *ref, mu_bufref_t *src, ssize_t start, ssize_t end) {
-  if (ref == NULL) {
-    return MU_BUF_ERR_ILLEGAL_ARG;
-  }
+mu_buf_err_t mu_bufref_slice_bufref(mu_bufref_t *ref,
+                                    mu_bufref_t *src,
+                                    ssize_t start,
+                                    ssize_t end) {
   if (src == NULL) {
     return MU_BUF_ERR_ILLEGAL_ARG;
-  }
-  ref->buf = src->buf;  // ref shares underlying buffer
-  size_t capacity = mu_bufref_count(src);  // slice cannot exceed src's limits
-
-  if (start >= 0) {
-    ref->start = src->start + start;
-  }  else {
-    ref->start = src->end + start;
-  }
-
-  if (end >= 0) {
-    ref->end = src->start + end;
   } else {
-    ref->end = src->end + end;
+    // a slice of slice_x cannot exceed slice_x's size...
+    return slice(ref, src->buf, start, end, mu_bufref_start(src), mu_bufref_end(src));
   }
-
-  validate_indeces(ref, capacity);
-  return MU_BUF_ERR_NONE;
 }
 
 mu_bufref_t *mu_bufref_reset(mu_bufref_t *ref) {
@@ -127,13 +109,9 @@ mu_bufref_t *mu_bufref_reset(mu_bufref_t *ref) {
   return ref;
 }
 
-mu_buf_t *mu_bufref_buf(mu_bufref_t *ref) {
-  return ref->buf;
-}
+mu_buf_t *mu_bufref_buf(mu_bufref_t *ref) { return ref->buf; }
 
-void *mu_bufref_elements(mu_bufref_t *ref) {
-  return mu_buf_elements(ref->buf);
-}
+void *mu_bufref_elements(mu_bufref_t *ref) { return mu_buf_elements(ref->buf); }
 
 bool mu_bufref_is_read_only(mu_bufref_t *ref) {
   return mu_buf_is_read_only(ref->buf);
@@ -147,20 +125,46 @@ size_t mu_bufref_capacity(mu_bufref_t *ref) {
   return mu_buf_capacity(ref->buf);
 }
 
-size_t mu_bufref_start(mu_bufref_t *ref) {
-  return ref->start;
-}
+size_t mu_bufref_start(mu_bufref_t *ref) { return ref->start; }
 
-size_t mu_bufref_end(mu_bufref_t *ref) {
-  return ref->end;
-}
+size_t mu_bufref_end(mu_bufref_t *ref) { return ref->end; }
 
-size_t mu_bufref_count(mu_bufref_t *ref) {
-  return ref->end - ref->start;
-}
+size_t mu_bufref_count(mu_bufref_t *ref) { return ref->end - ref->start; }
 
 // =============================================================================
 // local (static) code
+
+static mu_buf_err_t slice(mu_bufref_t *ref,
+                          mu_buf_t *buf,
+                          ssize_t start,
+                          ssize_t end,
+                          size_t src_start,
+                          size_t src_end) {
+  if (ref == NULL) {
+    return MU_BUF_ERR_ILLEGAL_ARG;
+  }
+  if (buf == NULL) {
+    return MU_BUF_ERR_ILLEGAL_ARG;
+  }
+  ref->buf = buf;
+  size_t capacity = src_end - src_start;
+
+
+  if (start >= 0) {
+    ref->start = src_start + start;
+  }  else {
+    ref->start = src_end + start;
+  }
+
+  if (end >= 0) {
+    ref->end = src_start + end;
+  } else {
+    ref->end = src_end + end;
+  }
+
+  validate_indeces(ref, capacity);
+  return MU_BUF_ERR_NONE;
+}
 
 static mu_bufref_t *validate_indeces(mu_bufref_t *ref, size_t capacity) {
   if (ref->start < 0) {
@@ -170,7 +174,7 @@ static mu_bufref_t *validate_indeces(mu_bufref_t *ref, size_t capacity) {
   }
   if (ref->end < ref->start) {
     ref->end = ref->start;
-  } else if (ref->end  > ref->start + capacity) {
+  } else if (ref->end > ref->start + capacity) {
     ref->end = ref->start + capacity;
   }
   return ref;
