@@ -29,6 +29,8 @@
 #include "mu_buf.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
+
 
 // =============================================================================
 // local types and definitions
@@ -42,8 +44,8 @@
  */
 static mu_buf_err_t slice(mu_bufref_t *ref,
                           mu_buf_t *buf,
-                          ssize_t start,
-                          ssize_t end,
+                          ptrdiff_t start,
+                          ptrdiff_t end,
                           size_t src_start,
                           size_t src_end);
 
@@ -76,8 +78,8 @@ mu_buf_err_t mu_bufref_init(mu_bufref_t *ref, mu_buf_t *buf) {
 
 mu_buf_err_t mu_bufref_slice_buf(mu_bufref_t *ref,
                                  mu_buf_t *buf,
-                                 ssize_t start,
-                                 ssize_t end) {
+                                 ptrdiff_t start,
+                                 ptrdiff_t end) {
   if (buf == NULL) {
    return MU_BUF_ERR_ILLEGAL_ARG;
   } else {
@@ -87,8 +89,8 @@ mu_buf_err_t mu_bufref_slice_buf(mu_bufref_t *ref,
 
 mu_buf_err_t mu_bufref_slice_bufref(mu_bufref_t *ref,
                                     mu_bufref_t *src,
-                                    ssize_t start,
-                                    ssize_t end) {
+                                    ptrdiff_t start,
+                                    ptrdiff_t end) {
   if (src == NULL) {
     return MU_BUF_ERR_ILLEGAL_ARG;
   } else {
@@ -136,8 +138,8 @@ size_t mu_bufref_count(mu_bufref_t *ref) { return ref->end - ref->start; }
 
 static mu_buf_err_t slice(mu_bufref_t *ref,
                           mu_buf_t *buf,
-                          ssize_t start,
-                          ssize_t end,
+                          ptrdiff_t start,
+                          ptrdiff_t end,
                           size_t src_start,
                           size_t src_end) {
   if (ref == NULL) {

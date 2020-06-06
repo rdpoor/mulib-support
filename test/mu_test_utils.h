@@ -23,7 +23,7 @@
  */
 
 #ifndef _MU_TEST_UTILS_H_
-#define _NU_TEST_UTILS_H_
+#define _MU_TEST_UTILS_H_
 
 #ifdef __cplusplus
 extern "C" {
