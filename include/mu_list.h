@@ -22,44 +22,51 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+#ifndef _MU_LIST_H_
+#define _MU_LIST_H_
 
-#include <stdio.h>
-#include "mu_test_utils.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// =============================================================================
+// includes
+
+#include <stdbool.h>
+#include <stddef.h>
 
 // =============================================================================
 // types and definitions
 
+typedef struct _mu_list {
+  struct _mu_list *next;
+} mu_list_t;
+
+typedef void *(*mu_list_traverse_fn)(mu_list_t *ref, void *arg);
+
 // =============================================================================
 // declarations
 
-int mu_buf_test();
-int mu_bufref_test();
-int mu_list_test();
-int mu_queue_test();
+void mu_list_push(mu_list_t *ref, mu_list_t *item);
 
-// =============================================================================
-// public code
+mu_list_t *mu_list_pop(mu_list_t *ref);
 
-int main() {
+/**
+ * @brief Call traverse_fn with each successive element of a list, stopping at
+ * the end of the list or when the traverse_fn returns a non-NULL value.
+ */
+void *mu_list_traverse(mu_list_t *ref, mu_list_traverse_fn fn, void *arg);
 
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
+int mu_list_length(mu_list_t *ref);
 
-  mu_buf_test();
-  mu_bufref_test();
-  mu_list_test();
-  mu_queue_test();
+bool mu_list_contains(mu_list_t *ref, mu_list_t *item);
 
-  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
+mu_list_t *mu_list_delete(mu_list_t *ref, mu_list_t *item);
 
-  return mu_test_error_count();
+mu_list_t *mu_list_reverse(mu_list_t *ref);
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _MU_LIST_H_ */
