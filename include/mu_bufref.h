@@ -39,6 +39,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include "mu_buf.h"
 
 // =============================================================================
@@ -55,9 +56,9 @@ typedef struct {
 
 mu_buf_err_t mu_bufref_init(mu_bufref_t *ref, mu_buf_t *buf);
 
-mu_buf_err_t mu_bufref_slice_buf(mu_bufref_t *ref, mu_buf_t *src, ssize_t start, ssize_t end);
+mu_buf_err_t mu_bufref_slice_buf(mu_bufref_t *ref, mu_buf_t *src, ptrdiff_t start, ptrdiff_t end);
 
-mu_buf_err_t mu_bufref_slice_bufref(mu_bufref_t *ref, mu_bufref_t *src, ssize_t start, ssize_t end);
+mu_buf_err_t mu_bufref_slice_bufref(mu_bufref_t *ref, mu_bufref_t *src, ptrdiff_t start, ptrdiff_t end);
 
 /**
  * @brief reset this buffer reference.
