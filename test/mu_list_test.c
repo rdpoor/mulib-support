@@ -33,6 +33,16 @@
 // =============================================================================
 // private types and definitions
 
+// Define a data type to be linked into a list.  We've intentionally chosen a
+// structure in which the link field not the first field in order to test the
+// MU_LIST_REF and MU_LIST_CONTAINER macros.
+//
+typedef struct {
+  float value;
+  mu_list_t link;
+  char id;
+} list_item_t;
+
 // =============================================================================
 // private declarations
 
@@ -43,6 +53,7 @@ static mu_list_t *rebuild_list(void);
 // local storage
 
 static mu_list_t s_item_a, s_item_b, s_item_c, s_item_d;
+static list_item_t s_list_item;
 
 // =============================================================================
 // public code
@@ -51,6 +62,10 @@ void mu_list_test() {
   mu_list_t *item;
   mu_list_t list_head;
 
+  // ==========
+  // test MU_LIST_REF and MU_LIST_CONTAINER
+  ASSERT(MU_LIST_REF(&s_list_item, link) == &(s_list_item.link));
+  ASSERT(MU_LIST_CONTAINER(&(s_list_item.link), list_item_t, link) == &s_list_item);
 
   // ==========
   // void mu_list_push(mu_list_t *ref, mu_list_t *item);

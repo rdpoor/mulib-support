@@ -38,13 +38,21 @@ extern "C" {
 
 #include <stdbool.h>
 #include "mu_types.h"
+#include "mu_list.h"
 
 // =============================================================================
 // types and definitions
 
+//  queue:
+// +-------+     +---------+     +---------+     +---------+
+// | head .|---->| item1 . |---->| item2 . |---->| item3 ^ |
+// +-------+     +---------+     +---------+  /  +---------+
+// | tail .|----------------------------------
+// +-------+
+
 typedef struct {
-  mu_link_t *head;   // items are removed from the head
-  mu_link_t *tail;   // items are added to the tail
+  mu_list_t head;   // items are removed (popped) from the head
+  mu_list_t tail;   // items are added (pushed) at the tail
 } mu_queue_t;
 
 // =============================================================================
@@ -52,17 +60,19 @@ typedef struct {
 
 mu_queue_t *mu_queue_init(mu_queue_t *q);
 
-mu_link_t *mu_queue_head(mu_queue_t *q);
+mu_list_t *mu_queue_head(mu_queue_t *q);
 
-mu_link_t *mu_queue_tail(mu_queue_t *q);
+mu_list_t *mu_queue_tail(mu_queue_t *q);
 
-mu_queue_t *mu_queue_add(mu_queue_t *q, mu_link_t *item);
+mu_queue_t *mu_queue_add(mu_queue_t *q, mu_list_t *item);
 
-mu_link_t *mu_queue_remove(mu_queue_t *q);
+mu_list_t *mu_queue_remove(mu_queue_t *q);
 
 bool mu_queue_is_empty(mu_queue_t *q);
 
-bool mu_queue_contains(mu_queue_t *q, mu_link_t *item);
+bool mu_queue_contains(mu_queue_t *q, mu_list_t *item);
+
+int mu_queue_length(mu_queue_t *q);
 
 #ifdef __cplusplus
 }

@@ -44,6 +44,19 @@ typedef struct _mu_list {
 
 typedef void *(*mu_list_traverse_fn)(mu_list_t *ref, void *arg);
 
+/**
+ * @brief Given a pointer to a structure and the name of the slot containing a
+ * mu_list_t, return a pointer to the mu_list_t.
+ */
+#define MU_LIST_REF(_struct_p, _list_slot) (&((_struct_p)->_list_slot))
+
+/**
+ * @brief Given a pointer to a mu_list_t slot within a containing structure,
+ * return a pointer to the containing structure.
+ */
+#define MU_LIST_CONTAINER(_ptr, _type, _member) \
+  ((_type *)((char *)(1 ? (_ptr) : &((_type *)0)->_member) - offsetof(_type, _member)))
+
 // =============================================================================
 // declarations
 

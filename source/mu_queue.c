@@ -26,7 +26,7 @@
 // includes
 
 #include "mu_queue.h"
-#include "mu_types.h"
+#include "mu_list.h"
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -38,11 +38,6 @@
 // =============================================================================
 // local (forward) declarations
 
-// these should go in their own file
-static mu_link_t *mu_list_push(mu_link_t *list, mu_link_t *item);
-static mu_link_t *mu_list_pop(mu_link_t **list);
-static bool mu_list_contains(mu_link_t *list, mu_link_t *item);
-
 // =============================================================================
 // local storage
 
@@ -50,68 +45,47 @@ static bool mu_list_contains(mu_link_t *list, mu_link_t *item);
 // public code
 
 mu_queue_t *mu_queue_init(mu_queue_t *q) {
-  q->head = NULL;
-  q->tail = NULL;
+  q->head.next = NULL;
+  q->tail.next = NULL;
   return q;
 }
 
-mu_link_t *mu_queue_head(mu_queue_t *q) {
-  return q->head;
+mu_list_t *mu_queue_head(mu_queue_t *q) {
+  return q->head.next;
 }
 
-mu_link_t *mu_queue_tail(mu_queue_t *q) {
-  return q->tail;
+mu_list_t *mu_queue_tail(mu_queue_t *q) {
+  return q->tail.next;
 }
 
-mu_queue_t *mu_queue_add(mu_queue_t *q, mu_link_t *item) {
-  if (q->tail == NULL) {
-    q->head = item;      // adding first item
-  } else {
-    mu_list_push(item, q->tail);
+mu_queue_t *mu_queue_add(mu_queue_t *q, mu_list_t *item) {
+  if (q->head.next == NULL) {
+    q->head.next = item;    // adding first item
   }
-  q->tail = item;
+  mu_list_push(q->tail.next, item);
+  q->tail.next = item;      // update tail to point at last item
   return q;
 }
 
-mu_link_t *mu_queue_remove(mu_queue_t *q) {
-  mu_link_t *item = mu_list_pop(&q->head);
-  if (q->head == NULL) {
-    q->tail = NULL;       // removing last item;
+mu_list_t *mu_queue_remove(mu_queue_t *q) {
+  mu_list_t *item = mu_list_pop(&q->head);
+  if (q->head.next == NULL) {
+    q->tail.next = NULL;       // removing last item;
   }
   return item;
 }
 
 bool mu_queue_is_empty(mu_queue_t *q) {
-  return q->head == NULL;   // can check head or tail
+  return q->head.next == NULL;   // can check head or tail
 }
 
-bool mu_queue_contains(mu_queue_t *q, mu_link_t *item) {
-  return mu_list_contains(q->head, item);
+bool mu_queue_contains(mu_queue_t *q, mu_list_t *item) {
+  return mu_list_contains(&q->head, item);
+}
+
+int mu_queue_length(mu_queue_t *q) {
+  return mu_list_length(&q->head);
 }
 
 // =============================================================================
 // local (static) code
-
-static mu_link_t *mu_list_push(mu_link_t *list, mu_link_t *item) {
-  item->next = list;
-  return item;
-}
-
-static mu_link_t *mu_list_pop(mu_link_t **list) {
-  mu_link_t *item = *list;
-  if (item) {
-    *list = item->next;
-    item->next = NULL;   // housekeeping
-  }
-  return item;
-}
-
-static bool mu_list_contains(mu_link_t *list, mu_link_t *item) {
-  while (list) {
-    if (list == item) {
-      return true;
-    }
-    list = list->next;
-  }
-  return false;
-}

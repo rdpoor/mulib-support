@@ -36,56 +36,119 @@
 // =============================================================================
 // private types and definitions
 
+// Define a data type to be linked via mu_queue.  We've intentionally chosen a
+// structure in which the link field not the first field in order to demonstrate
+// the MU_LIST_REF and MU_LIST_CONTAINER macros.
+//
 typedef struct {
-  mu_link_t link;
-  char ch;
-} test_queue_t;
+  float value;
+  mu_list_t link;
+  char id;
+} queue_item_t;
 
 // =============================================================================
 // private declarations
 
+static void reset(void);
+static queue_item_t *queue_item_init(queue_item_t *item, float value, char id);
+
 // =============================================================================
 // local storage
+
+static mu_queue_t s_queue1;
+static queue_item_t s_item1;
+static queue_item_t s_item2;
+static queue_item_t s_item3;
 
 // =============================================================================
 // public code
 
 void mu_queue_test() {
 
-  mu_queue_t q1i;
-  mu_queue_t *q1 = &q1i;
-  test_queue_t item1 = {.ch = 'a'};
-  test_queue_t item2 = {.ch = 'b'};
+  mu_queue_t *q = &s_queue1;
+  reset();
 
-  ASSERT(mu_queue_init(q1) == q1);
-  ASSERT(mu_queue_is_empty(q1) == true);
-  ASSERT(mu_queue_head(q1) == NULL);
-  ASSERT(mu_queue_tail(q1) == NULL);
-  ASSERT(mu_queue_remove(q1) == NULL);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item1) == false);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item2) == false);
+  // operations on an empty queue
+  ASSERT(mu_queue_init(q) == q);
+  ASSERT(mu_queue_is_empty(q) == true);
+  ASSERT(mu_queue_length(q) == 0);
+  ASSERT(mu_queue_head(q) == NULL);
+  ASSERT(mu_queue_tail(q) == NULL);
+  ASSERT(mu_queue_remove(q) == NULL);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
 
-  ASSERT(mu_queue_add(q1, (mu_link_t *)&item1) == q1);
-  ASSERT(mu_queue_is_empty(q1) == false);
-  ASSERT(mu_queue_head(q1) == (mu_link_t *)&item1);
-  ASSERT(mu_queue_tail(q1) == (mu_link_t *)&item1);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item1) == true);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item2) == false);
-  ASSERT(mu_queue_remove(q1) == (mu_link_t *)&item1);
-  ASSERT(mu_queue_is_empty(q1) == true);
+  // operations on a queue with one item
+  ASSERT(mu_queue_add(q, MU_LIST_REF(&s_item1, link)) == q);
+  ASSERT(mu_queue_is_empty(q) == false);
+  ASSERT(mu_queue_length(q) == 1);
+  ASSERT(mu_queue_head(q) == MU_LIST_REF(&s_item1, link));
+  ASSERT(mu_queue_tail(q) == MU_LIST_REF(&s_item1, link));
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == true);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
+  // MU_LIST_CONTAINER is unit tested in mu_list_test.c, but demonstrated here:
+  ASSERT(MU_LIST_CONTAINER(mu_queue_head(q), queue_item_t, link) == &s_item1);
+  ASSERT(MU_LIST_CONTAINER(mu_queue_tail(q), queue_item_t, link) == &s_item1);
 
-  ASSERT(mu_queue_add(q1, (mu_link_t *)&item1) == q1);
-  ASSERT(mu_queue_add(q1, (mu_link_t *)&item2) == q1);
-  ASSERT(mu_queue_is_empty(q1) == false);
-  ASSERT(mu_queue_head(q1) == (mu_link_t *)&item1);
-  ASSERT(mu_queue_tail(q1) == (mu_link_t *)&item2);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item1) == true);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item2) == true);
-  ASSERT(mu_queue_remove(q1) == (mu_link_t *)&item1);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item1) == false);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item2) == true);
-  ASSERT(mu_queue_remove(q1) == (mu_link_t *)&item2);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item1) == false);
-  ASSERT(mu_queue_contains(q1, (mu_link_t *)&item2) == false);
-  ASSERT(mu_queue_is_empty(q1) == true);
+  // empty the queue and check
+  ASSERT(mu_queue_remove(q) == MU_LIST_REF(&s_item1, link));
+  ASSERT(mu_queue_is_empty(q) == true);
+  ASSERT(mu_queue_length(q) == 0);
+  ASSERT(mu_queue_head(q) == NULL);
+  ASSERT(mu_queue_tail(q) == NULL);
+  ASSERT(mu_queue_remove(q) == NULL);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
+
+  // operations on a queue with two items
+  ASSERT(mu_queue_add(q, MU_LIST_REF(&s_item1, link)) == q);
+  ASSERT(mu_queue_add(q, MU_LIST_REF(&s_item2, link)) == q);
+
+  ASSERT(mu_queue_is_empty(q) == false);
+  ASSERT(mu_queue_length(q) == 2);
+  ASSERT(mu_queue_head(q) == MU_LIST_REF(&s_item1, link));
+  ASSERT(mu_queue_tail(q) == MU_LIST_REF(&s_item2, link));
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == true);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == true);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
+
+  // remove one item
+  ASSERT(mu_queue_remove(q) == MU_LIST_REF(&s_item1, link));
+  ASSERT(mu_queue_is_empty(q) == false);
+  ASSERT(mu_queue_length(q) == 1);
+  ASSERT(mu_queue_head(q) == MU_LIST_REF(&s_item2, link));
+  ASSERT(mu_queue_tail(q) == MU_LIST_REF(&s_item2, link));
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == true);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
+
+  // remove remaining item
+  ASSERT(mu_queue_remove(q) == MU_LIST_REF(&s_item2, link));
+  ASSERT(mu_queue_is_empty(q) == true);
+  ASSERT(mu_queue_length(q) == 0);
+  ASSERT(mu_queue_head(q) == NULL);
+  ASSERT(mu_queue_tail(q) == NULL);
+  ASSERT(mu_queue_remove(q) == NULL);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
+  ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
+}
+
+// =============================================================================
+// private code
+
+static void reset(void) {
+  queue_item_init(&s_item1, 1.0, 'a');
+  queue_item_init(&s_item2, 2.0, 'b');
+  queue_item_init(&s_item3, 3.0, 'c');
+}
+
+static queue_item_t *queue_item_init(queue_item_t *item, float value, char id) {
+  item->value = value;
+  item->id = id;
+  item->link.next = NULL;
+  return item;
 }
