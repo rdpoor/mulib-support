@@ -22,48 +22,58 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
-#include <stdio.h>
-#include "mu_test_utils.h"
+#include "mu_time.h"
+#include "port_time.h"
 
 // =============================================================================
-// types and definitions
+// private types and definitions
 
 // =============================================================================
-// declarations
+// private declarations
 
-int mu_buf_test();
-int mu_bufref_test();
-int mu_bitvec_test();
-int mu_list_test();
-int mu_queue_test();
-int mu_time_test();
+// =============================================================================
+// local storage
 
 // =============================================================================
 // public code
 
-int main() {
-
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
-
-  mu_buf_test();
-  mu_bufref_test();
-  mu_bitvec_test();
-  mu_list_test();
-  mu_queue_test();
-  mu_time_test();
-
-  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
-
-  return mu_test_error_count();
+void mu_time_init(void) {
+  port_time_init();
 }
 
-// =============================================================================
-// private code
+mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt) {
+  return port_time_offset(t1, dt);
+}
+
+mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
+  return port_time_difference(t1, t2);
+}
+
+// Return true iff t1 is strictly earlier, equal to or
+// later than t2.
+bool mu_time_is_before(mu_time_t t1, mu_time_t t2) {
+  return port_time_is_before(t1, t2);
+}
+
+bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
+  return port_time_is_equal(t1, t2);
+}
+
+bool mu_time_is_after(mu_time_t t1, mu_time_t t2) {
+  return port_time_is_before(t2, t1);
+}
+
+mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt) {
+  return port_time_duration_to_seconds(dt);
+}
+
+mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s) {
+  return port_time_seconds_to_duration(s);
+}
+
+mu_time_t mu_time_now() {
+  return port_time_now();
+}

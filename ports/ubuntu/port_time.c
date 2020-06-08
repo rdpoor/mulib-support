@@ -22,48 +22,68 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
+#include "port_time.h"
 #include <stdio.h>
-#include "mu_test_utils.h"
+#include <time.h>
 
 // =============================================================================
-// types and definitions
+// private types and definitions
+
+const bool TIME_IS_SIGNED = (port_time_t)-1 < 0;
 
 // =============================================================================
-// declarations
+// private declarations
 
-int mu_buf_test();
-int mu_bufref_test();
-int mu_bitvec_test();
-int mu_list_test();
-int mu_queue_test();
-int mu_time_test();
+static bool is_msb_set(port_time_t t);
+
+// =============================================================================
+// local storage
 
 // =============================================================================
 // public code
 
-int main() {
+void port_time_init() {
+}
 
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
+port_time_t port_time_offset(port_time_t t, port_time_dt dt) {
+  return t + dt;
+}
 
-  mu_buf_test();
-  mu_bufref_test();
-  mu_bitvec_test();
-  mu_list_test();
-  mu_queue_test();
-  mu_time_test();
+port_time_dt port_time_difference(port_time_t t1, port_time_t t2) {
+  return t1 - t2;
+}
 
-  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
+bool port_time_is_before(port_time_t t1, port_time_t t2) {
+  return is_msb_set(t1 - t2);
+}
 
-  return mu_test_error_count();
+bool port_time_is_equal(port_time_t t1, port_time_t t2) {
+  return t1 == t2;
+}
+
+bool port_time_is_after(port_time_t t1, port_time_t t2) {
+  return is_msb_set(t2 - t1);
+}
+
+port_time_dt port_time_seconds_to_duration(port_time_seconds_dt seconds) {
+  return seconds * CLOCKS_PER_SEC;
+}
+
+port_time_seconds_dt port_time_duration_to_seconds(port_time_dt dt) {
+  port_time_seconds_dt secs = (port_time_seconds_dt)dt / (port_time_seconds_dt)CLOCKS_PER_SEC;
+  return secs;
+}
+
+port_time_t port_time_now() {
+  return clock();
 }
 
 // =============================================================================
 // private code
+
+static bool is_msb_set(port_time_t t) {
+  return TIME_IS_SIGNED ? (t < 0) : ((t << 1) >> 1) ^ t;
+}

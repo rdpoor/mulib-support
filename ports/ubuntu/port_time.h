@@ -22,48 +22,50 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+#ifndef _PORT_TIME_H_
+#define _PORT_TIME_H_
 
-#include <stdio.h>
-#include "mu_test_utils.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// =============================================================================
+// includes
+
+#include <time.h>      // clock_t, CLOCKS_PER_SEC, clock()
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
 
+typedef clock_t port_time_t;        // an absolute time
+typedef clock_t port_time_dt;       // the interval between two times
+typedef double port_time_seconds_dt;     // an interval expressed in seconds
+
 // =============================================================================
 // declarations
 
-int mu_buf_test();
-int mu_bufref_test();
-int mu_bitvec_test();
-int mu_list_test();
-int mu_queue_test();
-int mu_time_test();
+void port_time_init();
 
-// =============================================================================
-// public code
+port_time_t port_time_offset(port_time_t t, port_time_dt dt);
 
-int main() {
+port_time_dt port_time_difference(port_time_t t1, port_time_t t2);
 
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
+bool port_time_is_before(port_time_t t1, port_time_t t2);
 
-  mu_buf_test();
-  mu_bufref_test();
-  mu_bitvec_test();
-  mu_list_test();
-  mu_queue_test();
-  mu_time_test();
+bool port_time_is_equal(port_time_t t1, port_time_t t2);
 
-  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
+bool port_time_is_after(port_time_t t1, port_time_t t2);
 
-  return mu_test_error_count();
+port_time_dt port_time_seconds_to_duration(port_time_seconds_dt seconds);
+
+port_time_seconds_dt port_time_duration_to_seconds(port_time_dt dt);
+
+port_time_t port_time_now();
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _PORT_TIME_H_ */

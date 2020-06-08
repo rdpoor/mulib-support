@@ -22,47 +22,47 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
-#include <stdio.h>
+#include "mu_time.h"
 #include "mu_test_utils.h"
 
 // =============================================================================
-// types and definitions
+// private types and definitions
 
 // =============================================================================
-// declarations
+// private declarations
 
-int mu_buf_test();
-int mu_bufref_test();
-int mu_bitvec_test();
-int mu_list_test();
-int mu_queue_test();
-int mu_time_test();
+// =============================================================================
+// local storage
 
 // =============================================================================
 // public code
 
-int main() {
+void mu_time_test() {
+  mu_time_t t1;
+  mu_time_t t2;
+  mu_time_dt d1;
+  mu_time_dt d2;
 
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
+  t1 = mu_time_now();   // an arbitrary time
+  d1 = mu_time_seconds_to_duration(1.0);
+  t2 = mu_time_offset(t1, d1);
 
-  mu_buf_test();
-  mu_bufref_test();
-  mu_bitvec_test();
-  mu_list_test();
-  mu_queue_test();
-  mu_time_test();
+  ASSERT(mu_time_is_before(t1, t2) == true);
+  ASSERT(mu_time_is_before(t1, t1) == false);
+  ASSERT(mu_time_is_before(t2, t1) == false);
 
-  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
+  ASSERT(mu_time_is_equal(t1, t1) == true);
+  ASSERT(mu_time_is_equal(t1, t2) == false);
 
-  return mu_test_error_count();
+  ASSERT(mu_time_is_after(t1, t2) == false);
+  ASSERT(mu_time_is_after(t1, t1) == false);
+  ASSERT(mu_time_is_after(t2, t1) == true);
+
+  d2 = mu_time_difference(t2, t1);
+  ASSERT(mu_time_duration_to_seconds(d2) == 1.0);  // may fail due to rounding
 }
 
 // =============================================================================
