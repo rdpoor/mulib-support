@@ -26,8 +26,9 @@
 // includes
 
 #include "mu_time.h"
+#include "mu_task.h"
 #include "mu_test_utils.h"
-#include <unistd.h>
+#include <string.h>
 
 // =============================================================================
 // private types and definitions
@@ -35,41 +36,46 @@
 // =============================================================================
 // private declarations
 
+void *task_fn1(void *self, void *arg) {
+  return self;
+}
+
+void *task_fn2(void *self, void *arg) {
+  return arg;
+}
+
 // =============================================================================
 // local storage
 
 // =============================================================================
 // public code
 
-void mu_time_test() {
-  mu_time_t t1;
-  mu_time_t t2;
-  mu_time_dt d1;
-  mu_time_dt d2;
+void mu_task_test() {
+  mu_task_t t1;
+  mu_task_t t2;
 
-  t1 = mu_time_now();   // an arbitrary time
-  d1 = mu_time_seconds_to_duration(1.0);
-  t2 = mu_time_offset(t1, d1);
+  ASSERT(mu_task_init_at(&t1, task_fn1, &t1, 22, "Task1") == &t1);
 
-  ASSERT(mu_time_is_before(t1, t2) == true);
-  ASSERT(mu_time_is_before(t1, t1) == false);
-  ASSERT(mu_time_is_before(t2, t1) == false);
+  ASSERT(strcmp(mu_task_name(&t1), "Task1") == 0);
 
-  ASSERT(mu_time_is_equal(t1, t1) == true);
-  ASSERT(mu_time_is_equal(t1, t2) == false);
+  ASSERT(mu_task_get_time(&t1) == 22);
+  ASSERT(mu_task_set_time(&t1, 44) == &t1);
+  ASSERT(mu_task_get_time(&t1) == 44);
+  ASSERT(mu_task_advance_time(&t1, 11) == &t1);
+  ASSERT(mu_task_get_time(&t1) == 55);
 
-  ASSERT(mu_time_is_after(t1, t2) == false);
-  ASSERT(mu_time_is_after(t1, t1) == false);
-  ASSERT(mu_time_is_after(t2, t1) == true);
+  ASSERT(mu_task_init_at(&t2, task_fn2, NULL, 33, "Task2") == &t2);
 
-  d2 = mu_time_difference(t2, t1);
-  ASSERT(mu_time_duration_to_seconds(d2) == 1.0);  // may fail due to rounding
+  ASSERT(mu_task_is_after(&t1, &t2) == true);
 
-  // sleeping for 100 mSec
-  t1 = mu_time_offset(mu_time_now(), mu_time_seconds_to_duration(0.1));
-  usleep(100000);
-  t2 = mu_time_now();
-  ASSERT(mu_time_is_after(t1, t2) == true);
+  ASSERT(mu_task_call(&t1, &t2) == &t1);  // task_fn1 returns self (&t1)
+  ASSERT(mu_task_call(&t2, &t1) == &t1);  // task_fn2 return arg (&t1)
+
+#if (MU_TASK_PROFILING)
+  ASSERT(mu_task_call_count(&t1) == 1);
+  ASSERT(mu_task_call_count(&t2) == 1);
+#endif
+
 }
 
 // =============================================================================

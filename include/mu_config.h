@@ -22,55 +22,31 @@
  * SOFTWARE.
  */
 
+#ifndef _MU_CONFIG_H_
+#define _MU_CONFIG_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // includes
 
-#include "mu_time.h"
-#include "mu_test_utils.h"
-#include <unistd.h>
+// =============================================================================
+// types and definitions
+
+// #define MU_TASK_PROFILING
+
+#ifndef MU_TASK_PROFILING
+/* 1 => add profiling code to mu_task, 0 => don't profile */
+#define MU_TASK_PROFILING (1)
+#endif
 
 // =============================================================================
-// private types and definitions
+// declarations
 
-// =============================================================================
-// private declarations
-
-// =============================================================================
-// local storage
-
-// =============================================================================
-// public code
-
-void mu_time_test() {
-  mu_time_t t1;
-  mu_time_t t2;
-  mu_time_dt d1;
-  mu_time_dt d2;
-
-  t1 = mu_time_now();   // an arbitrary time
-  d1 = mu_time_seconds_to_duration(1.0);
-  t2 = mu_time_offset(t1, d1);
-
-  ASSERT(mu_time_is_before(t1, t2) == true);
-  ASSERT(mu_time_is_before(t1, t1) == false);
-  ASSERT(mu_time_is_before(t2, t1) == false);
-
-  ASSERT(mu_time_is_equal(t1, t1) == true);
-  ASSERT(mu_time_is_equal(t1, t2) == false);
-
-  ASSERT(mu_time_is_after(t1, t2) == false);
-  ASSERT(mu_time_is_after(t1, t1) == false);
-  ASSERT(mu_time_is_after(t2, t1) == true);
-
-  d2 = mu_time_difference(t2, t1);
-  ASSERT(mu_time_duration_to_seconds(d2) == 1.0);  // may fail due to rounding
-
-  // sleeping for 100 mSec
-  t1 = mu_time_offset(mu_time_now(), mu_time_seconds_to_duration(0.1));
-  usleep(100000);
-  t2 = mu_time_now();
-  ASSERT(mu_time_is_after(t1, t2) == true);
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _MU_CONFIG_H_ */

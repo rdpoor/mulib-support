@@ -62,6 +62,16 @@ and a traversal method for user-supplied functions.
 
 Efficient, extensible first-in, first-out queue operations, built atop mu_list.
 
+### mu_task
+
+A simple implementation of deferred function calls, with a compile time option
+for profiling.  Used extensively by `mu_sched`.
+
+### mu_time
+
+Functions to manipulate time values, properly handling roll-over.  Interfaces to
+platform specific ports/.../port_time.c
+
 ## In the laboratory
 
 These are modules yet to be written and tested (or in some cases, ported from a
@@ -121,18 +131,6 @@ We could steal a few high-order bits from the capacity field to store attribute
 bits, such as:
   - is_readonly [1 bit]
   - item_width [1, 2, 4, 8] mapped to [0, 1, 2, 3] [2 bits]
-
-### mu_task
-
-Simple, versatile, fast message passing.  Commonly used for deferred function calls, used extensively by `mu_sched`.
-
-Status: 74% test coverage.
-
-### mu_time
-
-Functions to manipulate time values, properly handling roll-over.  Provides interface to platform specific support in port/port.c.
-
-Status: 100% test coverage.
 
 ### mu_iostream
 

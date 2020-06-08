@@ -39,6 +39,7 @@ int mu_bufref_test();
 int mu_bitvec_test();
 int mu_list_test();
 int mu_queue_test();
+int mu_task_test();
 int mu_time_test();
 
 // =============================================================================
@@ -54,6 +55,7 @@ int main() {
   mu_bitvec_test();
   mu_list_test();
   mu_queue_test();
+  mu_task_test();
   mu_time_test();
 
   printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
