@@ -17,20 +17,55 @@ tailored for microcontrollers and other resource-constrained environments.
 mulib strives towards the following design goals.
 
 * **Self-contained, pure C code:** minimize dependencies on external libraries.
-* **Two-file implementation:** whenever practical, each mulib module is embodied in one header file and one C file.
-* **Well-documented:** API documentation is driven by documentation strings in the header files.
-* **Well-tested:** unit tests validate the API, coverage tets validate the unit tests.
-* **Super portable:** One concise mu_ports.c file defines mulib's interface to the target environment.
-* **Fast and Dangerous:** mulib favors minimizing time and code space over argument validation.  But note that `MU_ASSERT()` provides a safety net that can be switched on or off at compile time.
-* **Single-threaded scheduler:** There are many benefits to a single-threaded scheduler -- see [About Run To Completion Schedulers](./RunToCompletion.md) for the reasons behind this choice.
-* **Low threshold, high ceiling:** A suite of demo programs take you from the simplest "flash an LED" example to complex multi-tasking applications.
-* **Yours to use:** The entirety of mulib is covered under the MIT open source license.
+* **Two-file implementation:** whenever practical, each module is embodied in
+    one header file and one C file.
+* **Well-documented:** API documentation is driven by documentation strings in
+    the header files.
+* **Well-tested:** unit tests validate the API, coverage tets validate the unit
+    tests.
+* **Super portable:** One concise mu_ports.c file defines mulib's interface to
+    the target environment.
+* **Fast and Dangerous:** mulib favors minimizing time and code space over
+    argument validation.  But note that `MU_ASSERT()` provides a safety net that
+    can be switched on or off at compile time.
+* **Single-threaded scheduler:** There are many benefits to a single-threaded
+    scheduler -- see [About Run To Completion Schedulers](./RunToCompletion.md)
+    for the reasons behind this choice.
+* **Low threshold, high ceiling:** A suite of demo programs take you from the
+    simplest "blink an LED" example to complex multi-tasking applications.
+* **Yours to use:** The entirety of mulib is covered under the MIT open source
+    license.
 
 ## The modules
 
+### mu_buf
+
+Safe read and write access for buffers of homogeneous data.  Includes in-place
+O(log N) heapsort with user-provided comparison function.
+
+### mu_bufref
+
+Supports slices (aka views, aka substrings) into a mu_buf.  Especially useful
+as a means for "no copy" (in-place) string manipulation.
+
+### mu_bitvec
+
+Bit vector operations on individual bits: set, clear, toggle, test.  Includes
+functions that operate on the entire vector.
+
+### mu_list
+
+Supports classic singly linked list operations: push, pop, insert, delete,
+and a traversal method for user-supplied functions.
+
+### mu_queue
+
+Efficient, extensible first-in, first-out queue operations, built atop mu_list.
+
 ## In the laboratory
 
-These are modles yet to be written and tested (or in some cases, ported from a previous version of mulib).
+These are modules yet to be written and tested (or in some cases, ported from a
+previous version of mulib).
 
 ### mu_bcast
 
@@ -38,29 +73,17 @@ Low-overhead publish / subscribe message passing.
 
 Status: 0% test coverage
 
-### mu_bvec
-
-Bit vector module to `set`, `clear`, `test` individual bits.  Includes functions that operate on the entire vector, including test for all zeros or ones, `and`, `or`, `xor` bit vectors, etc.
-
 Status: 82% test coverage.
 
-### mu_heapsort
+### mu_cbuf
 
-O(log N) in-place sorting of pointer-sized objects.
-
-Status: 100% test coverage.
+Fast, fixed-length, thread-safe circular buffer for void * sized objects,
+designed for single-producer / single-consumer applications.  Used by the
+scheduler to transfer information between interrupt and foreground level.
 
 ### mu_log
 
-No-nonsense logging with run-time control on reporting severity and multiple reporting channels.
-
-Status: 98% test coverage.
-
-### mu_queue
-
-Fast, thread-safe queue for void * sized objects, designed for single-producer / single-consumer applications.  Used by the scheduler to transfer between interrupt and foreground level.
-
-Status: 100% test coverage.
+Flexible logging with run-time control on reporting severity and multiple reporting channels.
 
 ### mu_sched
 
@@ -120,24 +143,6 @@ Status: concept only.  The design challenge will be finding the best boundaries 
 ### mu_jemi
 
 Json EMItter: Build complex data structures and emit them as JSON strings.
-
-Status: In progress.
-
-### mu_list
-
-Manage linked lists of pointer-sized objects.
-
-Status: In progress.
-
-### mu_pool
-
-Dynamically allocate and free fixed-sized objects from a static storage pool.
-
-Status: In progress.
-
-### mu_queue8, mu_queue16, mu_queue32, mu_queue64
-
-Thread safe ring buffer for 8-, 16-, 32- and 64-bit wide objects.
 
 Status: In progress.
 

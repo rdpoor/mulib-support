@@ -36,6 +36,7 @@
 
 int mu_buf_test();
 int mu_bufref_test();
+int mu_bitvec_test();
 int mu_list_test();
 int mu_queue_test();
 
@@ -49,6 +50,7 @@ int main() {
 
   mu_buf_test();
   mu_bufref_test();
+  mu_bitvec_test();
   mu_list_test();
   mu_queue_test();
 
