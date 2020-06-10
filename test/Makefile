@@ -6,6 +6,7 @@ TEST_SOURCES := \
 	mu_buf_test.c \
 	mu_bufref_test.c \
 	mu_bitvec_test.c \
+	mu_cbuf_test.c \
 	mu_list_test.c \
 	mu_queue_test.c \
 	mu_task_test.c \

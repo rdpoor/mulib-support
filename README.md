@@ -53,6 +53,12 @@ as a means for "no copy" (in-place) string manipulation.
 Bit vector operations on individual bits: set, clear, toggle, test.  Includes
 functions that operate on the entire vector.
 
+### mu_cbuf
+
+Fast, fixed-length, thread-safe circular buffer for void * sized objects,
+designed for single-producer / single-consumer applications.  Used by the
+scheduler to transfer information between interrupt and foreground level.
+
 ### mu_list
 
 Supports classic singly linked list operations: push, pop, insert, delete,
@@ -84,12 +90,6 @@ Low-overhead publish / subscribe message passing.
 Status: 0% test coverage
 
 Status: 82% test coverage.
-
-### mu_cbuf
-
-Fast, fixed-length, thread-safe circular buffer for void * sized objects,
-designed for single-producer / single-consumer applications.  Used by the
-scheduler to transfer information between interrupt and foreground level.
 
 ### mu_log
 

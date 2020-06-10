@@ -22,12 +22,8 @@
  * SOFTWARE.
  */
 
-/**
- * @file Support for singly linked-list queues.
- */
-
-#ifndef _MU_CBUF_H_
-#define _MU_CBUF_H_
+#ifndef _MU_CQUEUE_H_
+#define _MU_CQUEUE_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,46 +32,77 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <stdint.h>
 #include <stdbool.h>
-#include "mu_types.h"
-#include "mu_list.h"
 
 // =============================================================================
 // types and definitions
 
-//  queue:
-// +-------+     +---------+     +---------+     +---------+
-// | head .|---->| item1 . |---->| item2 . |---->| item3 ^ |
-// +-------+     +---------+     +---------+  /  +---------+
-// | tail .|----------------------------------
-// +-------+
+typedef enum {
+  MU_CQUEUE_ERR_NONE,
+  MU_CQUEUE_ERR_EMPTY,
+  MU_CQUEUE_ERR_FULL,
+  MU_CQUEUE_ERR_SIZE,
+} mu_cbuf_err_t;
+
+// mu_cbuf manages pointer-sized objects
+typedef void * mu_cbuf_item_t;
 
 typedef struct {
-  mu_list_t head;   // items are removed (popped) from the head
-  mu_list_t tail;   // items are added (pushed) at the tail
-} mu_queue_t;
+  uint16_t mask;
+  volatile uint16_t head;
+  volatile uint16_t tail;
+  mu_cbuf_item_t *store;
+} mu_cbuf_t;
 
 // =============================================================================
 // declarations
 
-mu_queue_t *mu_queue_init(mu_queue_t *q);
+/**
+ * @brief initialize a cqueue with a backing store.  capacity must be a power
+ * of two.
+ */
+mu_cbuf_err_t mu_cbuf_init(mu_cbuf_t *q, mu_cbuf_item_t *store, uint16_t capacity);
 
-mu_list_t *mu_queue_head(mu_queue_t *q);
+/**
+ * @brief reset the cqueue to empty.
+ */
+mu_cbuf_err_t mu_cbuf_reset(mu_cbuf_t *q);
 
-mu_list_t *mu_queue_tail(mu_queue_t *q);
+/**
+ * @brief return the maximum number of items that can be stored in the cqueue.
+ */
+uint16_t mu_cbuf_capacity(mu_cbuf_t *q);
 
-mu_queue_t *mu_queue_add(mu_queue_t *q, mu_list_t *item);
+/**
+ * @brief Return the number of items in the cqueue.
+ */
+uint16_t mu_cbuf_count(mu_cbuf_t *q);
 
-mu_list_t *mu_queue_remove(mu_queue_t *q);
+/**
+ * @brief Return true if there are no items in the queue.
+ *
+ * Note: this is a tiny bit faster than mu_cbuf_count() == 0
+ */
+bool mu_cbuf_is_empty(mu_cbuf_t *q);
 
-bool mu_queue_is_empty(mu_queue_t *q);
+/**
+ * @brief Return true if the queue is full.
+ */
+bool mu_cbuf_is_full(mu_cbuf_t *q);
 
-bool mu_queue_contains(mu_queue_t *q, mu_list_t *item);
+/**
+ * @brief Insert an item at the tail of the queue.
+ */
+mu_cbuf_err_t mu_cbuf_put(mu_cbuf_t *q, mu_cbuf_item_t item);
 
-int mu_queue_length(mu_queue_t *q);
+/**
+ * @brief Remove an item from the head of the queue.
+ */
+mu_cbuf_err_t mu_cbuf_get(mu_cbuf_t *q, mu_cbuf_item_t *item);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MU_CBUF_H_ */
+#endif // #ifndef _MU_CQUEUE_H_
