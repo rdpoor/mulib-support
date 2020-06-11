@@ -64,6 +64,11 @@ scheduler to transfer information between interrupt and foreground level.
 Supports classic singly linked list operations: push, pop, insert, delete,
 and a traversal method for user-supplied functions.
 
+### mu_pstore
+
+Operations on a collection of pointer-sized objects.  Includes functions for
+push, pop, peek, insert, delete, insertion sort and heapsort.
+
 ### mu_queue
 
 Efficient, extensible first-in, first-out queue operations, built atop mu_list.
@@ -87,10 +92,6 @@ previous version of mulib).
 
 Low-overhead publish / subscribe message passing.
 
-Status: 0% test coverage
-
-Status: 82% test coverage.
-
 ### mu_log
 
 Flexible logging with run-time control on reporting severity and multiple reporting channels.
@@ -98,8 +99,6 @@ Flexible logging with run-time control on reporting severity and multiple report
 ### mu_sched
 
 Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion scheduler.
-
-Status: 100% test coverage.
 
 ### mu_string
 

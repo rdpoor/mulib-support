@@ -30,8 +30,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include <stdio.h>  // debugging
-
 // =============================================================================
 // local types and definitions
 

@@ -8,6 +8,7 @@ TEST_SOURCES := \
 	mu_bitvec_test.c \
 	mu_cbuf_test.c \
 	mu_list_test.c \
+	mu_pstore_test.c \
 	mu_queue_test.c \
 	mu_task_test.c \
 	mu_time_test.c
