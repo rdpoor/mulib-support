@@ -41,23 +41,20 @@ mulib strives towards the following design goals.
 ### mu_buf
 
 Safe read and write access for buffers of homogeneous data.  Includes in-place
-O(log N) heapsort with user-provided comparison function.
+O(log N) heapsort with user-provided comparison function.  NOTE: mu_buf may be
+superseded by mu_bstore and mu_pstore (byte store and pointer store), since
+the overhead of handling variable size may not be worth it.
 
 ### mu_bufref
 
 Supports slices (aka views, aka substrings) into a mu_buf.  Especially useful
-as a means for "no copy" (in-place) string manipulation.
+as a means for "no copy" (in-place) string manipulation.  NOTE: mu_bufref may
+be superseded by mu_bview and mu_pview for views into mu_bstore and mu_pstore.
 
 ### mu_bitvec
 
 Bit vector operations on individual bits: set, clear, toggle, test.  Includes
 functions that operate on the entire vector.
-
-### mu_cbuf
-
-Fast, fixed-length, thread-safe circular buffer for void * sized objects,
-designed for single-producer / single-consumer applications.  Used by the
-scheduler to transfer information between interrupt and foreground level.
 
 ### mu_list
 
@@ -72,6 +69,13 @@ push, pop, peek, insert, delete, insertion sort and heapsort.
 ### mu_queue
 
 Efficient, extensible first-in, first-out queue operations, built atop mu_list.
+
+### mu_spscq
+
+Thread-safe, lock-free, single-producer, single-consumer queue.  It is designed
+primarily for use by mu_sched to transfer control between interrupt and the
+foreground levels, but -- despite its intentionally obscure name -- may be
+useful elsewhere.
 
 ### mu_task
 
@@ -104,82 +108,4 @@ Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion s
 
 For reading, perform in-place "zero copy" operations on strings.  Take slices of substrings, compare them.  For writing, perform safe sprintf() and efficient append operations.
 
-Notes: consider `mu_strbuf` as the underlying storage with length:
-
-    typedef struct {
-      strbuf_type_t *bytes;
-      size_t capacity;
-    } mu_strbuf_t;
-
-and most string operations use a `mu_strbuf_t` as follows:
-
-    typedef struct {
-      mu_strbuf_t *strbuf;
-      size_t start;
-      size_t end;
-    } mu_str_t;
-
-This creates an extra level of indirection, but allows multiple views onto the
-same string.  This also means that mu_strbuf object could be use for circular
-buffers, read-only strings, extensible strings, etc.  Also, strbuf can have its
-on (simpler) API and unit tests.
-
-#### Attribute bits
-
-We could steal a few high-order bits from the capacity field to store attribute
-bits, such as:
-  - is_readonly [1 bit]
-  - item_width [1, 2, 4, 8] mapped to [0, 1, 2, 3] [2 bits]
-
-### mu_iostream
-
-General purpose asynchronous I/O streaming operations.  For read operations, call a consumer task when more data is available, for write operations, call a producer task when more data is requested.
-
-Status: concept only.  The design challenge will be finding the best boundaries into platform specific I/O operations.
-
-### mu_jemi
-
-Json EMItter: Build complex data structures and emit them as JSON strings.
-
-Status: In progress.
-
 ## Developer Notes
-
-* TODO: document API for each module
-
-* TODO: create and document a series of demo applications, starting with "blink
-an LED" through more complex ones.  Bonus points for cross platform / cross IDE.
-
-* In mu_string, create functions that modify underlying buffer: insert, delete,
-  replace.  These are actually all the same function: insert has a non-empty
-  src slice and empty dst slice, delete has an empty src slice and a non-empty
-  dst slice, replace has non-empty src and dst.
-
-* Documentation: find a c-based project on github with great documentation and
-  emulate its documentation structure.
-
-* Refactor: all chars should be unsigned chars (or uint8_t).  Pick one.
-
-### Thoughts on Time
-
-Design idea: The native port provides a few core functions:
-
-* typedef xxx port_rtc_t;
-* void port_rtc_init(void);
-* port_rtc_t port_rtc_now();
-* port_rtc_t port_rtc_difference(port_rtc_t t1, port_rtc_t t2);
-* port_rtc_t port_rtc_offset(port_rtc_t, port_rtc_dt);
-* bool port_rtc_precedes(port_rtc_t t0, port_rtc_t t1);
-* bool port_rtc_equals(port_rtc_t t0, port_rtc_t t1);
-* bool port_rtc_follows(port_rtc_t t0, port_rtc_t t1);
-* float port_rtc_to_seconds(port_rtc_t dt);
-
-void mu_rtc_init(void);
-mu_rtc_t mu_rtc_now();
-float mu_rtc_seconds_since_init();
-
-### Future work
-
-* Can we sensibly emulate Scheme-style continuations or Note-style promises?
-
-* Can we sensibly emulate functional list operations (map, collect, etc)?

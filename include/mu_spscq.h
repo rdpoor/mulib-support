@@ -43,17 +43,17 @@ typedef enum {
   MU_CQUEUE_ERR_EMPTY,
   MU_CQUEUE_ERR_FULL,
   MU_CQUEUE_ERR_SIZE,
-} mu_cbuf_err_t;
+} mu_spscq_err_t;
 
-// mu_cbuf manages pointer-sized objects
-typedef void * mu_cbuf_item_t;
+// mu_spscq manages pointer-sized objects
+typedef void * mu_spscq_item_t;
 
 typedef struct {
   uint16_t mask;
   volatile uint16_t head;
   volatile uint16_t tail;
-  mu_cbuf_item_t *store;
-} mu_cbuf_t;
+  mu_spscq_item_t *store;
+} mu_spscq_t;
 
 // =============================================================================
 // declarations
@@ -62,44 +62,44 @@ typedef struct {
  * @brief initialize a cqueue with a backing store.  capacity must be a power
  * of two.
  */
-mu_cbuf_err_t mu_cbuf_init(mu_cbuf_t *q, mu_cbuf_item_t *store, uint16_t capacity);
+mu_spscq_err_t mu_spscq_init(mu_spscq_t *q, mu_spscq_item_t *store, uint16_t capacity);
 
 /**
  * @brief reset the cqueue to empty.
  */
-mu_cbuf_err_t mu_cbuf_reset(mu_cbuf_t *q);
+mu_spscq_err_t mu_spscq_reset(mu_spscq_t *q);
 
 /**
  * @brief return the maximum number of items that can be stored in the cqueue.
  */
-uint16_t mu_cbuf_capacity(mu_cbuf_t *q);
+uint16_t mu_spscq_capacity(mu_spscq_t *q);
 
 /**
  * @brief Return the number of items in the cqueue.
  */
-uint16_t mu_cbuf_count(mu_cbuf_t *q);
+uint16_t mu_spscq_count(mu_spscq_t *q);
 
 /**
  * @brief Return true if there are no items in the queue.
  *
- * Note: this is a tiny bit faster than mu_cbuf_count() == 0
+ * Note: this is a tiny bit faster than mu_spscq_count() == 0
  */
-bool mu_cbuf_is_empty(mu_cbuf_t *q);
+bool mu_spscq_is_empty(mu_spscq_t *q);
 
 /**
  * @brief Return true if the queue is full.
  */
-bool mu_cbuf_is_full(mu_cbuf_t *q);
+bool mu_spscq_is_full(mu_spscq_t *q);
 
 /**
  * @brief Insert an item at the tail of the queue.
  */
-mu_cbuf_err_t mu_cbuf_put(mu_cbuf_t *q, mu_cbuf_item_t item);
+mu_spscq_err_t mu_spscq_put(mu_spscq_t *q, mu_spscq_item_t item);
 
 /**
  * @brief Remove an item from the head of the queue.
  */
-mu_cbuf_err_t mu_cbuf_get(mu_cbuf_t *q, mu_cbuf_item_t *item);
+mu_spscq_err_t mu_spscq_get(mu_spscq_t *q, mu_spscq_item_t *item);
 
 #ifdef __cplusplus
 }

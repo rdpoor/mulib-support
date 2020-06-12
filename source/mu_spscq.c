@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_cbuf.h"
+#include "mu_spscq.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -44,18 +44,18 @@
 // =============================================================================
 // public code
 
-mu_cbuf_err_t mu_cbuf_init(mu_cbuf_t *q,
-                               mu_cbuf_item_t *store,
+mu_spscq_err_t mu_spscq_init(mu_spscq_t *q,
+                               mu_spscq_item_t *store,
                                uint16_t capacity) {
   if ((capacity == 0) || !IS_POWER_OF_TWO(capacity)) {
     return MU_CQUEUE_ERR_SIZE;
   }
   q->mask = capacity - 1;
   q->store = store;
-  return mu_cbuf_reset(q);
+  return mu_spscq_reset(q);
 }
 
-mu_cbuf_err_t mu_cbuf_reset(mu_cbuf_t *q) {
+mu_spscq_err_t mu_spscq_reset(mu_spscq_t *q) {
   q->head = 0;
   q->tail = 0;
   return MU_CQUEUE_ERR_NONE;
@@ -63,21 +63,21 @@ mu_cbuf_err_t mu_cbuf_reset(mu_cbuf_t *q) {
 
 // Note: capacity is one less than the capacity of the backing store.  This is
 // because we use head == tail to signify an empty queue.
-uint16_t mu_cbuf_capacity(mu_cbuf_t *q) { return q->mask; }
+uint16_t mu_spscq_capacity(mu_spscq_t *q) { return q->mask; }
 
-uint16_t mu_cbuf_count(mu_cbuf_t *q) {
+uint16_t mu_spscq_count(mu_spscq_t *q) {
   return (q->tail - q->head) & q->mask;
 }
 
-bool mu_cbuf_is_empty(mu_cbuf_t *q) { return q->head == q->tail; }
+bool mu_spscq_is_empty(mu_spscq_t *q) { return q->head == q->tail; }
 
-bool mu_cbuf_is_full(mu_cbuf_t *q) {
+bool mu_spscq_is_full(mu_spscq_t *q) {
   // would advancing tail by 1 make it catch up with head?
   return ((q->tail + 1) & q->mask) == q->head;
 }
 
-mu_cbuf_err_t mu_cbuf_put(mu_cbuf_t *q, mu_cbuf_item_t item) {
-  if (mu_cbuf_is_full(q)) {
+mu_spscq_err_t mu_spscq_put(mu_spscq_t *q, mu_spscq_item_t item) {
+  if (mu_spscq_is_full(q)) {
     return MU_CQUEUE_ERR_FULL;
   }
   q->store[q->tail] = item;
@@ -85,8 +85,8 @@ mu_cbuf_err_t mu_cbuf_put(mu_cbuf_t *q, mu_cbuf_item_t item) {
   return MU_CQUEUE_ERR_NONE;
 }
 
-mu_cbuf_err_t mu_cbuf_get(mu_cbuf_t *q, mu_cbuf_item_t *item) {
-  if (mu_cbuf_is_empty(q)) {
+mu_spscq_err_t mu_spscq_get(mu_spscq_t *q, mu_spscq_item_t *item) {
+  if (mu_spscq_is_empty(q)) {
     *item = NULL;
     return MU_CQUEUE_ERR_EMPTY;
   }
