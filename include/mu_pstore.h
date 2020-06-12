@@ -107,6 +107,44 @@ size_t mu_pstore_capacity(mu_pstore_t *pstore);
 size_t mu_pstore_count(mu_pstore_t *pstore);
 
 /**
+ * @brief Return true if the pstore is empty.
+ *
+ * This returns true if there are no items in the pstore.
+ *
+ * @param pstore The pstore structure.
+ * @return true if the pstore is empty.
+ */
+bool mu_pstore_is_empty(mu_pstore_t *pstore);
+
+/**
+ * @brief Return true if the pstore is full.
+ *
+ * This returns true if the pstore is full.
+ *
+ * @param pstore The pstore structure.
+ * @return true if the pstore is full.
+ */
+bool mu_pstore_is_full(mu_pstore_t *pstore);
+
+/**
+ * @brief return true if the pstore contains the given item
+ *
+ * @param pstore The pstore structure.
+ * @param item The item to be to be tested.
+ * @return true if the item is in the pstore.
+ */
+bool mu_pstore_contains(mu_pstore_t *pstore, mu_pstore_item_t item);
+
+/**
+ * @brief return the index of an item, or -1 if not present in the store
+ *
+ * @param pstore The pstore structure.
+ * @param item The item to be to be searched
+ * @return the index of the item or -1 if not present in the store
+ */
+int mu_pstore_index_of(mu_pstore_t *pstore, mu_pstore_item_t item);
+
+/**
  * @brief Push an item onto the end of the pstore.
  *
  * @param pstore The pstore structure.
@@ -145,31 +183,42 @@ mu_pstore_err_t mu_pstore_peek(mu_pstore_t *pstore, mu_pstore_item_t *item);
 /**
  * @brief Insert an item at the given index.
  *
- * mu_pstore_insert() inserts an item at the given index of the pstore.
+ * mu_pstore_insert_at() inserts an item at the given index of the pstore.
  *
  * @param pstore The pstore structure.
  * @param item Item to be inserted into the pstore.
  * @param index The index at which to insert the item.
  * @return MU_PSTORE_ERR_FULL if the pstore was full before the call to
- *         mu_pstore_insert(), MU_PSTORE_ERR_INDEX if the given index is
+ *         mu_pstore_insert_at(), MU_PSTORE_ERR_INDEX if the given index is
  *         greater than mu_pstore_count(), MU_PSTORE_ERR_NONE otherwise.
  */
-mu_pstore_err_t mu_pstore_insert(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index);
+mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index);
+
+/**
+ * @brief Delete an item.
+ *
+ * mu_pstore_delete_at() removes an item from the pstore,
+ *
+ * @param pstore The pstore structure.
+ * @param item The item to removed from the pstore.
+ * @return item if the item was removed, NULL if the item was not present.
+ */
+mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item);
 
 /**
  * @brief Insert an item at the given index.
  *
- * mu_pstore_delete() removes an item at the given index of the pstore,
+ * mu_pstore_delete_at() removes an item at the given index of the pstore,
  * returning the item by reference in *item.
  *
  * @param pstore The pstore structure.
  * @param item Pointer to the item to removed from the pstore.
  * @param index The index from which to remove the item.
  * @return MU_PSTORE_ERR_EMPTY if the pstore was empty before the call to
- *         mu_pstore_delete(), MU_PSTORE_ERR_INDEX if the given index is
+ *         mu_pstore_delete_at(), MU_PSTORE_ERR_INDEX if the given index is
  *         greater than mu_pstore_count(), MU_PSTORE_ERR_NONE otherwise.
  */
-mu_pstore_err_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index);
+mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index);
 
 /**
  * @brief Insert an item into a sorted list according to a user-supplied

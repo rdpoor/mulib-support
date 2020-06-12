@@ -33,6 +33,7 @@
 // =============================================================================
 // local (forward) declarations
 
+static void delete_at(mu_pstore_t *pstore, size_t index);
 static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, mu_compare_fn cmp);
 static void heapsort(mu_pstore_t *pstore, mu_compare_fn cmp);
 static void heapify(mu_pstore_item_t *items, size_t count, mu_compare_fn cmp);
@@ -75,6 +76,27 @@ size_t mu_pstore_count(mu_pstore_t *pstore) {
   return pstore->count;
 }
 
+bool mu_pstore_is_empty(mu_pstore_t *pstore) {
+  return pstore->count == 0;
+}
+
+bool mu_pstore_is_full(mu_pstore_t *pstore) {
+  return pstore->count == pstore->capacity;
+}
+
+bool mu_pstore_contains(mu_pstore_t *pstore, mu_pstore_item_t item) {
+  return mu_pstore_index_of(pstore, item) != -1;
+}
+
+int mu_pstore_index_of(mu_pstore_t *pstore, mu_pstore_item_t item) {
+  for (int i=0; i<pstore->count; i++) {
+    if (pstore->items[i] == item) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 mu_pstore_err_t mu_pstore_push(mu_pstore_t *pstore, mu_pstore_item_t item) {
   if (pstore->count == pstore->capacity) {
     return MU_PSTORE_ERR_FULL;
@@ -101,7 +123,7 @@ mu_pstore_err_t mu_pstore_peek(mu_pstore_t *pstore, mu_pstore_item_t *item) {
   return MU_PSTORE_ERR_NONE;
 }
 
-mu_pstore_err_t mu_pstore_insert(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index) {
+mu_pstore_err_t mu_pstore_insert_at(mu_pstore_t *pstore, mu_pstore_item_t item, size_t index) {
   int to_move = pstore->count - index;
 
   if (pstore->count == pstore->capacity) {
@@ -123,7 +145,7 @@ mu_pstore_err_t mu_pstore_insert(mu_pstore_t *pstore, mu_pstore_item_t item, siz
   return MU_PSTORE_ERR_NONE;
 }
 
-mu_pstore_err_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index) {
+mu_pstore_err_t mu_pstore_delete_at(mu_pstore_t *pstore, mu_pstore_item_t *item, size_t index) {
   int to_move = pstore->count - index - 1;
 
   if (pstore->count == 0) {
@@ -133,16 +155,21 @@ mu_pstore_err_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t *item, si
     return MU_PSTORE_ERR_INDEX;
   } else if (to_move == 0) {
     return mu_pstore_pop(pstore, item);
+  } else {
+    *item = pstore->items[index];
+    delete_at(pstore, index);
+    return MU_PSTORE_ERR_NONE;
   }
+}
 
-  *item = pstore->items[index];
-  // move existing items down
-  mu_pstore_item_t *dst = &pstore->items[index];
-  mu_pstore_item_t *src = &pstore->items[index+1];
-  memmove(dst, src, sizeof(mu_pstore_item_t) * to_move);
-  pstore->count -= 1;
-
-  return MU_PSTORE_ERR_NONE;
+mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item) {
+  int index = mu_pstore_index_of(pstore, item);
+  if (index == -1) {
+    return NULL;
+  } else {
+    delete_at(pstore, index);
+    return item;
+  }
 }
 
 mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore, mu_pstore_item_t item, mu_compare_fn cmp) {
@@ -150,7 +177,7 @@ mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore, mu_pstore_item_t it
     return mu_pstore_push(pstore, item);
   } else {
     int index = find_insertion_index(pstore, item, cmp);
-    return mu_pstore_insert(pstore, item, index);
+    return mu_pstore_insert_at(pstore, item, index);
   }
 }
 
@@ -163,6 +190,17 @@ mu_pstore_err_t mu_pstore_sort(mu_pstore_t *pstore, mu_compare_fn cmp) {
 
 // =============================================================================
 // local (static) code
+
+// safe version of mu_pstore_delete_at
+static void delete_at(mu_pstore_t *pstore, size_t index) {
+  int to_move = pstore->count - index - 1;
+
+  // move existing items down
+  mu_pstore_item_t *dst = &pstore->items[index];
+  mu_pstore_item_t *src = &pstore->items[index+1];
+  memmove(dst, src, sizeof(mu_pstore_item_t) * to_move);
+  pstore->count -= 1;
+}
 
 // Find "leftmost" insertion point, as described in
 // http://rosettacode.org/wiki/Binary_search
