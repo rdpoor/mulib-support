@@ -110,4 +110,23 @@ reporting severity for each channel.
 
 For reading, perform in-place "zero copy" operations on strings.  Take slices of substrings, compare them.  For writing, perform safe sprintf() and efficient append operations.
 
-## Developer Notes
+### mulib_demo
+
+In order to showcase the main features of mulib (including its portability),
+the `mulib_demo` application will:
+
+* Flash an LED periodically
+* Print call count, run time, latency etc. for each task
+* Demonstrate interrupt handling
+* Button push to enter / exit low-power mode
+
+In addition to showing off mulib, it's equally important to show how it can be
+ported to various processors and integrated into various IDEs.  Some candidates:
+
+* MPLAB + SAME54 Xplained Pro
+* Atmel Studio 7 + XMEGA Xplained Pro
+* Arduino App + ?
+* MCUXpresso + FrDM-KL27Z
+* Simplicity Studio + ?
+* ? + Nordic PCA10040 (nRF52832)
+* ? + ESP32
