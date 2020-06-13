@@ -80,10 +80,25 @@ mu_task_t *mu_task_set_time(mu_task_t *task, mu_time_t time) {
   return task;
 }
 
+bool mu_task_is_runnable(mu_task_t *task, mu_time_t time) {
+  // true if time is equal to or before the task's time
+  return !mu_time_is_after(task->time, time);
+}
+
 // Advance the task's time by dt
 mu_task_t *mu_task_advance_time(mu_task_t *task, mu_time_dt dt) {
   task->time = mu_time_offset(task->time, dt);
   return task;
+}
+
+int mu_task_compare_times(mu_task_t *t1, mu_task_t *t2) {
+  if (mu_time_is_equal(t1->time, t2->time)) {
+    return 0;
+  } else if (mu_time_is_before(t1->time, t2->time)) {
+    return -1;
+  } else {
+    return 1;
+  }
 }
 
 bool mu_task_is_after(mu_task_t *t1, mu_task_t *t2) {

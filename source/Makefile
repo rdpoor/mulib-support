@@ -8,6 +8,7 @@ SOURCES := \
 	mu_list.c \
 	mu_pstore.c \
 	mu_queue.c \
+	mu_sched.c\
 	mu_task.c \
 	mu_time.c
 

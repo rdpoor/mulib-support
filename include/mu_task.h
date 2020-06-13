@@ -79,11 +79,21 @@ mu_time_t mu_task_get_time(mu_task_t *task);
 
 mu_task_t *mu_task_set_time(mu_task_t *task, mu_time_t time);
 
+/**
+ * @brief Return true if this tasks's time has arrived.
+ */
+bool mu_task_is_runnable(mu_task_t *task, mu_time_t time);
+
 // Offset the event's time by dt
 mu_task_t *mu_task_advance_time(mu_task_t *task, mu_time_dt dt);
 
-// Return true if t1 occurs after t2
-bool mu_task_is_after(mu_task_t *t1, mu_task_t *t2);
+/**
+ * @brief Compare the times of two tasks.
+ *
+ * Returns a negative, zero, or positive value if t1 precedes, is concurrent with
+ * or follows t2.
+ */
+int mu_task_compare_times(mu_task_t *t1, mu_task_t *t2);
 
 void *mu_task_call(mu_task_t *task, void *arg);
 

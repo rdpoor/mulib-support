@@ -34,13 +34,14 @@
 // =============================================================================
 // declarations
 
+int mu_bitvec_test();
 int mu_buf_test();
 int mu_bufref_test();
-int mu_bitvec_test();
-int mu_spscq_test();
 int mu_list_test();
 int mu_pstore_test();
 int mu_queue_test();
+int mu_sched_test();
+int mu_spscq_test();
 int mu_task_test();
 int mu_time_test();
 
@@ -52,13 +53,14 @@ int main() {
   mu_test_init();
   printf("\r\nstarting mu_test...");
 
+  mu_bitvec_test();
   mu_buf_test();
   mu_bufref_test();
-  mu_bitvec_test();
-  mu_spscq_test();
   mu_list_test();
   mu_pstore_test();
   mu_queue_test();
+  mu_sched_test();
+  mu_spscq_test();
   mu_task_test();
   mu_time_test();
 

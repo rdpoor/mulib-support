@@ -1,17 +1,18 @@
 MU_ROOT ?= ..
 
 TEST_SOURCES := \
-  mu_test_utils.c \
-  mu_test.c \
+	mu_bitvec_test.c \
 	mu_buf_test.c \
 	mu_bufref_test.c \
-	mu_bitvec_test.c \
-	mu_spscq_test.c \
 	mu_list_test.c \
 	mu_pstore_test.c \
 	mu_queue_test.c \
+	mu_sched_test.c \
+	mu_spscq_test.c \
 	mu_task_test.c \
-	mu_time_test.c
+  mu_test_utils.c \
+	mu_time_test.c \
+	mu_test.c
 
 TEST_OBJS := $(patsubst %.c, %.o, $(TEST_SOURCES))
 MU_OBJS := $(wildcard ../source/*.o)

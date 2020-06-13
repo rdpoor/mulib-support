@@ -38,6 +38,11 @@ mulib strives towards the following design goals.
 
 ## The modules
 
+### mu_bitvec
+
+Bit vector operations on individual bits: set, clear, toggle, test.  Includes
+functions that operate on the entire vector.
+
 ### mu_buf
 
 Safe read and write access for buffers of homogeneous data.  Includes in-place
@@ -50,11 +55,6 @@ the overhead of handling variable size may not be worth it.
 Supports slices (aka views, aka substrings) into a mu_buf.  Especially useful
 as a means for "no copy" (in-place) string manipulation.  NOTE: mu_bufref may
 be superseded by mu_bview and mu_pview for views into mu_bstore and mu_pstore.
-
-### mu_bitvec
-
-Bit vector operations on individual bits: set, clear, toggle, test.  Includes
-functions that operate on the entire vector.
 
 ### mu_list
 
@@ -69,6 +69,11 @@ push, pop, peek, insert, delete, insertion sort and heapsort.
 ### mu_queue
 
 Efficient, extensible first-in, first-out queue operations, built atop mu_list.
+
+### mu_sched
+
+Low-overhead run-to-completion scheduler.  see [About Run To Completion
+Schedulers](./RunToCompletion.md) for more information.
 
 ### mu_spscq
 
@@ -94,15 +99,12 @@ previous version of mulib).
 
 ### mu_bcast
 
-Low-overhead publish / subscribe message passing.
+In-memory publish / subscribe message passing.
 
 ### mu_log
 
-Flexible logging with run-time control on reporting severity and multiple reporting channels.
-
-### mu_sched
-
-Low-overhead, single-thread, interrupt safe, clock agnostic, run-to-completion scheduler.
+Flexible logging with multiple reporting channels and run-time control for
+reporting severity for each channel.
 
 ### mu_string
 
