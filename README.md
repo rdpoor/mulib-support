@@ -19,7 +19,7 @@ mulib strives towards the following design goals (though some are evolving):
 * **Self-contained, pure C code:** minimize dependencies on external libraries.
 * **Two-file implementation:** whenever practical, each module is embodied in
     one header file and one C file.
-  **No malloc. Ever.** All of mulib's modules use user-allocated data structures.
+* **No malloc. Ever.** All of mulib's modules use user-allocated data structures.
 * **Well-documented:** API documentation is driven by documentation strings in
     the header files.
 * **Well-tested:** unit tests validate the API, coverage tets validate the unit
