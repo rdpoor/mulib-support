@@ -22,60 +22,57 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+#ifndef _MU_STR_H_
+#define _MU_STR_H_
 
-#include <stdio.h>
-#include "mu_test_utils.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// =============================================================================
+// includes
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 // =============================================================================
 // types and definitions
 
+typedef char mu_str_data_t;
+
+typedef enum {
+  MU_STR_ERR_NONE,
+  MU_STR_ERR_INDEX
+} mu_str_err_t;
+
+typedef struct {
+  mu_str_data_t *data;  // backing store
+  size_t capacity;      // length of backing store
+} mu_str_t;
+
+
 // =============================================================================
 // declarations
 
-int mu_bitvec_test();
-int mu_buf_test();
-int mu_bufref_test();
-int mu_list_test();
-int mu_pstore_test();
-int mu_queue_test();
-int mu_sched_test();
-int mu_spscq_test();
-int mu_str_test();
-int mu_substr_test();
-int mu_task_test();
-int mu_time_test();
+mu_str_t *mu_str_init(mu_str_t *s, mu_str_data_t *data, size_t capacity);
 
-// =============================================================================
-// public code
+mu_str_t *mu_str_init_from_cstr(mu_str_t *s, const char *cstr);
 
-int main() {
+mu_str_t *mu_str_to_cstr(mu_str_t *s, char *cstr, size_t cstr_length);
 
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
+size_t mu_str_capacity(mu_str_t *s);
 
-  mu_bitvec_test();
-  mu_buf_test();
-  mu_bufref_test();
-  mu_list_test();
-  mu_pstore_test();
-  mu_queue_test();
-  mu_sched_test();
-  mu_spscq_test();
-  mu_str_test();
-  mu_substr_test();
-  mu_task_test();
-  mu_time_test();
+mu_str_data_t *mu_str_data(mu_str_t *s);
 
-  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
+mu_str_err_t mu_str_ref(mu_str_t *s, size_t index, mu_str_data_t **p);
 
-  return mu_test_error_count();
+mu_str_err_t mu_str_get(mu_str_t *s, size_t index, mu_str_data_t *d);
+
+mu_str_err_t mu_str_put(mu_str_t *s, size_t index, mu_str_data_t d);
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _MU_STR_H_ */

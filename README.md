@@ -44,19 +44,6 @@ mulib strives towards the following design goals (though some are evolving):
 Bit vector operations on individual bits: set, clear, toggle, test.  Includes
 functions that operate on the entire vector.
 
-### mu_buf
-
-Safe read and write access for buffers of homogeneous data.  Includes in-place
-O(log N) heapsort with user-provided comparison function.  NOTE: mu_buf may be
-superseded by mu_bstore and mu_pstore (byte store and pointer store), since
-the overhead of handling variable size may not be worth it.
-
-### mu_bufref
-
-Supports slices (aka views, aka substrings) into a mu_buf.  Especially useful
-as a means for "no copy" (in-place) string manipulation.  NOTE: mu_bufref may
-be superseded by mu_bview and mu_pview for views into mu_bstore and mu_pstore.
-
 ### mu_list
 
 Supports classic singly linked list operations: push, pop, insert, delete,
@@ -83,6 +70,15 @@ primarily for use by mu_sched to transfer control between interrupt and the
 foreground levels, but -- despite its intentionally obscure name -- may be
 useful elsewhere.
 
+### mu_str
+
+Container for safe read and write access to strings, with methods for exchange
+with c-style null-terminated strings.  Companion to mu_substr
+
+### mu_substr
+
+Companion to mu_str, provides methods for slicing, appending, searching.
+
 ### mu_task
 
 A simple implementation of deferred function calls, with a compile time option
@@ -92,6 +88,22 @@ for profiling.  Used extensively by `mu_sched`.
 
 Functions to manipulate time values, properly handling roll-over.  Interfaces to
 platform specific ports/.../port_time.c
+
+## Deprecated
+
+### mu_buf
+
+Safe read and write access for buffers of homogeneous data.  Includes in-place
+O(log N) heapsort with user-provided comparison function.  NOTE: mu_buf has been
+superseded by mu_bstore and mu_pstore (byte store and pointer store), since
+the overhead of handling variable size may not be worth it.
+
+### mu_bufref
+
+Supports slices (aka views, aka substrings) into a mu_buf.  Especially useful
+as a means for "no copy" (in-place) string manipulation.  NOTE: mu_bufref has
+been superseded by mu_bview and mu_pview for views into mu_bstore and mu_pstore.
+
 
 ## In the laboratory
 
@@ -106,10 +118,6 @@ In-memory publish / subscribe message passing.
 
 Flexible logging with multiple reporting channels and run-time control for
 reporting severity for each channel.
-
-### mu_string
-
-For reading, perform in-place "zero copy" operations on strings.  Take slices of substrings, compare them.  For writing, perform safe sprintf() and efficient append operations.
 
 ### mulib_demo
 

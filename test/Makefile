@@ -9,9 +9,11 @@ TEST_SOURCES := \
 	mu_queue_test.c \
 	mu_sched_test.c \
 	mu_spscq_test.c \
+	mu_str_test.c \
+	mu_substr_test.c \
 	mu_task_test.c \
-  mu_test_utils.c \
 	mu_time_test.c \
+	mu_test_utils.c \
 	mu_test.c
 
 TEST_OBJS := $(patsubst %.c, %.o, $(TEST_SOURCES))
