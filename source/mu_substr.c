@@ -122,6 +122,33 @@ mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_str_data_t d) {
   }
 }
 
+mu_substr_err_t mu_substr_slice_str(mu_substr_t *s, int start, int end) {
+  size_t capacity = mu_str_capacity(mu_substr_str(s));
+  int s1, e1;
+
+  if (start >= 0) {
+    s1 = start;
+  } else {
+    s1 = capacity + start;
+  }
+  if (end >= 0) {
+    e1 = end;
+  } else {
+    e1 = capacity + end;
+  }
+
+  if ((s1 < 0) || (s1 > capacity)) {
+    return MU_SUBSTR_ERR_INDEX;
+  } else if ((e1 < 0) || (e1 > capacity)) {
+    return MU_SUBSTR_ERR_INDEX;
+  } else if (e1 < s1) {
+    return MU_SUBSTR_ERR_INDEX;
+  }
+  s->start = s1;
+  s->end = e1;
+  return MU_SUBSTR_ERR_NONE;
+}
+
 mu_substr_t *mu_substr_copy(mu_substr_t *dst, mu_substr_t *src) {
   size_t dst_len = mu_substr_length(dst);
   size_t src_len = mu_substr_length(src);
@@ -134,76 +161,79 @@ mu_substr_t *mu_substr_copy(mu_substr_t *dst, mu_substr_t *src) {
 }
 
 int mu_substr_cmp(mu_substr_t *s1, mu_substr_t *s2) {
-  size_t to_compare = min_size(mu_substr_length(s1), mu_substr_length(s2));
+  size_t len1 = mu_substr_length(s1);
+  size_t len2 = mu_substr_length(s2);
   mu_str_data_t *p1 = ref_offset(s1, 0);
   mu_str_data_t *p2 = ref_offset(s2, 0);
-  // printf("\r\nmu_substr_cmp: '%s' vs '%s' for %ld", p1, p2, to_compare);
-  while (to_compare-- > 0 && *p1 == *p2) {
-    p1++;
-    p2++;
-  }
-  if (*p1 > *p2) {
-    return 1;
-  } else if (*p1 < *p2) {
-    return -1;
-  } else {
+  mu_str_data_t c1, c2;
+
+  c1 = *p1;
+  c2 = *p2;
+  // loop structure could be better...
+  while (len1 > 0 && len2 > 0) {
+    c1 = *p1++;
+    c2 = *p2++;
+    if (c1 != c2) {
+      return c1 - c2;
+    }
+    len1--;
+    len2--;
+  };
+
+  // ran off the end of one or the other...
+  if (len1 == 0 && len2 == 0) {
     return 0;
+  } else if (len1 == 0) {
+    return -c2;
+  } else {
+    return c1;
   }
 }
 
-bool mu_substr_equal(mu_substr_t *s1, mu_substr_t *s2) {
+bool mu_substr_equals(mu_substr_t *s1, mu_substr_t *s2) {
   return mu_substr_cmp(s1, s2) == 0;
 }
 
 mu_substr_t *mu_substr_append(mu_substr_t *dst, mu_substr_t *src) {
   size_t to_copy = min_size(mu_substr_length(src), mu_substr_remaining(dst));
   mu_str_data_t *sp = ref_offset(src, 0);
-  mu_str_data_t *dp = ref_offset(dst, 0);
+  mu_str_data_t *dp = ref_offset(dst, dst->end);
   memcpy(dp, sp, to_copy);
   dst->end += to_copy;
   return dst;
 }
 
-mu_substr_t *mu_substr_trim(mu_substr_t *s, size_t from_start, size_t from_end) {
-  s->start += from_start;
-
-  // size_t is unsigned: prevent wrap-around
-  if (from_end < s->end) {
-    s->end -= from_end;
-  } else {
-    s->end = 0;
-  }
-
-  // assure that s->start <= s->end
-  if (s->end < s->start) {
-    s->end = s->start;
-  }
-  return s;
-}
-
+// Search for a needle in a haystack.
+//
+// Implementation: dst is initialize to a substring having the same lemgth as
+// needle, but starting at index = 0.  At each iteration dst->start and dst->end
+// is incremented by one until needle matches it or it runs into the end of
+// haystack.
 mu_substr_t *mu_substr_strstr(mu_substr_t *dst, mu_substr_t *needle, mu_substr_t *haystack) {
   size_t needle_len = mu_substr_length(needle);
   mu_substr_duplicate(dst, haystack);
 
+  if (needle_len > mu_substr_length(haystack)) {
+    return mu_substr_clear(dst);
+  }
+
+  if (mu_substr_slice_str(dst, 0, needle_len) != MU_SUBSTR_ERR_NONE) {
+    return mu_substr_clear(dst);
+  }
+
   while(true) {
-    size_t dst_len = mu_substr_length(dst);
-    if (dst_len < needle_len) {
-      // ran off the end of haystack: cannot match.  Return empty substr.
+    if (mu_substr_cmp(dst, needle) == 0) {
+      // dst matches needle -- return it
+      return dst;
+    }
+    // advance dst by 1 character
+    if (mu_substr_slice_str(dst,
+                            mu_substr_start(dst) + 1,
+                            mu_substr_end(dst) + 1) != MU_SUBSTR_ERR_NONE) {
+      // ran into end of haystack -- cannot match
       return mu_substr_clear(dst);
-
-    } else if (mu_substr_cmp(dst, needle) == 0) {
-      // needle is a substring of dst.  Fix length and return match.
-      // Note that to_trim is guaranteed non-negative because needle_len is
-      // always less than or equal to dst_len
-      size_t to_trim = dst_len - needle_len;
-      return mu_substr_trim(dst, 0, to_trim);
-
-    } else {
-      // No match yet.  Compare needle to next char in haystack.
-      mu_substr_trim(dst, 1, 0);
     }
   }
-  return dst;
 }
 
 mu_substr_t *mu_substr_to_cstr(mu_substr_t *s, char *cstr, size_t cstr_length) {

@@ -79,15 +79,15 @@ mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_str_data_t *d);
 
 mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_str_data_t d);
 
+mu_substr_err_t mu_substr_slice_str(mu_substr_t *s, int start, int end);
+
 mu_substr_t *mu_substr_copy(mu_substr_t *dst, mu_substr_t *src);
 
 int mu_substr_cmp(mu_substr_t *s1, mu_substr_t *s2);
 
-bool mu_substr_equal(mu_substr_t *s1, mu_substr_t *s2);
+bool mu_substr_equals(mu_substr_t *s1, mu_substr_t *s2);
 
 mu_substr_t *mu_substr_append(mu_substr_t *dst, mu_substr_t *src);
-
-mu_substr_t *mu_substr_trim(mu_substr_t *s, size_t from_start, size_t from_end);
 
 mu_substr_t *mu_substr_strstr(mu_substr_t *dst, mu_substr_t *needle, mu_substr_t *haystack);
 
