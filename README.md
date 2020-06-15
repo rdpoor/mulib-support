@@ -1,7 +1,7 @@
 # mulib - A library for microcontrollers  [![Build Status](https://travis-ci.com/rdpoor/mulib.svg?branch=master)](https://travis-ci.com/rdpoor/mulib)
 
-`mulib` is curated collection of software modules written in C, specifically
-tailored for microcontrollers and other resource-constrained environments.
+`mulib` is curated collection of software modules written in C, written from the
+ground up for microcontrollers and other resource-constrained environments.
 
 `mulib` features:
 
@@ -22,8 +22,7 @@ mulib strives towards the following design goals (though some are evolving):
 * **No malloc. Ever.** All of mulib's modules use user-allocated data structures.
 * **Well-documented:** API documentation is driven by documentation strings in
     the header files.
-* **Well-tested:** unit tests validate the API, coverage tets validate the unit
-    tests.
+* **Well-tested:** unit tests validate the API.
 * **Super portable:** One concise mu_ports.c file defines mulib's interface to
     the target environment.
 * **Fast and Dangerous:** mulib favors minimizing time and code space over
@@ -39,71 +38,56 @@ mulib strives towards the following design goals (though some are evolving):
 
 ## The modules
 
-### mu_bitvec
+### `mu_bitvec`
 
 Bit vector operations on individual bits: set, clear, toggle, test.  Includes
 functions that operate on the entire vector.
 
-### mu_list
+### `mu_list`
 
 Supports classic singly linked list operations: push, pop, insert, delete,
 and a traversal method for user-supplied functions.
 
-### mu_pstore
+### `mu_pstore`
 
 Operations on a collection of pointer-sized objects.  Includes functions for
 push, pop, peek, insert, delete, insertion sort and heapsort.
 
-### mu_queue
+### `mu_queue`
 
-Efficient, extensible first-in, first-out queue operations, built atop mu_list.
+Efficient, extensible first-in, first-out queue operations, built on `mu_list`.
 
-### mu_sched
+### `mu_sched`
 
 Low-overhead run-to-completion scheduler.  see [About Run To Completion
 Schedulers](./RunToCompletion.md) for more information.
 
-### mu_spscq
+### `mu_spscq`
 
 Thread-safe, lock-free, single-producer, single-consumer queue.  It is designed
-primarily for use by mu_sched to transfer control between interrupt and the
+primarily for use by `mu_sched` to transfer control between interrupt and the
 foreground levels, but -- despite its intentionally obscure name -- may be
 useful elsewhere.
 
-### mu_str
+### `mu_str`
 
 Container for safe read and write access to strings, with methods for exchange
 with c-style null-terminated strings.  Companion to mu_substr
 
-### mu_substr
+### `mu_substr`
 
-Companion to mu_str, provides methods for slicing, appending, searching.
+Companion to mu_str, implements in-place string manipulation, including slicing,
+appending and searching.
 
-### mu_task
+### `mu_task`
 
 A simple implementation of deferred function calls, with a compile time option
 for profiling.  Used extensively by `mu_sched`.
 
-### mu_time
+### `mu_time`
 
-Functions to manipulate time values, properly handling roll-over.  Interfaces to
-platform specific ports/.../port_time.c
-
-## Deprecated
-
-### mu_buf
-
-Safe read and write access for buffers of homogeneous data.  Includes in-place
-O(log N) heapsort with user-provided comparison function.  NOTE: mu_buf has been
-superseded by mu_bstore and mu_pstore (byte store and pointer store), since
-the overhead of handling variable size may not be worth it.
-
-### mu_bufref
-
-Supports slices (aka views, aka substrings) into a mu_buf.  Especially useful
-as a means for "no copy" (in-place) string manipulation.  NOTE: mu_bufref has
-been superseded by mu_bview and mu_pview for views into mu_bstore and mu_pstore.
-
+Functions to manipulate time values, properly handling roll-over.  Implemented
+as a thin interface to platform specific `ports/.../port_time.c`
 
 ## In the laboratory
 
@@ -119,6 +103,46 @@ In-memory publish / subscribe message passing.
 Flexible logging with multiple reporting channels and run-time control for
 reporting severity for each channel.
 
+### Inline a bunch of functions
+
+Many mulib functions get or set a single field in a structure.  For development,
+these have been implemented as standalone functions to simplify debugging and
+unit testing, but these functions are candidates for inlining.  E.g.:
+
+```
+// file: source/mu_pstore.c
+bool mu_pstore_is_empty(mu_pstore_t *pstore) {
+  return pstore->count == 0;
+}
+```
+could be recast as:
+
+```
+// file: include/mu_pstore.h
+static inline mu_pstore_is_empty(mu_pstore_t *pstore) {
+  return pstore->count == 0;
+}
+```
+
+### List-based Single Producer / Single Consumer queue
+
+The initial implementation of spscq uses a fixed-size array as a circular buffer.
+In addition, the main scheduling queue is array based and uses insertion sort to
+queue deferred tasks.
+
+However, an alternate implementation would include a link field in each task, and
+use linked lists for both the spsc queue and for the main scheduling queue.  The
+advantage of a list-based system is that the user would not have to pre-declare the
+size of the spsc queue and the main scheduling queue.  The disadvantage *might* be
+slightly higher scheduler overhead for two reasons:
+
+* Scheduling a task requires a linear search down the list of queued items (but
+  the linear search is *very* fast, and we don't anticipate a very deep queue).
+* The scheduler must never queue a task twice because the task contains the list
+  link, and double-queueing would create a circular list.  So the list must be
+  checked each time an event is scheduled (but this could become part of the
+  insertion sort process).
+
 ### mulib_demo
 
 In order to showcase the main features of mulib (including its portability),
@@ -132,10 +156,10 @@ the `mulib_demo` application will:
 In addition to showing off mulib, it's equally important to show how it can be
 ported to various processors and integrated into various IDEs.  Some candidates:
 
-* MPLAB + SAME54 Xplained Pro
-* Atmel Studio 7 + XMEGA Xplained Pro
-* Arduino App + ?
-* MCUXpresso + FrDM-KL27Z
-* Simplicity Studio + ?
-* ? + Nordic PCA10040 (nRF52832)
-* ? + ESP32
+* (Microchip) SAME54 Xplained Pro (Cortex-M4F) + MPLAB X
+* (TI) MSP-EXP430GET LaunchPad+ Code Composer
+* (STmicro) 32F0308DISCOVERY (Cortex-M0) + IAR Embedded Workbench
+* (STmicro) STM32F4DISCOVERY (Cortex-M4) + IAR Embedded Workbench
+* (Mcrochip) XMEGA Xplained Pro (AVR) + Atmel Studio 7
+* (Kinetis) FRDMKL25Z (Cortex-M0+) + MCUXpresso
+* (Espressif) ESP32-DEVKITC-32D (ESP-WROOM-32) + ESP-IDF
