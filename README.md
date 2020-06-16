@@ -89,6 +89,11 @@ for profiling.  Used extensively by `mu_sched`.
 Functions to manipulate time values, properly handling roll-over.  Implemented
 as a thin interface to platform specific `ports/.../port_time.c`
 
+### `mu_version`
+
+This module simply returns the mulib version number as a string of three
+digits, e.g. "1.0.2".
+
 ## In the laboratory
 
 These are modules yet to be written and tested (or in some cases, ported from a

@@ -22,62 +22,28 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+#ifndef _MU_VERSION_H_
+#define _MU_VERSION_H_
 
-#include <stdio.h>
-#include "mu_test_utils.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// =============================================================================
+// includes
 
 // =============================================================================
 // types and definitions
 
+#define MU_VERSION "1.0.0"
+
 // =============================================================================
 // declarations
 
-int mu_bitvec_test();
-int mu_buf_test();
-int mu_bufref_test();
-int mu_list_test();
-int mu_pstore_test();
-int mu_queue_test();
-int mu_sched_test();
-int mu_spscq_test();
-int mu_str_test();
-int mu_substr_test();
-int mu_task_test();
-int mu_time_test();
-int mu_version_test();
+const char *mu_version(void);
 
-// =============================================================================
-// public code
-
-int main() {
-
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
-
-  mu_bitvec_test();
-  mu_buf_test();
-  mu_bufref_test();
-  mu_list_test();
-  mu_pstore_test();
-  mu_queue_test();
-  mu_sched_test();
-  mu_spscq_test();
-  mu_str_test();
-  mu_substr_test();
-  mu_task_test();
-  mu_time_test();
-  mu_version_test();
-
-  printf("\r\nending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
-
-  return mu_test_error_count();
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _MU_VERSION_H_ */

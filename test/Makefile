@@ -13,6 +13,7 @@ TEST_SOURCES := \
 	mu_substr_test.c \
 	mu_task_test.c \
 	mu_time_test.c \
+	mu_version_test.c \
 	mu_test_utils.c \
 	mu_test.c
 

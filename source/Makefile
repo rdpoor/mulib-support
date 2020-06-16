@@ -12,7 +12,8 @@ SOURCES := \
 	mu_str.c \
 	mu_substr.c \
 	mu_task.c \
-	mu_time.c
+	mu_time.c \
+	mu_version.c
 
 # .h files that lack a corresponding .c fle but are part of the distro
 INCLUDES := \
