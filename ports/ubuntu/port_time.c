@@ -68,6 +68,14 @@ bool port_time_is_after(port_time_t t1, port_time_t t2) {
   return is_msb_set(t2 - t1);
 }
 
+port_time_dt port_time_ms_to_duration(port_time_ms_dt ms) {
+  return port_time_seconds_to_duration(ms * 1000);
+}
+
+port_time_ms_dt port_time_duration_to_ms(port_time_dt dt) {
+  return port_time_duration_to_seconds(dt) / 1000;
+}
+
 port_time_dt port_time_seconds_to_duration(port_time_seconds_dt seconds) {
   return seconds * CLOCKS_PER_SEC;
 }

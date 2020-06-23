@@ -1,7 +1,11 @@
 /**
+ * @file
+ *
+ * @brief Support for bit vectors.
+ *
  * MIT License
  *
- * Copyright (c) 2019 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,34 +44,127 @@ extern "C" {
 // types and definitions
 
 typedef struct {
-  size_t byte_count;  // number of bytes in backing store
-  size_t length;      // actual length of the bit vector
-  uint8_t *bits;      // backing store
+  size_t byte_count;  //!< number of bytes in backing store
+  size_t length;      //!< actual length of the bit vector
+  uint8_t *bits;      //!< backing store
 } mu_bitvec_t;
 
-// return the number of bytes requires to hold a bit vector of the given length
+/**
+ * @brief Convert bit count to byte count.
+ *
+ * Return the number of bytes requried to hold the given number of bits.
+ */
 #define BVEC_LENGTH_TO_BYTE_COUNT(_length) (((_length-1)/8)+1)
 
-// return the max number of bits available in a byte array with the given count.
+/**
+ * @brief Convert a byte count to a bit count.
+ *
+ * Return the maximum number of bits available in the given number of bytes.
+ */
 #define BVEC_BYTE_COUNT_TO_LENGTH(_byte_count) ((_byte_count) * 8)
 
 // =============================================================================
 // declarations
 
+/**
+ * @brief Initialize a bit vector
+ *
+ * Initialize the bit vector object with a backing store to hold the bits.
+ *
+ * Note that in somce cases, you may want a bit vector that is not a multiple
+ * of 8 bits; for this reason mu_bitvec_init() takes an additional length field
+ * and the BVEC_LENGTH_TO_BYTE_COUNT macro.
+ *
+ * For example, if you wanted a bit vector that is 12 bits long, you could do
+ * the following:
+ *
+ * @code
+ * #define VECTOR_LENGTH 12
+ * uint8_t backing_store[BVEC_LENGTH_TO_BYTE_COUNT(VECTOR_LENGTH)];
+ * mu_bvec_t bitvec;
+ * ...
+ * mu_bvec_init(&bitvec, VECTOR_LENGTH, backing_store, sizeof(backing_store));
+ * @endcode
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @param length Maximum length of the bit vetor in bits.
+ * @param bits Pointer to a byte array.
+ * @param byte_count Number of bytes in the byte array.
+ * @return bv
+ */
 mu_bitvec_t *mu_bitvec_init(mu_bitvec_t *bv, size_t length, uint8_t *bits, size_t byte_count);
 
+/**
+ * @brief Access the bytes underlying the bit vector.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @return Pointer to the byte array used to represent the bit vector.
+ */
 uint8_t *mu_bitvec_bits(mu_bitvec_t *bv);
+
+/**
+ * @brief Get the number of bits in a bit vector.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @return Maximum addressable number of bits in the bit vector.
+ */
 size_t mu_bitvec_length(mu_bitvec_t *bv);
+
+/**
+ * @brief Get the number of bytes used to store the bits.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @return Size of the underlying byte vector (in bytes).
+ */
 size_t mu_bitvec_byte_count(mu_bitvec_t *bv);
 
-// operations on single bits
-// silently return false on index out of bounds
+/**
+ * @brief Read a bit from the bit vector.
+ *
+ * Note that if the index i is greater than or equal to the bit vector length,
+ * mu_bitvec_read_bit silently ignores the error and returns false.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @param i zero-based bit position to read.
+ * @return the value of the i'th bit in the bit vector.
+ */
 bool mu_bitvec_read_bit(mu_bitvec_t *bv, int i);
 
-// return bv on success, NULL on indexing error
+/**
+ * @brief Write a bit in the bit vector.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @param i zero-based bit position to write.
+ * @param value Value to set the i'th bit in the bit vector (true or false).
+ * @return On success, return bv.  Return NULL if index is out of range.
+ */
 mu_bitvec_t *mu_bitvec_write_bit(mu_bitvec_t *bv, int i, bool value);
+
+/**
+ * @brief Set a bit in the bit vector to true.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @param i zero-based bit position to set.
+ * @return On success, return bv.  Return NULL if index is out of range.
+ */
 mu_bitvec_t *mu_bitvec_set_bit(mu_bitvec_t *bv, int i);
+
+/**
+ * @brief Set a bit in the bit vector to false.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @param i zero-based bit position to clear.
+ * @return On success, return bv.  Return NULL if index is out of range.
+ */
 mu_bitvec_t *mu_bitvec_clear_bit(mu_bitvec_t *bv, int i);
+
+/**
+ * @brief Invert a bit in the bit vector.
+ *
+ * @param bv Pointer to a mu_bitvec_t structure.
+ * @param i zero-based bit position to toggle.
+ * @return On success, return bv.  Return NULL if index is out of range.
+ */
 mu_bitvec_t *mu_bitvec_toggle_bit(mu_bitvec_t *bv, int i);
 
 // operations on entire vector

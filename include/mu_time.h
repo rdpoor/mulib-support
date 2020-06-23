@@ -41,6 +41,7 @@ extern "C";
 
 typedef port_time_t mu_time_t;
 typedef port_time_dt mu_time_dt;
+typedef port_time_ms_dt mu_time_ms_dt;
 typedef port_time_seconds_dt mu_time_seconds_dt;
 
 // =============================================================================
@@ -104,19 +105,33 @@ bool mu_time_is_equal(mu_time_t t1, mu_time_t t2);
 bool mu_time_is_after(mu_time_t t1, mu_time_t t2);
 
 /**
- * @brief Convert a duration to the corresponding number of seconds as a chron_float_t.
+ * @brief Convert a duration to milliseconds.
  *
  * @param dt A duration object
- * @param clock_rate The clock rate of the counter in HZ
+ * @return The duration in seconds
+ */
+mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt);
+
+/**
+ * @brief Convert milliseconds to a duration
+ *
+ * @param ms The duration in milliseconds
+ * @return A duration object
+ */
+mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms);
+
+/**
+ * @brief Convert a duration to seconds.
+ *
+ * @param dt A duration object
  * @return The duration in seconds
  */
 mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt);
 
 /**
- * @brief Convert a number of seconds to the corresponding duration
+ * @brief Convert seconds to a duration.
  *
  * @param s The duration in seconds
- * @param clock_rate The clock rate of the counter in HZ
  * @return A duration object
  */
 mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s);

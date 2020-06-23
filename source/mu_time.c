@@ -52,8 +52,6 @@ mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
   return port_time_difference(t1, t2);
 }
 
-// Return true iff t1 is strictly earlier, equal to or
-// later than t2.
 bool mu_time_is_before(mu_time_t t1, mu_time_t t2) {
   return port_time_is_before(t1, t2);
 }
@@ -64,6 +62,14 @@ bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
 
 bool mu_time_is_after(mu_time_t t1, mu_time_t t2) {
   return port_time_is_before(t2, t1);
+}
+
+mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt) {
+  return port_time_duration_to_ms(dt);
+}
+
+mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms) {
+  return port_time_ms_to_duration(ms);
 }
 
 mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt) {

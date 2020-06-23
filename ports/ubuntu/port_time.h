@@ -39,9 +39,10 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-typedef clock_t port_time_t;        // an absolute time
-typedef clock_t port_time_dt;       // the interval between two times
-typedef double port_time_seconds_dt;     // an interval expressed in seconds
+typedef clock_t port_time_t;           // an absolute time (subject to rollover)
+typedef clock_t port_time_dt;          // the interval between two times
+typedef clock_t port_time_ms_dt;       // an interval expressed in milliseconds
+typedef double port_time_seconds_dt;   // an interval expressed in seconds
 
 // =============================================================================
 // declarations
@@ -57,6 +58,10 @@ bool port_time_is_before(port_time_t t1, port_time_t t2);
 bool port_time_is_equal(port_time_t t1, port_time_t t2);
 
 bool port_time_is_after(port_time_t t1, port_time_t t2);
+
+port_time_dt port_time_ms_to_duration(port_time_ms_dt ms);
+
+port_time_ms_dt port_time_duration_to_ms(port_time_dt dt);
 
 port_time_dt port_time_seconds_to_duration(port_time_seconds_dt seconds);
 

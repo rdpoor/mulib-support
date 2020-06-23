@@ -63,15 +63,6 @@ typedef void *(*mu_deferred_fn)(void *context, void *arg);
  */
 typedef bool (*mu_filter_fn)(void *item);
 
-/**
- * @brief General purpose link for singly linked list.
- *
- * This will typically be a union as the first element of a struct.
- */
-typedef struct _mu_link {
-  struct _mu_link *next;
-} mu_link_t;
-
 // =============================================================================
 // declarations
 
