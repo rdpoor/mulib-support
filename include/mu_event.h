@@ -22,8 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_TASK_H_
-#define _MU_TASK_H_
+/**
+ * @file Associate a time with a task
+ */
+
+#ifndef _MU_EVENT_H_
+#define _MU_EVENT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,53 +36,28 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_config.h"
 #include "mu_time.h"
+#include "mu_task.h"
 
 // =============================================================================
 // types and definitions
 
-/**
- * A `mu_task` is a function that can be called later.  It comprises a function
- * pointer (`mu_task_fn`) and a context (`void *ctx`).  When called, the
- * function is passed the ctx argument and a `void *` argument.
- */
+typedef struct {
+  mu_time_t time;
+  mu_task_t *task;
+} mu_event_t;
 
-// Ths signature of a mu_task function.
-typedef void *(*mu_task_fn)(void *ctx, void *arg);
+// =============================================================================
+// declarations
 
-typedef struct _mu_task {
-  mu_task_fn fn;           // function to call
-  void *ctx;              // context to pass when called
-#if (MU_TASK_PROFILING)
-  const char *name;        // user defined task name
-  unsigned int call_count; // # of time task is called
-  mu_time_dt runtime;      // accumulated time spent running the task
-  mu_time_dt max_duration; // max time spend running the task
-#endif
-} mu_task_t;
+mu_event_t *mu_event_init(mu_event_t *event, mu_task_t *task, mu_time_t time);
 
-mu_task_t *mu_task_init(mu_task_t *task,
-                        mu_task_fn fn,
-                        void *ctx,
-                        const char *name);
+mu_task_t *mu_event_get_task(mu_event_t *event);
 
-const char *mu_task_name(mu_task_t *task);
-
-void *mu_task_call(mu_task_t *task, void *arg);
-
-#if (MU_TASK_PROFILING)
-
-unsigned int mu_task_call_count(mu_task_t *task);
-
-mu_time_seconds_dt mu_task_runtime(mu_task_t *task);
-
-mu_time_seconds_dt mu_task_max_duration(mu_task_t *task);
-
-#endif
+mu_time_t mu_event_get_time(mu_event_t *time);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef _MU_TASK_H_
+#endif /* #ifndef _MU_EVENT_H_ */

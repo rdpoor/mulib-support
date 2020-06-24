@@ -27,7 +27,6 @@
 
 #include "mu_sched.h"
 #include "mu_task.h"
-#include "mu_pstore.h"
 #include "mu_spscq.h"
 #include "mu_time.h"
 #include "mu_test_utils.h"
@@ -35,7 +34,7 @@
 // =============================================================================
 // private types and definitions
 
-#define TASK_QUEUE_SIZE 4
+#define EVENT_QUEUE_SIZE 4
 #define IRQ_QUEUE_SIZE 2
 
 // =============================================================================
@@ -58,8 +57,7 @@ static mu_sched_t s_sched;
 
 static mu_time_t s_now;
 
-static mu_pstore_item_t s_task_queue_items[TASK_QUEUE_SIZE];
-static mu_pstore_t s_task_queue;
+static mu_event_t s_event_queue[EVENT_QUEUE_SIZE];
 
 static mu_spscq_item_t s_isr_queue_items[IRQ_QUEUE_SIZE];
 static mu_spscq_t s_isr_queue;
@@ -81,19 +79,19 @@ static mu_task_t s_taski;
 
 void mu_sched_test() {
   mu_sched_t *s = &s_sched;
-  mu_time_t time;
+  mu_event_t *event;
 
   reset();
 
   // mu_sched_t *mu_sched_init(mu_sched_t *sched, mu_pstore_t *task_queue, mu_spscq *isr_queue);
-  ASSERT(mu_sched_init(s, &s_task_queue, &s_isr_queue) == s);
+  ASSERT(mu_sched_init(s, s_event_queue, EVENT_QUEUE_SIZE, &s_isr_queue) == s);
 
   // mu_sched_t *mu_sched_reset(mu_sched_t *sched);
 
   // mu_sched_err_t mu_sched_step(void);
 
   // mu_pstore_t *mu_sched_task_queue(mu_sched_t *sched);
-  ASSERT(mu_sched_task_queue(s) == &s_task_queue);
+  ASSERT(mu_sched_event_queue(s) == s_event_queue);
 
   // mu_spscq_t *mu_sched_isr_queue(mu_sched_t *sched);
   ASSERT(mu_sched_isr_queue(s) == &s_isr_queue);
@@ -118,13 +116,14 @@ void mu_sched_test() {
 
   // testing initial conditions
   // bool mu_sched_is_empty(mu_sched_t *sched);
-  // size_t mu_sched_task_count(mu_sched_t *sched);
+  // size_t mu_sched_event_count(mu_sched_t *sched);
   // bool mu_sched_task_is_scheduled(mu_sched_t *sched, mu_task_t *task);
   ASSERT(mu_sched_is_empty(s) == true);
+  ASSERT(mu_sched_get_current_event(s) == NULL);
   ASSERT(mu_sched_get_current_task(s) == NULL);
-  ASSERT(mu_sched_task_count(s) == 0);
-  ASSERT(mu_sched_task_is_scheduled(s, &s_task1) == false);
-  ASSERT(mu_sched_get_next_time(s, &time) == MU_SCHED_ERR_NOT_FOUND);
+  ASSERT(mu_sched_event_count(s) == 0);
+  ASSERT(mu_sched_get_next_event(s) == NULL);
+  ASSERT(mu_sched_get_next_task(s) == NULL);
 
   // queue tasks, validate ordering
   // mu_sched_err_t mu_sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_t at);
@@ -134,39 +133,43 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_at(s, &s_task5, 105) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_at(s, &s_task4, 104) == MU_SCHED_ERR_FULL);
   // "furthest in the future" task must be at index = 0
-  ASSERT(s_task_queue_items[0] == &s_task5);
-  ASSERT(((mu_task_t *)s_task_queue_items[0])->time == 105);
-  ASSERT(s_task_queue_items[1] == &s_task3);
-  ASSERT(((mu_task_t *)s_task_queue_items[1])->time == 103);
-  ASSERT(s_task_queue_items[2] == &s_task2);
-  ASSERT(((mu_task_t *)s_task_queue_items[2])->time == 102);
-  ASSERT(s_task_queue_items[3] == &s_task1);
-  ASSERT(((mu_task_t *)s_task_queue_items[3])->time == 101);
+  ASSERT(s_event_queue[0].task == &s_task5);
+  ASSERT(s_event_queue[0].time == 105);
+  ASSERT(s_event_queue[1].task == &s_task3);
+  ASSERT(s_event_queue[1].time == 103);
+  ASSERT(s_event_queue[2].task == &s_task2);
+  ASSERT(s_event_queue[2].time == 102);
+  ASSERT(s_event_queue[3].task == &s_task1);
+  ASSERT(s_event_queue[3].time == 101);
 
   ASSERT(mu_sched_is_empty(s) == false);
-  ASSERT(mu_sched_get_current_task(s) == NULL);
-  ASSERT(mu_sched_task_count(s) == 4);
-  ASSERT(mu_sched_task_is_scheduled(s, &s_task1) == true);
-  ASSERT(mu_sched_task_is_scheduled(s, &s_task4) == false);
-  ASSERT(mu_sched_get_next_time(s, &time) == MU_SCHED_ERR_NONE);
-  ASSERT(time == 101);
+  ASSERT(mu_sched_get_current_event(s) == NULL);
+  ASSERT(mu_sched_event_count(s) == 4);
+  event = mu_sched_get_next_event(s);
+  ASSERT(event != NULL);
+  ASSERT(event->time == 101);
+  ASSERT(event->task == &s_task1);
 
   reset();
 
   // mu_sched_step(mu_sched_t *sched)
   set_now(100);
   ASSERT(mu_sched_step(s) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_event_count(s) == 0);
   ASSERT(mu_task_call_count(&s_task1) == 0);
   ASSERT(mu_sched_task_at(s, &s_task1, 101) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_event_count(s) == 1);
   // time hasn't arrived yet...
   ASSERT(mu_sched_step(s) == MU_SCHED_ERR_NONE);
+  // task should still be in queue
+  ASSERT(mu_sched_event_count(s) == 1);
   ASSERT(mu_task_call_count(&s_task1) == 0);
   // time has arrived for task1
   set_now(101);
   ASSERT(mu_sched_step(s) == MU_SCHED_ERR_NONE);
+  // task queue should be empty, task should be called
+  ASSERT(mu_sched_event_count(s) == 0);
   ASSERT(mu_task_call_count(&s_task1) == 1);
-  // task queue should be empty
-  ASSERT(mu_sched_task_count(s) == 0);
 
   reset();
   set_now(100);
@@ -184,17 +187,15 @@ void mu_sched_test() {
   ASSERT(mu_sched_step(s) == MU_SCHED_ERR_NONE);
   ASSERT(mu_task_call_count(&s_task1) == 1);
   ASSERT(mu_task_call_count(&s_task2) == 1);
-  ASSERT(mu_sched_task_count(s) == 0);
+  ASSERT(mu_sched_event_count(s) == 0);
 
   // mu_sched_err_t mu_sched_remove_task(mu_sched_t *sched, mu_task_t *task);
   reset();
   set_now(100);   // shouldn't mwtter
   ASSERT(mu_sched_remove_task(s, &s_task1) == MU_SCHED_ERR_NOT_FOUND);
   ASSERT(mu_sched_task_at(s, &s_task1, 101) == MU_SCHED_ERR_NONE);
-  ASSERT(mu_sched_task_is_scheduled(s, &s_task1) == true);
   ASSERT(mu_sched_remove_task(s, &s_task1) == MU_SCHED_ERR_NONE);
-  ASSERT(mu_sched_task_count(s) == 0);
-  ASSERT(mu_sched_task_is_scheduled(s, &s_task1) == false);
+  ASSERT(mu_sched_event_count(s) == 0);
 
   // reschedule a task, assure proper ordering
   reset();
@@ -202,26 +203,27 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_at(s, &s_task1, 101) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_at(s, &s_task2, 102) == MU_SCHED_ERR_NONE);
   // verify that task1 precedes task2
-  ASSERT(s_task_queue_items[0] == &s_task2);
-  ASSERT(((mu_task_t *)s_task_queue_items[0])->time == 102);
-  ASSERT(s_task_queue_items[1] == &s_task1);
-  ASSERT(((mu_task_t *)s_task_queue_items[1])->time == 101);
+  ASSERT(s_event_queue[0].task == &s_task2);
+  ASSERT(s_event_queue[0].time == 102);
+  ASSERT(s_event_queue[1].task == &s_task1);
+  ASSERT(s_event_queue[1].time == 101);
   // rescheduling task1: task1 now follows task2.  verify queue
   ASSERT(mu_sched_task_at(s, &s_task1, 103) == MU_SCHED_ERR_NONE);
-  ASSERT(s_task_queue_items[0] == &s_task1);
-  ASSERT(((mu_task_t *)s_task_queue_items[0])->time == 103);
-  ASSERT(s_task_queue_items[1] == &s_task2);
-  ASSERT(((mu_task_t *)s_task_queue_items[1])->time == 102);
-  ASSERT(mu_sched_get_next_time(s, &time) == MU_SCHED_ERR_NONE);
-  ASSERT(time == 102);
+  ASSERT(s_event_queue[0].task == &s_task1);
+  ASSERT(s_event_queue[0].time == 103);
+  ASSERT(s_event_queue[1].task == &s_task2);
+  ASSERT(s_event_queue[1].time == 102);
+  event = mu_sched_get_next_event(s);
+  ASSERT(event != NULL);
+  ASSERT(mu_event_get_time(event) == 102);
 
   // mu_sched_err_t mu_sched_task_now(mu_sched_t *sched, mu_task_t *task);
   reset();
   set_now(100);
-  ASSERT(mu_sched_task_at(s, &s_task1, 101) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_now(s, &s_task2) == MU_SCHED_ERR_NONE);
-  ASSERT(mu_task_get_time(&s_task1) == 101);
-  ASSERT(mu_task_get_time(&s_task2) == 100);
+  event = mu_sched_get_next_event(s);
+  ASSERT(event != NULL);
+  ASSERT(mu_event_get_time(event) == 100);
 
   // mu_sched_err_t mu_sched_task(mu_sched_t *sched, mu_task_t *task);
 
@@ -229,15 +231,9 @@ void mu_sched_test() {
   reset();
   set_now(100);
   ASSERT(mu_sched_task_in(s, &s_task1, 10) == MU_SCHED_ERR_NONE);
-  ASSERT(mu_task_get_time(&s_task1) == 110);
-
-  // mu_sched_err_t mu_sched_task_again(mu_sched_t *sched, mu_task_t *task, mu_time_t dt);
-  reset();
-  mu_task_set_time(&s_task1, 100);
-  ASSERT(mu_sched_task_again(s, &s_task1, 5) == MU_SCHED_ERR_NONE);
-  ASSERT(mu_task_get_time(&s_task1) == 105);
-  ASSERT(s_task_queue_items[0] == &s_task1);
-  ASSERT(((mu_task_t *)s_task_queue_items[0])->time == 105);
+  event = mu_sched_get_next_event(s);
+  ASSERT(event != NULL);
+  ASSERT(mu_event_get_time(event) == 110);
 
   // mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task);
   reset();
@@ -250,10 +246,9 @@ void mu_sched_test() {
   // - set the task's time to the scheduler's current time
   // - called the task
   // - removed it from the isr queue
-  ASSERT(mu_task_get_time(&s_taski) == 100);
   ASSERT(mu_task_call_count(&s_taski) == 1);
   ASSERT(mu_spscq_count(s->isr_queue) == 0);
-  ASSERT(mu_sched_task_count(s) == 0);
+  ASSERT(mu_sched_event_count(s) == 0);
 }
 
 // =============================================================================
@@ -261,8 +256,9 @@ void mu_sched_test() {
 
 static void reset(void) {
   set_now(0);
-  mu_pstore_init(&s_task_queue, s_task_queue_items, TASK_QUEUE_SIZE);
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, IRQ_QUEUE_SIZE);
+  mu_sched_init(&s_sched, s_event_queue, EVENT_QUEUE_SIZE, &s_isr_queue);
+  mu_sched_set_clock_source(&s_sched, get_now);
   mu_task_init(&s_task1, taska_fn, &s_task1, "Task1");  // calls taska_fn
   mu_task_init(&s_task2, taska_fn, &s_task2, "Task2");  // ...
   mu_task_init(&s_task3, taska_fn, &s_task3, "Task3");

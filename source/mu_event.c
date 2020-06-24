@@ -25,16 +25,15 @@
 // =============================================================================
 // includes
 
-#include "mu_config.h"
+#include "mu_event.h"
 #include "mu_task.h"
 #include "mu_time.h"
-#include <stddef.h>
 
 // =============================================================================
-// private types and definitions
+// local types and definitions
 
 // =============================================================================
-// private declarations
+// local (forward) declarations
 
 // =============================================================================
 // local storage
@@ -42,59 +41,19 @@
 // =============================================================================
 // public code
 
-mu_task_t *mu_task_init(mu_task_t *task,
-                        mu_task_fn fn,
-                        void *ctx,
-                        const char *name) {
-  task->fn = fn;
-  task->ctx = ctx;
-#if (MU_TASK_PROFILING)
-  task->name = name;
-  task->call_count = 0;
-  task->runtime = 0;
-  task->max_duration = 0;
-#endif
-  return task;
+mu_event_t *mu_event_init(mu_event_t *event, mu_task_t *task, mu_time_t time) {
+  event->task = task;
+  event->time = time;
+  return event;
 }
 
-const char *mu_task_name(mu_task_t *task) {
-#if (MU_TASK_PROFILING)
-  return task->name;
-#else
-  return "";
-#endif
+mu_task_t *mu_event_get_task(mu_event_t *event) {
+  return event->task;
 }
 
-void *mu_task_call(mu_task_t *task, void *arg) {
-
-#if (MU_TASK_PROFILING)
-  mu_time_t called_at = mu_time_now();
-#endif
-  void *result = task->fn(task->ctx, arg);
-#if (MU_TASK_PROFILING)
-  task->call_count += 1;
-  mu_time_dt duration = mu_time_difference(mu_time_now(), called_at);
-  task->runtime += duration;
-  if (duration > task->max_duration) task->max_duration = duration;
-#endif
-  return result;
+mu_time_t mu_event_get_time(mu_event_t *event) {
+  return event->time;
 }
-
-#if (MU_TASK_PROFILING)
-
-unsigned int mu_task_call_count(mu_task_t *task) {
-  return task->call_count;
-}
-
-mu_time_seconds_dt mu_task_runtime(mu_task_t *task) {
-  return mu_time_duration_to_seconds(task->runtime);
-}
-
-mu_time_seconds_dt mu_task_max_duration(mu_task_t *task) {
-  return mu_time_duration_to_seconds(task->max_duration);
-}
-
-#endif
 
 // =============================================================================
-// private functions
+// local (static) code

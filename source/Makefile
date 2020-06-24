@@ -4,6 +4,7 @@ SOURCES := \
 	mu_buf.c \
 	mu_bufref.c \
 	mu_bitvec.c \
+	mu_event.c \
 	mu_spscq.c \
 	mu_list.c \
 	mu_pstore.c \

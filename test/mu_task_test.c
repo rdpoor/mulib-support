@@ -54,26 +54,10 @@ void mu_task_test() {
   mu_task_t t1;
   mu_task_t t2;
 
-  ASSERT(mu_task_init_at(&t1, task_fn1, &t1, 22, "Task1") == &t1);
-
+  ASSERT(mu_task_init(&t1, task_fn1, &t1, "Task1") == &t1);
   ASSERT(strcmp(mu_task_name(&t1), "Task1") == 0);
 
-  ASSERT(mu_task_get_time(&t1) == 22);
-  ASSERT(mu_task_set_time(&t1, 44) == &t1);
-  ASSERT(mu_task_get_time(&t1) == 44);
-  ASSERT(mu_task_advance_time(&t1, 11) == &t1);
-  ASSERT(mu_task_get_time(&t1) == 55);
-
-  ASSERT(mu_task_is_runnable(&t1, 54) == false);
-  ASSERT(mu_task_is_runnable(&t1, 55) == true);
-  ASSERT(mu_task_is_runnable(&t1, 56) == true);
-
-  ASSERT(mu_task_init_at(&t2, task_fn2, NULL, 33, "Task2") == &t2);
-  ASSERT(mu_task_get_time(&t2) == 33);
-
-  ASSERT(mu_task_compare_times(&t1, &t2) > 0);  // 55 is after 33
-  ASSERT(mu_task_compare_times(&t2, &t1) < 0);  // 33 is before 55
-  ASSERT(mu_task_compare_times(&t2, &t2) == 0);  // 33 is 33
+  ASSERT(mu_task_init(&t2, task_fn2, NULL, "Task2") == &t2);
 
   ASSERT(mu_task_call(&t1, &t2) == &t1);  // task_fn1 returns self (&t1)
   ASSERT(mu_task_call(&t2, &t1) == &t1);  // task_fn2 return arg (&t1)
