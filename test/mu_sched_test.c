@@ -249,6 +249,27 @@ void mu_sched_test() {
   ASSERT(mu_task_call_count(&s_taski) == 1);
   ASSERT(mu_spscq_count(s->isr_queue) == 0);
   ASSERT(mu_sched_event_count(s) == 0);
+
+  // scheduling task newer than all maintains proper order
+  reset();
+  ASSERT(mu_sched_task_at(s, &s_task3, 103) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_task_at(s, &s_task2, 102) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_task_at(s, &s_task1, 101) == MU_SCHED_ERR_NONE);
+  // verify that task1 precedes task2
+  ASSERT(s_event_queue[0].time == 103);
+  ASSERT(s_event_queue[1].time == 102);
+  ASSERT(s_event_queue[2].time == 101);
+
+  // scheduling two tasks at same time: most recently scheduled is processed
+  // after previously scheduled
+  reset();
+  ASSERT(mu_sched_task_at(s, &s_task3, 103) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_task_at(s, &s_task2, 103) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_task_at(s, &s_task1, 103) == MU_SCHED_ERR_NONE);
+  // verify ordering of processing: task3, task2, task1
+  ASSERT(s_event_queue[0].task == &s_task1);  // scheduled last, fires last
+  ASSERT(s_event_queue[1].task == &s_task2);
+  ASSERT(s_event_queue[2].task == &s_task3);  // scheduled first, fires first
 }
 
 // =============================================================================

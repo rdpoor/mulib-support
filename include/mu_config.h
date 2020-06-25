@@ -42,6 +42,11 @@ extern "C" {
 #define MU_TASK_PROFILING (1)
 #endif
 
+#ifndef MU_SCHED_BINARY_SEARCH
+/* 1 => use binary seach in scheduler, 0 => linear search */
+#define MU_SCHED_BINARY_SEARCH (0)
+#endif
+
 // =============================================================================
 // declarations
 

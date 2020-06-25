@@ -44,6 +44,8 @@ typedef port_time_dt mu_time_dt;
 typedef port_time_ms_dt mu_time_ms_dt;
 typedef port_time_seconds_dt mu_time_seconds_dt;
 
+#define MU_TIME_MS_TO_DURATION(ms) PORT_TIME_MS_TO_DURATION(ms)
+
 // =============================================================================
 // declarations
 

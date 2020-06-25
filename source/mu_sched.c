@@ -32,6 +32,7 @@
 #include "mu_time.h"
 #include <stdbool.h>
 #include <string.h>     // memmove
+#include <stddef.h>
 
 // =============================================================================
 // local types and definitions
@@ -266,12 +267,13 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
   if (sched->event_queue_count >= sched->event_queue_capacity) {
     return MU_SCHED_ERR_FULL;
   }
-
   if (sched->event_queue_count == 0) {
     index = 0;
   } else {
     index = find_insertion_index(sched, time);
-    int to_move = sched->event_queue_count - index;
+  }
+  int to_move = sched->event_queue_count - index;
+  if (to_move > 0) {
     // carve a hole at index
     mu_event_t *src = &sched->event_queue[index];
     mu_event_t *dst = &sched->event_queue[index + 1];
@@ -284,11 +286,13 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
   return MU_SCHED_ERR_NONE;
 }
 
+#if MU_SCHED_BINARY_SEARCH
+// binary search for insertion point
 static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
   mu_event_t *events = sched->event_queue;
   int low = 0;
   int high = sched->event_queue_count - 1;
-  while (low < high) {
+  while (low <= high) {
     int mid = (low + high) / 2;
     // events furthest in the future tend towards index=0
     if (!mu_time_is_after(events[mid].time, time)) {
@@ -299,3 +303,18 @@ static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
   }
   return low;
 }
+
+#else
+// linear search for insertion point
+static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
+  mu_event_t *events = sched->event_queue;
+
+  for (size_t i = sched->event_queue_count - 1; i >= 0; i--) {
+    if (mu_time_is_before(time, events[i].time)) {
+      return i+1;    // precedes incumbent
+    } else if (i == 0) {
+      return 0;      // follows all
+    }
+  }
+}
+#endif
