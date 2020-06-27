@@ -7,5 +7,4 @@ doxygen_sqlite3.db
 html
 
 # executable artifacts
-*.o
-test/mu_test
+build/

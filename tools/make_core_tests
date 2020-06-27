@@ -1,0 +1,27 @@
+# As part of the unit testing process, this makefile compiles all of the sources
+# in tests/core and writes the .o object files into build/.
+
+.PHONY: all clean
+
+CORE_SOURCE_DIR = ../src/core
+UNIT_TEST_DIR = ../tests/core
+BUILD_DIR = ../build
+TEST_DRIVER_DIR = ../tests
+
+UNIT_TEST_SOURCES := $(wildcard $(UNIT_TEST_DIR)/*.c)
+
+TEST_DRIVER_INCLUDES := $(wildcard $(TEST_DRIVER_DIR)/*.h)
+
+OBJECTS := $(patsubst $(UNIT_TEST_DIR)/%.c, $(BUILD_DIR)/%.o, $(UNIT_TEST_SOURCES))
+
+CFLAGS = -Wall -g
+
+IFLAGS = -I $(TEST_DRIVER_DIR) -I $(CORE_SOURCE_DIR)
+
+$(BUILD_DIR)/%.o : $(UNIT_TEST_DIR)/%.c $(TEST_DRIVER_INCLUDES)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
+
+all : $(OBJECTS)
+
+clean :
+	rm $(OBJECTS)
