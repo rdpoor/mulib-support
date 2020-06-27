@@ -33,6 +33,7 @@ extern "C" {
 // includes
 
 #include <stdint.h>
+#include <stddef.h>
 #include <stdbool.h>
 #include "mu_event.h"
 #include "mu_task.h"
