@@ -32,7 +32,8 @@
 // =============================================================================
 // include files
 
-#include "port_time.h"
+#include "definitions.h"
+#include "mu_port.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -45,78 +46,60 @@
 // =============================================================================
 // forward declarations to local functions
 
-// =============================================================================
-// extra-libary declarations (must be resolved in user's code)
-
-extern void RTC_Initialize(void);
-extern void RTC_Timer32Start ( void );
-extern void RTC_Timer32Stop ( void );
-extern void RTC_Timer32CounterSet ( uint32_t count );
-extern uint32_t RTC_Timer32CounterGet ( void );
-extern uint32_t RTC_Timer32FrequencyGet ( void );
-extern void RTC_Timer32Compare0Set ( uint32_t compareValue );
-extern void RTC_Timer32Compare1Set ( uint32_t compareValue );
-extern uint32_t RTC_Timer32PeriodGet ( void );
-// extern void RTC_Timer32InterruptEnable( RTC_TIMER32_INT_MASK interrupt );
-// extern void RTC_Timer32InterruptDisable( RTC_TIMER32_INT_MASK interrupt );
-// extern void RTC_BackupRegisterSet( BACKUP_REGISTER reg, uint32_t value );
-// extern uint32_t RTC_BackupRegisterGet( BACKUP_REGISTER reg );
-// extern TAMPER_CHANNEL RTC_TamperSourceGet( void );
-extern uint32_t RTC_Timer32TimeStampGet( void );
-// extern void RTC_Timer32CallbackRegister ( RTC_TIMER32_CALLBACK callback, uintptr_t context );
-extern void RTC_Timer32CallbackRegister ();
+// For RTC functions, see:
+// src\config\same54_xplained_pro\peripheral\rtc\plib_rtc.h
 
 // =============================================================================
 // local (static) storage
 
-static port_time_seconds_dt s_rtc_period;
+static mu_port_time_seconds_dt s_rtc_period;
 
 // =============================================================================
 // main code starts here
 
-void port_time_init() {
+void mu_port_init() {
   RTC_Initialize();
-  s_rtc_period = 1.0/(port_time_seconds_dt)RTC_Timer32FrequencyGet();
+  s_rtc_period = 1.0/(mu_port_time_seconds_dt)RTC_Timer32FrequencyGet();
   RTC_Timer32Start();        // start counting
 }
 
-port_time_t port_time_offset(port_time_t t, port_time_dt dt) {
+mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
   return t + dt;
 }
 
-port_time_dt port_time_difference(port_time_t t1, port_time_t t2) {
+mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 - t2;
 }
 
-bool port_time_is_before(port_time_t t1, port_time_t t2) {
-  return port_time_difference(t1, t2) > MAX_DURATION;
+bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2) {
+  return mu_port_time_difference(t1, t2) > MAX_DURATION;
 }
 
-bool port_time_is_equal(port_time_t t1, port_time_t t2) {
+bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 == t2;
 }
 
-bool port_time_is_after(port_time_t t1, port_time_t t2) {
-  return port_time_difference(t2, t1) > MAX_DURATION;
+bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2) {
+  return mu_port_time_difference(t2, t1) > MAX_DURATION;
 }
 
-port_time_dt port_time_ms_to_duration(port_time_ms_dt ms) {
-    return port_time_seconds_to_duration(ms / 1000.0); // could be better
+mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms) {
+    return mu_port_time_seconds_to_duration(ms / 1000.0); // could be better
 }
 
-port_time_ms_dt port_time_duration_to_ms(port_time_dt dt) {
-    return port_time_duration_to_seconds(dt) * 1000;   // could be better
+mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt) {
+    return mu_port_time_duration_to_seconds(dt) * 1000;   // could be better
 }
 
-port_time_dt port_time_seconds_to_duration(port_time_seconds_dt secs) {
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_dt secs) {
   return secs / s_rtc_period;
 }
 
-port_time_seconds_dt port_time_duration_to_seconds(port_time_dt dt) {
+mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-port_time_t port_time_now() {
+mu_port_time_t mu_port_time_now() {
   return RTC_Timer32CounterGet();
 }
 

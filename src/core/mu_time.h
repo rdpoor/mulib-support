@@ -34,17 +34,17 @@ extern "C";
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "port_time.h"
+#include "mu_port.h"
 
 // =============================================================================
 // types and definitions
 
-typedef port_time_t mu_time_t;
-typedef port_time_dt mu_time_dt;
-typedef port_time_ms_dt mu_time_ms_dt;
-typedef port_time_seconds_dt mu_time_seconds_dt;
+typedef mu_port_time_t mu_time_t;
+typedef mu_port_time_dt mu_time_dt;
+typedef mu_port_time_ms_dt mu_time_ms_dt;
+typedef mu_port_time_seconds_dt mu_time_seconds_dt;
 
-#define MU_TIME_MS_TO_DURATION(ms) PORT_TIME_MS_TO_DURATION(ms)
+#define MU_TIME_MS_TO_DURATION(ms) MU_PORT_TIME_MS_TO_DURATION(ms)
 
 // =============================================================================
 // declarations

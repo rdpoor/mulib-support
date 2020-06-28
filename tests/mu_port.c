@@ -25,19 +25,19 @@
 // =============================================================================
 // includes
 
-#include "port_time.h"
+#include "mu_port.h"
 #include <stdio.h>
 #include <time.h>
 
 // =============================================================================
 // private types and definitions
 
-const bool TIME_IS_SIGNED = (port_time_t)-1 < 0;
+const bool TIME_IS_SIGNED = (mu_port_time_t)-1 < 0;
 
 // =============================================================================
 // private declarations
 
-static bool is_msb_set(port_time_t t);
+static bool is_msb_set(mu_port_time_t t);
 
 // =============================================================================
 // local storage
@@ -45,53 +45,53 @@ static bool is_msb_set(port_time_t t);
 // =============================================================================
 // public code
 
-void port_time_init() {
+void mu_port_init() {
 }
 
-port_time_t port_time_offset(port_time_t t, port_time_dt dt) {
+mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
   return t + dt;
 }
 
-port_time_dt port_time_difference(port_time_t t1, port_time_t t2) {
+mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 - t2;
 }
 
-bool port_time_is_before(port_time_t t1, port_time_t t2) {
+bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2) {
   return is_msb_set(t1 - t2);
 }
 
-bool port_time_is_equal(port_time_t t1, port_time_t t2) {
+bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 == t2;
 }
 
-bool port_time_is_after(port_time_t t1, port_time_t t2) {
+bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2) {
   return is_msb_set(t2 - t1);
 }
 
-port_time_dt port_time_ms_to_duration(port_time_ms_dt ms) {
-  return port_time_seconds_to_duration(ms * 1000);
+mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms) {
+  return mu_port_time_seconds_to_duration(ms * 1000);
 }
 
-port_time_ms_dt port_time_duration_to_ms(port_time_dt dt) {
-  return port_time_duration_to_seconds(dt) / 1000;
+mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt) {
+  return mu_port_time_duration_to_seconds(dt) / 1000;
 }
 
-port_time_dt port_time_seconds_to_duration(port_time_seconds_dt seconds) {
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_dt seconds) {
   return seconds * CLOCKS_PER_SEC;
 }
 
-port_time_seconds_dt port_time_duration_to_seconds(port_time_dt dt) {
-  port_time_seconds_dt secs = (port_time_seconds_dt)dt / (port_time_seconds_dt)CLOCKS_PER_SEC;
+mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
+  mu_port_time_seconds_dt secs = (mu_port_time_seconds_dt)dt / (mu_port_time_seconds_dt)CLOCKS_PER_SEC;
   return secs;
 }
 
-port_time_t port_time_now() {
+mu_port_time_t mu_port_time_now() {
   return clock();
 }
 
 // =============================================================================
 // private code
 
-static bool is_msb_set(port_time_t t) {
+static bool is_msb_set(mu_port_time_t t) {
   return TIME_IS_SIGNED ? (t < 0) : ((t << 1) >> 1) ^ t;
 }

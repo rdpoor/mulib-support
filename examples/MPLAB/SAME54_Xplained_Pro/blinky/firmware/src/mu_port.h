@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _PORT_TIME_H_
-#define _PORT_TIME_H_
+#ifndef _MU_PORT_H_
+#define _MU_PORT_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,41 +38,41 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-typedef uint32_t port_time_t;           // an absolute time
-typedef int32_t port_time_dt;           // the interval between two times
-typedef int32_t port_time_ms_dt;        // an interval expressed in milliseconds
-typedef float port_time_seconds_dt;     // an interval expressed in seconds
+typedef uint32_t mu_port_time_t;           // an absolute time
+typedef int32_t mu_port_time_dt;           // the interval between two times
+typedef int32_t mu_port_time_ms_dt;        // an interval expressed in milliseconds
+typedef float mu_port_time_seconds_dt;     // an interval expressed in seconds
 
-#define PORT_TIME_CLOCK_RATE 32768
-#define PORT_TIME_MS_TO_DURATION(ms) (((ms) * PORT_TIME_CLOCK_RATE) / 1000)
+#define MU_PORT_TIME_CLOCK_RATE 32768
+#define MU_PORT_TIME_MS_TO_DURATION(ms) (((ms) * MU_PORT_TIME_CLOCK_RATE) / 1000)
 
 // =============================================================================
 // declarations
 
-void port_time_init();
+void mu_port_init();
 
-port_time_t port_time_offset(port_time_t t, port_time_dt dt);
+mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt);
 
-port_time_dt port_time_difference(port_time_t t1, port_time_t t2);
+mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2);
 
-bool port_time_is_before(port_time_t t1, port_time_t t2);
+bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2);
 
-bool port_time_is_equal(port_time_t t1, port_time_t t2);
+bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2);
 
-bool port_time_is_after(port_time_t t1, port_time_t t2);
+bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2);
 
-port_time_dt port_time_ms_to_duration(port_time_ms_dt ms);
+mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms);
 
-port_time_ms_dt port_time_duration_to_ms(port_time_dt dt);
+mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt);
 
-port_time_dt port_time_seconds_to_duration(port_time_seconds_dt seconds);
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_dt seconds);
 
-port_time_seconds_dt port_time_duration_to_seconds(port_time_dt dt);
+mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt);
 
-port_time_t port_time_now();
+mu_port_time_t mu_port_time_now();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _PORT_TIME_H_ */
+#endif /* #ifndef _MU_PORT_H_ */

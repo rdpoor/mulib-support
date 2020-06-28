@@ -27,6 +27,7 @@
 
 #include "blinky.h"
 #include "definitions.h"
+#include "mu_port.h"
 #include "mu_sched.h"
 #include "mu_spscq.h"
 #include "mu_event.h"
@@ -89,8 +90,8 @@ void blinky_init() {
   printf("\n\n##############\n");
   printf("# blinky demo %s\n", BINKY_VERSION);
 
-  // initialize the real-time clock
-  mu_time_init();
+  // initialize the port-specific interface
+  mu_port_init();
 
   // set up the isr queue and the scheduler
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, ISR_Q_CAPACITY);
@@ -103,7 +104,7 @@ void blinky_init() {
   // initialize the button task.  No context required.
   button_task_init(&s_sched);
   mu_task_init(&s_button_task, button_task_fn, NULL, "Button Interrupt");
-  
+
   // schedule the initial call to the LED task
   mu_sched_task_now(&s_sched, &s_led_task);
 }
@@ -152,7 +153,7 @@ static void *led_task_fn(void *ctx, void *arg) {
 }
 
 static void button_task_init(mu_sched_t *sched) {
-    // Register the button_cb function to be called upon an EIC interrupt on 
+    // Register the button_cb function to be called upon an EIC interrupt on
     // the user button.  Initialize with the scheduler object so the button_cb
     // can access the mu_sched.
   EIC_CallbackRegister(EIC_PIN_15 , button_cb, (uintptr_t)sched);
