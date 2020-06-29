@@ -61,7 +61,7 @@ typedef struct {
   mu_spscq_t *isr_queue;       // interrupt-safe queue of tasks to be added
   mu_clock_fn clock_fn;        // function to call to get the current time
   mu_task_t *idle_task;        // the idle task
-  mu_event_t *current_event;   // the task currently being processed (or NULL)
+  mu_event_t current_event;    // the event currently being processed
 } mu_sched_t;
 
 // =============================================================================
@@ -115,12 +115,17 @@ mu_sched_err_t mu_sched_task_now(mu_sched_t *sched, mu_task_t *task);
 
 mu_sched_err_t mu_sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_t at);
 
-mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_t in);
+mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_dt in);
+
+/**
+ * @brief Reschedule the current task after the given interval.
+ *
+ * Note that to avoid drift, this increments the task's event time rather than
+ * the current time.
+ */
+mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in);
 
 mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task);
-
-mu_sched_err_t mu_sched_task_at_safe(mu_sched_t *sched, mu_task_t *task, mu_time_t at);
-
 
 #ifdef __cplusplus
 }

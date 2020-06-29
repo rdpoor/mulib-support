@@ -37,6 +37,8 @@
 #define EVENT_QUEUE_SIZE 4
 #define IRQ_QUEUE_SIZE 2
 
+#define RESCHEDULE_DELTA 42
+
 // =============================================================================
 // private declarations
 
@@ -46,9 +48,10 @@ static void reset(void);
 static mu_time_t get_now(void);
 static void set_now(mu_time_t now);
 
-static void *taska_fn(void *self, void *arg);
-static void *taskb_fn(void *self, void *arg);
-static void *taski_fn(void *self, void *arg);  // idle task
+static void *taska_fn(void *ctx, void *arg);
+static void *taskb_fn(void *ctx, void *arg);
+static void *taskc_fn(void *ctx, void *arg);  // reschedule fn
+static void *taski_fn(void *ctx, void *arg);  // idle task
 
 // =============================================================================
 // local storage
@@ -191,7 +194,7 @@ void mu_sched_test() {
 
   // mu_sched_err_t mu_sched_remove_task(mu_sched_t *sched, mu_task_t *task);
   reset();
-  set_now(100);   // shouldn't mwtter
+  set_now(100);   // shouldn't matter
   ASSERT(mu_sched_remove_task(s, &s_task1) == MU_SCHED_ERR_NOT_FOUND);
   ASSERT(mu_sched_task_at(s, &s_task1, 101) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_remove_task(s, &s_task1) == MU_SCHED_ERR_NONE);
@@ -208,6 +211,7 @@ void mu_sched_test() {
   ASSERT(s_event_queue[1].task == &s_task1);
   ASSERT(s_event_queue[1].time == 101);
   // rescheduling task1: task1 now follows task2.  verify queue
+  ASSERT(mu_sched_remove_task(s, &s_task1) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_at(s, &s_task1, 103) == MU_SCHED_ERR_NONE);
   ASSERT(s_event_queue[0].task == &s_task1);
   ASSERT(s_event_queue[0].time == 103);
@@ -242,8 +246,8 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_from_isr(s, &s_taski) == MU_SCHED_ERR_NONE);
   ASSERT(mu_spscq_count(s->isr_queue) == 1);
   ASSERT(mu_sched_step(s) == MU_SCHED_ERR_NONE);
-  // verify that calling step:
-  // - set the task's time to the scheduler's current time
+  // verify that calling step():
+  // - sets the task's time to the scheduler's current time
   // - called the task
   // - removed it from the isr queue
   ASSERT(mu_task_call_count(&s_taski) == 1);
@@ -260,8 +264,8 @@ void mu_sched_test() {
   ASSERT(s_event_queue[1].time == 102);
   ASSERT(s_event_queue[2].time == 101);
 
-  // scheduling two tasks at same time: most recently scheduled is processed
-  // after previously scheduled
+  // scheduling tasks at same time: most recently scheduled is processed
+  // after previously scheduled (FIFO order)
   reset();
   ASSERT(mu_sched_task_at(s, &s_task3, 103) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_at(s, &s_task2, 103) == MU_SCHED_ERR_NONE);
@@ -270,7 +274,21 @@ void mu_sched_test() {
   ASSERT(s_event_queue[0].task == &s_task1);  // scheduled last, fires last
   ASSERT(s_event_queue[1].task == &s_task2);
   ASSERT(s_event_queue[2].task == &s_task3);  // scheduled first, fires first
+
+  // mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in);
+  reset();
+  mu_task_init(&s_task1, taskc_fn, NULL, "Task1");  // calls taskc_fn
+  // cannot reschedule outside of a running task.
+  ASSERT(mu_sched_reschedule_in(s, RESCHEDULE_DELTA) != MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_task_at(s, &s_task1, 100) == MU_SCHED_ERR_NONE);
+  set_now(100);
+  ASSERT(mu_sched_step(s) == MU_SCHED_ERR_NONE);
+  // taskc_fn should have rescheduled s_task1
+  event = mu_sched_get_next_event(s);
+  ASSERT(event && mu_event_get_task(event) == &s_task1);
+  ASSERT(event && mu_event_get_time(event) == mu_time_offset(100, RESCHEDULE_DELTA));
 }
+
 
 // =============================================================================
 // private code
@@ -296,19 +314,25 @@ static void set_now(mu_time_t now) {
   s_now = now;
 }
 
-// self is set to the task itself, arg is set to the scheduler
-static void *taska_fn(void *self, void *arg) {
+// ctx is set to the task itself, arg is set to the scheduler
+static void *taska_fn(void *ctx, void *arg) {
   ASSERT(arg == &s_sched);
   mu_sched_t *s = (mu_sched_t *)arg;
   // mu_task_t *mu_sched_get_current_task(mu_sched_t *sched);
-  ASSERT(mu_sched_get_current_task(s) == self);
+  ASSERT(mu_sched_get_current_task(s) == ctx);
   return NULL;
 }
 
-static void *taskb_fn(void *self, void *arg) {
+static void *taskb_fn(void *ctx, void *arg) {
   return NULL;
 }
 
-static void *taski_fn(void *self, void *arg) {
+static void *taskc_fn(void *ctx, void *arg) {
+  mu_sched_t *s = (mu_sched_t *)arg;
+  ASSERT(mu_sched_reschedule_in(s, RESCHEDULE_DELTA) == MU_SCHED_ERR_NONE);
+  return NULL;
+}
+
+static void *taski_fn(void *ctx, void *arg) {
   return NULL;
 }

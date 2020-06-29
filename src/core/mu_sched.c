@@ -81,7 +81,7 @@ mu_sched_t *mu_sched_init(mu_sched_t *sched,
 mu_sched_t *mu_sched_reset(mu_sched_t *sched) {
   sched->event_queue_count = 0;
   mu_spscq_reset(sched->isr_queue);
-  sched->current_event = NULL;
+  sched->current_event.task = NULL;
 
   return sched;
 }
@@ -103,10 +103,13 @@ mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   event = event_peek(sched);
   if (event != NULL) {
     if (!mu_time_is_after(event->time, now)) {
-      // time to run the task
-      sched->current_event = event_pop(sched);
-      mu_task_call(sched->current_event->task, sched);
-      sched->current_event = NULL;
+      // time to run the task: grab copy of the event and removed it from queue
+      memcpy(&(sched->current_event), event, sizeof(mu_event_t));
+      event_pop(sched);
+      // invoke the task
+      mu_task_call(sched->current_event.task, sched);
+      // set current event task to null to signify "not running task"
+      sched->current_event.task = NULL;
       return MU_SCHED_ERR_NONE;
     }
   }
@@ -151,11 +154,15 @@ bool mu_sched_is_empty(mu_sched_t *sched) { return sched->event_queue_count == 0
 size_t mu_sched_event_count(mu_sched_t *sched) { return sched->event_queue_count; }
 
 mu_event_t *mu_sched_get_current_event(mu_sched_t *sched) {
-  return sched->current_event;
+  if (sched->current_event.task == NULL) {
+    return NULL;
+  } else {
+    return &sched->current_event;
+  }
 }
 
 mu_task_t *mu_sched_get_current_task(mu_sched_t *sched) {
-  return (sched->current_event) ? sched->current_event->task : NULL;
+  return sched->current_event.task;
 }
 
 mu_event_t *mu_sched_get_next_event(mu_sched_t *sched) {
@@ -192,22 +199,25 @@ mu_sched_err_t mu_sched_remove_task(mu_sched_t *sched, mu_task_t *task) {
 }
 
 mu_sched_err_t mu_sched_task_now(mu_sched_t *sched, mu_task_t *task) {
-  mu_sched_remove_task(sched, task);
   return sched_task_at(sched, task, mu_sched_get_current_time(sched));
 }
 
 mu_sched_err_t mu_sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_t at) {
-  mu_sched_remove_task(sched, task);
   return sched_task_at(sched, task, at);
 }
 
-mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_t in) {
-  mu_sched_remove_task(sched, task);
+mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_dt in) {
   return sched_task_at(sched, task, mu_time_offset(mu_sched_get_current_time(sched), in));
 }
 
-mu_sched_err_t mu_sched_task_at_safe(mu_sched_t *sched, mu_task_t *task, mu_time_t at) {
-  return sched_task_at(sched, task, at);
+mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in) {
+  mu_event_t *event = mu_sched_get_current_event(sched);
+  if (!event) {
+    return MU_SCHED_ERR_NOT_FOUND;
+  }
+  mu_task_t *task = mu_event_get_task(event);
+  mu_time_t prev_time = mu_event_get_time(event);
+  return sched_task_at(sched, task, mu_time_offset(prev_time, in));
 }
 
 mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task) {

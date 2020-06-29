@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _BLINKY_SLEEPY_H_
-#define _BLINKY_SLEEPY_H_
+#ifndef _LED_TASK_H_
+#define _LED_TASK_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,18 +32,28 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include "mu_sched.h"
+#include "mu_task.h"
+
 // =============================================================================
 // types and definitions
+
+#define LED_ON_TIME_MS 5
+#define LED_OFF_TIME_MS 995
+
+typedef enum { LED_OFF, LED_ON } led_state_t;
+
+typedef struct {
+  led_state_t state;
+} led_ctx_t;
 
 // =============================================================================
 // declarations
 
-void blinky_sleepy_init(void);
-
-void blinky_sleepy_step(void);
+mu_task_t *led_task_init(mu_task_t *led_task, led_ctx_t *led_ctx);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _BLINKY_SLEEPY_H_ */
+#endif /* #ifndef _LED_TASK_H_ */

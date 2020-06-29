@@ -38,13 +38,13 @@ int main ( void )
 {
     /* Initialize all modules */
     SYS_Initialize ( NULL );
-    blinky_init();
-    
+    blinky_sleepy_init();
+
     while ( true )
     {
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         SYS_Tasks ( );
-        blinky_step();
+        blinky_sleepy_step();
     }
 
     /* Execution should not come here during normal operation */
@@ -56,4 +56,3 @@ int main ( void )
 /*******************************************************************************
  End of File
 */
-

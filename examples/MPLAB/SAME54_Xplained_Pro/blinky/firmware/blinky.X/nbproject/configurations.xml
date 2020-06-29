@@ -207,6 +207,10 @@
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/blinky/firmware/src/mu_port.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/blinky/firmware/src/mu_port.h</itemPath>
       <itemPath>../src/main.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/blinky/firmware/src/button_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/blinky/firmware/src/button_task.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/blinky/firmware/src/led_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/blinky/firmware/src/led_task.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

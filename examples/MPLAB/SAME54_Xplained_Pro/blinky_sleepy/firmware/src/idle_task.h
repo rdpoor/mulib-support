@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _BLINKY_SLEEPY_H_
-#define _BLINKY_SLEEPY_H_
+#ifndef _IDLE_TASK_H_
+#define _IDLE_TASK_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,18 +32,19 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include "mu_sched.h"
+#include "mu_task.h"
+
 // =============================================================================
 // types and definitions
 
 // =============================================================================
 // declarations
 
-void blinky_sleepy_init(void);
-
-void blinky_sleepy_step(void);
+mu_task_t *idle_task_init(mu_task_t *idle_task, mu_sched_t *sched);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _BLINKY_SLEEPY_H_ */
+#endif /* #ifndef _IDLE_TASK_H_ */

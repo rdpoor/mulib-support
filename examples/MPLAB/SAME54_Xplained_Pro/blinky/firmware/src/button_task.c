@@ -25,14 +25,9 @@
 // =============================================================================
 // includes
 
-#include "blinky.h"
 #include "button_task.h"
 #include "definitions.h"
-#include "led_task.h"
-#include "mu_port.h"
 #include "mu_sched.h"
-#include "mu_spscq.h"
-#include "mu_event.h"
 #include "mu_task.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -40,58 +35,51 @@
 // =============================================================================
 // local types and definitions
 
-#define BLINKY_VERSION "1.0.0"
-
-#define EVENT_QUEUE_CAPACITY 10
-#define ISR_Q_CAPACITY 8           // must be a power of two
-
 // =============================================================================
 // local (forward) declarations
+
+static void *button_task_fn(void *self, void *arg);
+static void button_cb(uintptr_t context);
 
 // =============================================================================
 // local storage
 
-// the scheduler state
-static mu_sched_t s_sched;
-
-// the backing store for scheduled events
-static mu_event_t s_event_queue[EVENT_QUEUE_CAPACITY];
-
-// the queue to hold tasks queued from interrupt level, and its backing store
-static mu_spscq_t s_isr_queue;
-static mu_spscq_item_t s_isr_queue_items[ISR_Q_CAPACITY];
-
-// the LED task
-static mu_task_t s_led_task;
-static led_ctx_t s_led_ctx;
-
-// the Button task
-static mu_task_t s_button_task;
-static button_ctx_t s_button_ctx;
-
 // =============================================================================
 // public code
 
-void blinky_init() {
-  printf("\n\n# ===========\n");
-  printf("# blinky %s: see https://github.com/rdpoor/mulib\n", BLINKY_VERSION);
+mu_task_t *button_task_init(mu_task_t *button_task,
+                            button_ctx_t *button_ctx,
+                            mu_sched_t *sched) {
+  // Register the button_cb function to be called upon an EIC interrupt on
+  // the user button.  Register the callback with a reference to button_ctx
+  // so we can access the task and scheduler objects from within the interrupt.
+  button_ctx->task = button_task;
+  button_ctx->sched = sched;
+  EIC_CallbackRegister(EIC_PIN_15 , button_cb, (uintptr_t)button_ctx);
+  EIC_InterruptEnable(EIC_PIN_15);
 
-  // initialize the port-specific interface
-  mu_port_init();
-
-  // set up the isr queue and the scheduler
-  mu_spscq_init(&s_isr_queue, s_isr_queue_items, ISR_Q_CAPACITY);
-  mu_sched_init(&s_sched, s_event_queue, EVENT_QUEUE_CAPACITY, &s_isr_queue);
-
-  // initialize tasks
-  led_task_init(&s_led_task, &s_led_ctx);
-  button_task_init(&s_button_task, &s_button_ctx, &s_sched);
-
-  // schedule the initial call to the LED task
-  mu_sched_task_now(&s_sched, &s_led_task);
+  mu_task_init(button_task, button_task_fn, NULL, "Button Interrupt");
+  return button_task;
 }
 
-void blinky_step() {
-  // called repeatedly from main(): run the scheduler
-  mu_sched_step(&s_sched);
+// =============================================================================
+// local (static) code
+
+static void *button_task_fn(void *ctx, void *arg) {
+  // "context" is unused in button task
+  // scheduler is passed as the second argument.
+  mu_sched_t *sched = (mu_sched_t *)arg;
+  mu_time_t now = mu_sched_get_current_time(sched);
+
+  printf("button pressed at %lu\r\n", now);
+  return NULL;
+}
+
+// button_cb is triggered when a button press generates an interrupt.
+// From interrupt level, schedule the button task upon leaving interrupt level.
+static void button_cb(uintptr_t context) {
+  button_ctx_t *button_ctx = (button_ctx_t *)context;
+  mu_task_t *task = button_ctx->task;
+  mu_sched_t *sched = button_ctx->sched;
+  mu_sched_task_from_isr(sched, task);
 }

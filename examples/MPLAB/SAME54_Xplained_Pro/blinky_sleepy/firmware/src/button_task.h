@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _BLINKY_SLEEPY_H_
-#define _BLINKY_SLEEPY_H_
+#ifndef _BUTTON_TASK_H_
+#define _BUTTON_TASK_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,18 +32,31 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include "mu_sched.h"
+#include "mu_task.h"
+
 // =============================================================================
 // types and definitions
+
+// Most tasks won't need to keep a reference to both the task and scheduler
+// objects.  However, the button task is triggered from an interrupt, and the
+// interrupt registration function accepts a single pointer.  From within the
+// interrupt context, we need to access both the task and the scheduler.
+
+typedef struct {
+  mu_task_t *task;
+  mu_sched_t *sched;
+} button_ctx_t;
 
 // =============================================================================
 // declarations
 
-void blinky_sleepy_init(void);
-
-void blinky_sleepy_step(void);
+mu_task_t *button_task_init(mu_task_t *button_task,
+                            button_ctx_t *button_ctx,
+                            mu_sched_t *sched);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _BLINKY_SLEEPY_H_ */
+#endif /* #ifndef _BUTTON_TASK_H_ */
