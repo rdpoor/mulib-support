@@ -161,121 +161,121 @@ section                    address  length [bytes]      (dec)  Description
 .text.SERCOM2_USART_Ini     0x1760           0x54          84   
 .text._fflush_r             0x17b4           0x54          84   
 .text._wcrtomb_r            0x1808           0x50          80   
-.text.__ssfputs_r           0x1858           0x4a          74   
-.text.NonMaskableInt_Ha     0x18a2            0x2           2   
-.rodata                     0x18a4           0x48          72  Read-only const 
-.text.SERCOM2_USART_Wri     0x18ec           0x48          72   
-.text.__libc_init_array     0x1934           0x48          72   
-.text.std.isra.0            0x197c           0x48          72   
-.text.__swhatbuf_r          0x19c4           0x48          72   
-.text                       0x1a0c           0x40          64  App's exec code 
-.text.SERCOM2_USART_Rea     0x1a4c           0x40          64   
-.text.led_task_fn           0x1a8c           0x40          64   
-.text.RTC_Initialize        0x1acc           0x3c          60   
-.text._fwalk_reent          0x1b08           0x3c          60   
-.text.write                 0x1b44           0x3c          60   
-.text.mu_sched_reschedu     0x1b80           0x38          56   
-.text.mu_task_call          0x1bb8           0x38          56   
-.text.PORT_Initialize       0x1bf0           0x38          56   
-.text.__swrite              0x1c28           0x38          56   
-.text.mu_sched_init         0x1c60           0x34          52   
-.text.button_task_init      0x1c94           0x34          52   
-.text.memmove               0x1cc8           0x34          52   
-.rodata                     0x1cfc           0x33          51  Read-only const 
-.text.mu_spscq_get          0x1d30           0x30          48   
-.text.SYS_Initialize        0x1d60           0x30          48   
-.text.__sfputc_r            0x1d90           0x30          48   
-.text.mu_port_init          0x1dc0           0x2c          44   
-.text.EIC_CallbackRegis     0x1dec           0x2c          44   
-.rodata                     0x1e18           0x2c          44  Read-only const 
-.text.__sfmoreglue          0x1e44           0x2c          44   
-.text._sbrk                 0x1e70           0x2c          44   
-.text.mu_spscq_put          0x1e9c           0x28          40   
-.text.RTC_InterruptHand     0x1ec4           0x28          40   
-.text.read                  0x1eec           0x28          40   
-.text.SERCOM2_USART_Err     0x1f14           0x24          36   
-.text.EIC_EXTINT_15_Int     0x1f38           0x24          36   
-.text._printf_cdnopsuxX     0x1f5c           0x24          36   
-.text.__sseek               0x1f80           0x24          36   
-.text._write_r              0x1fa4           0x24          36   
-.text._fstat_r              0x1fc8           0x24          36   
-.text._lseek_r              0x1fec           0x24          36   
-.text.__ascii_mbtowc        0x2010           0x24          36   
-.text._read_r               0x2034           0x24          36   
-.text.__sread               0x2058           0x22          34   
-.text.mu_spscq_init         0x207a           0x20          32   
-.text._mon_getc             0x209a           0x20          32   
-.text.HardFault_Handler     0x20ba            0x2           2   
-.text.led_task_init         0x20bc           0x20          32   
-.rodata.__sf_fake_stder     0x20dc           0x20          32   
-.rodata.__sf_fake_stdin     0x20fc           0x20          32   
-.rodata.__sf_fake_stdou     0x211c           0x20          32   
-.text._sbrk_r               0x213c           0x20          32   
-.text._close_r              0x215c           0x20          32   
-.text._isatty_r             0x217c           0x20          32   
-.text.SERCOM2_USART_Err     0x219c           0x1c          28   
-.text._mon_putc             0x21b8           0x1c          28   
-.text.RTC_Timer32Start      0x21d4           0x1c          28   
-.text._fputwc_r             0x21f0           0x1c          28   
-.text.__locale_mb_cur_m     0x220c           0x1c          28   
-.text.__ascii_wctomb        0x2228           0x1a          26   
-.text.mu_spscq_is_full      0x2242           0x18          24   
-.text.DebugMonitor_Hand     0x225a            0x2           2   
-.text.RTC_Timer32Counte     0x225c           0x18          24   
-.text.button_task_fn        0x2274           0x18          24   
-.text.mu_sched_task_now     0x228c           0x16          22   
-.text.mu_task_init          0x22a2           0x16          22   
-.text.mu_sched_reset        0x22b8           0x14          20   
-.text.PM_Initialize         0x22cc           0x14          20   
-.text.SUPC_Initialize       0x22e0           0x14          20   
-.text._vfprintf_cdnopsu     0x22f4           0x14          20   
-.text.mu_sched_task_fro     0x2308           0x12          18   
-.text.main                  0x231a           0x12          18   
-.text.blinky_step           0x232c           0x10          16   
-.text.BSP_Initialize        0x233c           0x10          16   
-.text.EIC_InterruptEnab     0x234c           0x10          16   
-.text.puts                  0x235c           0x10          16   
-.text.memset                0x236c           0x10          16   
-.text.mu_time_is_after      0x237c            0xe          14   
-.text.MemoryManagement_     0x238a            0x2           2   
-.text.NVMCTRL_Initializ     0x238c            0xc          12   
-.text.button_cb             0x2398            0xc          12   
-.text._cleanup_r            0x23a4            0xc          12   
-.text.fstat                 0x23b0            0xc          12   
-.rodata                     0x23bc            0xb          11  Read-only const 
-.text.mu_spscq_reset        0x23c8            0xa          10   
-.text.BusFault_Handler      0x23d2            0x2           2   
-.rodata                     0x23d4            0x8           8  Read-only const 
-.text.mu_time_offset        0x23dc            0x8           8   
-.text.mu_time_differenc     0x23e4            0x8           8   
-.text.mu_time_is_before     0x23ec            0x8           8   
-.text.mu_time_now           0x23f4            0x8           8   
-.text.mu_port_time_now      0x23fc            0x8           8   
-.text.__sclose              0x2404            0x8           8   
-.text.close                 0x240c            0x8           8   
-.text.mu_event_init         0x2414            0x6           6   
-.text.mu_port_time_is_b     0x241a            0x6           6   
-.text.RTC_Timer32Freque     0x2420            0x6           6   
-.text.mu_event_get_task     0x2426            0x4           4   
-.text.mu_event_get_time     0x242a            0x4           4   
-.text.mu_port_time_offs     0x242e            0x4           4   
-.text.mu_port_time_diff     0x2432            0x4           4   
-.text.UsageFault_Handle     0x2436            0x2           2   
-.rodata                     0x2438            0x4           4  Read-only const 
-.rodata._global_impure_     0x243c            0x4           4   
-.text._close                0x2440            0x4           4   
-.text._fstat                0x2444            0x4           4   
-.text._isatty               0x2448            0x4           4   
-.text._lseek                0x244c            0x4           4   
-.text._read                 0x2450            0x4           4   
-.text._write                0x2454            0x4           4   
-.text.isatty                0x2458            0x4           4   
-.text.lseek                 0x245c            0x4           4   
-.text.__malloc_lock         0x2460            0x2           2   
-.text.__malloc_unlock       0x2462            0x2           2   
-      Total ROM used  :      0x2461        9313  0.9% of 0x100000
+.rodata                     0x1858           0x4c          76  Read-only const 
+.text.__ssfputs_r           0x18a4           0x4a          74   
+.text.NonMaskableInt_Ha     0x18ee            0x2           2   
+.text.SERCOM2_USART_Wri     0x18f0           0x48          72   
+.text.__libc_init_array     0x1938           0x48          72   
+.text.std.isra.0            0x1980           0x48          72   
+.text.__swhatbuf_r          0x19c8           0x48          72   
+.text                       0x1a10           0x40          64  App's exec code 
+.text.SERCOM2_USART_Rea     0x1a50           0x40          64   
+.text.led_task_fn           0x1a90           0x40          64   
+.text.RTC_Initialize        0x1ad0           0x3c          60   
+.text._fwalk_reent          0x1b0c           0x3c          60   
+.text.write                 0x1b48           0x3c          60   
+.text.mu_sched_reschedu     0x1b84           0x38          56   
+.text.mu_task_call          0x1bbc           0x38          56   
+.text.PORT_Initialize       0x1bf4           0x38          56   
+.text.__swrite              0x1c2c           0x38          56   
+.text.mu_sched_init         0x1c64           0x34          52   
+.text.button_task_init      0x1c98           0x34          52   
+.text.memmove               0x1ccc           0x34          52   
+.rodata                     0x1d00           0x33          51  Read-only const 
+.text.mu_spscq_get          0x1d34           0x30          48   
+.text.SYS_Initialize        0x1d64           0x30          48   
+.text.__sfputc_r            0x1d94           0x30          48   
+.text.mu_port_init          0x1dc4           0x2c          44   
+.text.EIC_CallbackRegis     0x1df0           0x2c          44   
+.rodata                     0x1e1c           0x2c          44  Read-only const 
+.text.__sfmoreglue          0x1e48           0x2c          44   
+.text._sbrk                 0x1e74           0x2c          44   
+.text.mu_spscq_put          0x1ea0           0x28          40   
+.text.RTC_InterruptHand     0x1ec8           0x28          40   
+.text.read                  0x1ef0           0x28          40   
+.text.SERCOM2_USART_Err     0x1f18           0x24          36   
+.text.EIC_EXTINT_15_Int     0x1f3c           0x24          36   
+.text._printf_cdnopsuxX     0x1f60           0x24          36   
+.text.__sseek               0x1f84           0x24          36   
+.text._write_r              0x1fa8           0x24          36   
+.text._fstat_r              0x1fcc           0x24          36   
+.text._lseek_r              0x1ff0           0x24          36   
+.text.__ascii_mbtowc        0x2014           0x24          36   
+.text._read_r               0x2038           0x24          36   
+.text.__sread               0x205c           0x22          34   
+.text.mu_spscq_init         0x207e           0x20          32   
+.text._mon_getc             0x209e           0x20          32   
+.text.HardFault_Handler     0x20be            0x2           2   
+.text.led_task_init         0x20c0           0x20          32   
+.rodata.__sf_fake_stder     0x20e0           0x20          32   
+.rodata.__sf_fake_stdin     0x2100           0x20          32   
+.rodata.__sf_fake_stdou     0x2120           0x20          32   
+.text._sbrk_r               0x2140           0x20          32   
+.text._close_r              0x2160           0x20          32   
+.text._isatty_r             0x2180           0x20          32   
+.text.SERCOM2_USART_Err     0x21a0           0x1c          28   
+.text._mon_putc             0x21bc           0x1c          28   
+.text.RTC_Timer32Start      0x21d8           0x1c          28   
+.text._fputwc_r             0x21f4           0x1c          28   
+.text.__locale_mb_cur_m     0x2210           0x1c          28   
+.text.__ascii_wctomb        0x222c           0x1a          26   
+.text.mu_spscq_is_full      0x2246           0x18          24   
+.text.DebugMonitor_Hand     0x225e            0x2           2   
+.text.RTC_Timer32Counte     0x2260           0x18          24   
+.text.button_task_fn        0x2278           0x18          24   
+.text.mu_sched_task_now     0x2290           0x16          22   
+.text.mu_task_init          0x22a6           0x16          22   
+.text.mu_sched_reset        0x22bc           0x14          20   
+.text.PM_Initialize         0x22d0           0x14          20   
+.text.SUPC_Initialize       0x22e4           0x14          20   
+.text._vfprintf_cdnopsu     0x22f8           0x14          20   
+.text.mu_sched_task_fro     0x230c           0x12          18   
+.text.main                  0x231e           0x12          18   
+.text.blinky_step           0x2330           0x10          16   
+.text.BSP_Initialize        0x2340           0x10          16   
+.text.EIC_InterruptEnab     0x2350           0x10          16   
+.text.puts                  0x2360           0x10          16   
+.text.memset                0x2370           0x10          16   
+.text.mu_time_is_after      0x2380            0xe          14   
+.text.MemoryManagement_     0x238e            0x2           2   
+.text.NVMCTRL_Initializ     0x2390            0xc          12   
+.text.button_cb             0x239c            0xc          12   
+.text._cleanup_r            0x23a8            0xc          12   
+.text.fstat                 0x23b4            0xc          12   
+.rodata                     0x23c0            0xb          11  Read-only const 
+.text.mu_spscq_reset        0x23cc            0xa          10   
+.text.BusFault_Handler      0x23d6            0x2           2   
+.rodata                     0x23d8            0x8           8  Read-only const 
+.text.mu_time_offset        0x23e0            0x8           8   
+.text.mu_time_differenc     0x23e8            0x8           8   
+.text.mu_time_is_before     0x23f0            0x8           8   
+.text.mu_time_now           0x23f8            0x8           8   
+.text.mu_port_time_now      0x2400            0x8           8   
+.text.__sclose              0x2408            0x8           8   
+.text.close                 0x2410            0x8           8   
+.text.mu_event_init         0x2418            0x6           6   
+.text.mu_port_time_is_b     0x241e            0x6           6   
+.text.RTC_Timer32Freque     0x2424            0x6           6   
+.text.mu_event_get_task     0x242a            0x4           4   
+.text.mu_event_get_time     0x242e            0x4           4   
+.text.mu_port_time_offs     0x2432            0x4           4   
+.text.mu_port_time_diff     0x2436            0x4           4   
+.text.UsageFault_Handle     0x243a            0x2           2   
+.rodata                     0x243c            0x4           4  Read-only const 
+.rodata._global_impure_     0x2440            0x4           4   
+.text._close                0x2444            0x4           4   
+.text._fstat                0x2448            0x4           4   
+.text._isatty               0x244c            0x4           4   
+.text._lseek                0x2450            0x4           4   
+.text._read                 0x2454            0x4           4   
+.text._write                0x2458            0x4           4   
+.text.isatty                0x245c            0x4           4   
+.text.lseek                 0x2460            0x4           4   
+.text.__malloc_lock         0x2464            0x2           2   
+.text.__malloc_unlock       0x2466            0x2           2   
+      Total ROM used  :      0x2465        9317  0.9% of 0x100000
         --------------------------------------------------------------------------
-         Total Program Memory used  :      0x2461        9313  0.9% of 0x100000
+         Total Program Memory used  :      0x2465        9317  0.9% of 0x100000
         --------------------------------------------------------------------------
 
 
@@ -2585,443 +2585,443 @@ LOAD data_init
                 0x00001808       0x50 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-wcrtomb.o)
                 0x00001808                _wcrtomb_r
 
-.text.__ssfputs_r%45
-                0x00001858       0x4a
- .text.__ssfputs_r
-                0x00001858       0x4a c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-__ssfputs.o)
-                0x00001858                __ssfputs_r
+.rodata%45      0x00001858       0x4c
+ .rodata        0x00001858       0x4c build/same54_xplained_pro/production/_ext/724742760/blinky.o
 
-.rodata%46      0x000018a4       0x48
- .rodata        0x000018a4       0x48 build/same54_xplained_pro/production/_ext/724742760/blinky.o
+.text.__ssfputs_r%46
+                0x000018a4       0x4a
+ .text.__ssfputs_r
+                0x000018a4       0x4a c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-__ssfputs.o)
+                0x000018a4                __ssfputs_r
 
 .text.SERCOM2_USART_Write%47
-                0x000018ec       0x48
+                0x000018f0       0x48
  .text.SERCOM2_USART_Write
-                0x000018ec       0x48 build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
-                0x000018ec                SERCOM2_USART_Write
+                0x000018f0       0x48 build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
+                0x000018f0                SERCOM2_USART_Write
 
 .text.__libc_init_array%48
-                0x00001934       0x48
+                0x00001938       0x48
  .text.__libc_init_array
-                0x00001934       0x48 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-init.o)
-                0x00001934                __libc_init_array
+                0x00001938       0x48 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-init.o)
+                0x00001938                __libc_init_array
 
 .text.std.isra.0%49
-                0x0000197c       0x48
+                0x00001980       0x48
  .text.std.isra.0
-                0x0000197c       0x48 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
+                0x00001980       0x48 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
 
 .text.__swhatbuf_r%50
-                0x000019c4       0x48
+                0x000019c8       0x48
  .text.__swhatbuf_r
-                0x000019c4       0x48 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-makebuf.o)
-                0x000019c4                __swhatbuf_r
+                0x000019c8       0x48 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-makebuf.o)
+                0x000019c8                __swhatbuf_r
 
-.text%51        0x00001a0c       0x40
- .text          0x00001a0c       0x40 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/v7e-m/fpv4-sp/hard/crtbegin.o
+.text%51        0x00001a10       0x40
+ .text          0x00001a10       0x40 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/v7e-m/fpv4-sp/hard/crtbegin.o
 
 .text.SERCOM2_USART_Read%52
-                0x00001a4c       0x40
+                0x00001a50       0x40
  .text.SERCOM2_USART_Read
-                0x00001a4c       0x40 build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
-                0x00001a4c                SERCOM2_USART_Read
+                0x00001a50       0x40 build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
+                0x00001a50                SERCOM2_USART_Read
 
 .text.led_task_fn%53
-                0x00001a8c       0x40
+                0x00001a90       0x40
  .text.led_task_fn
-                0x00001a8c       0x40 build/same54_xplained_pro/production/_ext/724742760/led_task.o
+                0x00001a90       0x40 build/same54_xplained_pro/production/_ext/724742760/led_task.o
 
 .text.RTC_Initialize%54
-                0x00001acc       0x3c
+                0x00001ad0       0x3c
  .text.RTC_Initialize
-                0x00001acc       0x3c build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
-                0x00001acc                RTC_Initialize
+                0x00001ad0       0x3c build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
+                0x00001ad0                RTC_Initialize
 
 .text._fwalk_reent%55
-                0x00001b08       0x3c
+                0x00001b0c       0x3c
  .text._fwalk_reent
-                0x00001b08       0x3c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-fwalk.o)
-                0x00001b08                _fwalk_reent
+                0x00001b0c       0x3c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-fwalk.o)
+                0x00001b0c                _fwalk_reent
 
-.text.write%56  0x00001b44       0x3c
- .text.write    0x00001b44       0x3c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(write.o)
-                0x00001b44                write
+.text.write%56  0x00001b48       0x3c
+ .text.write    0x00001b48       0x3c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(write.o)
+                0x00001b48                write
 
 .text.mu_sched_reschedule_in%57
-                0x00001b80       0x38
+                0x00001b84       0x38
  .text.mu_sched_reschedule_in
-                0x00001b80       0x38 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
-                0x00001b80                mu_sched_reschedule_in
+                0x00001b84       0x38 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
+                0x00001b84                mu_sched_reschedule_in
 
 .text.mu_task_call%58
-                0x00001bb8       0x38
+                0x00001bbc       0x38
  .text.mu_task_call
-                0x00001bb8       0x38 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
-                0x00001bb8                mu_task_call
+                0x00001bbc       0x38 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
+                0x00001bbc                mu_task_call
 
 .text.PORT_Initialize%59
-                0x00001bf0       0x38
+                0x00001bf4       0x38
  .text.PORT_Initialize
-                0x00001bf0       0x38 build/same54_xplained_pro/production/_ext/561005163/plib_port.o
-                0x00001bf0                PORT_Initialize
+                0x00001bf4       0x38 build/same54_xplained_pro/production/_ext/561005163/plib_port.o
+                0x00001bf4                PORT_Initialize
 
 .text.__swrite%60
-                0x00001c28       0x38
+                0x00001c2c       0x38
  .text.__swrite
-                0x00001c28       0x38 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
-                0x00001c28                __swrite
+                0x00001c2c       0x38 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
+                0x00001c2c                __swrite
 
 .text.mu_sched_init%61
-                0x00001c60       0x34
+                0x00001c64       0x34
  .text.mu_sched_init
-                0x00001c60       0x34 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
-                0x00001c60                mu_sched_init
+                0x00001c64       0x34 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
+                0x00001c64                mu_sched_init
 
 .text.button_task_init%62
-                0x00001c94       0x34
+                0x00001c98       0x34
  .text.button_task_init
-                0x00001c94       0x34 build/same54_xplained_pro/production/_ext/724742760/button_task.o
-                0x00001c94                button_task_init
+                0x00001c98       0x34 build/same54_xplained_pro/production/_ext/724742760/button_task.o
+                0x00001c98                button_task_init
 
 .text.memmove%63
-                0x00001cc8       0x34
- .text.memmove  0x00001cc8       0x34 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-memmove.o)
-                0x00001cc8                memmove
+                0x00001ccc       0x34
+ .text.memmove  0x00001ccc       0x34 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-memmove.o)
+                0x00001ccc                memmove
 
-.rodata%64      0x00001cfc       0x33
- .rodata        0x00001cfc       0x33 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(_lib_a-nano-vfprintf.cdnopsuxX.o)
+.rodata%64      0x00001d00       0x33
+ .rodata        0x00001d00       0x33 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(_lib_a-nano-vfprintf.cdnopsuxX.o)
 
 .text.mu_spscq_get%65
-                0x00001d30       0x30
+                0x00001d34       0x30
  .text.mu_spscq_get
-                0x00001d30       0x30 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
-                0x00001d30                mu_spscq_get
+                0x00001d34       0x30 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
+                0x00001d34                mu_spscq_get
 
 .text.SYS_Initialize%66
-                0x00001d60       0x30
+                0x00001d64       0x30
  .text.SYS_Initialize
-                0x00001d60       0x30 build/same54_xplained_pro/production/_ext/602300742/initialization.o
-                0x00001d60                SYS_Initialize
+                0x00001d64       0x30 build/same54_xplained_pro/production/_ext/602300742/initialization.o
+                0x00001d64                SYS_Initialize
 
 .text.__sfputc_r%67
-                0x00001d90       0x30
+                0x00001d94       0x30
  .text.__sfputc_r
-                0x00001d90       0x30 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-__ssfputs.o)
+                0x00001d94       0x30 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-__ssfputs.o)
 
 .text.mu_port_init%68
-                0x00001dc0       0x2c
+                0x00001dc4       0x2c
  .text.mu_port_init
-                0x00001dc0       0x2c build/same54_xplained_pro/production/_ext/724742760/mu_port.o
-                0x00001dc0                mu_port_init
+                0x00001dc4       0x2c build/same54_xplained_pro/production/_ext/724742760/mu_port.o
+                0x00001dc4                mu_port_init
 
 .text.EIC_CallbackRegister%69
-                0x00001dec       0x2c
+                0x00001df0       0x2c
  .text.EIC_CallbackRegister
-                0x00001dec       0x2c build/same54_xplained_pro/production/_ext/18086165/plib_eic.o
-                0x00001dec                EIC_CallbackRegister
+                0x00001df0       0x2c build/same54_xplained_pro/production/_ext/18086165/plib_eic.o
+                0x00001df0                EIC_CallbackRegister
 
-.rodata%70      0x00001e18       0x2c
- .rodata        0x00001e18       0x2c build/same54_xplained_pro/production/_ext/724742760/button_task.o
+.rodata%70      0x00001e1c       0x2c
+ .rodata        0x00001e1c       0x2c build/same54_xplained_pro/production/_ext/724742760/button_task.o
 
 .text.__sfmoreglue%71
-                0x00001e44       0x2c
+                0x00001e48       0x2c
  .text.__sfmoreglue
-                0x00001e44       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
-                0x00001e44                __sfmoreglue
+                0x00001e48       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
+                0x00001e48                __sfmoreglue
 
-.text._sbrk%72  0x00001e70       0x2c
- .text._sbrk    0x00001e70       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(sbrk.o)
-                0x00001e70                _sbrk
+.text._sbrk%72  0x00001e74       0x2c
+ .text._sbrk    0x00001e74       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(sbrk.o)
+                0x00001e74                _sbrk
 
 .text.mu_spscq_put%73
-                0x00001e9c       0x28
+                0x00001ea0       0x28
  .text.mu_spscq_put
-                0x00001e9c       0x28 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
-                0x00001e9c                mu_spscq_put
+                0x00001ea0       0x28 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
+                0x00001ea0                mu_spscq_put
 
 .text.RTC_InterruptHandler%74
-                0x00001ec4       0x28
+                0x00001ec8       0x28
  .text.RTC_InterruptHandler
-                0x00001ec4       0x28 build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
-                0x00001ec4                RTC_InterruptHandler
+                0x00001ec8       0x28 build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
+                0x00001ec8                RTC_InterruptHandler
 
-.text.read%75   0x00001eec       0x28
- .text.read     0x00001eec       0x28 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(read.o)
-                0x00001eec                read
+.text.read%75   0x00001ef0       0x28
+ .text.read     0x00001ef0       0x28 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(read.o)
+                0x00001ef0                read
 
 .text.SERCOM2_USART_ErrorClear%76
-                0x00001f14       0x24
+                0x00001f18       0x24
  .text.SERCOM2_USART_ErrorClear
-                0x00001f14       0x24 build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
+                0x00001f18       0x24 build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
 
 .text.EIC_EXTINT_15_InterruptHandler%77
-                0x00001f38       0x24
+                0x00001f3c       0x24
  .text.EIC_EXTINT_15_InterruptHandler
-                0x00001f38       0x24 build/same54_xplained_pro/production/_ext/18086165/plib_eic.o
-                0x00001f38                EIC_EXTINT_15_InterruptHandler
+                0x00001f3c       0x24 build/same54_xplained_pro/production/_ext/18086165/plib_eic.o
+                0x00001f3c                EIC_EXTINT_15_InterruptHandler
 
 .text._printf_cdnopsuxX%78
-                0x00001f5c       0x24
+                0x00001f60       0x24
  .text._printf_cdnopsuxX
-                0x00001f5c       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(_lib_a-printf.cdnopsuxX.o)
-                0x00001f5c                __printf_s
-                0x00001f5c                __printf_u
-                0x00001f5c                _printf_cdnopsuxX
+                0x00001f60       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(_lib_a-printf.cdnopsuxX.o)
+                0x00001f60                __printf_s
+                0x00001f60                __printf_u
+                0x00001f60                _printf_cdnopsuxX
 
 .text.__sseek%79
-                0x00001f80       0x24
- .text.__sseek  0x00001f80       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
-                0x00001f80                __sseek
+                0x00001f84       0x24
+ .text.__sseek  0x00001f84       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
+                0x00001f84                __sseek
 
 .text._write_r%80
-                0x00001fa4       0x24
+                0x00001fa8       0x24
  .text._write_r
-                0x00001fa4       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-writer.o)
-                0x00001fa4                _write_r
+                0x00001fa8       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-writer.o)
+                0x00001fa8                _write_r
 
 .text._fstat_r%81
-                0x00001fc8       0x24
+                0x00001fcc       0x24
  .text._fstat_r
-                0x00001fc8       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-fstatr.o)
-                0x00001fc8                _fstat_r
+                0x00001fcc       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-fstatr.o)
+                0x00001fcc                _fstat_r
 
 .text._lseek_r%82
-                0x00001fec       0x24
+                0x00001ff0       0x24
  .text._lseek_r
-                0x00001fec       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-lseekr.o)
-                0x00001fec                _lseek_r
+                0x00001ff0       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-lseekr.o)
+                0x00001ff0                _lseek_r
 
 .text.__ascii_mbtowc%83
-                0x00002010       0x24
+                0x00002014       0x24
  .text.__ascii_mbtowc
-                0x00002010       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-mbtowc_r.o)
-                0x00002010                __ascii_mbtowc
+                0x00002014       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-mbtowc_r.o)
+                0x00002014                __ascii_mbtowc
 
 .text._read_r%84
-                0x00002034       0x24
- .text._read_r  0x00002034       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-readr.o)
-                0x00002034                _read_r
+                0x00002038       0x24
+ .text._read_r  0x00002038       0x24 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-readr.o)
+                0x00002038                _read_r
 
 .text.__sread%85
-                0x00002058       0x22
- .text.__sread  0x00002058       0x22 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
-                0x00002058                __sread
+                0x0000205c       0x22
+ .text.__sread  0x0000205c       0x22 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
+                0x0000205c                __sread
 
 .text.mu_spscq_init%86
-                0x0000207a       0x20
+                0x0000207e       0x20
  .text.mu_spscq_init
-                0x0000207a       0x20 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
-                0x0000207a                mu_spscq_init
+                0x0000207e       0x20 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
+                0x0000207e                mu_spscq_init
 
 .text._mon_getc%87
-                0x0000209a       0x20
+                0x0000209e       0x20
  .text._mon_getc
-                0x0000209a       0x20 build/same54_xplained_pro/production/_ext/697067648/xc32_monitor.o
-                0x0000209a                _mon_getc
+                0x0000209e       0x20 build/same54_xplained_pro/production/_ext/697067648/xc32_monitor.o
+                0x0000209e                _mon_getc
 
 .text.led_task_init%88
-                0x000020bc       0x20
+                0x000020c0       0x20
  .text.led_task_init
-                0x000020bc       0x20 build/same54_xplained_pro/production/_ext/724742760/led_task.o
-                0x000020bc                led_task_init
+                0x000020c0       0x20 build/same54_xplained_pro/production/_ext/724742760/led_task.o
+                0x000020c0                led_task_init
 
 .rodata.__sf_fake_stderr%89
-                0x000020dc       0x20
+                0x000020e0       0x20
  .rodata.__sf_fake_stderr
-                0x000020dc       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
-                0x000020dc                __sf_fake_stderr
+                0x000020e0       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
+                0x000020e0                __sf_fake_stderr
 
 .rodata.__sf_fake_stdin%90
-                0x000020fc       0x20
+                0x00002100       0x20
  .rodata.__sf_fake_stdin
-                0x000020fc       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
-                0x000020fc                __sf_fake_stdin
+                0x00002100       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
+                0x00002100                __sf_fake_stdin
 
 .rodata.__sf_fake_stdout%91
-                0x0000211c       0x20
+                0x00002120       0x20
  .rodata.__sf_fake_stdout
-                0x0000211c       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
-                0x0000211c                __sf_fake_stdout
+                0x00002120       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
+                0x00002120                __sf_fake_stdout
 
 .text._sbrk_r%92
-                0x0000213c       0x20
- .text._sbrk_r  0x0000213c       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-sbrkr.o)
-                0x0000213c                _sbrk_r
+                0x00002140       0x20
+ .text._sbrk_r  0x00002140       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-sbrkr.o)
+                0x00002140                _sbrk_r
 
 .text._close_r%93
-                0x0000215c       0x20
+                0x00002160       0x20
  .text._close_r
-                0x0000215c       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-closer.o)
-                0x0000215c                _close_r
+                0x00002160       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-closer.o)
+                0x00002160                _close_r
 
 .text._isatty_r%94
-                0x0000217c       0x20
+                0x00002180       0x20
  .text._isatty_r
-                0x0000217c       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-isattyr.o)
-                0x0000217c                _isatty_r
+                0x00002180       0x20 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-isattyr.o)
+                0x00002180                _isatty_r
 
 .text.SERCOM2_USART_ErrorGet%95
-                0x0000219c       0x1c
+                0x000021a0       0x1c
  .text.SERCOM2_USART_ErrorGet
-                0x0000219c       0x1c build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
-                0x0000219c                SERCOM2_USART_ErrorGet
+                0x000021a0       0x1c build/same54_xplained_pro/production/_ext/1547227007/plib_sercom2_usart.o
+                0x000021a0                SERCOM2_USART_ErrorGet
 
 .text._mon_putc%96
-                0x000021b8       0x1c
+                0x000021bc       0x1c
  .text._mon_putc
-                0x000021b8       0x1c build/same54_xplained_pro/production/_ext/697067648/xc32_monitor.o
-                0x000021b8                _mon_putc
+                0x000021bc       0x1c build/same54_xplained_pro/production/_ext/697067648/xc32_monitor.o
+                0x000021bc                _mon_putc
 
 .text.RTC_Timer32Start%97
-                0x000021d4       0x1c
+                0x000021d8       0x1c
  .text.RTC_Timer32Start
-                0x000021d4       0x1c build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
-                0x000021d4                RTC_Timer32Start
+                0x000021d8       0x1c build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
+                0x000021d8                RTC_Timer32Start
 
 .text._fputwc_r%98
-                0x000021f0       0x1c
+                0x000021f4       0x1c
  .text._fputwc_r
-                0x000021f0       0x1c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-fputwc.o)
-                0x000021f0                _fputwc_r
+                0x000021f4       0x1c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-fputwc.o)
+                0x000021f4                _fputwc_r
 
 .text.__locale_mb_cur_max%99
-                0x0000220c       0x1c
+                0x00002210       0x1c
  .text.__locale_mb_cur_max
-                0x0000220c       0x1c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-locale.o)
-                0x0000220c                __locale_mb_cur_max
+                0x00002210       0x1c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-locale.o)
+                0x00002210                __locale_mb_cur_max
 
 .text.__ascii_wctomb%100
-                0x00002228       0x1a
+                0x0000222c       0x1a
  .text.__ascii_wctomb
-                0x00002228       0x1a c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-wctomb_r.o)
-                0x00002228                __ascii_wctomb
+                0x0000222c       0x1a c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-wctomb_r.o)
+                0x0000222c                __ascii_wctomb
 
 .text.mu_spscq_is_full%101
-                0x00002242       0x18
+                0x00002246       0x18
  .text.mu_spscq_is_full
-                0x00002242       0x18 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
-                0x00002242                mu_spscq_is_full
+                0x00002246       0x18 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
+                0x00002246                mu_spscq_is_full
 
 .text.RTC_Timer32CounterGet%102
-                0x0000225c       0x18
+                0x00002260       0x18
  .text.RTC_Timer32CounterGet
-                0x0000225c       0x18 build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
-                0x0000225c                RTC_Timer32CounterGet
+                0x00002260       0x18 build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
+                0x00002260                RTC_Timer32CounterGet
 
 .text.button_task_fn%103
-                0x00002274       0x18
+                0x00002278       0x18
  .text.button_task_fn
-                0x00002274       0x18 build/same54_xplained_pro/production/_ext/724742760/button_task.o
+                0x00002278       0x18 build/same54_xplained_pro/production/_ext/724742760/button_task.o
 
 .text.mu_sched_task_now%104
-                0x0000228c       0x16
+                0x00002290       0x16
  .text.mu_sched_task_now
-                0x0000228c       0x16 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
-                0x0000228c                mu_sched_task_now
+                0x00002290       0x16 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
+                0x00002290                mu_sched_task_now
 
 .text.mu_task_init%105
-                0x000022a2       0x16
+                0x000022a6       0x16
  .text.mu_task_init
-                0x000022a2       0x16 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
-                0x000022a2                mu_task_init
+                0x000022a6       0x16 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
+                0x000022a6                mu_task_init
 
 .text.mu_sched_reset%106
-                0x000022b8       0x14
+                0x000022bc       0x14
  .text.mu_sched_reset
-                0x000022b8       0x14 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
-                0x000022b8                mu_sched_reset
+                0x000022bc       0x14 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
+                0x000022bc                mu_sched_reset
 
 .text.PM_Initialize%107
-                0x000022cc       0x14
+                0x000022d0       0x14
  .text.PM_Initialize
-                0x000022cc       0x14 build/same54_xplained_pro/production/_ext/554773095/plib_pm.o
-                0x000022cc                PM_Initialize
+                0x000022d0       0x14 build/same54_xplained_pro/production/_ext/554773095/plib_pm.o
+                0x000022d0                PM_Initialize
 
 .text.SUPC_Initialize%108
-                0x000022e0       0x14
+                0x000022e4       0x14
  .text.SUPC_Initialize
-                0x000022e0       0x14 build/same54_xplained_pro/production/_ext/561100223/plib_supc.o
-                0x000022e0                SUPC_Initialize
+                0x000022e4       0x14 build/same54_xplained_pro/production/_ext/561100223/plib_supc.o
+                0x000022e4                SUPC_Initialize
 
 .text._vfprintf_cdnopsuxX%109
-                0x000022f4       0x14
+                0x000022f8       0x14
  .text._vfprintf_cdnopsuxX
-                0x000022f4       0x14 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(_lib_a-nano-vfprintf.cdnopsuxX.o)
-                0x000022f4                _vfprintf_cdnopsuxX
+                0x000022f8       0x14 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(_lib_a-nano-vfprintf.cdnopsuxX.o)
+                0x000022f8                _vfprintf_cdnopsuxX
 
 .text.mu_sched_task_from_isr%110
-                0x00002308       0x12
+                0x0000230c       0x12
  .text.mu_sched_task_from_isr
-                0x00002308       0x12 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
-                0x00002308                mu_sched_task_from_isr
+                0x0000230c       0x12 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
+                0x0000230c                mu_sched_task_from_isr
 
-.text.main%111  0x0000231a       0x12
- .text.main     0x0000231a       0x12 build/same54_xplained_pro/production/_ext/1360937237/main.o
-                0x0000231a                main
+.text.main%111  0x0000231e       0x12
+ .text.main     0x0000231e       0x12 build/same54_xplained_pro/production/_ext/1360937237/main.o
+                0x0000231e                main
 
 .text.blinky_step%112
-                0x0000232c       0x10
+                0x00002330       0x10
  .text.blinky_step
-                0x0000232c       0x10 build/same54_xplained_pro/production/_ext/724742760/blinky.o
-                0x0000232c                blinky_step
+                0x00002330       0x10 build/same54_xplained_pro/production/_ext/724742760/blinky.o
+                0x00002330                blinky_step
 
 .text.BSP_Initialize%113
-                0x0000233c       0x10
+                0x00002340       0x10
  .text.BSP_Initialize
-                0x0000233c       0x10 build/same54_xplained_pro/production/_ext/465512950/bsp.o
-                0x0000233c                BSP_Initialize
+                0x00002340       0x10 build/same54_xplained_pro/production/_ext/465512950/bsp.o
+                0x00002340                BSP_Initialize
 
 .text.EIC_InterruptEnable%114
-                0x0000234c       0x10
+                0x00002350       0x10
  .text.EIC_InterruptEnable
-                0x0000234c       0x10 build/same54_xplained_pro/production/_ext/18086165/plib_eic.o
-                0x0000234c                EIC_InterruptEnable
+                0x00002350       0x10 build/same54_xplained_pro/production/_ext/18086165/plib_eic.o
+                0x00002350                EIC_InterruptEnable
 
-.text.puts%115  0x0000235c       0x10
- .text.puts     0x0000235c       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-puts.o)
-                0x0000235c                puts
+.text.puts%115  0x00002360       0x10
+ .text.puts     0x00002360       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-puts.o)
+                0x00002360                puts
 
 .text.memset%116
-                0x0000236c       0x10
- .text.memset   0x0000236c       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-memset.o)
-                0x0000236c                memset
+                0x00002370       0x10
+ .text.memset   0x00002370       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-memset.o)
+                0x00002370                memset
 
 .text.mu_time_is_after%117
-                0x0000237c        0xe
+                0x00002380        0xe
  .text.mu_time_is_after
-                0x0000237c        0xe build/same54_xplained_pro/production/_ext/265365281/mu_time.o
-                0x0000237c                mu_time_is_after
+                0x00002380        0xe build/same54_xplained_pro/production/_ext/265365281/mu_time.o
+                0x00002380                mu_time_is_after
 
 .text.NVMCTRL_Initialize%118
-                0x0000238c        0xc
+                0x00002390        0xc
  .text.NVMCTRL_Initialize
-                0x0000238c        0xc build/same54_xplained_pro/production/_ext/392550042/plib_nvmctrl.o
-                0x0000238c                NVMCTRL_Initialize
+                0x00002390        0xc build/same54_xplained_pro/production/_ext/392550042/plib_nvmctrl.o
+                0x00002390                NVMCTRL_Initialize
 
 .text.button_cb%119
-                0x00002398        0xc
+                0x0000239c        0xc
  .text.button_cb
-                0x00002398        0xc build/same54_xplained_pro/production/_ext/724742760/button_task.o
+                0x0000239c        0xc build/same54_xplained_pro/production/_ext/724742760/button_task.o
 
 .text._cleanup_r%120
-                0x000023a4        0xc
+                0x000023a8        0xc
  .text._cleanup_r
-                0x000023a4        0xc c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
-                0x000023a4                _cleanup_r
+                0x000023a8        0xc c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-findfp.o)
+                0x000023a8                _cleanup_r
 
 .text.fstat%121
-                0x000023b0        0xc
- .text.fstat    0x000023b0        0xc c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(fstat.o)
-                0x000023b0                fstat
+                0x000023b4        0xc
+ .text.fstat    0x000023b4        0xc c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(fstat.o)
+                0x000023b4                fstat
 
-.rodata%122     0x000023bc        0xb
- .rodata        0x000023bc        0xb c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-locale.o)
+.rodata%122     0x000023c0        0xb
+ .rodata        0x000023c0        0xb c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-locale.o)
 
 .text.mu_spscq_reset%123
-                0x000023c8        0xa
+                0x000023cc        0xa
  .text.mu_spscq_reset
-                0x000023c8        0xa build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
-                0x000023c8                mu_spscq_reset
+                0x000023cc        0xa build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
+                0x000023cc                mu_spscq_reset
 
 .text.mu_sched_get_current_time%124
                 0x000010e8        0x8
@@ -3029,140 +3029,140 @@ LOAD data_init
                 0x000010e8        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
                 0x000010e8                mu_sched_get_current_time
 
-.rodata%125     0x000023d4        0x8
- .rodata        0x000023d4        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
+.rodata%125     0x000023d8        0x8
+ .rodata        0x000023d8        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
 
 .text.mu_time_offset%126
-                0x000023dc        0x8
+                0x000023e0        0x8
  .text.mu_time_offset
-                0x000023dc        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
-                0x000023dc                mu_time_offset
+                0x000023e0        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
+                0x000023e0                mu_time_offset
 
 .text.mu_time_difference%127
-                0x000023e4        0x8
+                0x000023e8        0x8
  .text.mu_time_difference
-                0x000023e4        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
-                0x000023e4                mu_time_difference
+                0x000023e8        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
+                0x000023e8                mu_time_difference
 
 .text.mu_time_is_before%128
-                0x000023ec        0x8
+                0x000023f0        0x8
  .text.mu_time_is_before
-                0x000023ec        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
-                0x000023ec                mu_time_is_before
+                0x000023f0        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
+                0x000023f0                mu_time_is_before
 
 .text.mu_time_now%129
-                0x000023f4        0x8
+                0x000023f8        0x8
  .text.mu_time_now
-                0x000023f4        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
-                0x000023f4                mu_time_now
+                0x000023f8        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
+                0x000023f8                mu_time_now
 
 .text.mu_port_time_now%130
-                0x000023fc        0x8
+                0x00002400        0x8
  .text.mu_port_time_now
-                0x000023fc        0x8 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
-                0x000023fc                mu_port_time_now
+                0x00002400        0x8 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
+                0x00002400                mu_port_time_now
 
 .text.__sclose%131
-                0x00002404        0x8
+                0x00002408        0x8
  .text.__sclose
-                0x00002404        0x8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
-                0x00002404                __sclose
+                0x00002408        0x8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-stdio.o)
+                0x00002408                __sclose
 
 .text.close%132
-                0x0000240c        0x8
- .text.close    0x0000240c        0x8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(close.o)
-                0x0000240c                close
+                0x00002410        0x8
+ .text.close    0x00002410        0x8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(close.o)
+                0x00002410                close
 
 .text.mu_event_init%133
-                0x00002414        0x6
+                0x00002418        0x6
  .text.mu_event_init
-                0x00002414        0x6 build/same54_xplained_pro/production/_ext/265365281/mu_event.o
-                0x00002414                mu_event_init
+                0x00002418        0x6 build/same54_xplained_pro/production/_ext/265365281/mu_event.o
+                0x00002418                mu_event_init
 
 .text.mu_port_time_is_before%134
-                0x0000241a        0x6
+                0x0000241e        0x6
  .text.mu_port_time_is_before
-                0x0000241a        0x6 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
-                0x0000241a                mu_port_time_is_before
+                0x0000241e        0x6 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
+                0x0000241e                mu_port_time_is_before
 
 .text.RTC_Timer32FrequencyGet%135
-                0x00002420        0x6
+                0x00002424        0x6
  .text.RTC_Timer32FrequencyGet
-                0x00002420        0x6 build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
-                0x00002420                RTC_Timer32FrequencyGet
+                0x00002424        0x6 build/same54_xplained_pro/production/_ext/18098999/plib_rtc_timer.o
+                0x00002424                RTC_Timer32FrequencyGet
 
 .text.mu_event_get_task%136
-                0x00002426        0x4
+                0x0000242a        0x4
  .text.mu_event_get_task
-                0x00002426        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_event.o
-                0x00002426                mu_event_get_task
+                0x0000242a        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_event.o
+                0x0000242a                mu_event_get_task
 
 .text.mu_event_get_time%137
-                0x0000242a        0x4
+                0x0000242e        0x4
  .text.mu_event_get_time
-                0x0000242a        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_event.o
-                0x0000242a                mu_event_get_time
+                0x0000242e        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_event.o
+                0x0000242e                mu_event_get_time
 
 .text.mu_port_time_offset%138
-                0x0000242e        0x4
+                0x00002432        0x4
  .text.mu_port_time_offset
-                0x0000242e        0x4 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
-                0x0000242e                mu_port_time_offset
+                0x00002432        0x4 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
+                0x00002432                mu_port_time_offset
 
 .text.mu_port_time_difference%139
-                0x00002432        0x4
+                0x00002436        0x4
  .text.mu_port_time_difference
-                0x00002432        0x4 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
-                0x00002432                mu_port_time_difference
+                0x00002436        0x4 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
+                0x00002436                mu_port_time_difference
 
-.rodata%140     0x00002438        0x4
- .rodata        0x00002438        0x4 build/same54_xplained_pro/production/_ext/724742760/led_task.o
+.rodata%140     0x0000243c        0x4
+ .rodata        0x0000243c        0x4 build/same54_xplained_pro/production/_ext/724742760/led_task.o
 
 .rodata._global_impure_ptr%141
-                0x0000243c        0x4
+                0x00002440        0x4
  .rodata._global_impure_ptr
-                0x0000243c        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-impure.o)
-                0x0000243c                _global_impure_ptr
+                0x00002440        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-impure.o)
+                0x00002440                _global_impure_ptr
 
 .text._close%142
-                0x00002440        0x4
- .text._close   0x00002440        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_close.o)
-                0x00002440                _close
+                0x00002444        0x4
+ .text._close   0x00002444        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_close.o)
+                0x00002444                _close
 
 .text._fstat%143
-                0x00002444        0x4
- .text._fstat   0x00002444        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_fstat.o)
-                0x00002444                _fstat
+                0x00002448        0x4
+ .text._fstat   0x00002448        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_fstat.o)
+                0x00002448                _fstat
 
 .text._isatty%144
-                0x00002448        0x4
- .text._isatty  0x00002448        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_isatty.o)
-                0x00002448                _isatty
+                0x0000244c        0x4
+ .text._isatty  0x0000244c        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_isatty.o)
+                0x0000244c                _isatty
 
 .text._lseek%145
-                0x0000244c        0x4
- .text._lseek   0x0000244c        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_lseek.o)
-                0x0000244c                _lseek
+                0x00002450        0x4
+ .text._lseek   0x00002450        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_lseek.o)
+                0x00002450                _lseek
 
 .text._read%146
-                0x00002450        0x4
- .text._read    0x00002450        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_read.o)
-                0x00002450                _read
+                0x00002454        0x4
+ .text._read    0x00002454        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_read.o)
+                0x00002454                _read
 
 .text._write%147
-                0x00002454        0x4
- .text._write   0x00002454        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_write.o)
-                0x00002454                _write
+                0x00002458        0x4
+ .text._write   0x00002458        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(_write.o)
+                0x00002458                _write
 
 .text.isatty%148
-                0x00002458        0x4
- .text.isatty   0x00002458        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(isatty.o)
-                0x00002458                isatty
+                0x0000245c        0x4
+ .text.isatty   0x0000245c        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(isatty.o)
+                0x0000245c                isatty
 
 .text.lseek%149
-                0x0000245c        0x4
- .text.lseek    0x0000245c        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(lseek.o)
-                0x0000245c                lseek
+                0x00002460        0x4
+ .text.lseek    0x00002460        0x4 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(lseek.o)
+                0x00002460                lseek
 
 .text.default_idle_fn%150
                 0x00000c3e        0x2
@@ -3313,49 +3313,49 @@ LOAD data_init
                 0x00001696                TCC0_MC2_Handler
 
 .text.NonMaskableInt_Handler%153
-                0x000018a2        0x2
+                0x000018ee        0x2
  .text.NonMaskableInt_Handler
-                0x000018a2        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
-                0x000018a2                NonMaskableInt_Handler
+                0x000018ee        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
+                0x000018ee                NonMaskableInt_Handler
 
 .text.HardFault_Handler%154
-                0x000020ba        0x2
+                0x000020be        0x2
  .text.HardFault_Handler
-                0x000020ba        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
-                0x000020ba                HardFault_Handler
+                0x000020be        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
+                0x000020be                HardFault_Handler
 
 .text.DebugMonitor_Handler%155
-                0x0000225a        0x2
+                0x0000225e        0x2
  .text.DebugMonitor_Handler
-                0x0000225a        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
-                0x0000225a                DebugMonitor_Handler
+                0x0000225e        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
+                0x0000225e                DebugMonitor_Handler
 
 .text.MemoryManagement_Handler%156
-                0x0000238a        0x2
+                0x0000238e        0x2
  .text.MemoryManagement_Handler
-                0x0000238a        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
-                0x0000238a                MemoryManagement_Handler
+                0x0000238e        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
+                0x0000238e                MemoryManagement_Handler
 
 .text.BusFault_Handler%157
-                0x000023d2        0x2
+                0x000023d6        0x2
  .text.BusFault_Handler
-                0x000023d2        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
-                0x000023d2                BusFault_Handler
+                0x000023d6        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
+                0x000023d6                BusFault_Handler
 
 .text.UsageFault_Handler%158
-                0x00002436        0x2
+                0x0000243a        0x2
  .text.UsageFault_Handler
-                0x00002436        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
-                0x00002436                UsageFault_Handler
+                0x0000243a        0x2 build/same54_xplained_pro/production/_ext/602300742/exceptions.o
+                0x0000243a                UsageFault_Handler
 
 .text.__malloc_lock%159
-                0x00002460        0x2
+                0x00002464        0x2
  .text.__malloc_lock
-                0x00002460        0x2 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-mlock.o)
-                0x00002460                __malloc_lock
+                0x00002464        0x2 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-mlock.o)
+                0x00002464                __malloc_lock
 
 .text.__malloc_unlock%160
-                0x00002462        0x2
+                0x00002466        0x2
  .text.__malloc_unlock
-                0x00002462        0x2 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-mlock.o)
-                0x00002462                __malloc_unlock
+                0x00002466        0x2 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-mlock.o)
+                0x00002466                __malloc_unlock
