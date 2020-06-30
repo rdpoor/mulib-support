@@ -8,3 +8,5 @@ html
 
 # executable artifacts
 build/
+*.d
+*.o
