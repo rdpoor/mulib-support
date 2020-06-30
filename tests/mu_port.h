@@ -53,11 +53,11 @@ mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt);
 
 mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2);
 
-bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2);
+bool mu_port_time_precedes(mu_port_time_t t1, mu_port_time_t t2);
 
 bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2);
 
-bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2);
+bool mu_port_time_follows(mu_port_time_t t1, mu_port_time_t t2);
 
 mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms);
 

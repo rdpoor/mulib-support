@@ -196,7 +196,7 @@ static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
      162:	6823      	ldr	r3, [r4, #0]
      164:	469c      	mov	ip, r3
      166:	4465      	add	r5, ip
-    if (mu_time_is_before(time, events[i].time)) {
+    if (mu_time_precedes(time, events[i].time)) {
      168:	4e10      	ldr	r6, [pc, #64]	; (1ac <sched_task_at+0x88>)
      16a:	6829      	ldr	r1, [r5, #0]
      16c:	9800      	ldr	r0, [sp, #0]
@@ -350,7 +350,7 @@ mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   if (event != NULL) {
      24c:	2e00      	cmp	r6, #0
      24e:	d005      	beq.n	25c <mu_sched_step+0x4c>
-    if (!mu_time_is_after(event->time, now)) {
+    if (!mu_time_follows(event->time, now)) {
      250:	0029      	movs	r1, r5
      252:	6830      	ldr	r0, [r6, #0]
      254:	4b11      	ldr	r3, [pc, #68]	; (29c <mu_sched_step+0x8c>)
@@ -724,30 +724,30 @@ mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
      426:	bd10      	pop	{r4, pc}
      428:	00001109 	.word	0x00001109
 
-0000042c <mu_time_is_before>:
+0000042c <mu_time_precedes>:
 
-bool mu_time_is_before(mu_time_t t1, mu_time_t t2) {
+bool mu_time_precedes(mu_time_t t1, mu_time_t t2) {
      42c:	b510      	push	{r4, lr}
-  return mu_port_time_is_before(t1, t2);
-     42e:	4b01      	ldr	r3, [pc, #4]	; (434 <mu_time_is_before+0x8>)
+  return mu_port_time_precedes(t1, t2);
+     42e:	4b01      	ldr	r3, [pc, #4]	; (434 <mu_time_precedes+0x8>)
      430:	4798      	blx	r3
 }
      432:	bd10      	pop	{r4, pc}
      434:	0000110d 	.word	0x0000110d
 
-00000438 <mu_time_is_after>:
+00000438 <mu_time_follows>:
 
 bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
   return mu_port_time_is_equal(t1, t2);
 }
 
-bool mu_time_is_after(mu_time_t t1, mu_time_t t2) {
+bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
      438:	b510      	push	{r4, lr}
      43a:	000b      	movs	r3, r1
-  return mu_port_time_is_before(t2, t1);
+  return mu_port_time_precedes(t2, t1);
      43c:	0001      	movs	r1, r0
      43e:	0018      	movs	r0, r3
-     440:	4b01      	ldr	r3, [pc, #4]	; (448 <mu_time_is_after+0x10>)
+     440:	4b01      	ldr	r3, [pc, #4]	; (448 <mu_time_follows+0x10>)
      442:	4798      	blx	r3
 }
      444:	bd10      	pop	{r4, pc}
@@ -3364,7 +3364,7 @@ static void RTC_Initialize(void) {
 }
     110a:	4770      	bx	lr
 
-0000110c <mu_port_time_is_before>:
+0000110c <mu_port_time_precedes>:
   return t1 - t2;
     110c:	1a40      	subs	r0, r0, r1
   return mu_port_time_difference(t1, t2) > MAX_DURATION;

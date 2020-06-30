@@ -77,13 +77,13 @@ mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2);
  * @brief Return true if t1 is strictly before t2
  *
  * Note that if you want to know if t1 is before or equal to t2, you can use the
- * construct `!mu_time_is_after(t2, t1)``
+ * construct `!mu_time_follows(t2, t1)``
  *
  * @param t1 A time object
  * @param t2 A time object
  * @return true if t1 is strictly before t2, false otherwise.
  */
-bool mu_time_is_before(mu_time_t t1, mu_time_t t2);
+bool mu_time_precedes(mu_time_t t1, mu_time_t t2);
 
 /**
  * @brief Return true if t1 is equal to t2
@@ -98,13 +98,13 @@ bool mu_time_is_equal(mu_time_t t1, mu_time_t t2);
  * @brief Return true if t1 is strictly after t2
  *
  * Note that if you want to know if t1 is equal to or after t2, you can use the
- * construct `!mu_time_is_before(t2, t1)``
+ * construct `!mu_time_precedes(t2, t1)``
  *
  * @param t1 A time object
  * @param t2 A time object
  * @return true if t1 is strictly after t2, false otherwise.
  */
-bool mu_time_is_after(mu_time_t t1, mu_time_t t2);
+bool mu_time_follows(mu_time_t t1, mu_time_t t2);
 
 /**
  * @brief Convert a duration to milliseconds.

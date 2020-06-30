@@ -51,6 +51,13 @@ typedef enum {
   MU_SCHED_ERR_NOT_FOUND,
 } mu_sched_err_t;
 
+typedef enum {
+  MU_SCHED_TASK_STATUS_IDLE,       // task is not scheduled
+  MU_SCHED_TASK_STATUS_SCHEDULED,  // task is in the schedule, not yet runnable
+  MU_SCHED_TASK_STATUS_READY,      // task is in the schedule, ready to run
+  MU_SCHED_TASK_STATUS_ACTIVE,     // task is running
+} mu_sched_task_status_t;
+
 // Signature for clock source function.  Returns the current time.
 typedef mu_time_t (*mu_clock_fn)(void);
 
@@ -126,6 +133,9 @@ mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_dt i
 mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in);
 
 mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task);
+
+mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched, mu_task_t *task);
+
 
 #ifdef __cplusplus
 }

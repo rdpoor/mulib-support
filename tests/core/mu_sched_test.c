@@ -287,6 +287,17 @@ void mu_sched_test() {
   event = mu_sched_get_next_event(s);
   ASSERT(event && mu_event_get_task(event) == &s_task1);
   ASSERT(event && mu_event_get_time(event) == mu_time_offset(100, RESCHEDULE_DELTA));
+
+  // mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched, mu_task_t *task);
+  reset();
+  mu_task_init(&s_task1, taskc_fn, NULL, "Task1");  // calls taskc_fn
+  set_now(0);
+  ASSERT(mu_sched_get_task_status(s, &s_task1) == MU_SCHED_TASK_STATUS_IDLE);
+  mu_sched_task_at(s, &s_task1, 100);
+  ASSERT(mu_sched_get_task_status(s, &s_task1) == MU_SCHED_TASK_STATUS_SCHEDULED);
+  set_now(100);
+  ASSERT(mu_sched_get_task_status(s, &s_task1) == MU_SCHED_TASK_STATUS_READY);
+  mu_sched_step(s);  // calls taskc_fn which asserts task_status == ACTIVE
 }
 
 
@@ -329,6 +340,7 @@ static void *taskb_fn(void *ctx, void *arg) {
 
 static void *taskc_fn(void *ctx, void *arg) {
   mu_sched_t *s = (mu_sched_t *)arg;
+  ASSERT(mu_sched_get_task_status(s, &s_task1) == MU_SCHED_TASK_STATUS_ACTIVE);
   ASSERT(mu_sched_reschedule_in(s, RESCHEDULE_DELTA) == MU_SCHED_ERR_NONE);
   return NULL;
 }

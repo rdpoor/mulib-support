@@ -236,7 +236,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.EIC_InterruptEnab     0x2350           0x10          16   
 .text.puts                  0x2360           0x10          16   
 .text.memset                0x2370           0x10          16   
-.text.mu_time_is_after      0x2380            0xe          14   
+.text.mu_time_follows      0x2380            0xe          14   
 .text.MemoryManagement_     0x238e            0x2           2   
 .text.NVMCTRL_Initializ     0x2390            0xc          12   
 .text.button_cb             0x239c            0xc          12   
@@ -248,7 +248,7 @@ section                    address  length [bytes]      (dec)  Description
 .rodata                     0x23d8            0x8           8  Read-only const 
 .text.mu_time_offset        0x23e0            0x8           8   
 .text.mu_time_differenc     0x23e8            0x8           8   
-.text.mu_time_is_before     0x23f0            0x8           8   
+.text.mu_time_precedes     0x23f0            0x8           8   
 .text.mu_time_now           0x23f8            0x8           8   
 .text.mu_port_time_now      0x2400            0x8           8   
 .text.__sclose              0x2408            0x8           8   
@@ -767,7 +767,7 @@ Discarded input sections
  .bss           0x00000000        0x0 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
  .text.mu_port_time_is_equal
                 0x00000000        0xa build/same54_xplained_pro/production/_ext/724742760/mu_port.o
- .text.mu_port_time_is_after
+ .text.mu_port_time_follows
                 0x00000000        0x6 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
  .text.mu_port_time_ms_to_duration
                 0x00000000       0x34 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
@@ -2986,11 +2986,11 @@ LOAD data_init
  .text.memset   0x00002370       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-memset.o)
                 0x00002370                memset
 
-.text.mu_time_is_after%117
+.text.mu_time_follows%117
                 0x00002380        0xe
- .text.mu_time_is_after
+ .text.mu_time_follows
                 0x00002380        0xe build/same54_xplained_pro/production/_ext/265365281/mu_time.o
-                0x00002380                mu_time_is_after
+                0x00002380                mu_time_follows
 
 .text.NVMCTRL_Initialize%118
                 0x00002390        0xc
@@ -3044,11 +3044,11 @@ LOAD data_init
                 0x000023e8        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
                 0x000023e8                mu_time_difference
 
-.text.mu_time_is_before%128
+.text.mu_time_precedes%128
                 0x000023f0        0x8
- .text.mu_time_is_before
+ .text.mu_time_precedes
                 0x000023f0        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
-                0x000023f0                mu_time_is_before
+                0x000023f0                mu_time_precedes
 
 .text.mu_time_now%129
                 0x000023f8        0x8
@@ -3079,11 +3079,11 @@ LOAD data_init
                 0x00002418        0x6 build/same54_xplained_pro/production/_ext/265365281/mu_event.o
                 0x00002418                mu_event_init
 
-.text.mu_port_time_is_before%134
+.text.mu_port_time_precedes%134
                 0x0000241e        0x6
- .text.mu_port_time_is_before
+ .text.mu_port_time_precedes
                 0x0000241e        0x6 build/same54_xplained_pro/production/_ext/724742760/mu_port.o
-                0x0000241e                mu_port_time_is_before
+                0x0000241e                mu_port_time_precedes
 
 .text.RTC_Timer32FrequencyGet%135
                 0x00002424        0x6

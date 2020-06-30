@@ -52,16 +52,16 @@ mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
   return mu_port_time_difference(t1, t2);
 }
 
-bool mu_time_is_before(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_before(t1, t2);
+bool mu_time_precedes(mu_time_t t1, mu_time_t t2) {
+  return mu_port_time_precedes(t1, t2);
 }
 
 bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
   return mu_port_time_is_equal(t1, t2);
 }
 
-bool mu_time_is_after(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_before(t2, t1);
+bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
+  return mu_port_time_precedes(t2, t1);
 }
 
 mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt) {

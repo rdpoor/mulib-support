@@ -51,16 +51,16 @@ void mu_time_test() {
   d1 = mu_time_seconds_to_duration(1.0);
   t2 = mu_time_offset(t1, d1);
 
-  ASSERT(mu_time_is_before(t1, t2) == true);
-  ASSERT(mu_time_is_before(t1, t1) == false);
-  ASSERT(mu_time_is_before(t2, t1) == false);
+  ASSERT(mu_time_precedes(t1, t2) == true);
+  ASSERT(mu_time_precedes(t1, t1) == false);
+  ASSERT(mu_time_precedes(t2, t1) == false);
 
   ASSERT(mu_time_is_equal(t1, t1) == true);
   ASSERT(mu_time_is_equal(t1, t2) == false);
 
-  ASSERT(mu_time_is_after(t1, t2) == false);
-  ASSERT(mu_time_is_after(t1, t1) == false);
-  ASSERT(mu_time_is_after(t2, t1) == true);
+  ASSERT(mu_time_follows(t1, t2) == false);
+  ASSERT(mu_time_follows(t1, t1) == false);
+  ASSERT(mu_time_follows(t2, t1) == true);
 
   d2 = mu_time_difference(t2, t1);
   ASSERT(mu_time_duration_to_seconds(d2) == 1.0);  // may fail due to rounding
@@ -69,7 +69,7 @@ void mu_time_test() {
   t1 = mu_time_offset(mu_time_now(), mu_time_seconds_to_duration(0.1));
   usleep(100000);
   t2 = mu_time_now();
-  ASSERT(mu_time_is_after(t1, t2) == true);
+  ASSERT(mu_time_follows(t1, t2) == true);
 }
 
 // =============================================================================

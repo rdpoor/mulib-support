@@ -46,7 +46,9 @@ static mu_event_t *event_peek(mu_sched_t *sched);
 
 static mu_event_t *event_pop(mu_sched_t *sched);
 
-static int find_deletion_index(mu_sched_t *sched, mu_task_t *task);
+static int find_event_index(mu_sched_t *sched, mu_task_t *task);
+
+static mu_event_t *find_task_event(mu_sched_t *sched, mu_task_t *task);
 
 static void delete_event_at(mu_sched_t *sched, int index);
 
@@ -102,7 +104,7 @@ mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   // process one event in the main queue
   event = event_peek(sched);
   if (event != NULL) {
-    if (!mu_time_is_after(event->time, now)) {
+    if (!mu_time_follows(event->time, now)) {
       // time to run the task: grab copy of the event and removed it from queue
       memcpy(&(sched->current_event), event, sizeof(mu_event_t));
       event_pop(sched);
@@ -189,7 +191,7 @@ mu_sched_err_t mu_sched_get_next_time(mu_sched_t *sched, mu_time_t *time) {
 }
 
 mu_sched_err_t mu_sched_remove_task(mu_sched_t *sched, mu_task_t *task) {
-  int index = find_deletion_index(sched, task);
+  int index = find_event_index(sched, task);
   if (index < 0) {
     return MU_SCHED_ERR_NOT_FOUND;
   } else {
@@ -228,6 +230,23 @@ mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task) {
   }
 }
 
+mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched,
+                                                mu_task_t *task) {
+  if (mu_sched_get_current_task(sched) == task) {
+    return MU_SCHED_TASK_STATUS_ACTIVE;
+  }
+  mu_event_t *event = find_task_event(sched, task);
+  if (event == NULL) {
+    return MU_SCHED_TASK_STATUS_IDLE;
+  }
+  mu_time_t now = mu_sched_get_current_time(sched);
+  if (!mu_time_follows(mu_event_get_time(event), now)) {
+    return MU_SCHED_TASK_STATUS_READY;
+  } else {
+    return MU_SCHED_TASK_STATUS_SCHEDULED;
+  }
+}
+
 // =============================================================================
 // local (static) code
 
@@ -249,13 +268,22 @@ static mu_event_t *event_pop(mu_sched_t *sched) {
   return &sched->event_queue[--sched->event_queue_count];
 }
 
-static int find_deletion_index(mu_sched_t *sched, mu_task_t *task) {
+static int find_event_index(mu_sched_t *sched, mu_task_t *task) {
   for (int i = sched->event_queue_count - 1; i >= 0; i--) {
     mu_event_t *event = &sched->event_queue[i];
     if (event->task == task)
       return i;
   }
   return -1;
+}
+
+static mu_event_t *find_task_event(mu_sched_t *sched, mu_task_t *task) {
+  int i = find_event_index(sched, task);
+  if (i < 0) {
+    return NULL;
+  } else {
+    return &sched->event_queue[i];
+  }
 }
 
 static void delete_event_at(mu_sched_t *sched, int index) {
@@ -305,7 +333,7 @@ static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
   while (low <= high) {
     int mid = (low + high) / 2;
     // events furthest in the future tend towards index=0
-    if (!mu_time_is_after(events[mid].time, time)) {
+    if (!mu_time_follows(events[mid].time, time)) {
       high = mid - 1;
     } else {
       low = mid + 1;
@@ -320,7 +348,7 @@ static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
   mu_event_t *events = sched->event_queue;
 
   for (size_t i = sched->event_queue_count - 1; i >= 0; i--) {
-    if (mu_time_is_before(time, events[i].time)) {
+    if (mu_time_precedes(time, events[i].time)) {
       return i+1;    // precedes incumbent
     } else if (i == 0) {
       return 0;      // follows all

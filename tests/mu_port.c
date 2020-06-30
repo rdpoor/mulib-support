@@ -56,7 +56,7 @@ mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 - t2;
 }
 
-bool mu_port_time_is_before(mu_port_time_t t1, mu_port_time_t t2) {
+bool mu_port_time_precedes(mu_port_time_t t1, mu_port_time_t t2) {
   return is_msb_set(t1 - t2);
 }
 
@@ -64,7 +64,7 @@ bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 == t2;
 }
 
-bool mu_port_time_is_after(mu_port_time_t t1, mu_port_time_t t2) {
+bool mu_port_time_follows(mu_port_time_t t1, mu_port_time_t t2) {
   return is_msb_set(t2 - t1);
 }
 
