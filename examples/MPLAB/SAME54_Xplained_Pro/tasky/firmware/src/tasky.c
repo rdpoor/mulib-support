@@ -29,6 +29,7 @@
 #include "button_task.h"
 #include "definitions.h"
 #include "idle_task.h"
+#include "kbmon_task.h"
 #include "led_task.h"
 #include "screen_redraw_task.h"
 #include "screen_update_task.h"
@@ -53,6 +54,7 @@ typedef enum {
   BUTTON_TASK_IDX,          // monitor button push interrupts
   SCREEN_UPDATE_TASK_IDX,   // periodically start the screen refresh task
   SCREEN_REDRAW_TASK_IDX,   // update the screen, then stop.
+  KBMON_TASK_IDX,           // keyboard monitor
   IDLE_TASK_IDX,            // run when there is nothing else to run
   TASK_COUNT
 } task_idx_t;
@@ -83,6 +85,7 @@ static led_ctx_t s_led_ctx;
 static button_ctx_t s_button_ctx;
 static screen_update_ctx_t s_screen_update_ctx;
 static screen_redraw_ctx_t s_screen_redraw_ctx;
+static kbmon_ctx_t s_kbmon_ctx;
 
 // =============================================================================
 // public code
@@ -103,6 +106,7 @@ void tasky_init() {
   button_task_init(&s_tasks[BUTTON_TASK_IDX], &s_button_ctx, &s_sched);
   screen_update_task_init(&s_tasks[SCREEN_UPDATE_TASK_IDX], &s_screen_update_ctx, &s_tasks[SCREEN_REDRAW_TASK_IDX]);
   screen_redraw_task_init(&s_tasks[SCREEN_REDRAW_TASK_IDX], &s_screen_redraw_ctx, s_tasks, TASK_COUNT);
+  kbmon_task_init(&s_tasks[KBMON_TASK_IDX], &s_kbmon_ctx, &s_sched);
   idle_task_init(&s_tasks[IDLE_TASK_IDX]);
 
   // install the sleep-aware idle task as the scheduler's idle task
