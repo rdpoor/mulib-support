@@ -29,6 +29,7 @@
 #include "definitions.h"
 #include "mu_sched.h"
 #include "mu_task.h"
+#include "task_demo.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -72,11 +73,24 @@ static void *kbd_task_fn(void *ctx, void *arg) {
   // keyoard context is passed as first argument, scheduler as the second.
   kbd_ctx_t *kbd_ctx = (kbd_ctx_t *)ctx;
   // mu_sched_t *sched = (mu_sched_t *)arg;
-  USART_ERROR err = SERCOM2_USART_ErrorGet();
+  USART_ERROR err = SERCOM2_USART_ErrorGet();  // clears error if any...
   if (err != USART_ERROR_NONE) {
     printf("kbd_task error %d\r\n", err);
   } else {
-    printf("kbd task received '%c' (0x%02x)\r\n", kbd_ctx->ch, kbd_ctx->ch);
+    switch (kbd_ctx->ch) {
+    case 'b':
+      task_demo_start_led_task();
+      break;
+    case 'B':
+      task_demo_stop_led_task();
+      break;
+    case 'd':
+      task_demo_start_screen_update_task();
+      break;
+    case 'D':
+      task_demo_stop_screen_update_task();
+      break;
+    }
   }
   SERCOM2_USART_Read(&kbd_ctx->ch, 1);  // start next read
   return NULL;

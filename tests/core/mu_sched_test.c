@@ -296,7 +296,7 @@ void mu_sched_test() {
   mu_sched_task_at(s, &s_task1, 100);
   ASSERT(mu_sched_get_task_status(s, &s_task1) == MU_SCHED_TASK_STATUS_SCHEDULED);
   set_now(100);
-  ASSERT(mu_sched_get_task_status(s, &s_task1) == MU_SCHED_TASK_STATUS_READY);
+  ASSERT(mu_sched_get_task_status(s, &s_task1) == MU_SCHED_TASK_STATUS_WAITING);
   mu_sched_step(s);  // calls taskc_fn which asserts task_status == ACTIVE
 }
 

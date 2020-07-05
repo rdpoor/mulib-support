@@ -54,7 +54,7 @@ typedef enum {
 typedef enum {
   MU_SCHED_TASK_STATUS_IDLE,       // task is not scheduled
   MU_SCHED_TASK_STATUS_SCHEDULED,  // task is in the schedule, not yet runnable
-  MU_SCHED_TASK_STATUS_READY,      // task is in the schedule, ready to run
+  MU_SCHED_TASK_STATUS_WAITING,      // task is in the schedule, ready to run
   MU_SCHED_TASK_STATUS_ACTIVE,     // task is running
 } mu_sched_task_status_t;
 

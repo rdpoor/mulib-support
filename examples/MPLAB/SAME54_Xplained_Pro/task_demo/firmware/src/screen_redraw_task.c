@@ -71,6 +71,15 @@ mu_task_t *screen_redraw_task_init(mu_task_t *screen_redraw_task,
 // =============================================================================
 // local (static) code
 
+/**
+ * @brief Repaint the screen.
+ *
+ * Note: Each status line is approximately 60 characters long, and there are
+ * 11 lines to display.  If the entire display were output at once, the function
+ * would require (60*11)/115200 = 57 milliseconds (assuming 115 KBaud, 8n1).
+ * To shorten the latency, we only print one line at a time before returing to
+ * the scheduler, so the function consumes at most about 5.2 milliseconds.
+ */
 static void *screen_redraw_task_fn(void *ctx, void *arg) {
   // screen_redraw_context is passed as the first argument, scheduler is second
   screen_redraw_ctx_t *screen_redraw_ctx = (screen_redraw_ctx_t *)ctx;
@@ -88,11 +97,17 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
     printf("+-------------+-+-----------+-----------+-----------+\r\n");
   } else if (state < 4 + screen_redraw_ctx->n_tasks) {
     print_task(&(screen_redraw_ctx->tasks[state - 4]), sched);
+  } else if (state < 5 + screen_redraw_ctx->n_tasks) {
+    printf("\r\nStatus: A=Active, W=Waiting, S=Scheduled, I=Idle\r\n");
+  } else if (state < 6 + screen_redraw_ctx->n_tasks) {
+    printf("Type 'b' to restart LED task. 'B' to suspend.\r\n");
+  } else if (state < 7 + screen_redraw_ctx->n_tasks) {
+    printf("Type 'd' to restart Screen task. 'D' to suspend.\r\n");
   }
 
   // endgame
-  if (state < 4 + screen_redraw_ctx->n_tasks) {
-    screen_redraw_ctx->state = state + 1; // bump state
+  if (state < 7 + screen_redraw_ctx->n_tasks) {
+    screen_redraw_ctx->state = state + 1; // bump state and immediately reschedule
     mu_sched_task_now(sched, mu_sched_get_current_task(sched));
   } else {
     screen_redraw_ctx->state = 0; // reset state
@@ -114,8 +129,8 @@ static char get_task_state(mu_task_t *task, mu_sched_t *sched) {
   switch (mu_sched_get_task_status(sched, task)) {
   case MU_SCHED_TASK_STATUS_IDLE:
     return 'I';
-  case MU_SCHED_TASK_STATUS_READY:
-    return 'R';
+  case MU_SCHED_TASK_STATUS_WAITING:
+    return 'W';
   case MU_SCHED_TASK_STATUS_ACTIVE:
     return 'A';
   case MU_SCHED_TASK_STATUS_SCHEDULED:

@@ -116,12 +116,30 @@ void task_demo_init() {
   // install the sleep-aware idle task as the scheduler's idle task
   mu_sched_set_idle_task(&s_sched, &s_tasks[IDLE_TASK_IDX]);
 
-  // schedule the initial call to the LED and Screen Update tasks
-  mu_sched_task_now(&s_sched, &s_tasks[LED_TASK_IDX]);
-  mu_sched_task_now(&s_sched, &s_tasks[SCREEN_UPDATE_TASK_IDX]);
+  // start the LED and Screen Update tasks
+  task_demo_start_led_task();
+  task_demo_start_screen_update_task();
 }
 
 void task_demo_step() {
   // called repeatedly from main(): run the scheduler
   mu_sched_step(&s_sched);
+}
+
+void task_demo_start_led_task(void) {
+  task_demo_stop_led_task();  // stop if already running
+  mu_sched_task_now(&s_sched, &s_tasks[LED_TASK_IDX]);
+}
+
+void task_demo_stop_led_task(void) {
+  mu_sched_remove_task(&s_sched, &s_tasks[LED_TASK_IDX]);
+}
+
+void task_demo_start_screen_update_task(void) {
+  task_demo_stop_screen_update_task();
+  mu_sched_task_now(&s_sched, &s_tasks[SCREEN_UPDATE_TASK_IDX]);
+}
+
+void task_demo_stop_screen_update_task(void) {
+  mu_sched_remove_task(&s_sched, &s_tasks[SCREEN_UPDATE_TASK_IDX]);
 }

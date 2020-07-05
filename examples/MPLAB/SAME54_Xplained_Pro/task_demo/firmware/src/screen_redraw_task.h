@@ -38,8 +38,6 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-#define SCREEN_UPDATE_INTERVAL_MS 1000
-
 typedef struct {
   int state;
   mu_task_t *tasks;

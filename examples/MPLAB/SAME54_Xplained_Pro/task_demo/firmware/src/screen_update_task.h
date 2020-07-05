@@ -38,7 +38,7 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-#define SCREEN_UPDATE_INTERVAL_MS 1000
+#define SCREEN_UPDATE_INTERVAL_MS 2500
 
 typedef struct {
   mu_task_t *screen_redraw_task;

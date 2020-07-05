@@ -43,9 +43,7 @@
 int _mon_getc(int canblock)
 {
    volatile int c = 0;
-   while(SERCOM2_USART_Read((void*)&c, 1) != true) {
-       asm("nop");
-   }
+   while(SERCOM2_USART_Read((void*)&c, 1) != true);
    return c;
 }
 

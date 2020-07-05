@@ -241,7 +241,7 @@ mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched,
   }
   mu_time_t now = mu_sched_get_current_time(sched);
   if (!mu_time_follows(mu_event_get_time(event), now)) {
-    return MU_SCHED_TASK_STATUS_READY;
+    return MU_SCHED_TASK_STATUS_WAITING;
   } else {
     return MU_SCHED_TASK_STATUS_SCHEDULED;
   }

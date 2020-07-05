@@ -44,6 +44,14 @@ void task_demo_init(void);
 
 void task_demo_step(void);
 
+void task_demo_start_led_task(void);
+
+void task_demo_stop_led_task(void);
+
+void task_demo_start_screen_update_task(void);
+
+void task_demo_stop_screen_update_task(void);
+
 #ifdef __cplusplus
 }
 #endif

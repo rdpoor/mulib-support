@@ -67,8 +67,8 @@
           <Security dnOrder="2">NON_SECURE</Security>
           <LogicalPath dnOrder="3">config/same54_xplained_pro/peripheral/clock/</LogicalPath>
           <PhysicalPath dnOrder="4">/peripheral/clock/</PhysicalPath>
-          <GeneratedChecksum dnOrder="5">424D9D85E6339C966C9BED4998A29A58</GeneratedChecksum>
-          <UserChecksum dnOrder="6">424D9D85E6339C966C9BED4998A29A58</UserChecksum>
+          <GeneratedChecksum dnOrder="5">F92DED19C9849F8713F9181DA1621A8A</GeneratedChecksum>
+          <UserChecksum dnOrder="6">F92DED19C9849F8713F9181DA1621A8A</UserChecksum>
         </File>
         <File dnOrder="7">
           <Type dnOrder="0">SOURCE</Type>
@@ -130,8 +130,8 @@
           <Security dnOrder="2">NON_SECURE</Security>
           <LogicalPath dnOrder="3">config/same54_xplained_pro/peripheral/port/</LogicalPath>
           <PhysicalPath dnOrder="4">/peripheral/port/</PhysicalPath>
-          <GeneratedChecksum dnOrder="5">38763BF2824CD8E2597BB9A95BF52983</GeneratedChecksum>
-          <UserChecksum dnOrder="6">38763BF2824CD8E2597BB9A95BF52983</UserChecksum>
+          <GeneratedChecksum dnOrder="5">0CD173B38DC9C2C0A15ED77B8B40603B</GeneratedChecksum>
+          <UserChecksum dnOrder="6">0CD173B38DC9C2C0A15ED77B8B40603B</UserChecksum>
         </File>
         <File dnOrder="14">
           <Type dnOrder="0">SOURCE</Type>
@@ -148,8 +148,8 @@
           <Security dnOrder="2">NON_SECURE</Security>
           <LogicalPath dnOrder="3">config/same54_xplained_pro/peripheral/sercom/usart/</LogicalPath>
           <PhysicalPath dnOrder="4">/peripheral/sercom/usart/</PhysicalPath>
-          <GeneratedChecksum dnOrder="5">664031ACDE06E57D9C82089962AF1ADA</GeneratedChecksum>
-          <UserChecksum dnOrder="6">664031ACDE06E57D9C82089962AF1ADA</UserChecksum>
+          <GeneratedChecksum dnOrder="5">FD4ACF82C849A1392F6B5E9780431720</GeneratedChecksum>
+          <UserChecksum dnOrder="6">FD4ACF82C849A1392F6B5E9780431720</UserChecksum>
         </File>
         <File dnOrder="16">
           <Type dnOrder="0">SOURCE</Type>
@@ -229,8 +229,8 @@
           <Security dnOrder="2">NON_SECURE</Security>
           <LogicalPath dnOrder="3">config/same54_xplained_pro/bsp/</LogicalPath>
           <PhysicalPath dnOrder="4">/bsp/</PhysicalPath>
-          <GeneratedChecksum dnOrder="5">E72CFC332C79668A4FADB07858DBBD19</GeneratedChecksum>
-          <UserChecksum dnOrder="6">E72CFC332C79668A4FADB07858DBBD19</UserChecksum>
+          <GeneratedChecksum dnOrder="5">EE1775603C4C68298C564456FE679944</GeneratedChecksum>
+          <UserChecksum dnOrder="6">EE1775603C4C68298C564456FE679944</UserChecksum>
         </File>
         <File dnOrder="25">
           <Type dnOrder="0">HEADER</Type>
