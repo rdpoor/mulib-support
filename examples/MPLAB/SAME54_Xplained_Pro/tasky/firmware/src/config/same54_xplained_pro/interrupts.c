@@ -107,7 +107,7 @@ void EIC_EXTINT_11_Handler      ( void ) __attribute__((weak, alias("Dummy_Handl
 void EIC_EXTINT_12_Handler      ( void ) __attribute__((weak, alias("Dummy_Handler")));
 void EIC_EXTINT_13_Handler      ( void ) __attribute__((weak, alias("Dummy_Handler")));
 void EIC_EXTINT_14_Handler      ( void ) __attribute__((weak, alias("Dummy_Handler")));
-void EIC_EXTINT_15_InterruptHandler ( void ) __attribute__((weak, alias("Dummy_Handler")));
+void EIC_EXTINT_15_Handler      ( void ) __attribute__((weak, alias("Dummy_Handler")));
 void FREQM_Handler              ( void ) __attribute__((weak, alias("Dummy_Handler")));
 void NVMCTRL_0_Handler          ( void ) __attribute__((weak, alias("Dummy_Handler")));
 void NVMCTRL_1_Handler          ( void ) __attribute__((weak, alias("Dummy_Handler")));
@@ -261,7 +261,7 @@ const DeviceVectors exception_table=
     .pfnEIC_EXTINT_12_Handler      = ( void * ) EIC_EXTINT_12_Handler,
     .pfnEIC_EXTINT_13_Handler      = ( void * ) EIC_EXTINT_13_Handler,
     .pfnEIC_EXTINT_14_Handler      = ( void * ) EIC_EXTINT_14_Handler,
-    .pfnEIC_EXTINT_15_Handler      = ( void * ) EIC_EXTINT_15_InterruptHandler,
+    .pfnEIC_EXTINT_15_Handler      = ( void * ) EIC_EXTINT_15_Handler,
     .pfnFREQM_Handler              = ( void * ) FREQM_Handler,
     .pfnNVMCTRL_0_Handler          = ( void * ) NVMCTRL_0_Handler,
     .pfnNVMCTRL_1_Handler          = ( void * ) NVMCTRL_1_Handler,

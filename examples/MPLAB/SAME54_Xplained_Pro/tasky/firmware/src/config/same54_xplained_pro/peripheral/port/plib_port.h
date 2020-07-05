@@ -65,17 +65,7 @@
 // *****************************************************************************
 // *****************************************************************************
 
-
-
-/*** Macros for ETH_RESET pin ***/
-#define ETH_RESET_Set()               (PORT_REGS->GROUP[2].PORT_OUTSET = 1 << 21)
-#define ETH_RESET_Clear()             (PORT_REGS->GROUP[2].PORT_OUTCLR = 1 << 21)
-#define ETH_RESET_Toggle()            (PORT_REGS->GROUP[2].PORT_OUTTGL = 1 << 21)
-#define ETH_RESET_Get()               (((PORT_REGS->GROUP[2].PORT_IN >> 21)) & 0x01)
-#define ETH_RESET_OutputEnable()      (PORT_REGS->GROUP[2].PORT_DIRSET = 1 << 21)
-#define ETH_RESET_InputEnable()       (PORT_REGS->GROUP[2].PORT_DIRCLR = 1 << 21)
-#define ETH_RESET_PIN                  PORT_PIN_PC21
-
+  
 
 
 // *****************************************************************************

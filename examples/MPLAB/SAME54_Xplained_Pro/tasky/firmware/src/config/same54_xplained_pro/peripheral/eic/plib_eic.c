@@ -61,8 +61,6 @@
 // *****************************************************************************
 // *****************************************************************************
 
-/* EIC Channel Callback object */
-EIC_CALLBACK_OBJ    eicCallbackObject[EXTINT_COUNT];
 
 
 void EIC_Initialize (void)
@@ -106,28 +104,8 @@ void EIC_Initialize (void)
 
 
     /* Debouncer Setting */
-    EIC_REGS->EIC_DPRESCALER = EIC_DPRESCALER_PRESCALER0(0) | EIC_DPRESCALER_PRESCALER1(0) ;
+    EIC_REGS->EIC_DPRESCALER = EIC_DPRESCALER_PRESCALER0(0) | EIC_DPRESCALER_PRESCALER1(0) | EIC_DPRESCALER_TICKON_Msk ;
 
-    /* External Interrupt enable*/
-    EIC_REGS->EIC_INTENSET = 0x8000;
-
-    /* Callbacks for enabled interrupts */
-    eicCallbackObject[0].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[1].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[2].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[3].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[4].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[5].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[6].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[7].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[8].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[9].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[10].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[11].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[12].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[13].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[14].eicPinNo = EIC_PIN_MAX;
-    eicCallbackObject[15].eicPinNo = EIC_PIN_15;
     /* Enable the EIC */
     EIC_REGS->EIC_CTRLA |= EIC_CTRLA_ENABLE_Msk;
 
@@ -136,36 +114,3 @@ void EIC_Initialize (void)
         /* Wait for sync */
     }
 }
-
-void EIC_InterruptEnable (EIC_PIN pin)
-{
-    EIC_REGS->EIC_INTENSET = (1UL << pin);
-}
-
-void EIC_InterruptDisable (EIC_PIN pin)
-{
-    EIC_REGS->EIC_INTENCLR = (1UL << pin);
-}
-
-void EIC_CallbackRegister(EIC_PIN pin, EIC_CALLBACK callback, uintptr_t context)
-{
-    if (eicCallbackObject[pin].eicPinNo == pin)
-    {
-        eicCallbackObject[pin].callback = callback;
-
-        eicCallbackObject[pin].context  = context;
-    }
-}
-
-void EIC_EXTINT_15_InterruptHandler(void)
-{
-    /* Clear interrupt flag */
-    EIC_REGS->EIC_INTFLAG = (1UL << 15);
-    /* Find any associated callback entries in the callback table */
-    if ((eicCallbackObject[15].callback != NULL))
-    {
-        eicCallbackObject[15].callback(eicCallbackObject[15].context);
-    }
-
-}
-

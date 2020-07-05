@@ -48,7 +48,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include "peripheral/nvmctrl/plib_nvmctrl.h"
 #include "peripheral/sercom/usart/plib_sercom2_usart.h"
 #include "bsp/bsp.h"
@@ -57,8 +56,6 @@
 #include "peripheral/clock/plib_clock.h"
 #include "peripheral/nvic/plib_nvic.h"
 #include "peripheral/cmcc/plib_cmcc.h"
-#include "peripheral/pm/plib_pm.h"
-#include "peripheral/supc/plib_supc.h"
 #include "peripheral/eic/plib_eic.h"
 #include "peripheral/rtc/plib_rtc.h"
 

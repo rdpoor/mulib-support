@@ -135,10 +135,6 @@ void SYS_Initialize ( void* data )
 	BSP_Initialize();
     EVSYS_Initialize();
 
-    PM_Initialize();
-
-    SUPC_Initialize();
-
     EIC_Initialize();
 
     RTC_Initialize();

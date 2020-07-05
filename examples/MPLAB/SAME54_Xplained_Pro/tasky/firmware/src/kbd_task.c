@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "kbmon_task.h"
+#include "kbd_task.h"
 #include "definitions.h"
 #include "mu_sched.h"
 #include "mu_task.h"
@@ -38,8 +38,8 @@
 // =============================================================================
 // local (forward) declarations
 
-static void *kbmon_task_fn(void *ctx, void *arg);
-static void kbmon_cb(uintptr_t context);
+static void *kbd_task_fn(void *ctx, void *arg);
+static void kbd_cb(uintptr_t context);
 
 // =============================================================================
 // local storage
@@ -47,41 +47,39 @@ static void kbmon_cb(uintptr_t context);
 // =============================================================================
 // public code
 
-mu_task_t *kbmon_task_init(mu_task_t *kbmon_task,
-                            kbmon_ctx_t *kbmon_ctx,
+mu_task_t *kbd_task_init(mu_task_t *kbd_task,
+                            kbd_ctx_t *kbd_ctx,
                             mu_sched_t *sched) {
-  // Configure the kbmon_cb function to be called upon a UART interrupt.
-  // Register the callback with a reference to kbmon_ctx so we can access
-  // the task and scheduler objects from within the interrupt.
-  kbmon_ctx->task = kbmon_task;
-  kbmon_ctx->sched = sched;
-  SERCOM2_USART_ReadCallbackRegister(kbmon_cb, (uintptr_t)kbmon_ctx);
-  SERCOM2_USART_Read(&kbmon_ctx->chr, 1);
-  mu_task_init(kbmon_task, kbmon_task_fn, NULL, "KB Monitor");
+  // Register the kbd_cb function to be called upon an EIC interrupt on
+  // the user button.  Register the callback with a reference to kbd_ctx
+  // so we can access the task and scheduler objects from within the interrupt.
+  kbd_ctx->task = kbd_task;
+  kbd_ctx->sched = sched;
 
-  return kbmon_task;
+  SERCOM2_USART_ReadCallbackRegister(kbd_cb, (uintptr_t)kbd_ctx);
+  mu_task_init(kbd_task, kbd_task_fn, NULL, "Button Push");
+
+  return kbd_task;
 }
 
 // =============================================================================
 // local (static) code
 
-static void *kbmon_task_fn(void *ctx, void *arg) {
-  // context is passed as the first argument, scheduler as the second
-  kbmon_ctx_t *kbmon_ctx = (kbmon_ctx_t *)ctx;
-  // mu_sched_t *sched = (mu_sched_t *)arg;
+static void *kbd_task_fn(void *ctx, void *arg) {
+  // "context" is unused in kbd task
+  // scheduler is passed as the second argument.
+  mu_sched_t *sched = (mu_sched_t *)arg;
+  mu_time_t now = mu_sched_get_current_time(sched);
 
-  printf("kbmon received '%c'\r\n", kbmon_ctx->chr);
-  // set up to read another char
-  SERCOM2_USART_Read(&kbmon_ctx->chr, 1);
-
+  printf("button pressed at %lu\r\n", now);
   return NULL;
 }
 
-// kbmon_cb is triggered when a button press generates an interrupt.
+// kbd_cb is triggered when a button press generates an interrupt.
 // From interrupt level, schedule the button task upon leaving interrupt level.
-static void kbmon_cb(uintptr_t context) {
-  kbmon_ctx_t *kbmon_ctx = (kbmon_ctx_t *)context;
-  mu_task_t *task = kbmon_ctx->task;
-  mu_sched_t *sched = kbmon_ctx->sched;
+static void kbd_cb(uintptr_t context) {
+  kbd_ctx_t *kbd_ctx = (kbd_ctx_t *)context;
+  mu_task_t *task = kbd_ctx->task;
+  mu_sched_t *sched = kbd_ctx->sched;
   mu_sched_task_from_isr(sched, task);
 }

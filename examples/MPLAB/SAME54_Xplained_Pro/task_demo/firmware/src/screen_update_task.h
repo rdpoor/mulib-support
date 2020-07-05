@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _KBMON_TASK_H_
-#define _KBMON_TASK_H_
+#ifndef _SCREEN_UPDATE_TASK_H_
+#define _SCREEN_UPDATE_TASK_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,26 +34,23 @@ extern "C" {
 
 #include "mu_sched.h"
 #include "mu_task.h"
-#include <stdint.h>
 
 // =============================================================================
 // types and definitions
 
+#define SCREEN_UPDATE_INTERVAL_MS 1000
+
 typedef struct {
-  mu_task_t *task;
-  mu_sched_t *sched;
-  uint8_t chr;
-} kbmon_ctx_t;
+  mu_task_t *screen_redraw_task;
+} screen_update_ctx_t;
 
 // =============================================================================
 // declarations
 
-mu_task_t *kbmon_task_init(mu_task_t *kbmon_task,
-                           kbmon_ctx_t *kbmon_ctx,
-                           mu_sched_t *sched);
+mu_task_t *screen_update_task_init(mu_task_t *screen_update_task, screen_update_ctx_t *screen_update_ctx, mu_task_t *screen_redraw_task);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _KBMON_TASK_H_ */
+#endif /* #ifndef _SCREEN_UPDATE_TASK_H_ */
