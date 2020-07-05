@@ -9756,15 +9756,15 @@ LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin
                 0x00000000                exception_table
  *(.text .text.* .gnu.linkonce.t.*)
  .text          0x000000b4       0x60 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
- .text.mu_event_init
+ .text.event_init
                 0x00000114        0x6 mulib/core/mu_event.o
-                0x00000114                mu_event_init
- .text.mu_event_get_task
+                0x00000114                event_init
+ .text.event_get_task
                 0x0000011a        0x4 mulib/core/mu_event.o
-                0x0000011a                mu_event_get_task
- .text.mu_event_get_time
+                0x0000011a                event_get_task
+ .text.mu_sched_get_next_time
                 0x0000011e        0x4 mulib/core/mu_event.o
-                0x0000011e                mu_event_get_time
+                0x0000011e                mu_sched_get_next_time
  .text.default_idle_fn
                 0x00000122        0x2 mulib/core/mu_sched.o
  .text.sched_task_at

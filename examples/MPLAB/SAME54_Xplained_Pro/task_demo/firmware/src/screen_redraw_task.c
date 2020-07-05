@@ -108,7 +108,8 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
   // endgame
   if (state < 7 + screen_redraw_ctx->n_tasks) {
     screen_redraw_ctx->state = state + 1; // bump state and immediately reschedule
-    mu_sched_task_now(sched, mu_sched_get_current_task(sched));
+    mu_sched_event_t *event = mu_sched_get_current_event(sched);
+    mu_sched_task_now(sched, mu_sched_event_get_task(event));
   } else {
     screen_redraw_ctx->state = 0; // reset state
     // don't reschedule -- wait for screen_update_task to restart this task.

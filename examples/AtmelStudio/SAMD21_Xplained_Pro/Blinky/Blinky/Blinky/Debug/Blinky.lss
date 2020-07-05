@@ -93,12 +93,12 @@ Disassembly of section .text:
      10c:	000027f8 	.word	0x000027f8
      110:	00000000 	.word	0x00000000
 
-00000114 <mu_event_init>:
+00000114 <event_init>:
 
 // =============================================================================
 // public code
 
-mu_event_t *mu_event_init(mu_event_t *event, mu_task_t *task, mu_time_t time) {
+mu_sched_event_t *event_init(mu_sched_event_t *event, mu_task_t *task, mu_time_t time) {
   event->task = task;
      114:	6041      	str	r1, [r0, #4]
   event->time = time;
@@ -107,17 +107,17 @@ mu_event_t *mu_event_init(mu_event_t *event, mu_task_t *task, mu_time_t time) {
 }
      118:	4770      	bx	lr
 
-0000011a <mu_event_get_task>:
+0000011a <event_get_task>:
 
-mu_task_t *mu_event_get_task(mu_event_t *event) {
+mu_task_t *event_get_task(mu_sched_event_t *event) {
   return event->task;
      11a:	6840      	ldr	r0, [r0, #4]
 }
      11c:	4770      	bx	lr
 
-0000011e <mu_event_get_time>:
+0000011e <mu_sched_get_next_time>:
 
-mu_time_t mu_event_get_time(mu_event_t *event) {
+mu_time_t mu_sched_get_next_time(mu_sched_event_t *event) {
   return event->time;
      11e:	6800      	ldr	r0, [r0, #0]
 }
@@ -133,7 +133,7 @@ static void *default_idle_fn(void *self, void *arg) {
      122:	4770      	bx	lr
 
 00000124 <sched_task_at>:
-    memmove(dst, src, sizeof(mu_event_t) * to_move);
+    memmove(dst, src, sizeof(mu_sched_event_t) * to_move);
   }
   sched->event_queue_count -= 1;
 }
@@ -144,7 +144,7 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
      128:	0004      	movs	r4, r0
      12a:	9101      	str	r1, [sp, #4]
      12c:	9200      	str	r2, [sp, #0]
-  mu_event_t *event;
+  mu_sched_event_t *event;
   size_t index;
 
   if (sched->event_queue_count >= sched->event_queue_capacity) {
@@ -157,7 +157,7 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
      136:	d301      	bcc.n	13c <sched_task_at+0x18>
   // fill in the event
   event = &sched->event_queue[index];
-  mu_event_init(event, task, time);
+  event_init(event, task, time);
   sched->event_queue_count += 1;
   return MU_SCHED_ERR_NONE;
 }
@@ -170,7 +170,7 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
      140:	00ed      	lsls	r5, r5, #3
      142:	6823      	ldr	r3, [r4, #0]
      144:	1958      	adds	r0, r3, r5
-  mu_event_init(event, task, time);
+  event_init(event, task, time);
      146:	9a00      	ldr	r2, [sp, #0]
      148:	9901      	ldr	r1, [sp, #4]
      14a:	4b16      	ldr	r3, [pc, #88]	; (1a4 <sched_task_at+0x80>)
@@ -185,7 +185,7 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
 #else
 // linear search for insertion point
 static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
-  mu_event_t *events = sched->event_queue;
+  mu_sched_event_t *events = sched->event_queue;
 
   for (size_t i = sched->event_queue_count - 1; i >= 0; i--) {
      158:	1e6f      	subs	r7, r5, #1
@@ -219,20 +219,20 @@ static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
   if (to_move > 0) {
      184:	2a00      	cmp	r2, #0
      186:	dddb      	ble.n	140 <sched_task_at+0x1c>
-    mu_event_t *src = &sched->event_queue[index];
+    mu_sched_event_t *src = &sched->event_queue[index];
      188:	00eb      	lsls	r3, r5, #3
-    memmove(dst, src, sizeof(mu_event_t) * to_move);
+    memmove(dst, src, sizeof(mu_sched_event_t) * to_move);
      18a:	00d2      	lsls	r2, r2, #3
-    mu_event_t *src = &sched->event_queue[index];
+    mu_sched_event_t *src = &sched->event_queue[index];
      18c:	6821      	ldr	r1, [r4, #0]
      18e:	18c9      	adds	r1, r1, r3
-    mu_event_t *dst = &sched->event_queue[index + 1];
+    mu_sched_event_t *dst = &sched->event_queue[index + 1];
      190:	3308      	adds	r3, #8
      192:	0018      	movs	r0, r3
      194:	6823      	ldr	r3, [r4, #0]
      196:	469c      	mov	ip, r3
      198:	4460      	add	r0, ip
-    memmove(dst, src, sizeof(mu_event_t) * to_move);
+    memmove(dst, src, sizeof(mu_sched_event_t) * to_move);
      19a:	4b05      	ldr	r3, [pc, #20]	; (1b0 <sched_task_at+0x8c>)
      19c:	4798      	blx	r3
      19e:	e7cf      	b.n	140 <sched_task_at+0x1c>
@@ -365,7 +365,7 @@ mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   return MU_SCHED_ERR_NONE;
      264:	2000      	movs	r0, #0
      266:	e7e6      	b.n	236 <mu_sched_step+0x26>
-      memcpy(&(sched->current_event), event, sizeof(mu_event_t));
+      memcpy(&(sched->current_event), event, sizeof(mu_sched_event_t));
      268:	0020      	movs	r0, r4
      26a:	3018      	adds	r0, #24
      26c:	2208      	movs	r2, #8
@@ -432,12 +432,12 @@ mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in) {
   if (!event) {
      2da:	2d00      	cmp	r5, #0
      2dc:	d00e      	beq.n	2fc <mu_sched_reschedule_in+0x34>
-  mu_task_t *task = mu_event_get_task(event);
+  mu_task_t *task = event_get_task(event);
      2de:	0028      	movs	r0, r5
      2e0:	4b08      	ldr	r3, [pc, #32]	; (304 <mu_sched_reschedule_in+0x3c>)
      2e2:	4798      	blx	r3
      2e4:	0007      	movs	r7, r0
-  mu_time_t prev_time = mu_event_get_time(event);
+  mu_time_t prev_time = mu_sched_get_next_time(event);
      2e6:	0028      	movs	r0, r5
      2e8:	4b07      	ldr	r3, [pc, #28]	; (308 <mu_sched_reschedule_in+0x40>)
      2ea:	4798      	blx	r3

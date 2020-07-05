@@ -28,7 +28,6 @@
 #include "definitions.h"
 #include "idle_task.h"
 #include "mu_sched.h"
-#include "mu_event.h"
 #include "mu_time.h"
 #include <stddef.h>
 
@@ -79,7 +78,7 @@ static void *idle_task_fn(void *ctx, void *arg) {
   // ctx is unused in idle task
   // scheduler is passed as the second argument.
   mu_sched_t *sched = (mu_sched_t *)arg;
-  mu_event_t *next_event = mu_sched_get_next_event(sched);
+  mu_sched_event_t *next_event = mu_sched_get_next_event(sched);
 
   if (is_ready_to_sleep()) {
     will_sleep();
@@ -87,7 +86,7 @@ static void *idle_task_fn(void *ctx, void *arg) {
       // There is a future event: sleep until it arrives or skip sleeping if
       // the event is imminent.
       mu_time_t now = mu_sched_get_current_time(sched);
-      mu_time_t then = mu_event_get_time(next_event);
+      mu_time_t then = next_event->time;
       if (mu_time_difference(then, now) > MIN_SLEEP_DURATION) {
         RTC_Timer32Compare0Set(then);
         go_to_sleep();

@@ -28,7 +28,6 @@
 #include "definitions.h"
 #include "idle_task.h"
 #include "mu_sched.h"
-#include "mu_event.h"
 #include "mu_time.h"
 #include <stddef.h>
 
@@ -80,15 +79,15 @@ static void *idle_task_fn(void *ctx, void *arg) {
   // ctx is unused in idle task
   // scheduler is passed as the second argument.
   mu_sched_t *sched = (mu_sched_t *)arg;
-  mu_event_t *next_event = mu_sched_get_next_event(sched);
+  mu_sched_event_t *next_event = mu_sched_get_next_event(sched);
 
   if (is_ready_to_sleep()) {
     will_sleep();
     if (next_event) {
       // There is a future event: sleep until it arrives or skip sleeping if
-      // it is imminent.
+      // the event is imminent.
       mu_time_t now = mu_sched_get_current_time(sched);
-      mu_time_t then = mu_event_get_time(next_event);
+      mu_time_t then = next_event->time;
       if (mu_time_difference(then, now) > MIN_SLEEP_DURATION) {
         RTC_Timer32Compare0Set(then);
         go_to_sleep();
@@ -103,10 +102,15 @@ static void *idle_task_fn(void *ctx, void *arg) {
 }
 
 static bool is_ready_to_sleep(void) {
+  // If you have peripherals that are active or other factors that should
+  // prevent the processor from going to sleep, you would check for it here
+  // and return false to inhibit going to sleep.
   return true;
 }
 
 static void will_sleep(void) {
+  // If you have any last-moment cleanup that needs to be done before the
+  // processor goes to sleep, you would do it here.
   asm("nop");
 }
 
@@ -120,6 +124,8 @@ static void go_to_sleep(void) {
 }
 
 static void did_wake(void) {
+  // If you have anything that needs to be done when the processor wakes from
+  // sleep, you would do it here.
   asm("nop");
 }
 

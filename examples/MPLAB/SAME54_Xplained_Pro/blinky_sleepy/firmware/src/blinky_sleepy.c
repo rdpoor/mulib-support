@@ -33,7 +33,6 @@
 #include "mu_port.h"
 #include "mu_sched.h"
 #include "mu_spscq.h"
-#include "mu_event.h"
 #include "mu_task.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -56,7 +55,7 @@
 static mu_sched_t s_sched;
 
 // the backing store for scheduled events
-static mu_event_t s_event_queue[EVENT_QUEUE_CAPACITY];
+static mu_sched_event_t s_event_queue[EVENT_QUEUE_CAPACITY];
 
 // the queue to hold tasks queued from interrupt level, and its backing store
 static mu_spscq_t s_isr_queue;

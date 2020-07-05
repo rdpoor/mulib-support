@@ -35,7 +35,6 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "mu_event.h"
 #include "mu_task.h"
 #include "mu_time.h"
 #include "mu_spscq.h"
@@ -61,14 +60,20 @@ typedef enum {
 // Signature for clock source function.  Returns the current time.
 typedef mu_time_t (*mu_clock_fn)(void);
 
+// A scheduled event associates a time and a task
 typedef struct {
-  mu_event_t *event_queue;     // scheduled items
+  mu_time_t time;
+  mu_task_t *task;
+} mu_sched_event_t;
+
+typedef struct {
+  mu_sched_event_t *event_queue;     // scheduled items
   size_t event_queue_capacity; // max number of items in the queue
   size_t event_queue_count;    // number of items in the queue
   mu_spscq_t *isr_queue;       // interrupt-safe queue of tasks to be added
   mu_clock_fn clock_fn;        // function to call to get the current time
   mu_task_t *idle_task;        // the idle task
-  mu_event_t current_event;    // the event currently being processed
+  mu_sched_event_t current_event;    // the event currently being processed
 } mu_sched_t;
 
 // =============================================================================
@@ -77,7 +82,7 @@ typedef struct {
 /**
  * \brief initialize the schedule module.
  */
-mu_sched_t *mu_sched_init(mu_sched_t *sched, mu_event_t *event_queue, size_t event_queue_capacity, mu_spscq_t *isr_queue);
+mu_sched_t *mu_sched_init(mu_sched_t *sched, mu_sched_event_t *event_queue, size_t event_queue_capacity, mu_spscq_t *isr_queue);
 
 /**
  * \brief  Reset the schedule.
@@ -86,7 +91,7 @@ mu_sched_t *mu_sched_reset(mu_sched_t *sched);
 
 mu_sched_err_t mu_sched_step(mu_sched_t *sched);
 
-mu_event_t *mu_sched_event_queue(mu_sched_t *sched);
+mu_sched_event_t *mu_sched_event_queue(mu_sched_t *sched);
 
 mu_spscq_t *mu_sched_isr_queue(mu_sched_t *sched);
 
@@ -106,15 +111,13 @@ bool mu_sched_is_empty(mu_sched_t *sched);
 
 size_t mu_sched_event_count(mu_sched_t *sched);
 
-mu_event_t *mu_sched_get_current_event(mu_sched_t *sched);
+mu_sched_event_t *mu_sched_get_current_event(mu_sched_t *sched);
 
-mu_task_t *mu_sched_get_current_task(mu_sched_t *sched);
+mu_sched_event_t *mu_sched_get_next_event(mu_sched_t *sched);
 
-mu_event_t *mu_sched_get_next_event(mu_sched_t *sched);
+mu_task_t *mu_sched_event_get_task(mu_sched_event_t *event);
 
-mu_task_t *mu_sched_get_next_task(mu_sched_t *sched);
-
-mu_sched_err_t mu_sched_get_next_time(mu_sched_t *sched, mu_time_t *time);
+mu_time_t mu_sched_event_get_time(mu_sched_event_t *event);
 
 mu_sched_err_t mu_sched_remove_task(mu_sched_t *sched, mu_task_t *task);
 

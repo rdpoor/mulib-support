@@ -26,7 +26,6 @@
 // includes
 
 #include "mu_sched.h"
-#include "mu_event.h"
 #include "mu_spscq.h"
 #include "mu_task.h"
 #include "mu_time.h"
@@ -40,15 +39,15 @@
 // =============================================================================
 // local (forward) declarations
 
+static mu_sched_event_t *event_init(mu_sched_event_t *event, mu_task_t *task, mu_time_t time);
+
 static void *default_idle_fn(void *self, void *arg);
 
-static mu_event_t *event_peek(mu_sched_t *sched);
-
-static mu_event_t *event_pop(mu_sched_t *sched);
+static mu_sched_event_t *event_pop(mu_sched_t *sched);
 
 static int find_event_index(mu_sched_t *sched, mu_task_t *task);
 
-static mu_event_t *find_task_event(mu_sched_t *sched, mu_task_t *task);
+static mu_sched_event_t *find_task_event(mu_sched_t *sched, mu_task_t *task);
 
 static void delete_event_at(mu_sched_t *sched, int index);
 
@@ -67,7 +66,7 @@ static mu_task_t s_default_idle_task;
 // public code
 
 mu_sched_t *mu_sched_init(mu_sched_t *sched,
-                          mu_event_t *event_queue,
+                          mu_sched_event_t *event_queue,
                           size_t event_queue_capacity,
                           mu_spscq_t *isr_queue) {
   sched->event_queue = event_queue;
@@ -90,7 +89,7 @@ mu_sched_t *mu_sched_reset(mu_sched_t *sched) {
 
 mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   mu_task_t *task;
-  mu_event_t *event;
+  mu_sched_event_t *event;
   mu_time_t now = mu_sched_get_current_time(sched);
 
   // first, transfer any tasks in the isr queue into the main queue
@@ -102,11 +101,11 @@ mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   }
 
   // process one event in the main queue
-  event = event_peek(sched);
+  event = mu_sched_get_next_event(sched);
   if (event != NULL) {
-    if (!mu_time_follows(event->time, now)) {
+    if (!mu_time_follows(mu_sched_event_get_time(event), now)) {
       // time to run the task: grab copy of the event and removed it from queue
-      memcpy(&(sched->current_event), event, sizeof(mu_event_t));
+      memcpy(&(sched->current_event), event, sizeof(mu_sched_event_t));
       event_pop(sched);
       // invoke the task
       mu_task_call(sched->current_event.task, sched);
@@ -121,7 +120,7 @@ mu_sched_err_t mu_sched_step(mu_sched_t *sched) {
   return MU_SCHED_ERR_NONE;
 }
 
-mu_event_t *mu_sched_event_queue(mu_sched_t *sched) { return sched->event_queue; }
+mu_sched_event_t *mu_sched_event_queue(mu_sched_t *sched) { return sched->event_queue; }
 
 mu_spscq_t *mu_sched_isr_queue(mu_sched_t *sched) { return sched->isr_queue; }
 
@@ -155,19 +154,14 @@ bool mu_sched_is_empty(mu_sched_t *sched) { return sched->event_queue_count == 0
 
 size_t mu_sched_event_count(mu_sched_t *sched) { return sched->event_queue_count; }
 
-mu_event_t *mu_sched_get_current_event(mu_sched_t *sched) {
+mu_sched_event_t *mu_sched_get_current_event(mu_sched_t *sched) {
   if (sched->current_event.task == NULL) {
     return NULL;
   } else {
     return &sched->current_event;
   }
 }
-
-mu_task_t *mu_sched_get_current_task(mu_sched_t *sched) {
-  return sched->current_event.task;
-}
-
-mu_event_t *mu_sched_get_next_event(mu_sched_t *sched) {
+mu_sched_event_t *mu_sched_get_next_event(mu_sched_t *sched) {
   if (sched->event_queue_count == 0) {
     return NULL;
   } else {
@@ -175,19 +169,12 @@ mu_event_t *mu_sched_get_next_event(mu_sched_t *sched) {
   }
 }
 
-mu_task_t *mu_sched_get_next_task(mu_sched_t *sched) {
-  mu_event_t *event = mu_sched_get_next_event(sched);
-  return (event) ? event->task : NULL;
+mu_task_t *mu_sched_event_get_task(mu_sched_event_t *event) {
+  return event->task;
 }
 
-mu_sched_err_t mu_sched_get_next_time(mu_sched_t *sched, mu_time_t *time) {
-  mu_event_t *event = mu_sched_get_next_event(sched);
-  if (event) {
-    *time = event->time;
-    return MU_SCHED_ERR_NONE;
-  } else {
-    return MU_SCHED_ERR_NOT_FOUND;
-  }
+mu_time_t mu_sched_event_get_time(mu_sched_event_t *event) {
+  return event->time;
 }
 
 mu_sched_err_t mu_sched_remove_task(mu_sched_t *sched, mu_task_t *task) {
@@ -213,13 +200,13 @@ mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_dt i
 }
 
 mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in) {
-  mu_event_t *event = mu_sched_get_current_event(sched);
+  mu_sched_event_t *event = mu_sched_get_current_event(sched);
   if (!event) {
     return MU_SCHED_ERR_NOT_FOUND;
   }
-  mu_task_t *task = mu_event_get_task(event);
-  mu_time_t prev_time = mu_event_get_time(event);
-  return sched_task_at(sched, task, mu_time_offset(prev_time, in));
+  mu_task_t *task = event->task;
+  mu_time_t time = event->time;
+  return sched_task_at(sched, task, mu_time_offset(time, in));
 }
 
 mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task) {
@@ -232,17 +219,27 @@ mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task) {
 
 mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched,
                                                 mu_task_t *task) {
-  if (mu_sched_get_current_task(sched) == task) {
+  mu_sched_event_t *event;
+
+  event = mu_sched_get_current_event(sched);
+  if (event && mu_sched_event_get_task(event) == task) {
+    // task is the current task
     return MU_SCHED_TASK_STATUS_ACTIVE;
   }
-  mu_event_t *event = find_task_event(sched, task);
+
+  event = find_task_event(sched, task);
   if (event == NULL) {
+    // task is not in the schedule at all
     return MU_SCHED_TASK_STATUS_IDLE;
   }
+
   mu_time_t now = mu_sched_get_current_time(sched);
-  if (!mu_time_follows(mu_event_get_time(event), now)) {
+  if (!mu_time_follows(mu_sched_event_get_time(event), now)) {
+    // task's time has arrived, but it's not yet running
     return MU_SCHED_TASK_STATUS_WAITING;
+
   } else {
+    // task is scheduled for some pont in the future
     return MU_SCHED_TASK_STATUS_SCHEDULED;
   }
 }
@@ -250,34 +247,32 @@ mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched,
 // =============================================================================
 // local (static) code
 
+static mu_sched_event_t *event_init(mu_sched_event_t *event, mu_task_t *task, mu_time_t time) {
+  event->task = task;
+  event->time = time;
+  return event;
+}
+
 static void *default_idle_fn(void *self, void *arg) {
   // the default idle task doesn't do much...
   return self;
 }
 
-static mu_event_t *event_peek(mu_sched_t *sched) {
-  if (sched->event_queue_count > 0) {
-    return &sched->event_queue[sched->event_queue_count - 1];
-  } else {
-    return NULL;
-  }
-}
-
-static mu_event_t *event_pop(mu_sched_t *sched) {
+static mu_sched_event_t *event_pop(mu_sched_t *sched) {
   // assume > 1 element in queue!
   return &sched->event_queue[--sched->event_queue_count];
 }
 
 static int find_event_index(mu_sched_t *sched, mu_task_t *task) {
   for (int i = sched->event_queue_count - 1; i >= 0; i--) {
-    mu_event_t *event = &sched->event_queue[i];
+    mu_sched_event_t *event = &sched->event_queue[i];
     if (event->task == task)
       return i;
   }
   return -1;
 }
 
-static mu_event_t *find_task_event(mu_sched_t *sched, mu_task_t *task) {
+static mu_sched_event_t *find_task_event(mu_sched_t *sched, mu_task_t *task) {
   int i = find_event_index(sched, task);
   if (i < 0) {
     return NULL;
@@ -291,15 +286,15 @@ static void delete_event_at(mu_sched_t *sched, int index) {
   int to_move = sched->event_queue_count - index - 1;
   if (to_move > 0) {
     // move existing items down
-    mu_event_t *dst = &sched->event_queue[index];
-    mu_event_t *src = &sched->event_queue[index + 1];
-    memmove(dst, src, sizeof(mu_event_t) * to_move);
+    mu_sched_event_t *dst = &sched->event_queue[index];
+    mu_sched_event_t *src = &sched->event_queue[index + 1];
+    memmove(dst, src, sizeof(mu_sched_event_t) * to_move);
   }
   sched->event_queue_count -= 1;
 }
 
 static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_t time) {
-  mu_event_t *event;
+  mu_sched_event_t *event;
   size_t index;
 
   if (sched->event_queue_count >= sched->event_queue_capacity) {
@@ -313,13 +308,13 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
   int to_move = sched->event_queue_count - index;
   if (to_move > 0) {
     // carve a hole at index
-    mu_event_t *src = &sched->event_queue[index];
-    mu_event_t *dst = &sched->event_queue[index + 1];
-    memmove(dst, src, sizeof(mu_event_t) * to_move);
+    mu_sched_event_t *src = &sched->event_queue[index];
+    mu_sched_event_t *dst = &sched->event_queue[index + 1];
+    memmove(dst, src, sizeof(mu_sched_event_t) * to_move);
   }
   // fill in the event
   event = &sched->event_queue[index];
-  mu_event_init(event, task, time);
+  event_init(event, task, time);
   sched->event_queue_count += 1;
   return MU_SCHED_ERR_NONE;
 }
@@ -327,7 +322,7 @@ static mu_sched_err_t sched_task_at(mu_sched_t *sched, mu_task_t *task, mu_time_
 #if MU_SCHED_BINARY_SEARCH
 // binary search for insertion point
 static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
-  mu_event_t *events = sched->event_queue;
+  mu_sched_event_t *events = sched->event_queue;
   int low = 0;
   int high = sched->event_queue_count - 1;
   while (low <= high) {
@@ -345,7 +340,7 @@ static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
 #else
 // linear search for insertion point
 static size_t find_insertion_index(mu_sched_t *sched, mu_time_t time) {
-  mu_event_t *events = sched->event_queue;
+  mu_sched_event_t *events = sched->event_queue;
 
   for (size_t i = sched->event_queue_count - 1; i >= 0; i--) {
     if (mu_time_precedes(time, events[i].time)) {
