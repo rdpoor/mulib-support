@@ -1,6 +1,6 @@
 # Welcome to `mulib`
-`mulib` is curated collection of software modules in C, written from the ground up for microcontrollers and other resource-constrained environments,
-that makes writing embedded applications simpler, faster and more reliable.
+`mulib` is curated collection of software modules written in C from the ground up for microcontrollers and other resource-constrained environments,
+to make writing embedded applications simpler, faster and more reliable.
 
 Some of the features you'll find in `mulib`:
 
