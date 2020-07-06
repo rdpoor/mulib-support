@@ -1,5 +1,5 @@
 # Welcome to `mulib`
-`mulib` is curated collection of software modules written in C, written from the ground up for microcontrollers and other resource-constrained environments,
+`mulib` is curated collection of software modules in C, written from the ground up for microcontrollers and other resource-constrained environments,
 that makes writing embedded applications simpler, faster and more reliable.
 
 Some of the features you'll find in `mulib`:
@@ -38,7 +38,7 @@ remains in control.
 
 ## A short, complete `mulib` example
 
-```
+```c
 // =============================================================================
 // includes
 
