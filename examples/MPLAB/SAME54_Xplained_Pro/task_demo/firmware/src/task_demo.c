@@ -37,6 +37,7 @@
 #include "screen_redraw_task.h"
 #include "screen_update_task.h"
 #include <definitions.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 
@@ -84,6 +85,8 @@ static screen_update_ctx_t s_screen_update_ctx;
 static screen_redraw_ctx_t s_screen_redraw_ctx;
 static kbd_ctx_t s_kbd_ctx;
 
+static bool s_is_low_power_mode;
+
 // =============================================================================
 // public code
 
@@ -118,6 +121,8 @@ void task_demo_init() {
   // start the LED and Screen Update tasks
   task_demo_start_led_task();
   task_demo_start_screen_update_task();
+
+  task_demo_set_low_power_mode(false);  // start in full power mode
 }
 
 void task_demo_step() {
@@ -141,4 +146,13 @@ void task_demo_start_screen_update_task(void) {
 
 void task_demo_stop_screen_update_task(void) {
   mu_sched_remove_task(&s_sched, &s_tasks[SCREEN_UPDATE_TASK_IDX]);
+}
+
+void task_demo_set_low_power_mode(bool low_power) {
+  s_is_low_power_mode = low_power;
+  task_demo_start_screen_update_task(); // force immediate redraw
+}
+
+bool task_demo_is_low_power_mode(void) {
+  return s_is_low_power_mode;
 }

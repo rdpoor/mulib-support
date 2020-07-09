@@ -27,8 +27,10 @@
 
 #include "definitions.h"
 #include "idle_task.h"
+#include "kbd_task.h"
 #include "mu_sched.h"
 #include "mu_time.h"
+#include "task_demo.h"
 #include <stddef.h>
 
 // =============================================================================
@@ -110,7 +112,9 @@ static bool is_ready_to_sleep(void) {
 static void will_sleep(void) {
   // If you have any last-moment cleanup that needs to be done before the
   // processor goes to sleep, you would do it here.
-  asm("nop");
+  if (task_demo_is_low_power_mode()) {
+    kbd_task_set_low_power_mode(true);
+  }
 }
 
 static void go_to_sleep(void) {
@@ -125,6 +129,9 @@ static void go_to_sleep(void) {
 static void did_wake(void) {
   // If you have anything that needs to be done when the processor wakes from
   // sleep, you would do it here.
+  if (task_demo_is_low_power_mode()) {
+    kbd_task_set_low_power_mode(false);
+  }
   asm("nop");
 }
 

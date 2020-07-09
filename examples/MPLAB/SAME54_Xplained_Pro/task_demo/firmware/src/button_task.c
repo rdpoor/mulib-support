@@ -29,6 +29,7 @@
 #include "definitions.h"
 #include "mu_sched.h"
 #include "mu_task.h"
+#include "task_demo.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -68,10 +69,10 @@ mu_task_t *button_task_init(mu_task_t *button_task,
 static void *button_task_fn(void *ctx, void *arg) {
   // "context" is unused in button task
   // scheduler is passed as the second argument.
-  mu_sched_t *sched = (mu_sched_t *)arg;
-  mu_time_t now = mu_sched_get_current_time(sched);
+  // mu_sched_t *sched = (mu_sched_t *)arg;
+  // mu_time_t now = mu_sched_get_current_time(sched);
 
-  printf("button pressed at %lu\r\n", now);
+  task_demo_set_low_power_mode(false);
   return NULL;
 }
 

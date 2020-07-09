@@ -135,6 +135,14 @@ mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_dt i
  */
 mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in);
 
+/**
+ * @brief Reschedule the current time immediately.
+ *
+ * This reschedules the currently running task at the current time.  This
+ * means that any intervening tasks get a chance to run first.
+ */
+mu_sched_err_t mu_sched_reschedule_now(mu_sched_t *sched);
+
 mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task);
 
 mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched, mu_task_t *task);

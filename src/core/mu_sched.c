@@ -209,6 +209,14 @@ mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in) {
   return sched_task_at(sched, task, mu_time_offset(time, in));
 }
 
+mu_sched_err_t mu_sched_reschedule_now(mu_sched_t *sched) {
+  mu_sched_event_t *event = mu_sched_get_current_event(sched);
+  if (!event) {
+    return MU_SCHED_ERR_NOT_FOUND;
+  }
+  return mu_sched_task_now(sched, event->task);
+}
+
 mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task) {
   if (mu_spscq_put(sched->isr_queue, task) == MU_CQUEUE_ERR_FULL) {
     return MU_SCHED_ERR_FULL;

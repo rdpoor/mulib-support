@@ -67,8 +67,8 @@
           <Security dnOrder="2">NON_SECURE</Security>
           <LogicalPath dnOrder="3">config/same54_xplained_pro/peripheral/clock/</LogicalPath>
           <PhysicalPath dnOrder="4">/peripheral/clock/</PhysicalPath>
-          <GeneratedChecksum dnOrder="5">F92DED19C9849F8713F9181DA1621A8A</GeneratedChecksum>
-          <UserChecksum dnOrder="6">F92DED19C9849F8713F9181DA1621A8A</UserChecksum>
+          <GeneratedChecksum dnOrder="5">F16D315C9C26E5D13FDFB4739A147660</GeneratedChecksum>
+          <UserChecksum dnOrder="6">F16D315C9C26E5D13FDFB4739A147660</UserChecksum>
         </File>
         <File dnOrder="7">
           <Type dnOrder="0">SOURCE</Type>
@@ -121,8 +121,8 @@
           <Security dnOrder="2">NON_SECURE</Security>
           <LogicalPath dnOrder="3">config/same54_xplained_pro/peripheral/pm/</LogicalPath>
           <PhysicalPath dnOrder="4">/peripheral/pm/</PhysicalPath>
-          <GeneratedChecksum dnOrder="5">FEE1C275538011D1F57016232FDB8BA8</GeneratedChecksum>
-          <UserChecksum dnOrder="6">FEE1C275538011D1F57016232FDB8BA8</UserChecksum>
+          <GeneratedChecksum dnOrder="5">308B3BB933DE5B6A94E60676C9A043CB</GeneratedChecksum>
+          <UserChecksum dnOrder="6">308B3BB933DE5B6A94E60676C9A043CB</UserChecksum>
         </File>
         <File dnOrder="13">
           <Type dnOrder="0">SOURCE</Type>
@@ -148,8 +148,8 @@
           <Security dnOrder="2">NON_SECURE</Security>
           <LogicalPath dnOrder="3">config/same54_xplained_pro/peripheral/sercom/usart/</LogicalPath>
           <PhysicalPath dnOrder="4">/peripheral/sercom/usart/</PhysicalPath>
-          <GeneratedChecksum dnOrder="5">FD4ACF82C849A1392F6B5E9780431720</GeneratedChecksum>
-          <UserChecksum dnOrder="6">FD4ACF82C849A1392F6B5E9780431720</UserChecksum>
+          <GeneratedChecksum dnOrder="5">3010AD6D723DF2524959618BCEA8B1F1</GeneratedChecksum>
+          <UserChecksum dnOrder="6">3010AD6D723DF2524959618BCEA8B1F1</UserChecksum>
         </File>
         <File dnOrder="16">
           <Type dnOrder="0">SOURCE</Type>

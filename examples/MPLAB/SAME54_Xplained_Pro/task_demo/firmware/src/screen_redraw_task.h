@@ -39,7 +39,8 @@ extern "C" {
 // types and definitions
 
 typedef struct {
-  int state;
+  int s1;             // major state (steps through lines to display)
+  int s2;             // minor state (steps through tasks to display)
   mu_task_t *tasks;
   size_t n_tasks;
 } screen_redraw_ctx_t;

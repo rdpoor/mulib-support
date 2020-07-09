@@ -57,7 +57,8 @@ mu_task_t *screen_redraw_task_init(mu_task_t *screen_redraw_task,
                                    screen_redraw_ctx_t *screen_redraw_ctx,
                                    mu_task_t *tasks,
                                    size_t n_tasks) {
-  screen_redraw_ctx->state = 0;
+  screen_redraw_ctx->s1 = 0;
+  screen_redraw_ctx->s2 = 0;
   screen_redraw_ctx->tasks = tasks;
   screen_redraw_ctx->n_tasks = n_tasks;
 
@@ -84,36 +85,74 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
   // screen_redraw_context is passed as the first argument, scheduler is second
   screen_redraw_ctx_t *screen_redraw_ctx = (screen_redraw_ctx_t *)ctx;
   mu_sched_t *sched = (mu_sched_t *)arg;
-  int state = screen_redraw_ctx->state;
+  bool done = false;
 
-  if (state == 0) {
+  switch (screen_redraw_ctx->s1) {
+    case 0:
     printf("%s", CLEAR_SCREEN);
-  } else if (state == 1) {
+    screen_redraw_ctx->s1 += 1;
+    screen_redraw_ctx->s2 = 0;
+    break;
+
+    case 1:
     printf("task_demo %s: https://github.com/rdpoor/mulib\r\n\r\n",
             TASK_DEMO_VERSION);
-  } else if (state == 2) {
+    screen_redraw_ctx->s1 += 1;
+    break;
+
+    case 2:
     printf("          Name Stat  # Calls     Runtime     Max Dur\r\n");
-  } else if (state == 3) {
+    screen_redraw_ctx->s1 += 1;
+    break;
+
+    case 3:
     printf("+-------------+-+-----------+-----------+-----------+\r\n");
-  } else if (state < 4 + screen_redraw_ctx->n_tasks) {
-    print_task(&(screen_redraw_ctx->tasks[state - 4]), sched);
-  } else if (state < 5 + screen_redraw_ctx->n_tasks) {
+    screen_redraw_ctx->s1 += 1;
+    break;
+
+    case 4:
+    print_task(&(screen_redraw_ctx->tasks[screen_redraw_ctx->s2++]), sched);
+    // stay in this major state until all tasks have been displayed
+    if (screen_redraw_ctx->s2 == screen_redraw_ctx->n_tasks) {
+      screen_redraw_ctx->s1 += 1;
+    }
+    break;
+
+    case 5:
     printf("\r\nStatus: A=Active, W=Waiting, S=Scheduled, I=Idle\r\n");
-  } else if (state < 6 + screen_redraw_ctx->n_tasks) {
+    screen_redraw_ctx->s1 += 1;
+    break;
+
+    case 6:
+    if (task_demo_is_low_power_mode()) {
+      printf("Push user button to exit low-power mode.\r\n");
+      done = true;
+    } else {
+      printf("Type 'p' to enter low-power mode.\r\n");
+      screen_redraw_ctx->s1 += 1;
+    }
+    break;
+
+    case 7:
     printf("Type 'b' to restart LED task. 'B' to suspend.\r\n");
-  } else if (state < 7 + screen_redraw_ctx->n_tasks) {
+    screen_redraw_ctx->s1 += 1;
+    break;
+
+    case 8:
     printf("Type 'd' to restart Screen task. 'D' to suspend.\r\n");
+    done = true;
+    break;
   }
 
-  // endgame
-  if (state < 7 + screen_redraw_ctx->n_tasks) {
-    screen_redraw_ctx->state = state + 1; // bump state and immediately reschedule
-    mu_sched_event_t *event = mu_sched_get_current_event(sched);
-    mu_sched_task_now(sched, mu_sched_event_get_task(event));
+  // endgame: if done, reset state variables and wait for screen_update_task
+  // to restart this redraw task.  Otherwise reschedule right away.
+  if (done) {
+    screen_redraw_ctx->s1 = 0;
+    screen_redraw_ctx->s2 = 0;
   } else {
-    screen_redraw_ctx->state = 0; // reset state
-    // don't reschedule -- wait for screen_update_task to restart this task.
+    mu_sched_reschedule_now(sched);
   }
+
   return NULL;
 }
 
@@ -122,7 +161,7 @@ static void print_task(mu_task_t *task, mu_sched_t *sched) {
          mu_task_name(task),
          get_task_state(task, sched),
          mu_task_call_count(task),
-         task->runtime, // direct struct access to avoid floats
+         task->runtime,
          task->max_duration);
 }
 

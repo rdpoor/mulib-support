@@ -56,6 +56,13 @@ mu_task_t *kbd_task_init(mu_task_t *kbd_task,
                          kbd_ctx_t *kbd_ctx,
                          mu_sched_t *sched);
 
+/**
+ * @brief Configure the usart for low power mode or regular mode.
+ *
+ * Disable the USART when the system is idle
+ */
+void kbd_task_set_low_power_mode(bool low_power);
+
 #ifdef __cplusplus
 }
 #endif

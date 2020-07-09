@@ -38,7 +38,7 @@
         </KeyValueSet>
         <Integer dnOrder="6" id="CPU_CLOCK_FREQUENCY">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="12000000"/>
+            <Dynamic dnOrder="0" id="core" value="4000000"/>
           </Values>
         </Integer>
         <Menu dnOrder="7" id="CoreIARMenu">
@@ -102,17 +102,17 @@
         </Boolean>
         <Integer dnOrder="18" id="GCLK_0_DIV">
           <Values dnOrder="0">
-            <User dnOrder="0" value="4"/>
+            <User dnOrder="0" value="12"/>
           </Values>
         </Integer>
         <Integer dnOrder="19" id="GCLK_0_DIVIDER_VALUE">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="4"/>
+            <Dynamic dnOrder="0" id="core" value="12"/>
           </Values>
         </Integer>
         <Integer dnOrder="20" id="GCLK_0_FREQ">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="12000000"/>
+            <Dynamic dnOrder="0" id="core" value="4000000"/>
           </Values>
         </Integer>
         <KeyValueSet dnOrder="21" id="GCLK_0_SRC">
@@ -146,22 +146,22 @@
         <Integer dnOrder="26" id="GCLK_2_DIV">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="core" value="48"/>
-            <User dnOrder="1" value="4"/>
+            <User dnOrder="1" value="48"/>
           </Values>
         </Integer>
         <Integer dnOrder="27" id="GCLK_2_DIVIDER_VALUE">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="4"/>
+            <Dynamic dnOrder="0" id="core" value="48"/>
           </Values>
         </Integer>
         <Integer dnOrder="28" id="GCLK_2_FREQ">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="12000000"/>
+            <Dynamic dnOrder="0" id="core" value="1000000"/>
           </Values>
         </Integer>
         <Boolean dnOrder="29" id="GCLK_2_RUNSTDBY">
           <Values dnOrder="0">
-            <User dnOrder="0" value="true"/>
+            <User dnOrder="0" value="false"/>
           </Values>
         </Boolean>
         <KeyValueSet dnOrder="30" id="GCLK_2_SRC">
@@ -193,12 +193,13 @@
         </Boolean>
         <Integer dnOrder="34" id="GCLK_ID_1_FREQ">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="12000000"/>
+            <Dynamic dnOrder="0" id="core" value="4000000"/>
           </Values>
         </Integer>
         <KeyValueSet dnOrder="35" id="GCLK_ID_1_GENSEL">
           <Values dnOrder="0">
             <Dynamic dnOrder="0" id="core" value="2"/>
+            <User dnOrder="1" value="0"/>
           </Values>
         </KeyValueSet>
         <Boolean dnOrder="36" id="GCLK_ID_23_CHEN">
@@ -208,7 +209,7 @@
         </Boolean>
         <Integer dnOrder="37" id="GCLK_ID_23_FREQ">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="12000000"/>
+            <Dynamic dnOrder="0" id="core" value="1000000"/>
           </Values>
         </Integer>
         <KeyValueSet dnOrder="38" id="GCLK_ID_23_GENSEL">
@@ -244,7 +245,7 @@
         </String>
         <Integer dnOrder="44" id="MAIN_CLOCK_FREQUENCY">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="12000000"/>
+            <Dynamic dnOrder="0" id="core" value="4000000"/>
           </Values>
         </Integer>
         <String dnOrder="45" id="MCLK_APBA_INITIAL_VALUE">
@@ -654,7 +655,7 @@
         </Boolean>
         <Integer dnOrder="126" id="SERCOM2_CORE_CLOCK_FREQUENCY">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="12000000"/>
+            <Dynamic dnOrder="0" id="core" value="1000000"/>
           </Values>
         </Integer>
         <Boolean dnOrder="127" id="SERCOM2_OTHER_INTERRUPT_ENABLE">
@@ -679,13 +680,13 @@
         </Boolean>
         <String dnOrder="131" id="SYSTICK_PERIOD">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="core" value="0x2ee0"/>
+            <Dynamic dnOrder="0" id="core" value="0xfa0"/>
           </Values>
         </String>
         <Float dnOrder="132" id="SYSTICK_PERIOD_MS">
           <Attributes dnOrder="0">
             <Float dnOrder="0" id="max">
-              <Value dnOrder="0">1398.1012</Value>
+              <Value dnOrder="0">4194.3037</Value>
             </Float>
           </Attributes>
         </Float>
@@ -1105,19 +1106,27 @@
         </Integer>
       </Symbols>
     </UniqueComponent>
-    <UniqueComponent dnOrder="7" id="pm"/>
+    <UniqueComponent dnOrder="7" id="pm">
+      <Symbols dnOrder="0">
+        <KeyValueSet dnOrder="0" id="PM_STDBYCFG_FASTWKUP">
+          <Values dnOrder="0">
+            <User dnOrder="0" value="3"/>
+          </Values>
+        </KeyValueSet>
+      </Symbols>
+    </UniqueComponent>
     <UniqueComponent dnOrder="8" id="rtc"/>
     <UniqueComponent dnOrder="9" id="sercom2">
       <Symbols dnOrder="0">
         <Hex dnOrder="0" id="I2CM_BAUD">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="sercom2" value="54"/>
+            <Dynamic dnOrder="0" id="sercom2" value="1"/>
           </Values>
         </Hex>
         <Integer dnOrder="1" id="I2CS_SDASETUP_TIME_NS">
           <Attributes dnOrder="0">
             <Integer dnOrder="0" id="max">
-              <Value dnOrder="0">20500</Value>
+              <Value dnOrder="0">61499</Value>
             </Integer>
           </Attributes>
         </Integer>
@@ -1177,7 +1186,7 @@
         </File>
         <Integer dnOrder="10" id="SPI_BAUD_REG_VALUE">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="sercom2" value="5"/>
+            <Dynamic dnOrder="0" id="sercom2" value="0"/>
           </Values>
         </Integer>
         <String dnOrder="11" id="TRANSMIT_DATA_REGISTER">
@@ -1187,7 +1196,7 @@
         </String>
         <Integer dnOrder="12" id="USART_BAUD_VALUE">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="sercom2" value="55469"/>
+            <Dynamic dnOrder="0" id="sercom2" value="5138"/>
           </Values>
         </Integer>
         <Boolean dnOrder="13" id="USART_INTERRUPT_MODE">
@@ -1223,12 +1232,12 @@
         </Integer>
         <Integer dnOrder="18" id="USART_SAMPLE_COUNT">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="sercom2" value="16"/>
+            <Dynamic dnOrder="0" id="sercom2" value="8"/>
           </Values>
         </Integer>
         <Integer dnOrder="19" id="USART_SAMPLE_RATE">
           <Values dnOrder="0">
-            <Dynamic dnOrder="0" id="sercom2" value="0"/>
+            <Dynamic dnOrder="0" id="sercom2" value="2"/>
           </Values>
         </Integer>
         <Boolean dnOrder="20" id="USART_TX_ENABLE">

@@ -39,7 +39,6 @@
 // =============================================================================
 // local (forward) declarations
 
-
 static void *kbd_task_fn(void *ctx, void *arg);
 
 // If using ring buffer:
@@ -60,10 +59,22 @@ mu_task_t *kbd_task_init(mu_task_t *kbd_task,
   kbd_ctx->sched = sched;
 
   SERCOM2_USART_ReadCallbackRegister(kbd_cb, (uintptr_t)kbd_ctx);
-  SERCOM2_USART_Read(&kbd_ctx->ch, 1);  // start initial read
+  SERCOM2_USART_Read(&kbd_ctx->ch, 1); // start initial read
   mu_task_init(kbd_task, kbd_task_fn, kbd_ctx, "Keyboard Task");
 
   return kbd_task;
+}
+
+void kbd_task_set_low_power_mode(bool low_power) {
+  if (low_power) {
+    // disable USART
+    SERCOM2_REGS->USART_INT.SERCOM_CTRLA &= ~SERCOM_USART_INT_CTRLA_ENABLE_Msk;
+  } else {
+    // enable USART
+    SERCOM2_REGS->USART_INT.SERCOM_CTRLA |= SERCOM_USART_INT_CTRLA_ENABLE_Msk;
+    while (SERCOM2_REGS->USART_INT.SERCOM_SYNCBUSY)
+      ;
+  }
 }
 
 // =============================================================================
@@ -73,7 +84,7 @@ static void *kbd_task_fn(void *ctx, void *arg) {
   // keyoard context is passed as first argument, scheduler as the second.
   kbd_ctx_t *kbd_ctx = (kbd_ctx_t *)ctx;
   // mu_sched_t *sched = (mu_sched_t *)arg;
-  USART_ERROR err = SERCOM2_USART_ErrorGet();  // clears error if any...
+  USART_ERROR err = SERCOM2_USART_ErrorGet(); // clears error if any...
   if (err != USART_ERROR_NONE) {
     printf("kbd_task error %d\r\n", err);
   } else {
@@ -90,9 +101,12 @@ static void *kbd_task_fn(void *ctx, void *arg) {
     case 'D':
       task_demo_stop_screen_update_task();
       break;
+    case 'p':
+      task_demo_set_low_power_mode(true);
+      break;
     }
   }
-  SERCOM2_USART_Read(&kbd_ctx->ch, 1);  // start next read
+  SERCOM2_USART_Read(&kbd_ctx->ch, 1); // start next read
   return NULL;
 }
 
