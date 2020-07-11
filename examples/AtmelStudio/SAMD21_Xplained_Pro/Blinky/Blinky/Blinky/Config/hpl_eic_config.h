@@ -665,7 +665,7 @@
 // <i> Indicates whether the external interrupt 15 filter is enabled or not
 // <id> eic_arch_filten15
 #ifndef CONF_EIC_FILTEN15
-#define CONF_EIC_FILTEN15 0
+#define CONF_EIC_FILTEN15 1
 #endif
 
 // <y> Input 15 Sense Configuration

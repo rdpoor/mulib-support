@@ -28,10 +28,7 @@
 #include "blinky.h"
 #include "button_task.h"
 #include "led_task.h"
-#include "mu_port.h"
-#include "mu_sched.h"
-#include "mu_spscq.h"
-#include "mu_task.h"
+#include "mulib.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -65,13 +62,14 @@ static led_ctx_t s_led_ctx;
 
 // the Button task
 static mu_task_t s_button_task;
+static button_ctx_t s_button_ctx;
 
 // =============================================================================
 // public code
 
 void blinky_init() {
-  printf("\n\n# ===========\n");
-  printf("# blinky %s: see https://github.com/rdpoor/mulib\n", BLINKY_VERSION);
+  printf("\r\n\r\n# ===========\r\n");
+  printf("# blinky %s: see https://github.com/rdpoor/mulib\r\n", BLINKY_VERSION);
 
   // initialize the port-specific interface
   mu_port_init();
@@ -82,7 +80,7 @@ void blinky_init() {
 
   // initialize tasks
   led_task_init(&s_led_task, &s_led_ctx);
-  button_task_init(&s_button_task, &s_sched);
+  button_task_init(&s_button_task, &s_button_ctx, &s_sched);
 
   // schedule the initial call to the LED task
   mu_sched_task_now(&s_sched, &s_led_task);

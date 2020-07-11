@@ -14,7 +14,7 @@ extern "C" {
 
 void EXTERNAL_IRQ_0_example(void);
 
-void TARGET_IO_example(void);
+void USART_0_example(void);
 
 void CALENDAR_0_example(void);
 

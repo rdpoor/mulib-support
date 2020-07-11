@@ -39,7 +39,7 @@
  *
  * \acme_license_stop
  *
- * Project: Blinky
+ * Project: blinky
  * Target:  ATSAMD21J18A 
  *
  **/

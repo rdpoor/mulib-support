@@ -13,15 +13,13 @@
 #include <hpl_gclk_base.h>
 #include <hpl_pm_base.h>
 
-struct usart_sync_descriptor TARGET_IO;
-
 struct calendar_descriptor CALENDAR_0;
 
 void EXTERNAL_IRQ_0_init(void)
 {
 	_gclk_enable_channel(EIC_GCLK_ID, CONF_GCLK_EIC_SRC);
 
-	gpio_set_pin_direction(USER_BUTTON_,
+	gpio_set_pin_direction(USER_BUTTON_AL,
 	                       // <y> Pin direction
 	                       // <id> pad_direction
 	                       // <GPIO_DIRECTION_OFF"> Off
@@ -29,14 +27,14 @@ void EXTERNAL_IRQ_0_init(void)
 	                       // <GPIO_DIRECTION_OUT"> Out
 	                       GPIO_DIRECTION_IN);
 
-	gpio_set_pin_level(USER_BUTTON_,
+	gpio_set_pin_level(USER_BUTTON_AL,
 	                   // <y> Initial level
 	                   // <id> pad_initial_level
 	                   // <false"> Low
 	                   // <true"> High
-	                   false);
+	                   true);
 
-	gpio_set_pin_pull_mode(USER_BUTTON_,
+	gpio_set_pin_pull_mode(USER_BUTTON_AL,
 	                       // <y> Pull configuration
 	                       // <id> pad_pull_config
 	                       // <GPIO_PULL_OFF"> Off
@@ -44,7 +42,7 @@ void EXTERNAL_IRQ_0_init(void)
 	                       // <GPIO_PULL_DOWN"> Pull-down
 	                       GPIO_PULL_UP);
 
-	gpio_set_pin_function(USER_BUTTON_,
+	gpio_set_pin_function(USER_BUTTON_AL,
 	                      // <y> Pin function
 	                      // <id> pad_function
 	                      // <i> Auto : use driver pinmux if signal is imported by driver, else turn off function
@@ -63,25 +61,29 @@ void EXTERNAL_IRQ_0_init(void)
 	ext_irq_init();
 }
 
-void TARGET_IO_PORT_init(void)
+/**
+ * \brief USART Clock initialization function
+ *
+ * Enables register interface and peripheral clock
+ */
+void USART_0_CLOCK_init()
 {
 
-	gpio_set_pin_function(PA22, PINMUX_PA22C_SERCOM3_PAD0);
-
-	gpio_set_pin_function(PA23, PINMUX_PA23C_SERCOM3_PAD1);
-}
-
-void TARGET_IO_CLOCK_init(void)
-{
 	_pm_enable_bus_clock(PM_BUS_APBC, SERCOM3);
 	_gclk_enable_channel(SERCOM3_GCLK_ID_CORE, CONF_GCLK_SERCOM3_CORE_SRC);
 }
 
-void TARGET_IO_init(void)
+/**
+ * \brief USART pinmux initialization function
+ *
+ * Set each required pin to USART functionality
+ */
+void USART_0_PORT_init()
 {
-	TARGET_IO_CLOCK_init();
-	usart_sync_init(&TARGET_IO, SERCOM3, (void *)NULL);
-	TARGET_IO_PORT_init();
+
+	gpio_set_pin_function(EDBG_TX, PINMUX_PA22C_SERCOM3_PAD0);
+
+	gpio_set_pin_function(EDBG_RX, PINMUX_PA23C_SERCOM3_PAD1);
 }
 
 void CALENDAR_0_CLOCK_init(void)
@@ -102,7 +104,7 @@ void system_init(void)
 
 	// GPIO on PB30
 
-	gpio_set_pin_level(USER_LED_,
+	gpio_set_pin_level(USER_LED_AL,
 	                   // <y> Initial level
 	                   // <id> pad_initial_level
 	                   // <false"> Low
@@ -110,13 +112,15 @@ void system_init(void)
 	                   true);
 
 	// Set pin direction to output
-	gpio_set_pin_direction(USER_LED_, GPIO_DIRECTION_OUT);
+	gpio_set_pin_direction(USER_LED_AL, GPIO_DIRECTION_OUT);
 
-	gpio_set_pin_function(USER_LED_, GPIO_PIN_FUNCTION_OFF);
+	gpio_set_pin_function(USER_LED_AL, GPIO_PIN_FUNCTION_OFF);
 
 	EXTERNAL_IRQ_0_init();
 
-	TARGET_IO_init();
+	USART_0_CLOCK_init();
+	USART_0_init();
+	USART_0_PORT_init();
 
 	CALENDAR_0_init();
 }

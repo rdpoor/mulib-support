@@ -23,17 +23,15 @@ extern "C" {
 
 #include <hal_ext_irq.h>
 
-#include <hal_usart_sync.h>
+#include <usart_lite.h>
 
 #include <hal_calendar.h>
 
-extern struct usart_sync_descriptor TARGET_IO;
-
 extern struct calendar_descriptor CALENDAR_0;
 
-void TARGET_IO_PORT_init(void);
-void TARGET_IO_CLOCK_init(void);
-void TARGET_IO_init(void);
+void   USART_0_PORT_init(void);
+void   USART_0_CLOCK_init(void);
+int8_t USART_0_init(void);
 
 void CALENDAR_0_CLOCK_init(void);
 void CALENDAR_0_init(void);

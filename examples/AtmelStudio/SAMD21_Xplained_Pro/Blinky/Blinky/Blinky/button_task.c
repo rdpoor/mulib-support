@@ -25,20 +25,14 @@
 // =============================================================================
 // includes
 
-#include <atmel_start.h>
 #include "button_task.h"
-#include "mu_sched.h"
-#include "mu_task.h"
+#include "atmel_start.h"
+#include "mulib.h"
 #include <stddef.h>
 #include <stdio.h>
 
 // =============================================================================
 // local types and definitions
-
-typedef struct {
-  mu_task_t *task;
-  mu_sched_t *sched;
-} button_ctx_t;
 
 // =============================================================================
 // local (forward) declarations
@@ -49,18 +43,20 @@ static void button_cb(void);
 // =============================================================================
 // local storage
 
-static button_ctx_t s_button_ctx;
+static mu_task_t *s_button_task;
+static mu_sched_t *s_sched;
 
 // =============================================================================
 // public code
 
 mu_task_t *button_task_init(mu_task_t *button_task,
+                            button_ctx_t *button_ctx,
                             mu_sched_t *sched) {
   // Register the button_cb function to be called upon an EIC interrupt on
-  // the user button.  Save references to the task and scheduler objects so you
-  // can access them from within the interrupt-level callback function.
-  s_button_ctx.task = button_task;
-  s_button_ctx.sched = sched;
+  // the user button.  Save refereces to the button task and the scheduler
+  // as we will need them inside of button_cb, called at interrupt level.
+  s_button_task = button_task;
+  s_sched = sched;
   ext_irq_register(PIN_PA15, button_cb);
 
   mu_task_init(button_task, button_task_fn, NULL, "Button Interrupt");
@@ -71,8 +67,7 @@ mu_task_t *button_task_init(mu_task_t *button_task,
 // local (static) code
 
 static void *button_task_fn(void *ctx, void *arg) {
-  // "context" is unused in button task
-  // scheduler is passed as the second argument.
+  // button context (unused) is passed as first arg, scheduler as second.
   mu_sched_t *sched = (mu_sched_t *)arg;
   mu_time_t now = mu_sched_get_current_time(sched);
 
@@ -82,6 +77,6 @@ static void *button_task_fn(void *ctx, void *arg) {
 
 // button_cb is triggered when a button press generates an interrupt.
 // From interrupt level, schedule the button task upon leaving interrupt level.
-static void button_cb() {
-  mu_sched_task_from_isr(s_button_ctx.sched, s_button_ctx.task);
+static void button_cb(void) {
+  mu_sched_task_from_isr(s_sched, s_button_task);
 }

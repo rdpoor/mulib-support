@@ -71,6 +71,12 @@ mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt);
 
 mu_port_time_t mu_port_time_now();
 
+// Support for stdio.h
+
+int _write(int file, char *ptr, int len);
+
+int _read(int file, char *ptr, int len);
+
 #ifdef __cplusplus
 }
 #endif

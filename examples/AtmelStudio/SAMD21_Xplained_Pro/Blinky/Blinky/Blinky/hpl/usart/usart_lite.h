@@ -1,9 +1,10 @@
+
 /**
  * \file
  *
  * \brief USART related functionality declaration.
  *
- * Copyright (c) 2014-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2017 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -31,83 +32,78 @@
  *
  */
 
-#ifndef _HPL_USART_H_INCLUDED
-#define _HPL_USART_H_INCLUDED
+#ifndef _USART_LITE_H_INCLUDED
+#define _USART_LITE_H_INCLUDED
+
+#include <compiler.h>
+#include <peripheral_clk_config.h>
 
 /**
- * \addtogroup HPL USART SYNC
+ * \addtogroup usart USART driver
  *
- * \section hpl_usart_sync_rev Revision History
- * - v1.0.0 Initial Release
+ * \section usart_rev Revision History
+ * - v0.0.0.1 Initial Commit
  *
  *@{
  */
-
-#include <compiler.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- * \brief USART flow control state
- */
-union usart_flow_control_state {
-	struct {
-		uint8_t cts : 1;
-		uint8_t rts : 1;
-		uint8_t unavailable : 1;
-		uint8_t reserved : 5;
-	} bit;
-	uint8_t value;
-};
+#ifndef SERCOM3_RXPO
+#define SERCOM3_RXPO 1
+#endif
+
+#ifndef SERCOM3_TXPO
+#define SERCOM3_TXPO 0
+#endif
+
+// Calculate BAUD register value in UART mode
+
+#ifndef SERCOM3_BAUD_RATE
+#define SERCOM3_BAUD_RATE 65536 - ((65536 * 16.0f * 115200) / CONF_GCLK_SERCOM3_CORE_FREQUENCY)
+#endif
 
 /**
- * \brief USART baud rate mode
+ * \brief Initialize usart interface
+ *
+ * \return Initialization status.
  */
-enum usart_baud_rate_mode { USART_BAUDRATE_ASYNCH_ARITHMETIC, USART_BAUDRATE_ASYNCH_FRACTIONAL, USART_BAUDRATE_SYNCH };
+int8_t USART_0_init();
 
 /**
- * \brief USART data order
+ * \brief Write a byte to the SERCOM USART instance
  */
-enum usart_data_order { USART_DATA_ORDER_MSB = 0, USART_DATA_ORDER_LSB = 1 };
+uint8_t USART_0_read_byte();
 
 /**
- * \brief USART mode
+ * \brief Write a byte to the SERCOM USART instance
  */
-enum usart_mode { USART_MODE_ASYNCHRONOUS = 0, USART_MODE_SYNCHRONOUS = 1 };
+void USART_0_write_byte(uint8_t data);
 
 /**
- * \brief USART parity
+ * \brief Check if USART is ready to send next byte
  */
-enum usart_parity {
-	USART_PARITY_EVEN  = 0,
-	USART_PARITY_ODD   = 1,
-	USART_PARITY_NONE  = 2,
-	USART_PARITY_SPACE = 3,
-	USART_PARITY_MARK  = 4
-};
+bool USART_0_is_byte_sent();
 
 /**
- * \brief USART stop bits mode
+ * \brief Check if there is data received by USART
  */
-enum usart_stop_bits { USART_STOP_BITS_ONE = 0, USART_STOP_BITS_TWO = 1, USART_STOP_BITS_ONE_P_FIVE = 2 };
+bool USART_0_is_byte_received();
 
 /**
- * \brief USART character size
+ * \brief Enable SERCOM module
  */
-enum usart_character_size {
-	USART_CHARACTER_SIZE_8BITS = 0,
-	USART_CHARACTER_SIZE_9BITS = 1,
-	USART_CHARACTER_SIZE_5BITS = 5,
-	USART_CHARACTER_SIZE_6BITS = 6,
-	USART_CHARACTER_SIZE_7BITS = 7
-};
+void USART_0_enable();
 
-//@}
+/**
+ * \brief Disable SERCOM module
+ */
+void USART_0_disable();
 
 #ifdef __cplusplus
 }
 #endif
-/**@}*/
-#endif /* _HPL_USART_H_INCLUDED */
+
+#endif /* _USART_LITE_H_INCLUDED */

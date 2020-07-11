@@ -25,11 +25,9 @@
 // =============================================================================
 // includes
 
-#include <atmel_start.h>
+#include "atmel_start.h"
 #include "led_task.h"
-#include "mu_sched.h"
-#include "mu_task.h"
-#include "mu_time.h"
+#include "mulib.h"
 #include <stddef.h>
 
 // =============================================================================
@@ -39,6 +37,7 @@
 // local (forward) declarations
 
 static void *led_task_fn(void *self, void *arg);
+
 static void LED_On(void);
 static void LED_Off(void);
 
@@ -77,9 +76,9 @@ static void *led_task_fn(void *ctx, void *arg) {
 }
 
 static void LED_On(void) {
-  gpio_set_pin_level(USER_LED_, false);
+  gpio_set_pin_level(USER_LED_AL, false);
 }
 
 static void LED_Off(void) {
-  gpio_set_pin_level(USER_LED_, true);
+  gpio_set_pin_level(USER_LED_AL, true);
 }

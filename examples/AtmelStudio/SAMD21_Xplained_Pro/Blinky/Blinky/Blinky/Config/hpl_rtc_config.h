@@ -47,7 +47,7 @@
 // <e> Event control
 // <id> rtc_event_control
 #ifndef CONF_RTC_EVENT_CONTROL_ENABLE
-#define CONF_RTC_EVENT_CONTROL_ENABLE 0
+#define CONF_RTC_EVENT_CONTROL_ENABLE 1
 #endif
 
 // <q> Periodic Interval 0 Event Output

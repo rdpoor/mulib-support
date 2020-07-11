@@ -32,16 +32,27 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_sched.h"
-#include "mu_task.h"
+#include "mulib.h"
 
 // =============================================================================
 // types and definitions
 
+// Most tasks won't need to keep a reference to both the task and scheduler
+// objects.  However, the button task is triggered from an interrupt, and the
+// interrupt registration function accepts a single pointer.  From within the
+// interrupt context, we need to access both the task and the scheduler.
+
+typedef struct {
+  mu_task_t *task;
+  mu_sched_t *sched;
+} button_ctx_t;
+
 // =============================================================================
 // declarations
 
-mu_task_t *button_task_init(mu_task_t *button_task, mu_sched_t *sched);
+mu_task_t *button_task_init(mu_task_t *button_task,
+                            button_ctx_t *button_ctx,
+                            mu_sched_t *sched);
 
 #ifdef __cplusplus
 }

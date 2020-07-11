@@ -1,5 +1,5 @@
 /**
- * @file prt_time.c
+ * @file mu_port.c
  *
  */
 
@@ -32,13 +32,10 @@
 // =============================================================================
 // include files
 
-#include "mu_port.h"
-#include "compiler.h"
-#include "hpl_core.h"
-#include "hpl_rtc_config.h"
+#include "atmel_start.h"
+#include "mulib.h"
 #include <stdint.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdbool.h>
 
 // =============================================================================
@@ -49,9 +46,12 @@
 // =============================================================================
 // forward declarations to local functions
 
-static void RTC_Initialize(void);
-static uint32_t RTC_Timer32FrequencyGet(void);
-static void RTC_Timer32Start(void);
+// For future reference:
+// To set compare / interrupt value:
+//   hri_rtcmode0_write_COMP_COMP_bf(&CALENDAR_0.device.hw, 0, comp);
+// To enable RTC interrupt:
+//   typedef void (*calendar_drv_cb_alarm_t)(struct calendar_dev *const dev);
+//   _calendar_register_callback(&CALENDAR0.device, cb)
 
 // =============================================================================
 // local (static) storage
@@ -62,9 +62,10 @@ static mu_port_time_seconds_dt s_rtc_period;
 // main code starts here
 
 void mu_port_init() {
-  RTC_Initialize();
-  s_rtc_period = 1.0/(mu_port_time_seconds_dt)RTC_Timer32FrequencyGet();
-  RTC_Timer32Start();        // start counting
+  // Initialize the RTC.  Use CALENDAR_0 since that's the only published
+  // interface for interacting with the underlying RTC.
+	calendar_enable(&CALENDAR_0);  // start RTC
+  s_rtc_period = 1.0/(mu_port_time_seconds_dt)CONF_GCLK_RTC_FREQUENCY;
 }
 
 mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
@@ -104,49 +105,35 @@ mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
 }
 
 mu_port_time_t mu_port_time_now() {
-  return hri_rtcmode0_read_COUNT_COUNT_bf(RTC);
+	return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
+}
+
+// ================
+// support for printf()
+
+int _write(int file, char *ptr, int len) {
+  // void file;
+  int n = len;
+
+  while (n-- > 0) {
+    while (!USART_0_is_byte_sent())
+  		;
+    USART_0_write_byte(*ptr++);
+  }
+  return len;
+}
+
+int _read(int file, char *ptr, int len) {
+  // void file;
+  int n = len;
+
+  while (n-- > 0) {
+    while (!USART_0_is_byte_received())
+			;
+    *ptr++ = USART_0_read_byte();
+  }
+  return len;
 }
 
 // =============================================================================
 // private code
-
-// Implementation note: In ASF4, the RTC functions are tightly bound with the
-// CALENDAR object.  To avoid dragging in the whole calendar module, this code
-// calls in at the hri level: the following code is largely cribbed from
-// hpl/rtc/hpl_rtc.c
-
-static void RTC_Initialize(void) {
-	uint16_t register_value;
-
-	hri_rtcmode0_wait_for_sync(RTC);
-
-	if (hri_rtcmode0_get_CTRL_ENABLE_bit(RTC)) {
-		hri_rtcmode0_clear_CTRL_ENABLE_bit(RTC);
-		hri_rtcmode0_wait_for_sync(RTC);
-	}
-
-	hri_rtcmode0_set_CTRL_SWRST_bit(RTC);
-	hri_rtcmode0_wait_for_sync(RTC);
-
-	/* Set mode 0 */
-	register_value = RTC_MODE0_CTRL_MODE(0);
-
-	/* Set prescaler: divide by 1 */
-	register_value |= RTC_MODE0_CTRL_PRESCALER(CONF_RTC_PRESCALER);
-
-	/* do not clear counter on compare/alarm match */
-	register_value &= (~RTC_MODE0_CTRL_MATCHCLR);
-
-	hri_rtcmode0_write_CTRL_reg(RTC, register_value);
-
-	/* set continuously clock read update mode */
-	hri_rtcmode0_set_READREQ_RCONT_bit(RTC);
-}
-
-static uint32_t RTC_Timer32FrequencyGet(void) {
-  return CONF_GCLK_RTC_FREQUENCY;
-}
-
-static void RTC_Timer32Start(void) {
-  hri_rtcmode0_set_CTRL_ENABLE_bit(RTC);
-}

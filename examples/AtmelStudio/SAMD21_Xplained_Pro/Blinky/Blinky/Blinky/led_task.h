@@ -32,14 +32,13 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_sched.h"
-#include "mu_task.h"
+#include "mulib.h"
 
 // =============================================================================
 // types and definitions
 
 #define LED_ON_TIME_MS 5
-#define LED_OFF_TIME_MS 995
+#define LED_OFF_TIME_MS 495
 
 typedef enum { LED_OFF, LED_ON } led_state_t;
 

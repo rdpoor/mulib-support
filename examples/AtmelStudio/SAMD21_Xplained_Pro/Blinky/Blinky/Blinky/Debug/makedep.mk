@@ -8,8 +8,6 @@
 
 ..\..\..\..\..\..\src\core\mu_bufref.c
 
-..\..\..\..\..\..\src\core\mu_event.c
-
 ..\..\..\..\..\..\src\core\mu_list.c
 
 ..\..\..\..\..\..\src\core\mu_pstore.c
@@ -60,8 +58,6 @@ hal\src\hal_io.c
 
 hal\src\hal_sleep.c
 
-hal\src\hal_usart_sync.c
-
 hal\utils\src\utils_assert.c
 
 hal\utils\src\utils_event.c
@@ -84,25 +80,13 @@ hpl\pm\hpl_pm.c
 
 hpl\rtc\hpl_rtc.c
 
-hpl\sercom\hpl_sercom.c
-
 hpl\sysctrl\hpl_sysctrl.c
+
+hpl\usart\usart_lite.c
 
 led_task.c
 
 main.c
 
 mu_port.c
-
-sleep_manager\sleep_manager.c
-
-sleep_manager_main.c
-
-stdio_redirect\gcc\read.c
-
-stdio_redirect\gcc\write.c
-
-stdio_redirect\stdio_io.c
-
-stdio_start.c
 

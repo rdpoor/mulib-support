@@ -23,16 +23,64 @@ void EXTERNAL_IRQ_0_example(void)
 	ext_irq_register(PIN_PA15, button_on_PA15_pressed);
 }
 
-/**
- * Example of using TARGET_IO to write "Hello World" using the IO abstraction.
+/*
+ * \Write data to usart interface
+ *
+ * \param[in] buf Data to write to usart
+ * \param[in] length The number of bytes to write
+ *
+ * \return The number of bytes written.
  */
-void TARGET_IO_example(void)
+static uint32_t USART_0_write(const uint8_t *const buf, const uint16_t length)
 {
-	struct io_descriptor *io;
-	usart_sync_get_io_descriptor(&TARGET_IO, &io);
-	usart_sync_enable(&TARGET_IO);
+	uint32_t offset = 0;
 
-	io_write(io, (uint8_t *)"Hello World!", 12);
+	ASSERT(buf && length);
+
+	while (!USART_0_is_byte_sent())
+		;
+	do {
+		USART_0_write_byte(buf[offset]);
+		while (!USART_0_is_byte_sent())
+			;
+	} while (++offset < length);
+
+	return offset;
+}
+
+/*
+ * \Read data from usart interface
+ *
+ * \param[in] buf A buffer to read data to
+ * \param[in] length The size of a buffer
+ *
+ * \return The number of bytes read.
+ */
+static uint32_t USART_0_read(uint8_t *const buf, const uint16_t length)
+{
+	uint32_t offset = 0;
+
+	ASSERT(buf && length);
+
+	do {
+		while (!USART_0_is_byte_received())
+			;
+		buf[offset] = USART_0_read_byte();
+	} while (++offset < length);
+
+	return offset;
+}
+
+/**
+ * Example of using USART_0 to write the data which received from the usart interface to IO.
+ */
+void USART_0_example(void)
+{
+	uint8_t data[2];
+
+	if (USART_0_read(data, sizeof(data)) == 2) {
+		USART_0_write(data, 2);
+	}
 }
 
 /**
