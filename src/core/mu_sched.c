@@ -244,7 +244,7 @@ mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched,
   mu_time_t now = mu_sched_get_current_time(sched);
   if (!mu_time_follows(mu_sched_event_get_time(event), now)) {
     // task's time has arrived, but it's not yet running
-    return MU_SCHED_TASK_STATUS_WAITING;
+    return MU_SCHED_TASK_STATUS_RUNNABLE;
 
   } else {
     // task is scheduled for some pont in the future
