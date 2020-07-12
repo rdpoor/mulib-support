@@ -27,11 +27,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  11 .debug_macro  000189ff  00000000  00000000  00049242  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_line   0000d208  00000000  00000000  00061c41  2**0
+ 12 .debug_line   0000d1e6  00000000  00000000  00061c41  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_str    0008642e  00000000  00000000  0006ee49  2**0
+ 13 .debug_str    0008642d  00000000  00000000  0006ee27  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  000015d0  00000000  00000000  000f5278  2**2
+ 14 .debug_frame  000015d0  00000000  00000000  000f5254  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2837,6 +2837,7 @@ mu_task_t *led_task_init(mu_task_t *led_task, led_ctx_t *led_ctx) {
      df8:	000003af 	.word	0x000003af
 
 00000dfc <main>:
+
 #include <atmel_start.h>
 #include "blinky.h"
 
@@ -2940,7 +2941,6 @@ static inline hri_rtcmode0_count_reg_t hri_rtcmode0_read_COUNT_COUNT_bf(const vo
      e58:	20000198 	.word	0x20000198
 
 00000e5c <_write>:
-//   _calendar_register_callback(&CALENDAR0.device, cb)
 
 // ================
 // support for printf()

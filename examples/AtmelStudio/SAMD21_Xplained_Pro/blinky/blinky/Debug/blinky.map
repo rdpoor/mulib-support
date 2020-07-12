@@ -221,8 +221,8 @@ Discarded input sections
  .debug_macro   0x00000000      0x353 mulib/core/mu_bitvec.o
  .debug_macro   0x00000000       0x16 mulib/core/mu_bitvec.o
  .debug_macro   0x00000000       0x29 mulib/core/mu_bitvec.o
- .debug_line    0x00000000      0x57e mulib/core/mu_bitvec.o
- .debug_str     0x00000000     0x6785 mulib/core/mu_bitvec.o
+ .debug_line    0x00000000      0x57b mulib/core/mu_bitvec.o
+ .debug_str     0x00000000     0x677b mulib/core/mu_bitvec.o
  .comment       0x00000000       0x5a mulib/core/mu_bitvec.o
  .debug_frame   0x00000000      0x2b8 mulib/core/mu_bitvec.o
  .ARM.attributes
@@ -309,8 +309,8 @@ Discarded input sections
  .debug_macro   0x00000000       0x10 mulib/core/mu_buf.o
  .debug_macro   0x00000000       0x16 mulib/core/mu_buf.o
  .debug_macro   0x00000000       0x35 mulib/core/mu_buf.o
- .debug_line    0x00000000      0x46f mulib/core/mu_buf.o
- .debug_str     0x00000000     0x66bf mulib/core/mu_buf.o
+ .debug_line    0x00000000      0x46c mulib/core/mu_buf.o
+ .debug_str     0x00000000     0x66b5 mulib/core/mu_buf.o
  .comment       0x00000000       0x5a mulib/core/mu_buf.o
  .debug_frame   0x00000000      0x12c mulib/core/mu_buf.o
  .ARM.attributes
@@ -400,8 +400,8 @@ Discarded input sections
  .debug_macro   0x00000000       0x10 mulib/core/mu_bufref.o
  .debug_macro   0x00000000       0x16 mulib/core/mu_bufref.o
  .debug_macro   0x00000000       0x35 mulib/core/mu_bufref.o
- .debug_line    0x00000000      0x452 mulib/core/mu_bufref.o
- .debug_str     0x00000000     0x672b mulib/core/mu_bufref.o
+ .debug_line    0x00000000      0x44f mulib/core/mu_bufref.o
+ .debug_str     0x00000000     0x6721 mulib/core/mu_bufref.o
  .comment       0x00000000       0x5a mulib/core/mu_bufref.o
  .debug_frame   0x00000000      0x138 mulib/core/mu_bufref.o
  .ARM.attributes
@@ -444,8 +444,8 @@ Discarded input sections
  .debug_macro   0x00000000       0x22 mulib/core/mu_list.o
  .debug_macro   0x00000000      0x16d mulib/core/mu_list.o
  .debug_macro   0x00000000       0x10 mulib/core/mu_list.o
- .debug_line    0x00000000      0x1c8 mulib/core/mu_list.o
- .debug_str     0x00000000     0x29e9 mulib/core/mu_list.o
+ .debug_line    0x00000000      0x1c5 mulib/core/mu_list.o
+ .debug_str     0x00000000     0x29df mulib/core/mu_list.o
  .comment       0x00000000       0x5a mulib/core/mu_list.o
  .debug_frame   0x00000000       0xe8 mulib/core/mu_list.o
  .ARM.attributes
@@ -532,8 +532,8 @@ Discarded input sections
  .debug_macro   0x00000000      0x353 mulib/core/mu_pstore.o
  .debug_macro   0x00000000       0x10 mulib/core/mu_pstore.o
  .debug_macro   0x00000000       0x35 mulib/core/mu_pstore.o
- .debug_line    0x00000000      0x4d9 mulib/core/mu_pstore.o
- .debug_str     0x00000000     0x5b4b mulib/core/mu_pstore.o
+ .debug_line    0x00000000      0x4d6 mulib/core/mu_pstore.o
+ .debug_str     0x00000000     0x5b41 mulib/core/mu_pstore.o
  .comment       0x00000000       0x5a mulib/core/mu_pstore.o
  .debug_frame   0x00000000      0x1c0 mulib/core/mu_pstore.o
  .ARM.attributes
@@ -572,8 +572,8 @@ Discarded input sections
  .debug_macro   0x00000000       0x22 mulib/core/mu_queue.o
  .debug_macro   0x00000000      0x16d mulib/core/mu_queue.o
  .debug_macro   0x00000000       0x10 mulib/core/mu_queue.o
- .debug_line    0x00000000      0x18a mulib/core/mu_queue.o
- .debug_str     0x00000000     0x29fb mulib/core/mu_queue.o
+ .debug_line    0x00000000      0x187 mulib/core/mu_queue.o
+ .debug_str     0x00000000     0x29f1 mulib/core/mu_queue.o
  .comment       0x00000000       0x5a mulib/core/mu_queue.o
  .debug_frame   0x00000000       0xb4 mulib/core/mu_queue.o
  .ARM.attributes
@@ -749,8 +749,8 @@ Discarded input sections
  .debug_macro   0x00000000      0x353 mulib/core/mu_str.o
  .debug_macro   0x00000000       0x10 mulib/core/mu_str.o
  .debug_macro   0x00000000       0x35 mulib/core/mu_str.o
- .debug_line    0x00000000      0x39f mulib/core/mu_str.o
- .debug_str     0x00000000     0x64e9 mulib/core/mu_str.o
+ .debug_line    0x00000000      0x39c mulib/core/mu_str.o
+ .debug_str     0x00000000     0x64df mulib/core/mu_str.o
  .comment       0x00000000       0x5a mulib/core/mu_str.o
  .debug_frame   0x00000000       0xac mulib/core/mu_str.o
  .ARM.attributes
@@ -843,8 +843,8 @@ Discarded input sections
  .debug_macro   0x00000000      0x353 mulib/core/mu_substr.o
  .debug_macro   0x00000000       0x10 mulib/core/mu_substr.o
  .debug_macro   0x00000000       0x35 mulib/core/mu_substr.o
- .debug_line    0x00000000      0x54a mulib/core/mu_substr.o
- .debug_str     0x00000000     0x664e mulib/core/mu_substr.o
+ .debug_line    0x00000000      0x547 mulib/core/mu_substr.o
+ .debug_str     0x00000000     0x6644 mulib/core/mu_substr.o
  .comment       0x00000000       0x5a mulib/core/mu_substr.o
  .debug_frame   0x00000000      0x1c4 mulib/core/mu_substr.o
  .ARM.attributes
@@ -932,8 +932,8 @@ Discarded input sections
  .debug_macro   0x00000000       0x1a mulib/core/mu_version.o
  .debug_macro   0x00000000      0x89e mulib/core/mu_version.o
  .debug_macro   0x00000000       0x10 mulib/core/mu_version.o
- .debug_line    0x00000000       0x6b mulib/core/mu_version.o
- .debug_str     0x00000000     0x2515 mulib/core/mu_version.o
+ .debug_line    0x00000000       0x68 mulib/core/mu_version.o
+ .debug_str     0x00000000     0x250b mulib/core/mu_version.o
  .comment       0x00000000       0x5a mulib/core/mu_version.o
  .debug_frame   0x00000000       0x20 mulib/core/mu_version.o
  .ARM.attributes
@@ -1705,7 +1705,7 @@ Discarded input sections
  .debug_macro   0x00000000     0x1fb0 Device_Startup/system_samd21.o
  .debug_macro   0x00000000       0x6d Device_Startup/system_samd21.o
  .debug_line    0x00000000      0x6f4 Device_Startup/system_samd21.o
- .debug_str     0x00000000    0x7062b Device_Startup/system_samd21.o
+ .debug_str     0x00000000    0x70624 Device_Startup/system_samd21.o
  .comment       0x00000000       0x5a Device_Startup/system_samd21.o
  .debug_frame   0x00000000       0x30 Device_Startup/system_samd21.o
  .ARM.attributes
@@ -2155,7 +2155,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x16 examples/driver_examples.o
  .debug_macro   0x00000000       0xc9 examples/driver_examples.o
  .debug_line    0x00000000      0xb3e examples/driver_examples.o
- .debug_str     0x00000000    0x7a025 examples/driver_examples.o
+ .debug_str     0x00000000    0x7a01e examples/driver_examples.o
  .comment       0x00000000       0x5a examples/driver_examples.o
  .debug_frame   0x00000000       0x84 examples/driver_examples.o
  .ARM.attributes
@@ -2375,7 +2375,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xca hal/src/hal_atomic.o
  .debug_macro   0x00000000       0x10 hal/src/hal_atomic.o
  .debug_line    0x00000000      0x986 hal/src/hal_atomic.o
- .debug_str     0x00000000    0x79267 hal/src/hal_atomic.o
+ .debug_str     0x00000000    0x79260 hal/src/hal_atomic.o
  .comment       0x00000000       0x5a hal/src/hal_atomic.o
  .debug_frame   0x00000000       0x40 hal/src/hal_atomic.o
  .ARM.attributes
@@ -2831,7 +2831,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x16 hal/src/hal_delay.o
  .debug_macro   0x00000000       0xca hal/src/hal_delay.o
  .debug_line    0x00000000      0x9b1 hal/src/hal_delay.o
- .debug_str     0x00000000    0x792d1 hal/src/hal_delay.o
+ .debug_str     0x00000000    0x792ca hal/src/hal_delay.o
  .comment       0x00000000       0x5a hal/src/hal_delay.o
  .debug_frame   0x00000000       0x68 hal/src/hal_delay.o
  .ARM.attributes
@@ -3258,7 +3258,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x1c hal/src/hal_gpio.o
  .debug_macro   0x00000000       0x16 hal/src/hal_gpio.o
  .debug_line    0x00000000      0x97f hal/src/hal_gpio.o
- .debug_str     0x00000000    0x79331 hal/src/hal_gpio.o
+ .debug_str     0x00000000    0x7932a hal/src/hal_gpio.o
  .comment       0x00000000       0x5a hal/src/hal_gpio.o
  .debug_frame   0x00000000       0x20 hal/src/hal_gpio.o
  .ARM.attributes
@@ -3473,7 +3473,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x16 hal/src/hal_init.o
  .debug_macro   0x00000000       0xca hal/src/hal_init.o
  .debug_line    0x00000000      0x94e hal/src/hal_init.o
- .debug_str     0x00000000    0x79212 hal/src/hal_init.o
+ .debug_str     0x00000000    0x7920b hal/src/hal_init.o
  .comment       0x00000000       0x5a hal/src/hal_init.o
  .debug_frame   0x00000000       0x20 hal/src/hal_init.o
  .ARM.attributes
@@ -3696,7 +3696,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xca hal/src/hal_io.o
  .debug_macro   0x00000000       0x16 hal/src/hal_io.o
  .debug_line    0x00000000      0x99a hal/src/hal_io.o
- .debug_str     0x00000000    0x79314 hal/src/hal_io.o
+ .debug_str     0x00000000    0x7930d hal/src/hal_io.o
  .comment       0x00000000       0x5a hal/src/hal_io.o
  .debug_frame   0x00000000       0x58 hal/src/hal_io.o
  .ARM.attributes
@@ -3913,7 +3913,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x16 hal/src/hal_sleep.o
  .debug_macro   0x00000000       0xca hal/src/hal_sleep.o
  .debug_line    0x00000000      0x966 hal/src/hal_sleep.o
- .debug_str     0x00000000    0x7924e hal/src/hal_sleep.o
+ .debug_str     0x00000000    0x79247 hal/src/hal_sleep.o
  .comment       0x00000000       0x5a hal/src/hal_sleep.o
  .debug_frame   0x00000000       0x38 hal/src/hal_sleep.o
  .ARM.attributes
@@ -4367,7 +4367,7 @@ Discarded input sections
  .debug_macro   0x00000000       0x10 hal/utils/src/utils_event.o
  .debug_macro   0x00000000       0x35 hal/utils/src/utils_event.o
  .debug_line    0x00000000      0xaa4 hal/utils/src/utils_event.o
- .debug_str     0x00000000    0x7c5f0 hal/utils/src/utils_event.o
+ .debug_str     0x00000000    0x7c5e9 hal/utils/src/utils_event.o
  .comment       0x00000000       0x5a hal/utils/src/utils_event.o
  .debug_frame   0x00000000       0x70 hal/utils/src/utils_event.o
  .ARM.attributes
@@ -4597,7 +4597,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xca hal/utils/src/utils_list.o
  .debug_macro   0x00000000       0x16 hal/utils/src/utils_list.o
  .debug_line    0x00000000      0x9e4 hal/utils/src/utils_list.o
- .debug_str     0x00000000    0x79321 hal/utils/src/utils_list.o
+ .debug_str     0x00000000    0x7931a hal/utils/src/utils_list.o
  .comment       0x00000000       0x5a hal/utils/src/utils_list.o
  .debug_frame   0x00000000       0x88 hal/utils/src/utils_list.o
  .ARM.attributes
@@ -4912,7 +4912,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xc9 hpl/core/hpl_core_m0plus_base.o
  .debug_macro   0x00000000       0x16 hpl/core/hpl_core_m0plus_base.o
  .debug_line    0x00000000      0xb20 hpl/core/hpl_core_m0plus_base.o
- .debug_str     0x00000000    0x79d0a hpl/core/hpl_core_m0plus_base.o
+ .debug_str     0x00000000    0x79d03 hpl/core/hpl_core_m0plus_base.o
  .comment       0x00000000       0x5a hpl/core/hpl_core_m0plus_base.o
  .debug_frame   0x00000000       0xfc hpl/core/hpl_core_m0plus_base.o
  .ARM.attributes
@@ -5344,7 +5344,7 @@ Discarded input sections
  .debug_macro   0x00000000      0x6cc hpl/dmac/hpl_dmac.o
  .debug_macro   0x00000000      0x6ba hpl/dmac/hpl_dmac.o
  .debug_line    0x00000000      0x9ac hpl/dmac/hpl_dmac.o
- .debug_str     0x00000000    0x80383 hpl/dmac/hpl_dmac.o
+ .debug_str     0x00000000    0x8037c hpl/dmac/hpl_dmac.o
  .comment       0x00000000       0x5a hpl/dmac/hpl_dmac.o
  .ARM.attributes
                 0x00000000       0x32 hpl/dmac/hpl_dmac.o
@@ -8630,78 +8630,78 @@ OUTPUT(blinky.elf elf32-littlearm)
  .debug_macro   0x00017d9f      0x531 main.o
  .debug_macro   0x000182d0      0x72f mu_port.o
 
-.debug_line     0x00000000     0xd208
- .debug_line    0x00000000      0x5cf mulib/core/mu_sched.o
- .debug_line    0x000005cf      0x316 mulib/core/mu_spscq.o
- .debug_line    0x000008e5      0x310 mulib/core/mu_task.o
- .debug_line    0x00000bf5      0x32c mulib/core/mu_time.o
- .debug_line    0x00000f21      0xac5 atmel_start.o
- .debug_line    0x000019e6      0x522 blinky.o
- .debug_line    0x00001f08      0xd81 button_task.o
- .debug_line    0x00002c89      0x709 Device_Startup/startup_samd21.o
- .debug_line    0x00003392      0xbe0 driver_init.o
- .debug_line    0x00003f72      0xbfd hal/src/hal_calendar.o
- .debug_line    0x00004b6f      0x9f1 hal/src/hal_ext_irq.o
- .debug_line    0x00005560      0x950 hal/utils/src/utils_assert.o
- .debug_line    0x00005eb0      0x40b hal/utils/src/utils_syscalls.o
- .debug_line    0x000062bb      0xa30 hpl/core/hpl_init.o
- .debug_line    0x00006ceb      0xb39 hpl/eic/hpl_eic.o
- .debug_line    0x00007824      0x9ca hpl/gclk/hpl_gclk.o
- .debug_line    0x000081ee      0x9f6 hpl/pm/hpl_pm.o
- .debug_line    0x00008be4      0xc78 hpl/rtc/hpl_rtc.o
- .debug_line    0x0000985c      0x9e3 hpl/sysctrl/hpl_sysctrl.o
- .debug_line    0x0000a23f      0xa9a hpl/usart/usart_lite.o
- .debug_line    0x0000acd9      0xcc9 led_task.o
- .debug_line    0x0000b9a2      0xad1 main.o
- .debug_line    0x0000c473      0xd95 mu_port.o
+.debug_line     0x00000000     0xd1e6
+ .debug_line    0x00000000      0x5cc mulib/core/mu_sched.o
+ .debug_line    0x000005cc      0x313 mulib/core/mu_spscq.o
+ .debug_line    0x000008df      0x30d mulib/core/mu_task.o
+ .debug_line    0x00000bec      0x329 mulib/core/mu_time.o
+ .debug_line    0x00000f15      0xac5 atmel_start.o
+ .debug_line    0x000019da      0x51c blinky.o
+ .debug_line    0x00001ef6      0xd7b button_task.o
+ .debug_line    0x00002c71      0x709 Device_Startup/startup_samd21.o
+ .debug_line    0x0000337a      0xbe0 driver_init.o
+ .debug_line    0x00003f5a      0xbfd hal/src/hal_calendar.o
+ .debug_line    0x00004b57      0x9f1 hal/src/hal_ext_irq.o
+ .debug_line    0x00005548      0x950 hal/utils/src/utils_assert.o
+ .debug_line    0x00005e98      0x40b hal/utils/src/utils_syscalls.o
+ .debug_line    0x000062a3      0xa30 hpl/core/hpl_init.o
+ .debug_line    0x00006cd3      0xb39 hpl/eic/hpl_eic.o
+ .debug_line    0x0000780c      0x9ca hpl/gclk/hpl_gclk.o
+ .debug_line    0x000081d6      0x9f6 hpl/pm/hpl_pm.o
+ .debug_line    0x00008bcc      0xc78 hpl/rtc/hpl_rtc.o
+ .debug_line    0x00009844      0x9e3 hpl/sysctrl/hpl_sysctrl.o
+ .debug_line    0x0000a227      0xa9a hpl/usart/usart_lite.o
+ .debug_line    0x0000acc1      0xcc3 led_task.o
+ .debug_line    0x0000b984      0xad3 main.o
+ .debug_line    0x0000c457      0xd8f mu_port.o
 
-.debug_str      0x00000000    0x8642e
- .debug_str     0x00000000     0x6814 mulib/core/mu_sched.o
-                               0x6b13 (size before relaxing)
- .debug_str     0x00006814       0xb9 mulib/core/mu_spscq.o
-                               0x3873 (size before relaxing)
- .debug_str     0x000068cd       0xdd mulib/core/mu_task.o
-                               0x399b (size before relaxing)
- .debug_str     0x000069aa      0x194 mulib/core/mu_time.o
-                               0x3735 (size before relaxing)
- .debug_str     0x00006b3e    0x75f2d atmel_start.o
-                              0x798a3 (size before relaxing)
- .debug_str     0x0007ca6b     0x1620 blinky.o
-                               0x7cc4 (size before relaxing)
- .debug_str     0x0007e08b       0x3d button_task.o
-                              0x7dd27 (size before relaxing)
- .debug_str     0x0007e0c8     0x10b3 Device_Startup/startup_samd21.o
-                              0x717ab (size before relaxing)
- .debug_str     0x0007f17b     0x18ab driver_init.o
-                              0x7bfde (size before relaxing)
- .debug_str     0x00080a26      0x59f hal/src/hal_calendar.o
-                              0x79e88 (size before relaxing)
- .debug_str     0x00080fc5       0xd6 hal/src/hal_ext_irq.o
-                              0x7932c (size before relaxing)
- .debug_str     0x0008109b       0x2a hal/utils/src/utils_assert.o
-                              0x79277 (size before relaxing)
- .debug_str     0x000810c5      0x73e hal/utils/src/utils_syscalls.o
-                               0x7316 (size before relaxing)
- .debug_str     0x00081803     0x17d7 hpl/core/hpl_init.o
-                              0x7ae47 (size before relaxing)
- .debug_str     0x00082fda     0x10ad hpl/eic/hpl_eic.o
-                              0x7d597 (size before relaxing)
- .debug_str     0x00084087      0x84f hpl/gclk/hpl_gclk.o
-                              0x79b94 (size before relaxing)
- .debug_str     0x000848d6      0x194 hpl/pm/hpl_pm.o
-                              0x799a6 (size before relaxing)
- .debug_str     0x00084a6a      0x419 hpl/rtc/hpl_rtc.o
-                              0x79e3a (size before relaxing)
- .debug_str     0x00084e83     0x11c8 hpl/sysctrl/hpl_sysctrl.o
-                              0x7a546 (size before relaxing)
- .debug_str     0x0008604b      0x352 hpl/usart/usart_lite.o
-                              0x79ea5 (size before relaxing)
- .debug_str     0x0008639d       0x2b led_task.o
-                              0x7cdcd (size before relaxing)
- .debug_str     0x000863c8        0xc main.o
-                              0x798b9 (size before relaxing)
- .debug_str     0x000863d4       0x5a mu_port.o
-                              0x7cfc6 (size before relaxing)
+.debug_str      0x00000000    0x8642d
+ .debug_str     0x00000000     0x681c mulib/core/mu_sched.o
+                               0x6b1b (size before relaxing)
+ .debug_str     0x0000681c       0xb6 mulib/core/mu_spscq.o
+                               0x3869 (size before relaxing)
+ .debug_str     0x000068d2       0xda mulib/core/mu_task.o
+                               0x39a3 (size before relaxing)
+ .debug_str     0x000069ac      0x191 mulib/core/mu_time.o
+                               0x373d (size before relaxing)
+ .debug_str     0x00006b3d    0x75f2d atmel_start.o
+                              0x7989c (size before relaxing)
+ .debug_str     0x0007ca6a     0x1620 blinky.o
+                               0x7ccf (size before relaxing)
+ .debug_str     0x0007e08a       0x3d button_task.o
+                              0x7dd32 (size before relaxing)
+ .debug_str     0x0007e0c7     0x10b3 Device_Startup/startup_samd21.o
+                              0x717a4 (size before relaxing)
+ .debug_str     0x0007f17a     0x18ab driver_init.o
+                              0x7bfd7 (size before relaxing)
+ .debug_str     0x00080a25      0x59f hal/src/hal_calendar.o
+                              0x79e81 (size before relaxing)
+ .debug_str     0x00080fc4       0xd6 hal/src/hal_ext_irq.o
+                              0x79325 (size before relaxing)
+ .debug_str     0x0008109a       0x2a hal/utils/src/utils_assert.o
+                              0x79270 (size before relaxing)
+ .debug_str     0x000810c4      0x73e hal/utils/src/utils_syscalls.o
+                               0x730f (size before relaxing)
+ .debug_str     0x00081802     0x17d7 hpl/core/hpl_init.o
+                              0x7ae40 (size before relaxing)
+ .debug_str     0x00082fd9     0x10ad hpl/eic/hpl_eic.o
+                              0x7d590 (size before relaxing)
+ .debug_str     0x00084086      0x84f hpl/gclk/hpl_gclk.o
+                              0x79b8d (size before relaxing)
+ .debug_str     0x000848d5      0x194 hpl/pm/hpl_pm.o
+                              0x7999f (size before relaxing)
+ .debug_str     0x00084a69      0x419 hpl/rtc/hpl_rtc.o
+                              0x79e33 (size before relaxing)
+ .debug_str     0x00084e82     0x11c8 hpl/sysctrl/hpl_sysctrl.o
+                              0x7a53f (size before relaxing)
+ .debug_str     0x0008604a      0x352 hpl/usart/usart_lite.o
+                              0x79e9e (size before relaxing)
+ .debug_str     0x0008639c       0x2b led_task.o
+                              0x7cdd8 (size before relaxing)
+ .debug_str     0x000863c7        0xc main.o
+                              0x798b2 (size before relaxing)
+ .debug_str     0x000863d3       0x5a mu_port.o
+                              0x7cfd1 (size before relaxing)
 
 .debug_frame    0x00000000     0x15d0
  .debug_frame   0x00000000      0x254 mulib/core/mu_sched.o

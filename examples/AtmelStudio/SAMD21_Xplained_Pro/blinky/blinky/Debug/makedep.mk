@@ -2,31 +2,31 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-..\..\..\..\..\..\src\core\mu_bitvec.c
+..\..\..\..\..\src\core\mu_bitvec.c
 
-..\..\..\..\..\..\src\core\mu_buf.c
+..\..\..\..\..\src\core\mu_buf.c
 
-..\..\..\..\..\..\src\core\mu_bufref.c
+..\..\..\..\..\src\core\mu_bufref.c
 
-..\..\..\..\..\..\src\core\mu_list.c
+..\..\..\..\..\src\core\mu_list.c
 
-..\..\..\..\..\..\src\core\mu_pstore.c
+..\..\..\..\..\src\core\mu_pstore.c
 
-..\..\..\..\..\..\src\core\mu_queue.c
+..\..\..\..\..\src\core\mu_queue.c
 
-..\..\..\..\..\..\src\core\mu_sched.c
+..\..\..\..\..\src\core\mu_sched.c
 
-..\..\..\..\..\..\src\core\mu_spscq.c
+..\..\..\..\..\src\core\mu_spscq.c
 
-..\..\..\..\..\..\src\core\mu_str.c
+..\..\..\..\..\src\core\mu_str.c
 
-..\..\..\..\..\..\src\core\mu_substr.c
+..\..\..\..\..\src\core\mu_substr.c
 
-..\..\..\..\..\..\src\core\mu_task.c
+..\..\..\..\..\src\core\mu_task.c
 
-..\..\..\..\..\..\src\core\mu_time.c
+..\..\..\..\..\src\core\mu_time.c
 
-..\..\..\..\..\..\src\core\mu_version.c
+..\..\..\..\..\src\core\mu_version.c
 
 atmel_start.c
 

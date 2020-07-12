@@ -30,15 +30,15 @@
     <EraseKey />
     <AsfFrameworkConfig>
       <framework-data xmlns="">
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.40.0" />
-  </dependencies>
-</framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.40.0" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
     <atStartFilePath>.atmelstart\atmel_start_config.atstart</atStartFilePath>
     <GpdscFilePath>.atmelstart\AtmelStart.gpdsc</GpdscFilePath>
@@ -286,7 +286,7 @@
       <Value>../hri</Value>
       <Value>../include</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
-      <Value>../../../../../../../src</Value>
+      <Value>../../../../../../src</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
@@ -357,119 +357,119 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_bitvec.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_bitvec.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_bitvec.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_bitvec.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_bitvec.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_bitvec.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_buf.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_buf.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_buf.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_buf.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_buf.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_buf.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_bufref.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_bufref.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_bufref.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_bufref.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_bufref.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_bufref.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_config.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_config.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_config.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_list.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_list.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_list.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_list.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_list.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_list.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_pstore.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_pstore.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_pstore.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_pstore.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_pstore.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_pstore.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_queue.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_queue.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_queue.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_queue.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_queue.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_queue.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_sched.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_sched.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_sched.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_sched.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_sched.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_sched.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_spscq.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_spscq.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_spscq.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_spscq.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_spscq.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_spscq.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_str.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_str.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_str.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_str.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_str.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_str.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_substr.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_substr.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_substr.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_substr.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_substr.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_substr.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_task.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_task.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_task.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_task.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_task.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_task.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_time.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_time.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_time.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_time.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_time.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_time.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_types.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_types.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_types.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_version.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_version.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_version.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\core\mu_version.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_version.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_version.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\..\src\mulib.h">
+    <Compile Include="..\..\..\..\..\src\mulib.h">
       <SubType>compile</SubType>
       <Link>mulib\mulib.h</Link>
     </Compile>
