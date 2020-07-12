@@ -253,7 +253,7 @@ drivers:
       ctrla_form: USART frame
       ctrla_ibon: false
       ctrla_mode: USART with internal clock
-      ctrla_runstdby: false
+      ctrla_runstdby: true
       ctrla_sampa: 7-8-9 (3-4-5 8-bit over-sampling)
       ctrla_sampr: 16x arithmetic
       ctrlb_chsize: 8 bits
@@ -695,7 +695,7 @@ pads:
   USER_BUTTON_AL:
     name: PA15
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::pad::PA15
-    mode: Digital input
+    mode: Advanced
     user_label: USER_BUTTON_AL
     configuration:
       pad_direction: In
