@@ -46,6 +46,7 @@ int mu_str_test();
 int mu_substr_test();
 int mu_task_test();
 int mu_time_test();
+int mu_vect_test();
 int mu_version_test();
 
 // =============================================================================
@@ -68,6 +69,7 @@ int main() {
   mu_substr_test();
   mu_task_test();
   mu_time_test();
+  mu_vect_test();
   mu_version_test();
 
   printf("ending mu_test: %d error%s out of %d test%s\r\n",
