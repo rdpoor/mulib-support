@@ -103,19 +103,6 @@ void *mu_vect_ref(mu_vect_t *vect, size_t index) {
   return ref(vect, index);
 }
 
-int mu_vect_index_of(mu_vect_t *vect, void *e) {
-  for (int i=0; i<vect->count; i++) {
-    if (memcmp(e, ref(vect, i), vect->element_size) == 0) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-bool mu_vect_contains(mu_vect_t *vect, void *e) {
-  return mu_vect_index_of(vect, e) != -1;
-}
-
 mu_vect_err_t mu_vect_peek(mu_vect_t *vect, void *e) {
   void *src = mu_vect_ref(vect, mu_vect_count(vect) - 1);
   if (!src) {
@@ -196,12 +183,24 @@ mu_vect_err_t mu_vect_sort(mu_vect_t *vect, mu_vect_cmp_fn cmp) {
   return MU_VECT_ERR_NONE;
 }
 
-void *mu_vect_find(mu_vect_t *vect, mu_vect_find_fn find_fn) {
+void *mu_vect_find(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg) {
   for (size_t i = 0; i<mu_vect_count(vect); i++) {
-    void *result = find_fn(ref(vect, i));
+    void *result = find_fn(ref(vect, i), arg);
     if (result != NULL) return result;
   }
   return NULL;
+}
+
+int mu_vect_find_index(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg) {
+  for (size_t i = 0; i<mu_vect_count(vect); i++) {
+    void *result = find_fn(ref(vect, i), arg);
+    if (result != NULL) return i;
+  }
+  return -1;
+}
+
+bool mu_vect_contains(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg) {
+  return mu_vect_find_index(vect, find_fn, arg) != -1;
 }
 
 // =============================================================================

@@ -54,7 +54,7 @@ typedef int (*mu_vect_cmp_fn)(void *e1, void *e2);
 /**
  * @brief Signature of a traversal function.
  */
-typedef void *(*mu_vect_find_fn)(void *e);
+typedef void *(*mu_vect_find_fn)(void *e, void *arg);
 
 typedef enum {
   MU_VECT_ERR_NONE,
@@ -76,7 +76,7 @@ typedef enum {
  * @param element_size The size (in bytes) of each element.
  * @return mu_vect itself.
  */
-mu_vect_t *mu_vect_init(mu_vect_t *mu_vect, void *elements, size_t capacity, size_t element_size);
+mu_vect_t *mu_vect_init(mu_vect_t *vect, void *elements, size_t capacity, size_t element_size);
 
 /**
  * @brief Empty a mu_vect.
@@ -86,7 +86,7 @@ mu_vect_t *mu_vect_init(mu_vect_t *mu_vect, void *elements, size_t capacity, siz
  * @param mu_vect The mu_vect structure.
  * @return mu_vect itself.
  */
-mu_vect_t *mu_vect_reset(mu_vect_t *mu_vect);
+mu_vect_t *mu_vect_reset(mu_vect_t *vect);
 
 /**
  * @brief Access a mu_vect's backing store.
@@ -94,7 +94,7 @@ mu_vect_t *mu_vect_reset(mu_vect_t *mu_vect);
  * @param mu_vect The mu_vect structure.
  * @return Pointer the backing store.
  */
-void *mu_vect_elements(mu_vect_t *mu_vect);
+void *mu_vect_elements(mu_vect_t *vect);
 
 /**
  * @brief Get the capacity of the mu_vect.
@@ -104,7 +104,7 @@ void *mu_vect_elements(mu_vect_t *mu_vect);
  * @param mu_vect The mu_vect structure.
  * @return The capacity of the mu_vect.
  */
-size_t mu_vect_capacity(mu_vect_t *mu_vect);
+size_t mu_vect_capacity(mu_vect_t *vect);
 
 /**
  * @brief Get the number of elements in the mu_vect.
@@ -114,7 +114,7 @@ size_t mu_vect_capacity(mu_vect_t *mu_vect);
  * @param mu_vect The mu_vect structure.
  * @return The number of elements in the mu_vect.
  */
-size_t mu_vect_count(mu_vect_t *mu_vect);
+size_t mu_vect_count(mu_vect_t *vect);
 
 /**
  * @brief Get the size of each element in the mu_vect.
@@ -122,7 +122,7 @@ size_t mu_vect_count(mu_vect_t *mu_vect);
  * @param mu_vect The mu_vect structure.
  * @return The size (in bytes) of each element.
  */
-size_t mu_vect_element_size(mu_vect_t *mu_vect);
+size_t mu_vect_element_size(mu_vect_t *vect);
 
 /**
  * @brief Return true if the mu_vect is empty.
@@ -132,7 +132,7 @@ size_t mu_vect_element_size(mu_vect_t *mu_vect);
  * @param mu_vect The mu_vect structure.
  * @return true if the mu_vect is empty.
  */
-bool mu_vect_is_empty(mu_vect_t *mu_vect);
+bool mu_vect_is_empty(mu_vect_t *vect);
 
 /**
  * @brief Return true if the mu_vect is full.
@@ -142,7 +142,7 @@ bool mu_vect_is_empty(mu_vect_t *mu_vect);
  * @param mu_vect The mu_vect structure.
  * @return true if the mu_vect is full.
  */
-bool mu_vect_is_full(mu_vect_t *mu_vect);
+bool mu_vect_is_full(mu_vect_t *vect);
 
 /**
  * @brief Return a pointer to the referenced element.
@@ -152,24 +152,6 @@ bool mu_vect_is_full(mu_vect_t *mu_vect);
  * @return A pointer to the referenced element if i is in bounds else NULL.
  */
 void *mu_vect_ref(mu_vect_t *vect, size_t index);
-
-/**
- * @brief return the index of an element, or -1 if not present in the store
- *
- * @param mu_vect The mu_vect structure.
- * @param e The element to be to be searched
- * @return the index of the element or -1 if not present in the store
- */
-int mu_vect_index_of(mu_vect_t *mu_vect, void *e);
-
-/**
- * @brief return true if the mu_vect contains the given element
- *
- * @param mu_vect The mu_vect structure.
- * @param e The element to be to be tested.
- * @return true if the element is in the mu_vect.
- */
-bool mu_vect_contains(mu_vect_t *mu_vect, void *e);
 
 /**
  * @brief Peek at the last element of the mu_vect.
@@ -182,7 +164,7 @@ bool mu_vect_contains(mu_vect_t *mu_vect, void *e);
  * @return MU_VECT_ERR_EMPTY if the mu_vect was empty before the call to
  *         mu_vect_peek, MU_VECT_ERR_NONE otherwise.
  */
-mu_vect_err_t mu_vect_peek(mu_vect_t *mu_vect, void *e);
+mu_vect_err_t mu_vect_peek(mu_vect_t *vect, void *e);
 
 /**
  * @brief Insert an element at the given index.
@@ -196,7 +178,7 @@ mu_vect_err_t mu_vect_peek(mu_vect_t *mu_vect, void *e);
  *         mu_vect_insert_at(), MU_VECT_ERR_INDEX if the given index is
  *         greater than mu_vect_count(), MU_VECT_ERR_NONE otherwise.
  */
-mu_vect_err_t mu_vect_insert_at(mu_vect_t *mu_vect, size_t index, void *e);
+mu_vect_err_t mu_vect_insert_at(mu_vect_t *vect, size_t index, void *e);
 
 /**
  * @brief Push an element onto the end of the mu_vect.
@@ -206,7 +188,7 @@ mu_vect_err_t mu_vect_insert_at(mu_vect_t *mu_vect, size_t index, void *e);
  * @return MU_VECT_ERR_FULL if the mu_vect was full before the push operation,
  *         MU_VECT_ERR_NONE otherwise.
  */
-mu_vect_err_t mu_vect_push(mu_vect_t *mu_vect, void *e);
+mu_vect_err_t mu_vect_push(mu_vect_t *vect, void *e);
 
 /**
  * @brief Delete an element.
@@ -220,7 +202,7 @@ mu_vect_err_t mu_vect_push(mu_vect_t *mu_vect, void *e);
  *         mu_vect_insert_at(), MU_VECT_ERR_INDEX if the given index is
  *         greater or equal to mu_vect_count(), MU_VECT_ERR_NONE otherwise.
  */
-mu_vect_err_t mu_vect_delete_at(mu_vect_t *mu_vect, size_t index, void *e);
+mu_vect_err_t mu_vect_delete_at(mu_vect_t *vect, size_t index, void *e);
 
 /**
  * @brief Pop an element from the end of the mu_vect.
@@ -233,7 +215,7 @@ mu_vect_err_t mu_vect_delete_at(mu_vect_t *mu_vect, size_t index, void *e);
  * @return MU_VECT_ERR_EMPTY if the mu_vect was empty before the pop operation,
  *         MU_VECT_ERR_NONE otherwise.
  */
-mu_vect_err_t mu_vect_pop(mu_vect_t *mu_vect, void *e);
+mu_vect_err_t mu_vect_pop(mu_vect_t *vect, void *e);
 
 /**
  * @brief Insert an element into a sorted list according to a user-supplied
@@ -254,7 +236,7 @@ mu_vect_err_t mu_vect_pop(mu_vect_t *mu_vect, void *e);
  * @return MU_VECT_ERR_FULL if the mu_vect was full prior to the call to
  *         mu_vect_insert_sorted, MU_VECT_ERR_NONE otherwise.
  */
-mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *mu_vect, void *e, mu_vect_cmp_fn cmp);
+mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *vect, void *e, mu_vect_cmp_fn cmp);
 
 /**
  * @brief In-place sorting of a elements in a mu_vect.
@@ -272,7 +254,7 @@ mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *mu_vect, void *e, mu_vect_cmp_fn 
  * @param cmp The user supplied comparison function.
  * @return MU_VECT_ERR_NONE
  */
-mu_vect_err_t mu_vect_sort(mu_vect_t *mu_vect, mu_vect_cmp_fn cmp);
+mu_vect_err_t mu_vect_sort(mu_vect_t *vect, mu_vect_cmp_fn cmp);
 
 /**
  * @brief Traverse the mu_vect with a user-supplied function.
@@ -288,7 +270,11 @@ mu_vect_err_t mu_vect_sort(mu_vect_t *mu_vect, mu_vect_cmp_fn cmp);
  * the last element is visited.
  * @return Last value returned by find_fn.
  */
-void *mu_vect_find(mu_vect_t *mu_vect, mu_vect_find_fn find_fn);
+void *mu_vect_find(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg);
+
+int mu_vect_find_index(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg);
+
+bool mu_vect_contains(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg);
 
 #ifdef __cplusplus
 }

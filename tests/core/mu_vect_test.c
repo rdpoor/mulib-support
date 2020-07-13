@@ -47,9 +47,7 @@ typedef struct {
 static bool elements_are_equal(test_element_t *e1, test_element_t *e2);
 static int sort_up(void *a, void *b);
 static int sort_dn(void *a, void *b);
-static void *find_b(void *a);
-static void *find_z(void *a);
-
+static void *ids_match(void *e, void *arg);
 
 // =============================================================================
 // local storage
@@ -81,18 +79,12 @@ void mu_vect_test() {
   // mu_vect_err_t mu_vect_push(mu_vect_t *vect, void *element);
   ASSERT(mu_vect_is_empty(v) == true);
   ASSERT(mu_vect_is_full(v) == false);
-  ASSERT(mu_vect_contains(v, &s_element2) == false);
-  ASSERT(mu_vect_index_of(v, &s_element2) == -1);
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_EMPTY);
 
   ASSERT(mu_vect_push(v, &s_element1) == MU_VECT_ERR_NONE);
   ASSERT(mu_vect_count(v) == 1);
   ASSERT(mu_vect_is_empty(v) == false);
   ASSERT(mu_vect_is_full(v) == false);
-  ASSERT(mu_vect_contains(v, &s_element1) == true);
-  ASSERT(mu_vect_index_of(v, &s_element1) == 0);
-  ASSERT(mu_vect_contains(v, &s_element2) == false);
-  ASSERT(mu_vect_index_of(v, &s_element2) == -1);
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element1));
 
@@ -100,10 +92,6 @@ void mu_vect_test() {
   ASSERT(mu_vect_count(v) == 2);
   ASSERT(mu_vect_is_empty(v) == false);
   ASSERT(mu_vect_is_full(v) == false);
-  ASSERT(mu_vect_contains(v, &s_element1) == true);
-  ASSERT(mu_vect_index_of(v, &s_element1) == 0);
-  ASSERT(mu_vect_contains(v, &s_element2) == true);
-  ASSERT(mu_vect_index_of(v, &s_element2) == 1);
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element2));
 
@@ -111,8 +99,6 @@ void mu_vect_test() {
   ASSERT(mu_vect_count(v) == 3);
   ASSERT(mu_vect_is_empty(v) == false);
   ASSERT(mu_vect_is_full(v) == false);
-  ASSERT(mu_vect_contains(v, &s_element2) == true);
-  ASSERT(mu_vect_index_of(v, &s_element2) == 1);
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element3));
 
@@ -120,15 +106,11 @@ void mu_vect_test() {
   ASSERT(mu_vect_count(v) == 4);
   ASSERT(mu_vect_is_empty(v) == false);
   ASSERT(mu_vect_is_full(v) == true);
-  ASSERT(mu_vect_contains(v, &s_element2) == true);
-  ASSERT(mu_vect_index_of(v, &s_element2) == 1);
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element4));
 
   ASSERT(mu_vect_push(v, &s_element5) == MU_VECT_ERR_FULL);
   ASSERT(mu_vect_count(v) == 4);
-  ASSERT(mu_vect_contains(v, &s_element5) == false);
-  ASSERT(mu_vect_index_of(v, &s_element5) == -1);
   ASSERT(mu_vect_peek(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element4));
 
@@ -136,17 +118,14 @@ void mu_vect_test() {
   ASSERT(mu_vect_pop(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element4));
   ASSERT(mu_vect_count(v) == 3);
-  ASSERT(mu_vect_contains(v, &s_element2) == true);
 
   ASSERT(mu_vect_pop(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element3));
   ASSERT(mu_vect_count(v) == 2);
-  ASSERT(mu_vect_contains(v, &s_element2) == true);
 
   ASSERT(mu_vect_pop(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element2));
   ASSERT(mu_vect_count(v) == 1);
-  ASSERT(mu_vect_contains(v, &s_element2) == false);
 
   ASSERT(mu_vect_pop(v, &element) == MU_VECT_ERR_NONE);
   ASSERT(elements_are_equal(&element, &s_element1));
@@ -157,7 +136,6 @@ void mu_vect_test() {
   ASSERT(mu_vect_pop(v, &element) == MU_VECT_ERR_EMPTY);
   ASSERT(mu_vect_count(v) == 0);
 
-  // mu_ptsore_t *mu_vect_reset(mu_vect_t *vect);
   mu_vect_push(v, &s_element1);
   ASSERT(mu_vect_reset(v) == v);
   ASSERT(mu_vect_count(v) == 0);
@@ -257,9 +235,16 @@ void mu_vect_test() {
   ASSERT(elements_are_equal(mu_vect_ref(v, 2), &s_element2));
   ASSERT(elements_are_equal(mu_vect_ref(v, 3), &s_element1));
 
-  // array contains [d, c, b, a]
-  ASSERT(elements_are_equal(mu_vect_find(v, find_b), &s_element2));
-  ASSERT(elements_are_equal(mu_vect_find(v, find_z), NULL));
+  // mu_vect_find, mu_vect_find_index, mu_vect_contains
+  mu_vect_reset(v);
+  ASSERT(mu_vect_find(v, ids_match, &s_element1) == NULL);
+  ASSERT(mu_vect_find_index(v, ids_match, &s_element1) == -1);
+  ASSERT(mu_vect_contains(v, ids_match, &s_element1) == false);
+
+  mu_vect_push(v, &s_element1);
+  ASSERT(elements_are_equal(mu_vect_find(v, ids_match, &s_element1), &s_element1));
+  ASSERT(mu_vect_find_index(v, ids_match, &s_element1) == 0);
+  ASSERT(mu_vect_contains(v, ids_match, &s_element1) == true);
 }
 
 // =============================================================================
@@ -285,12 +270,12 @@ static int sort_dn(void *a, void *b) {
   return be->id - ae->id;
 }
 
-static void *find_b(void *a) {
+static void *ids_match(void *a, void *b) {
   test_element_t *ae = (test_element_t *)a;
-  return (ae->id == 'b') ? a : NULL;
-}
-
-static void *find_z(void *a) {
-  test_element_t *ae = (test_element_t *)a;
-  return (ae->id == 'z') ? a : NULL;
+  test_element_t *be = (test_element_t *)b;
+  if ((ae == NULL) || (be == NULL)) {
+    return NULL;
+  } else {
+    return ae->id == be->id ? a : NULL;
+  }
 }
