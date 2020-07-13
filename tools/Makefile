@@ -37,7 +37,7 @@ test : all
 	cd $(BUILD_DIR) && $(UNIT_TEST)
 
 clean :
-	@rm $(ALL_OBJECTS) $(UNIT_TEST)
+	@rm -f $(ALL_OBJECTS) $(UNIT_TEST)
 
 core :
 	make -f make_core

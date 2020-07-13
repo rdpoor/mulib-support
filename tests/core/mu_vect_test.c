@@ -184,20 +184,26 @@ void mu_vect_test() {
   mu_vect_push(v, &s_element2); // [element1 element2]
   mu_vect_push(v, &s_element3); // [element1 element2 element3]
   mu_vect_push(v, &s_element4); // [element1 element2 element3 element4]
-  // remove at end
-  ASSERT(mu_vect_delete_at(v, 3, &element) == MU_VECT_ERR_NONE); // [e1 e2 e3]
+  ASSERT(mu_vect_count(v) == 4);
+  // remove at end [a, b, c, d] => [a, b, c]
+  ASSERT(mu_vect_delete_at(v, 3, &element) == MU_VECT_ERR_NONE);
+  ASSERT(mu_vect_count(v) == 3);
   ASSERT(elements_are_equal(&element, &s_element4));
-  // remove at middle
+  // remove at middle [a, b, c] => [a, c]
   ASSERT(mu_vect_delete_at(v, 1, &element) == MU_VECT_ERR_NONE); // [e1 e3]
+  ASSERT(mu_vect_count(v) == 2);
   ASSERT(elements_are_equal(&element, &s_element2));
-  // remove at head
+  // remove at head [a, c] => [c]
   ASSERT(mu_vect_delete_at(v, 0, &element) == MU_VECT_ERR_NONE); // [e3]
+  ASSERT(mu_vect_count(v) == 1);
   ASSERT(elements_are_equal(&element, &s_element1));
-  // remove at with illegal index
+  // remove at with illegal index [c] => [c]
   ASSERT(mu_vect_delete_at(v, 1, &element) == MU_VECT_ERR_INDEX); // [e1]
-  // remove final element
+  ASSERT(mu_vect_count(v) == 1);
+  // remove final element [c] => []
   ASSERT(mu_vect_delete_at(v, 0, &element) == MU_VECT_ERR_NONE); // []
-  ASSERT(elements_are_equal(&element, &s_element1));
+  ASSERT(mu_vect_count(v) == 0);
+  ASSERT(elements_are_equal(&element, &s_element3));
 
   // mu_vect_err_t mu_vect_insert_sorted(mu_vect_t *vect,
   // void *element, mu_compare_fn cmp);
@@ -235,14 +241,14 @@ void mu_vect_test() {
   ASSERT(elements_are_equal(mu_vect_ref(v, 2), &s_element2));
   ASSERT(elements_are_equal(mu_vect_ref(v, 3), &s_element1));
 
-  // mu_vect_find, mu_vect_find_index, mu_vect_contains
+  // mu_vect_traverse, mu_vect_find_index, mu_vect_contains
   mu_vect_reset(v);
-  ASSERT(mu_vect_find(v, ids_match, &s_element1) == NULL);
+  ASSERT(mu_vect_traverse(v, ids_match, &s_element1) == NULL);
   ASSERT(mu_vect_find_index(v, ids_match, &s_element1) == -1);
   ASSERT(mu_vect_contains(v, ids_match, &s_element1) == false);
 
   mu_vect_push(v, &s_element1);
-  ASSERT(elements_are_equal(mu_vect_find(v, ids_match, &s_element1), &s_element1));
+  ASSERT(elements_are_equal(mu_vect_traverse(v, ids_match, &s_element1), &s_element1));
   ASSERT(mu_vect_find_index(v, ids_match, &s_element1) == 0);
   ASSERT(mu_vect_contains(v, ids_match, &s_element1) == true);
 }

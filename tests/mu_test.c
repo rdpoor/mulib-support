@@ -36,6 +36,7 @@
 
 int mu_bitvec_test();
 int mu_list_test();
+int mu_log_test();
 int mu_pstore_test();
 int mu_queue_test();
 int mu_sched_test();
@@ -57,6 +58,7 @@ int main() {
 
   mu_bitvec_test();
   mu_list_test();
+  mu_log_test();
   mu_pstore_test();
   mu_queue_test();
   mu_sched_test();

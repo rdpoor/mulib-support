@@ -153,8 +153,8 @@ mu_vect_err_t mu_vect_delete_at(mu_vect_t *vect, size_t index, void *e) {
   // close hole as needed
   int to_move = mu_vect_count(vect) - index - 1;
   if (to_move > 0) {
-    void *dst = mu_vect_ref(vect, mu_vect_count(vect) - 1);
-    memmove(dst, at, mu_vect_element_size(vect) * to_move);
+    void *src = mu_vect_ref(vect, index + 1);
+    memmove(at, src, mu_vect_element_size(vect) * to_move);
   }
   vect->count -= 1;
   return MU_VECT_ERR_NONE;
@@ -183,7 +183,7 @@ mu_vect_err_t mu_vect_sort(mu_vect_t *vect, mu_vect_cmp_fn cmp) {
   return MU_VECT_ERR_NONE;
 }
 
-void *mu_vect_find(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg) {
+void *mu_vect_traverse(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg) {
   for (size_t i = 0; i<mu_vect_count(vect); i++) {
     void *result = find_fn(ref(vect, i), arg);
     if (result != NULL) return result;

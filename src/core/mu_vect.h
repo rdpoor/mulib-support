@@ -259,7 +259,7 @@ mu_vect_err_t mu_vect_sort(mu_vect_t *vect, mu_vect_cmp_fn cmp);
 /**
  * @brief Traverse the mu_vect with a user-supplied function.
  *
- * mu_vect_find visits each element of the vector starting with element 0,
+ * mu_vect_traverse visits each element of the vector starting with element 0,
  * calling the user-supplied traversal function with each element.  If the user
  * supplied function returns a non-null value, traversal stops and that value is
  * returned.
@@ -270,7 +270,7 @@ mu_vect_err_t mu_vect_sort(mu_vect_t *vect, mu_vect_cmp_fn cmp);
  * the last element is visited.
  * @return Last value returned by find_fn.
  */
-void *mu_vect_find(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg);
+void *mu_vect_traverse(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg);
 
 int mu_vect_find_index(mu_vect_t *vect, mu_vect_find_fn find_fn, void *arg);
 

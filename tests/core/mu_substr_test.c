@@ -27,7 +27,6 @@
 
 #include "mu_test_utils.h"
 #include "mu_substr.h"
-#include "mu_buf.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
