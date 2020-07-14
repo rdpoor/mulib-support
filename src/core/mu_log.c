@@ -72,6 +72,13 @@ static subscriber_t s_subscribers_store[MU_LOG_MAX_SUBSCRIBERS];
 
 static char s_message[MU_LOG_MAX_MESSAGE_LENGTH];
 
+#undef DEFINE_MU_LOG_LEVEL
+#define DEFINE_MU_LOG_LEVEL(level, name) name,
+const char * const s_level_names[] = {
+  EXPAND_MU_LOG_LEVELS
+};
+
+
 // =============================================================================
 // user-visible code
 
@@ -101,21 +108,10 @@ mu_log_err_t mu_log_unsubscribe(mu_log_function_t fn) {
 }
 
 const char *mu_log_level_name(mu_log_level_t severity) {
-  switch (severity) {
-  case MU_LOG_TRACE_LEVEL:
-    return "TRACE";
-  case MU_LOG_DEBUG_LEVEL:
-    return "DEBUG";
-  case MU_LOG_INFO_LEVEL:
-    return "INFO";
-  case MU_LOG_WARNING_LEVEL:
-    return "WARNING";
-  case MU_LOG_ERROR_LEVEL:
-    return "ERROR";
-  case MU_LOG_CRITICAL_LEVEL:
-    return "CRITICAL";
-  default:
+  if (severity >= sizeof(s_level_names)/sizeof(const char *)) {
     return "UNKNOWN";
+  } else {
+    return s_level_names[severity];
   }
 }
 

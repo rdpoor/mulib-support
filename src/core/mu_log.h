@@ -35,13 +35,100 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
+/**
+ * @brief Define the logging levels.
+ *
+ * Note: EXPAND_MU_LOG_LEVELS and DEFINE_MU_LOG_LEVEL show an advanced use of
+ * preprocessor macros that warrants a thorough explanation.
+ *
+ * If you find yourself needing to associate two sets of values -- in this
+ * case the log-level enum value and the corresponding string -- you could
+ * write:
+ *
+ * @code
+ * const char *mu_log_level_name(mu_log_level_t severity) {
+ *   switch (severity) {
+ *     case MU_LOG_TRACE_LEVEL: return "TRACE";
+ *     case MU_LOG_DEBUG_LEVEL: return "DEBUG";
+ *     ...
+ *   }
+ * @endcode
+ *
+ * but this runs the risk of the enum values and the string values getting out
+ * of sync if you ever expand or modify the list of enum values.
+ *
+ * A better approach, as shown here, is to creat a macro that expands a
+ * sub-macro, like this:
+ *
+ * @code
+ * #define EXPAND_MU_LOG_LEVELS \
+ * DEFINE_MU_LOG_LEVEL(MU_LOG_TRACE_LEVEL, "TRACE") \
+ * DEFINE_MU_LOG_LEVEL(MU_LOG_DEBUG_LEVEL, "DEBUG") \
+ * DEFINE_MU_LOG_LEVEL(MU_LOG_INFO_LEVEL, "INFO") \
+ * DEFINE_MU_LOG_LEVEL(MU_LOG_WARNING_LEVEL, "WARNING") \
+ * DEFINE_MU_LOG_LEVEL(MU_LOG_ERROR_LEVEL, "ERROR") \
+ * DEFINE_MU_LOG_LEVEL(MU_LOG_CRITICAL_LEVEL, "CRITICAL")
+ * @endcode
+ *
+ * You then define the sub-macro to emit what you need to create the
+ * enum values, and then later re-define the sub-macro to emit the strings.
+ *
+ * To generate the enum the .h file:
+ *
+ * @code
+ * #undef DEFINE_MU_LOG_LEVEL
+ * #define DEFINE_MU_LOG_LEVEL(level, name) level,
+ * typedef enum {
+ *   EXPAND_MU_LOG_LEVELS
+ * } mu_log_level_t;
+ * @endcode
+ *
+ * This expands into:
+ *
+ * @code
+ * typedef enum {
+ *   MU_LOG_TRACE_LEVEL,
+ *   MU_LOG_DEBUG_LEVEL,
+ *   ...
+ * } mu_log_level_t;
+ * @endcode
+ *
+ * Then in your .c file:
+ * @code
+ * #undef DEFINE_MU_LOG_LEVEL
+ * #define DEFINE_MU_LOG_LEVEL(level, name) name,
+ * const char * const s_level_names[] = {
+ *   EXPAND_MU_LOG_LEVELS
+ * };
+ * @endcode
+ *
+ * This expands into:
+ *
+ * @code
+ * const char * const s_level_names[] = {
+ *   "TRACE",
+ *   "DEBUG",
+ *   ...
+ * };
+ * @endcode
+ *
+ * By defining the enum names and the strings in the same place, you are
+ * guaranteed that they will always stay in sync.  Of course, this approach
+ * can be extended into more complex data structures.
+ */
+
+#define EXPAND_MU_LOG_LEVELS \
+DEFINE_MU_LOG_LEVEL(MU_LOG_TRACE_LEVEL, "TRACE") \
+DEFINE_MU_LOG_LEVEL(MU_LOG_DEBUG_LEVEL, "DEBUG") \
+DEFINE_MU_LOG_LEVEL(MU_LOG_INFO_LEVEL, "INFO") \
+DEFINE_MU_LOG_LEVEL(MU_LOG_WARNING_LEVEL, "WARNING") \
+DEFINE_MU_LOG_LEVEL(MU_LOG_ERROR_LEVEL, "ERROR") \
+DEFINE_MU_LOG_LEVEL(MU_LOG_CRITICAL_LEVEL, "CRITICAL")
+
+#undef DEFINE_MU_LOG_LEVEL
+#define DEFINE_MU_LOG_LEVEL(level, name) level,
 typedef enum {
-  MU_LOG_TRACE_LEVEL=100,
-  MU_LOG_DEBUG_LEVEL,
-  MU_LOG_INFO_LEVEL,
-  MU_LOG_WARNING_LEVEL,
-  MU_LOG_ERROR_LEVEL,
-  MU_LOG_CRITICAL_LEVEL
+  EXPAND_MU_LOG_LEVELS
 } mu_log_level_t;
 
 // Unless MU_LOG_ENABLED is defined at compile time, all logging is disabled and

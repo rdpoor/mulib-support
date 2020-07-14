@@ -160,17 +160,27 @@ void mu_log_test() {
   ASSERT(s_call_count6 == 2);
   ASSERT(s_call_count7 == 0);
 
-
   reset();
   ASSERT(MU_LOG_SUBSCRIBE(logger_b, MU_LOG_INFO_LEVEL) == MU_LOG_ERR_NONE);
   ASSERT(MU_LOG_SUBSCRIBE(logger_a, MU_LOG_INFO_LEVEL) == MU_LOG_ERR_NONE);
   // at this point, b would be called before a.  but...
   ASSERT(MU_LOG_SUBSCRIBE(logger_b, MU_LOG_INFO_LEVEL) == MU_LOG_ERR_NONE);
-  // ...re-subscribing moves it to the end of the list.  See logger_b.
+  // ...re-subscribing moves it to the end of the list.  logger_b will verify
+  // that logger_a was called before logger_b
   MU_LOG_INFO("anything");
   ASSERT(s_call_count_a == 1);
   ASSERT(s_call_count_b == 1);
 
+  // mu_log_level_name()
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_TRACE_LEVEL), "TRACE") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_DEBUG_LEVEL), "DEBUG") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_INFO_LEVEL), "INFO") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_WARNING_LEVEL), "WARNING") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_ERROR_LEVEL), "ERROR") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_CRITICAL_LEVEL), "CRITICAL") == 0);
+
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_TRACE_LEVEL-1), "UNKNOWN") == 0);
+  ASSERT(strcmp(mu_log_level_name(MU_LOG_CRITICAL_LEVEL+1), "UNKNOWN") == 0);
 }
 
 // =============================================================================
