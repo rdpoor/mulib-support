@@ -4,11 +4,9 @@
 
 ..\..\..\..\..\src\core\mu_bitvec.c
 
-..\..\..\..\..\src\core\mu_buf.c
-
-..\..\..\..\..\src\core\mu_bufref.c
-
 ..\..\..\..\..\src\core\mu_list.c
+
+..\..\..\..\..\src\core\mu_log.c
 
 ..\..\..\..\..\src\core\mu_pstore.c
 
@@ -25,6 +23,8 @@
 ..\..\..\..\..\src\core\mu_task.c
 
 ..\..\..\..\..\src\core\mu_time.c
+
+..\..\..\..\..\src\core\mu_vect.c
 
 ..\..\..\..\..\src\core\mu_version.c
 

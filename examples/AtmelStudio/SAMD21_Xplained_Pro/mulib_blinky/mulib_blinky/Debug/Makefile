@@ -60,9 +60,8 @@ SUBDIRS :=  \
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../../../../../../src/core/mu_bitvec.c \
-../../../../../../src/core/mu_buf.c \
-../../../../../../src/core/mu_bufref.c \
 ../../../../../../src/core/mu_list.c \
+../../../../../../src/core/mu_log.c \
 ../../../../../../src/core/mu_pstore.c \
 ../../../../../../src/core/mu_queue.c \
 ../../../../../../src/core/mu_sched.c \
@@ -71,6 +70,7 @@ C_SRCS +=  \
 ../../../../../../src/core/mu_substr.c \
 ../../../../../../src/core/mu_task.c \
 ../../../../../../src/core/mu_time.c \
+../../../../../../src/core/mu_vect.c \
 ../../../../../../src/core/mu_version.c \
 ../atmel_start.c \
 ../mulib_blinky.c \
@@ -113,9 +113,8 @@ ASM_SRCS +=
 
 OBJS +=  \
 mulib/core/mu_bitvec.o \
-mulib/core/mu_buf.o \
-mulib/core/mu_bufref.o \
 mulib/core/mu_list.o \
+mulib/core/mu_log.o \
 mulib/core/mu_pstore.o \
 mulib/core/mu_queue.o \
 mulib/core/mu_sched.o \
@@ -124,6 +123,7 @@ mulib/core/mu_str.o \
 mulib/core/mu_substr.o \
 mulib/core/mu_task.o \
 mulib/core/mu_time.o \
+mulib/core/mu_vect.o \
 mulib/core/mu_version.o \
 atmel_start.o \
 mulib_blinky.o \
@@ -159,9 +159,8 @@ mu_port.o
 
 OBJS_AS_ARGS +=  \
 mulib/core/mu_bitvec.o \
-mulib/core/mu_buf.o \
-mulib/core/mu_bufref.o \
 mulib/core/mu_list.o \
+mulib/core/mu_log.o \
 mulib/core/mu_pstore.o \
 mulib/core/mu_queue.o \
 mulib/core/mu_sched.o \
@@ -170,6 +169,7 @@ mulib/core/mu_str.o \
 mulib/core/mu_substr.o \
 mulib/core/mu_task.o \
 mulib/core/mu_time.o \
+mulib/core/mu_vect.o \
 mulib/core/mu_version.o \
 atmel_start.o \
 mulib_blinky.o \
@@ -205,9 +205,8 @@ mu_port.o
 
 C_DEPS +=  \
 mulib/core/mu_bitvec.d \
-mulib/core/mu_buf.d \
-mulib/core/mu_bufref.d \
 mulib/core/mu_list.d \
+mulib/core/mu_log.d \
 mulib/core/mu_pstore.d \
 mulib/core/mu_queue.d \
 mulib/core/mu_sched.d \
@@ -216,6 +215,7 @@ mulib/core/mu_str.d \
 mulib/core/mu_substr.d \
 mulib/core/mu_task.d \
 mulib/core/mu_time.d \
+mulib/core/mu_vect.d \
 mulib/core/mu_version.d \
 atmel_start.d \
 mulib_blinky.d \
@@ -251,9 +251,8 @@ mu_port.d
 
 C_DEPS_AS_ARGS +=  \
 mulib/core/mu_bitvec.d \
-mulib/core/mu_buf.d \
-mulib/core/mu_bufref.d \
 mulib/core/mu_list.d \
+mulib/core/mu_log.d \
 mulib/core/mu_pstore.d \
 mulib/core/mu_queue.d \
 mulib/core/mu_sched.d \
@@ -262,6 +261,7 @@ mulib/core/mu_str.d \
 mulib/core/mu_substr.d \
 mulib/core/mu_task.d \
 mulib/core/mu_time.d \
+mulib/core/mu_vect.d \
 mulib/core/mu_version.d \
 atmel_start.d \
 mulib_blinky.d \
@@ -318,21 +318,14 @@ mulib/core/mu_bitvec.o: ../../../../../../src/core/mu_bitvec.c
 	@echo Finished building: $<
 	
 
-mulib/core/mu_buf.o: ../../../../../../src/core/mu_buf.c
-	@echo Building file: $<
-	@echo Invoking: ARM/GNU C Compiler : 6.3.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sysctrl" -I"../hpl/usart" -I"../hri" -I"../include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../../../../../src"  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-mulib/core/mu_bufref.o: ../../../../../../src/core/mu_bufref.c
-	@echo Building file: $<
-	@echo Invoking: ARM/GNU C Compiler : 6.3.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sysctrl" -I"../hpl/usart" -I"../hri" -I"../include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../../../../../src"  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
 mulib/core/mu_list.o: ../../../../../../src/core/mu_list.c
+	@echo Building file: $<
+	@echo Invoking: ARM/GNU C Compiler : 6.3.1
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sysctrl" -I"../hpl/usart" -I"../hri" -I"../include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../../../../../src"  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+mulib/core/mu_log.o: ../../../../../../src/core/mu_log.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 6.3.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sysctrl" -I"../hpl/usart" -I"../hri" -I"../include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../../../../../src"  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
@@ -389,6 +382,13 @@ mulib/core/mu_task.o: ../../../../../../src/core/mu_task.c
 	
 
 mulib/core/mu_time.o: ../../../../../../src/core/mu_time.c
+	@echo Building file: $<
+	@echo Invoking: ARM/GNU C Compiler : 6.3.1
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sysctrl" -I"../hpl/usart" -I"../hri" -I"../include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../../../../../src"  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+mulib/core/mu_vect.o: ../../../../../../src/core/mu_vect.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 6.3.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sysctrl" -I"../hpl/usart" -I"../hri" -I"../include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../../../../../src"  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

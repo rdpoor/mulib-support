@@ -32,11 +32,9 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "core/mu_bitvec.h"
-#include "core/mu_buf.h"
-#include "core/mu_bufref.h"
 #include "core/mu_config.h"
 #include "core/mu_list.h"
+#include "core/mu_log.h"
 #include "core/mu_pstore.h"
 #include "core/mu_queue.h"
 #include "core/mu_sched.h"
@@ -46,6 +44,7 @@ extern "C" {
 #include "core/mu_task.h"
 #include "core/mu_time.h"
 #include "core/mu_types.h"
+#include "core/mu_vect.h"
 #include "core/mu_version.h"
 
 // =============================================================================

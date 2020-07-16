@@ -381,22 +381,6 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_bitvec.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_buf.c">
-      <SubType>compile</SubType>
-      <Link>mulib\core\mu_buf.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_buf.h">
-      <SubType>compile</SubType>
-      <Link>mulib\core\mu_buf.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_bufref.c">
-      <SubType>compile</SubType>
-      <Link>mulib\core\mu_bufref.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_bufref.h">
-      <SubType>compile</SubType>
-      <Link>mulib\core\mu_bufref.h</Link>
-    </Compile>
     <Compile Include="..\..\..\..\..\src\core\mu_config.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_config.h</Link>
@@ -476,6 +460,14 @@
     <Compile Include="..\..\..\..\..\src\core\mu_types.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_types.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\src\core\mu_vect.c">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_vect.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\src\core\mu_vect.h">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_vect.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\..\src\core\mu_version.c">
       <SubType>compile</SubType>
