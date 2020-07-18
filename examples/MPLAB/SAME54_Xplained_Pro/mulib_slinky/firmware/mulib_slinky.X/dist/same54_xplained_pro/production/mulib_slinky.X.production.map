@@ -261,7 +261,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.mu_time_differenc     0x2500            0x8           8   
 .text.mu_time_precedes      0x2508            0x8           8   
 .text.mu_time_now           0x2510            0x8           8   
-.text.mu_port_time_now      0x2518            0x8           8   
+.text.mu_port_rtc_now      0x2518            0x8           8   
 .text.__sclose              0x2520            0x8           8   
 .text.close                 0x2528            0x8           8   
 .text.RTC_Timer32Freque     0x2530            0x6           6   
@@ -3108,11 +3108,11 @@ LOAD data_init
                 0x00002510        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
                 0x00002510                mu_time_now
 
-.text.mu_port_time_now%140
+.text.mu_port_rtc_now%140
                 0x00002518        0x8
- .text.mu_port_time_now
+ .text.mu_port_rtc_now
                 0x00002518        0x8 build/same54_xplained_pro/production/_ext/1017879673/mu_port.o
-                0x00002518                mu_port_time_now
+                0x00002518                mu_port_rtc_now
 
 .text.__sclose%141
                 0x00002520        0x8

@@ -85,7 +85,7 @@ mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
   return secs;
 }
 
-mu_port_time_t mu_port_time_now() {
+mu_port_time_t mu_port_rtc_now() {
   return clock();
 }
 

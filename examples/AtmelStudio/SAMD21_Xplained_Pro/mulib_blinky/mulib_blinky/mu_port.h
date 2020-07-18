@@ -43,8 +43,8 @@ typedef int32_t mu_port_time_dt;           // the interval between two times
 typedef int32_t mu_port_time_ms_dt;        // an interval expressed in milliseconds
 typedef float mu_port_time_seconds_dt;     // an interval expressed in seconds
 
-#define MU_PORT_TIME_CLOCK_RATE CONF_GCLK_RTC_FREQUENCY
-#define MU_PORT_TIME_MS_TO_DURATION(ms) (((ms) * MU_PORT_TIME_CLOCK_RATE) / 1000)
+#define MU_PORT_RTC_CLOCK_RATE CONF_GCLK_RTC_FREQUENCY
+#define MU_PORT_TIME_MS_TO_DURATION(ms) (((ms) * MU_PORT_RTC_CLOCK_RATE) / 1000)
 
 // =============================================================================
 // declarations
@@ -69,7 +69,7 @@ mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_dt seconds
 
 mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt);
 
-mu_port_time_t mu_port_time_now();
+mu_port_time_t mu_port_rtc_now();
 
 // Support for stdio.h
 

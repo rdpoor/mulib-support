@@ -97,7 +97,7 @@ mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-mu_port_time_t mu_port_time_now() {
+mu_port_time_t mu_port_rtc_now() {
 	return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
 }
 

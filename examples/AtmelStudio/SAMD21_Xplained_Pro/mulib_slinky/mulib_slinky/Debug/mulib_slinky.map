@@ -8003,9 +8003,9 @@ LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin
                 0x00001038        0x6 mu_port.o
                 0x00001038                mu_port_time_precedes
  *fill*         0x0000103e        0x2 
- .text.mu_port_time_now
+ .text.mu_port_rtc_now
                 0x00001040       0x14 mu_port.o
-                0x00001040                mu_port_time_now
+                0x00001040                mu_port_rtc_now
  .text._write   0x00001054       0x38 mu_port.o
                 0x00001054                _write
  .text._read    0x0000108c       0x38 mu_port.o
@@ -8803,59 +8803,59 @@ OUTPUT(mulib_slinky.elf elf32-littlearm)
  .debug_line    0x0000da2f      0xad9 main.o
  .debug_line    0x0000e508      0xd59 mu_port.o
 
-.debug_str      0x00000000    0x868e1
- .debug_str     0x00000000     0x6834 mulib/core/mu_sched.o
-                               0x6b28 (size before relaxing)
- .debug_str     0x00006834       0xb6 mulib/core/mu_spscq.o
+.debug_str      0x00000000    0x868de
+ .debug_str     0x00000000     0x6832 mulib/core/mu_sched.o
+                               0x6b26 (size before relaxing)
+ .debug_str     0x00006832       0xb6 mulib/core/mu_spscq.o
                                0x3875 (size before relaxing)
- .debug_str     0x000068ea       0xda mulib/core/mu_task.o
-                               0x39af (size before relaxing)
- .debug_str     0x000069c4      0x191 mulib/core/mu_time.o
-                               0x3749 (size before relaxing)
- .debug_str     0x00006b55    0x75f2d atmel_start.o
+ .debug_str     0x000068e8       0xda mulib/core/mu_task.o
+                               0x39ad (size before relaxing)
+ .debug_str     0x000069c2      0x190 mulib/core/mu_time.o
+                               0x3746 (size before relaxing)
+ .debug_str     0x00006b52    0x75f2d atmel_start.o
                               0x798a8 (size before relaxing)
- .debug_str     0x0007ca82     0x10b3 Device_Startup/startup_samd21.o
+ .debug_str     0x0007ca7f     0x10b3 Device_Startup/startup_samd21.o
                               0x717b0 (size before relaxing)
- .debug_str     0x0007db35     0x18ab driver_init.o
+ .debug_str     0x0007db32     0x18ab driver_init.o
                               0x7bfe3 (size before relaxing)
- .debug_str     0x0007f3e0      0x59f hal/src/hal_calendar.o
+ .debug_str     0x0007f3dd      0x59f hal/src/hal_calendar.o
                               0x79e8d (size before relaxing)
- .debug_str     0x0007f97f       0xe7 hal/src/hal_ext_irq.o
+ .debug_str     0x0007f97c       0xe7 hal/src/hal_ext_irq.o
                               0x79331 (size before relaxing)
- .debug_str     0x0007fa66       0x46 hal/src/hal_sleep.o
+ .debug_str     0x0007fa63       0x46 hal/src/hal_sleep.o
                               0x79253 (size before relaxing)
- .debug_str     0x0007faac       0x2a hal/utils/src/utils_assert.o
+ .debug_str     0x0007faa9       0x2a hal/utils/src/utils_assert.o
                               0x7927c (size before relaxing)
- .debug_str     0x0007fad6     0x18d8 hal/utils/src/utils_syscalls.o
+ .debug_str     0x0007fad3     0x18d8 hal/utils/src/utils_syscalls.o
                                0x731b (size before relaxing)
- .debug_str     0x000813ae      0x32c hpl/core/hpl_core_m0plus_base.o
+ .debug_str     0x000813ab      0x32c hpl/core/hpl_core_m0plus_base.o
                               0x79d0f (size before relaxing)
- .debug_str     0x000816da     0x17d7 hpl/core/hpl_init.o
+ .debug_str     0x000816d7     0x17d7 hpl/core/hpl_init.o
                               0x7ae4c (size before relaxing)
- .debug_str     0x00082eb1      0xed6 hpl/eic/hpl_eic.o
+ .debug_str     0x00082eae      0xed6 hpl/eic/hpl_eic.o
                               0x7d59c (size before relaxing)
- .debug_str     0x00083d87      0x84f hpl/gclk/hpl_gclk.o
+ .debug_str     0x00083d84      0x84f hpl/gclk/hpl_gclk.o
                               0x79b99 (size before relaxing)
- .debug_str     0x000845d6      0x184 hpl/pm/hpl_pm.o
+ .debug_str     0x000845d3      0x184 hpl/pm/hpl_pm.o
                               0x799ab (size before relaxing)
- .debug_str     0x0008475a      0x419 hpl/rtc/hpl_rtc.o
+ .debug_str     0x00084757      0x419 hpl/rtc/hpl_rtc.o
                               0x79e3f (size before relaxing)
- .debug_str     0x00084b73     0x11c2 hpl/sysctrl/hpl_sysctrl.o
+ .debug_str     0x00084b70     0x11c2 hpl/sysctrl/hpl_sysctrl.o
                               0x7a54b (size before relaxing)
- .debug_str     0x00085d35      0x352 hpl/usart/usart_lite.o
+ .debug_str     0x00085d32      0x352 hpl/usart/usart_lite.o
                               0x79eaa (size before relaxing)
- .debug_str     0x00086087      0x5ec idle_task.o
-                              0x7ce87 (size before relaxing)
- .debug_str     0x00086673      0x1b1 mulib_slinky.o
-                               0x7f6f (size before relaxing)
- .debug_str     0x00086824       0x2c button_task.o
-                              0x7df8a (size before relaxing)
- .debug_str     0x00086850       0x2b led_task.o
-                              0x7d030 (size before relaxing)
- .debug_str     0x0008687b        0xc main.o
+ .debug_str     0x00086084      0x5ec idle_task.o
+                              0x7ce85 (size before relaxing)
+ .debug_str     0x00086670      0x1b1 mulib_slinky.o
+                               0x7f6d (size before relaxing)
+ .debug_str     0x00086821       0x2c button_task.o
+                              0x7df88 (size before relaxing)
+ .debug_str     0x0008684d       0x2b led_task.o
+                              0x7d02e (size before relaxing)
+ .debug_str     0x00086878        0xc main.o
                               0x798d0 (size before relaxing)
- .debug_str     0x00086887       0x5a mu_port.o
-                              0x7d229 (size before relaxing)
+ .debug_str     0x00086884       0x5a mu_port.o
+                              0x7d226 (size before relaxing)
 
 .debug_frame    0x00000000     0x175c
  .debug_frame   0x00000000      0x254 mulib/core/mu_sched.o

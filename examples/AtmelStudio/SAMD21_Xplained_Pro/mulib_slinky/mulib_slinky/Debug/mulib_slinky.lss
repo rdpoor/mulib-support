@@ -29,9 +29,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  12 .debug_line   0000f261  00000000  00000000  00064ff5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_str    000868e1  00000000  00000000  00074256  2**0
+ 13 .debug_str    000868de  00000000  00000000  00074256  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  0000175c  00000000  00000000  000fab38  2**2
+ 14 .debug_frame  0000175c  00000000  00000000  000fab34  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -741,7 +741,7 @@ mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s) {
 
 mu_time_t mu_time_now() {
      43c:	b510      	push	{r4, lr}
-  return mu_port_time_now();
+  return mu_port_rtc_now();
      43e:	4b01      	ldr	r3, [pc, #4]	; (444 <mu_time_now+0x8>)
      440:	4798      	blx	r3
 }
@@ -3305,19 +3305,19 @@ bool mu_port_time_precedes(mu_port_time_t t1, mu_port_time_t t2) {
     103c:	4770      	bx	lr
 	...
 
-00001040 <mu_port_time_now>:
+00001040 <mu_port_rtc_now>:
 mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-mu_port_time_t mu_port_time_now() {
+mu_port_time_t mu_port_rtc_now() {
 	return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
-    1040:	4b03      	ldr	r3, [pc, #12]	; (1050 <mu_port_time_now+0x10>)
+    1040:	4b03      	ldr	r3, [pc, #12]	; (1050 <mu_port_rtc_now+0x10>)
     1042:	681a      	ldr	r2, [r3, #0]
 	while (((const Rtc *)hw)->MODE0.STATUS.bit.SYNCBUSY)
     1044:	7a93      	ldrb	r3, [r2, #10]
     1046:	09db      	lsrs	r3, r3, #7
-    1048:	d1fc      	bne.n	1044 <mu_port_time_now+0x4>
+    1048:	d1fc      	bne.n	1044 <mu_port_rtc_now+0x4>
 	tmp = ((Rtc *)hw)->MODE0.COUNT.reg;
     104a:	6910      	ldr	r0, [r2, #16]
 }

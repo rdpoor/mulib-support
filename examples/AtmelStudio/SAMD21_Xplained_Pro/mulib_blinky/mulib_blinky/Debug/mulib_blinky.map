@@ -7905,9 +7905,9 @@ LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin
                 0x00000e40        0x6 mu_port.o
                 0x00000e40                mu_port_time_precedes
  *fill*         0x00000e46        0x2 
- .text.mu_port_time_now
+ .text.mu_port_rtc_now
                 0x00000e48       0x14 mu_port.o
-                0x00000e48                mu_port_time_now
+                0x00000e48                mu_port_rtc_now
  .text._write   0x00000e5c       0x38 mu_port.o
                 0x00000e5c                _write
  .text._read    0x00000e94       0x38 mu_port.o
