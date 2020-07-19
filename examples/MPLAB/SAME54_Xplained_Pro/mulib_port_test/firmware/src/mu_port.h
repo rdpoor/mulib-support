@@ -47,17 +47,11 @@ extern "C" {
 // #define MU_PORT_FLOAT double
 
 /**
- * Define the data type that holds a time value and a duration value.  Using
- * 32 bit values is a good choice for many platforms, but you can change this
- * as needed.
+ * Define the data type that holds a time value and a duration value.
  */
 typedef uint32_t mu_port_time_t;
 typedef int32_t mu_port_time_dt;
 
-/**
- * If your platform is able to sleep in order to conserver power, un-comment
- * MU_PORT_CAN_SLEEP and define mu_port_sleep_until() and mu_port_sleep().
- */
 #define MU_PORT_CAN_SLEEP
 
 typedef void (*mu_port_callback_fn)(void *arg);
@@ -82,27 +76,23 @@ PORT_FLOAT mu_port_time_duration_to_s(mu_port_time_dt dt);
 mu_port_time_dt mu_port_time_s_to_duration(PORT_FLOAT seconds);
 #endif
 
-// ==========
 // Real Time Clock
 
 mu_port_time_t mu_port_rtc_now(void);
 void mu_port_rtc_set_cb(mu_port_callback_fn fn, void *arg);
 void mu_port_rtc_alarm_at(mu_port_time_t at);
 
-// ==========
 // LED
 
 void mu_port_led_set(bool on);
 bool mu_port_led_get(void);
 
-// ==========
 // BUTTON
 
 bool mu_port_button_is_pressed(void);
 void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg);
 
-// ==========
-// SERIAL I/O
+// SERIAL
 
 /**
  * @brief Return true if the previous call to mu_port_serial_write has completed.
@@ -142,10 +132,9 @@ int mu_port_serial_read(uint8_t *const buf, int n_bytes);
  */
 void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg);
 
-// ==========
 // SLEEP
 
-#ifdef PORT_CAN_SLEEP
+#ifdef MU_PORT_CAN_SLEEP
 /**
  * @brief Put the processor into low-power mode until time t arrives, or an
  * external event wakes the processor.
@@ -157,7 +146,6 @@ void mu_port_sleep_until(mu_port_time_t t);
  * the processor.
  */
 void mu_port_sleep(void);
-
 #endif
 
 

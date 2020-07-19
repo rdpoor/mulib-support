@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mu_port.h</file>
+            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mulib_port_test.c</file>
+            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mulib_port_test.h</file>
+            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/config/same54_xplained_pro/peripheral/sercom/usart/plib_sercom2_usart.c</file>
+            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/main.c</file>
+            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mu_port.c</file>
+        </group>
+    </open-files>
+</project-private>
