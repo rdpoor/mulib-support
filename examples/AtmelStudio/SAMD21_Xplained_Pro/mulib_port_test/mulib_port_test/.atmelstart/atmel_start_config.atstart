@@ -121,11 +121,11 @@ drivers:
       domain_group:
         nodes:
         - name: EIC
-          input: Generic clock generator 0
+          input: Generic clock generator 3
           external: false
           external_frequency: 0
         configuration:
-          eic_gclk_selection: Generic clock generator 0
+          eic_gclk_selection: Generic clock generator 3
   GCLK:
     user_label: GCLK
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::GCLK::driver_config_definition::GCLK::HAL:HPL:GCLK

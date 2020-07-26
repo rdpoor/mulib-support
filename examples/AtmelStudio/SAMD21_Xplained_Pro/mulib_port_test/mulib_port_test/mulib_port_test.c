@@ -39,11 +39,9 @@
 // =============================================================================
 // private declarations
 
-static void wait_ms(int ms);
-static void port_printf(const char *fmt, ...);
-static void print_time(mu_port_time_t t);
-static uint8_t test_getc(void);
-static void test_flush_rx(void);
+static void test_wait_ms(int ms);
+static void test_port_printf(const char *fmt, ...);
+static void test_print_time(mu_port_time_t t);
 static void button_press_cb(void *arg);
 static void serial_read_cb(void *arg);
 static void rtc_cb(void *arg);
@@ -64,76 +62,85 @@ void mulib_port_test_init(void) {
 }
 
 void mulib_port_test_step(void) {
+  uint8_t c;
 
   // capture start up time...
   s_epoch = mu_port_rtc_now();
 
-  port_printf("\r\n================\r\nstarting mu_port_test\r\n");
+  test_port_printf("\r\n================\r\nstarting mu_port_test\r\n");
 
-  port_printf("looping for 2.5 seconds...");
-  wait_ms(2500);
-  port_printf("done\r\n");
+  test_port_printf("time before is ");
+  test_print_time(mu_port_rtc_now());
+  test_port_printf("\r\n");
+  test_port_printf("looping for 2.5 seconds...");
+  test_wait_ms(2500);
+  test_port_printf("done.  time after is ");
+  test_print_time(mu_port_rtc_now());
+  test_port_printf("\r\n");
 
   s_rtc_matched = false;
   mu_port_rtc_set_cb(rtc_cb, NULL);
   mu_port_rtc_alarm_at(mu_port_time_offset(mu_port_rtc_now(),
                                            mu_port_time_ms_to_duration(2500)));
-  port_printf("waiting 2.5 seconds for RTC match...");
+  test_port_printf("waiting 2.5 seconds for RTC match...");
   while (!s_rtc_matched) {
 	  asm("nop");
     // buzz...
   }
-  port_printf("done\r\n");
+  test_port_printf("done.  time is now ");
+  test_print_time(mu_port_rtc_now());
+  test_port_printf("\r\n");
 
-  port_printf("flashing LED for 2.5 seconds...");
+  test_port_printf("flashing LED for 2.5 seconds...");
   for (int i = 0; i < 10; i++) {
     mu_port_led_set(!mu_port_led_get());
-    wait_ms(250);
+    test_wait_ms(250);
   }
   mu_port_led_set(false);
-  port_printf("done\r\n");
+  test_port_printf("done.  time is now ");
+  test_print_time(mu_port_rtc_now());
+  test_port_printf("\r\n");
 
-  port_printf("waiting for button press (synchronous)...");
+  test_port_printf("waiting for button press (synchronous)...");
   while (!mu_port_button_is_pressed()) {
     // buzz...
   }
-  port_printf("received button press.\r\n");
+  test_port_printf("received button press.\r\n");
 
   // make sure button has stopped bouncing before moving to next test.
   do {
-    wait_ms(10);
+    test_wait_ms(10);
   } while (mu_port_button_is_pressed());
 
   s_button_pressed = false;
   mu_port_button_set_cb(button_press_cb, NULL);
-  port_printf("waiting for button press (asynchronous)...");
+  test_port_printf("waiting for button press (asynchronous)...");
   while (!s_button_pressed) {
     // buzz...
   }
-  port_printf("received button press.\r\n");
+  test_port_printf("received button press.\r\n");
 
-  port_printf("waiting for keyboard input (synchronous)...");
-  while (!mu_port_serial_can_read()) {
-    // buzz...
+  test_port_printf("waiting for keyboard input (synchronous)...");
+  // initiate the read operation
+  mu_port_serial_read(&c, 1);
+  while (mu_port_serial_read_count() < 1) {
+    // wait for mu_port_serial_read() operation to complete...
+    asm("nop");
   }
-  port_printf("received '%c'\r\n", test_getc());
-
-  // slurp any characters before next test...
-  test_flush_rx();
+  test_port_printf("received '%c'\r\n", c);
 
   s_char_available = false;
+  // set callback and initiate the read operation
   mu_port_serial_set_read_cb(serial_read_cb, NULL);
-  port_printf("waiting for keyboard input (asynchronous)...");
+  mu_port_serial_read(&c, 1);
+  test_port_printf("waiting for keyboard input (asynchronous)...");
   while (!s_char_available) {
     // buzz...
   }
-  port_printf("received '%c'\r\n", test_getc());
-
-  // slurp any characters before next test...
-  test_flush_rx();
+  test_port_printf("received '%c'\r\n", c);
 
 #ifdef MU_PORT_CAN_SLEEP
-  port_printf("sleeping for 2.5 seconds...");
+  test_port_printf("sleeping for 2.5 seconds...");
   // Assure line gets printed before sleeping
   while (!mu_port_serial_can_write()) {
 	  asm("nop");
@@ -141,25 +148,29 @@ void mulib_port_test_step(void) {
   }
   mu_port_sleep_until(mu_port_time_offset(mu_port_rtc_now(),
                                           mu_port_time_ms_to_duration(2500)));
-  port_printf("done.\r\n");
+  test_port_printf("done.  time is now ");
+  test_print_time(mu_port_rtc_now());
+  test_port_printf("\r\n");
 
-  port_printf("sleeping until button press...");
+  test_port_printf("sleeping until button press...");
   // Assure line gets printed before sleeping
   while (!mu_port_serial_can_write()) {
 	  asm("nop");
 	  // buzz...
   }
   mu_port_sleep();
-  port_printf("done.\r\n");
+  test_port_printf("done.  time is now ");
+  test_print_time(mu_port_rtc_now());
+  test_port_printf("\r\n");
 #endif
 
-  port_printf("end of mu_port_test\r\n================\r\n");
+  test_port_printf("end of mu_port_test\r\n================\r\n");
 }
 
 // =============================================================================
 // private (local) code
 
-static void wait_ms(int ms) {
+static void test_wait_ms(int ms) {
   mu_port_time_t then =
       mu_port_time_offset(mu_port_rtc_now(), mu_port_time_ms_to_duration(ms));
   while (mu_port_time_precedes(mu_port_rtc_now(), then)) {
@@ -168,55 +179,34 @@ static void wait_ms(int ms) {
   }
 }
 
-static void port_printf(const char *fmt, ...) {
+static void test_port_printf(const char *fmt, ...) {
   static uint8_t buf[MAX_CHARS];
-  size_t n_remaining;
-
-  while (!mu_port_serial_can_write()) {
-    asm("nop");
-    // buzz...
-  }
+  size_t n_written;
 
   va_list ap;
   va_start(ap, fmt);
-  n_remaining = vsnprintf((char *)buf, MAX_CHARS, fmt, ap);
+  n_written = vsnprintf((char *)buf, MAX_CHARS, fmt, ap);
   va_end(ap);
 
-  uint8_t *p = buf;
-  while (n_remaining > 0) {
-    int n_written = mu_port_serial_write(p, n_remaining);
-    if (n_written < 0)
-      break;
-    n_remaining -= n_written;
-    p += n_written;
+  // initiate the write operation
+  mu_port_serial_write(buf, n_written);
+
+  while (mu_port_serial_write_count() < n_written) {
+    // wait for mu_port_serial_write() operation to complete...
+    asm("nop");
   }
+
 }
 
-static void print_time(mu_port_time_t t) {
+static void test_print_time(mu_port_time_t t) {
   mu_port_time_dt uptime = mu_port_time_difference(t, s_epoch);
   int ms = mu_port_time_duration_to_ms(uptime);
 #ifdef PORT_FLOAT
   PORT_FLOAT s = mu_port_time_duration_to_s(uptime);
-  port_printf("time = %d ms (%f s)", ms, s);
+  test_port_printf("time = %d ms (%f s)", ms, s);
 #else
-  port_printf("time = %d ms", ms);
+  test_port_printf("time = %d ms", ms);
 #endif
-}
-
-static uint8_t test_getc(void) {
-  uint8_t c;
-  while (mu_port_serial_read(&c, 1) == 0) {
-    // buzz...
-  }
-  return c;
-}
-
-static void test_flush_rx(void) {
-  uint8_t c;
-  // read characters until there aren't any more to read
-  while (mu_port_serial_read(&c, 1) != 0) {
-    // repeat...
-  }
 }
 
 static void button_press_cb(void *arg) {

@@ -208,23 +208,18 @@ void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg) {
 
 // SERIAL
 
-/**
- * @brief Return true if a call to mu_port_serial_write() would accept at least
- * one character.
- */
+bool mu_port_serial_write(const uint8_t *const buf, int n_bytes) {
+  SERCOM2_USART_Write((void *)buf, n_bytes);
+  return true;
+}
+
 bool mu_port_serial_can_write(void) {
   return !SERCOM2_USART_WriteIsBusy();
 }
 
-/**
- * @brief Non-blocking write to the serial port.
- *
- * Write up to n_bytes on the serial port.  Non-blocking, returns the number of
- * bytes written (which may be zero) or a negative number indicating an error.
- */
-int mu_port_serial_write(const uint8_t *const buf, int n_bytes) {
-  SERCOM2_USART_Write((void *)buf, n_bytes);
-  return n_bytes;  // a bit fishy...
+int mu_port_serial_write_count(void) {
+  // TODO: tbd
+  return 0;
 }
 
 /**
@@ -241,32 +236,24 @@ void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
   }
 }
 
-/**
- * @brief Return true if a call to mu_port_serial_read() would return at least
- * one character.
- */
+bool mu_port_serial_read(uint8_t *const buf, int n_bytes) {
+  if (!SERCOM2_USART_ReadIsBusy()) {
+    // read not yet started
+    SERCOM2_USART_Read(buf, n_bytes);
+  }
+  return true;
+}
+
 bool mu_port_serial_can_read(void) {
   // peek directly at the Receive Complete register in the USART
   return (SERCOM2_REGS->USART_INT.SERCOM_INTFLAG & SERCOM_USART_INT_INTFLAG_RXC_Msk) == SERCOM_USART_INT_INTFLAG_RXC_Msk;
 }
 
-/**
- * @brief Non-blocking read from the serial port.
- *
- * Read up to n_bytes from the serial port.  Returns the number of bytes read,
- * which may be zero if no bytes available or negative on an error.
- */
-int mu_port_serial_read(uint8_t *const buf, int n_bytes) {
-  if (!SERCOM2_USART_ReadIsBusy()) {
-    // read not yet started
-    SERCOM2_USART_Read(buf, n_bytes);
-  }
-  return SERCOM2_USART_ReadCountGet();
+bool mu_port_serial_read_count(void) {
+  // TODO: tbd
+  return 0;
 }
 
-/**
- * Register a callback to be called when characters become available for read.
- */
 void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
     s_rx_cb = fn;

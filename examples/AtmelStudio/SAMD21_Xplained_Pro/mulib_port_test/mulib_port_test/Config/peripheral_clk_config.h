@@ -25,7 +25,7 @@
 
 // <i> Select the clock source for EIC.
 #ifndef CONF_GCLK_EIC_SRC
-#define CONF_GCLK_EIC_SRC GCLK_CLKCTRL_GEN_GCLK0_Val
+#define CONF_GCLK_EIC_SRC GCLK_CLKCTRL_GEN_GCLK3_Val
 #endif
 
 /**
@@ -33,7 +33,7 @@
  * \brief EIC's Clock frequency
  */
 #ifndef CONF_GCLK_EIC_FREQUENCY
-#define CONF_GCLK_EIC_FREQUENCY 8000000
+#define CONF_GCLK_EIC_FREQUENCY 32768
 #endif
 
 /**

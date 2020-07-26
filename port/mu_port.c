@@ -22,6 +22,13 @@
  * SOFTWARE.
  */
 
+/**
+ * @file mu_port.c
+ *
+ * Reference implementation of mu_port.c for the SAMD21 running under Atmel
+ * Studio 7 / Atmel START / ASF4.
+ */
+
 // =============================================================================
 // includes
 
@@ -55,27 +62,26 @@ static int quo_rounded(int x, int y);
 // =============================================================================
 // local storage
 
-// TODO: package up in a struct to memset can clear all at initialization
-
 #ifdef PORT_FLOAT
 PORT_FLOAT s_rtc_period; // 1.0/RTC_FREQUENCY
 #endif
 
-static void (*s_button_cb)(void *arg);
-static void *s_button_cb_arg;
-
 static struct io_descriptor *s_usart_descriptor;
 
-static void (*s_tx_cb)(void *arg);
-static void *s_tx_cb_arg;
-
-static void (*s_rx_cb)(void *arg);
-static void *s_rx_cb_arg;
-
-static void (*s_rtc_cb)(void *arg);
-static void *s_rtc_cb_arg;
-
 static volatile bool s_tx_in_progress;
+
+typedef struct {
+  void (*button_cb)(void *arg);
+  void *button_cb_arg;
+  void (*tx_cb)(void *arg);
+  void *tx_cb_arg;
+  void (*rx_cb)(void *arg);
+  void *rx_cb_arg;
+  void (*rtc_cb)(void *arg);
+  void *rtc_cb_arg;
+} port_t;
+
+static port_t s_port;
 
 // =============================================================================
 // public code
@@ -84,25 +90,19 @@ void mu_port_init(void) {
 #ifdef PORT_FLOAT
   s_rtc_period = 1.0 / (PORT_FLOAT)CONF_GCLK_RTC_FREQUENCY;
 #endif
-  s_button_cb = NULL;
-  s_button_cb_arg = NULL;
+  memset(&s_port, 0, sizeof(s_port));
+
   ext_irq_register(PIN_PA15, button_cb_trampoline);
 
-  usart_async_get_io_descriptor(&USART_0, &s_usart_descriptor);
-  s_tx_cb = NULL;
-  s_tx_cb_arg = NULL;
   s_tx_in_progress = false;
+  usart_async_get_io_descriptor(&USART_0, &s_usart_descriptor);
   usart_async_register_callback(&USART_0, USART_ASYNC_TXC_CB, tx_cb_trampoline);
-  s_rx_cb = NULL;
-  s_rx_cb_arg = NULL;
   usart_async_register_callback(&USART_0, USART_ASYNC_RXC_CB, rx_cb_trampoline);
   // usart_async_register_callback(&USART_0, USART_ASYNC_ERROR_CB, err_cb);
   usart_async_enable(&USART_0);
 
   // Initialize the RTC.  Use CALENDAR_0 since that's the only published
   // interface for interacting with the underlying RTC.
-  s_rtc_cb = NULL;
-  s_rtc_cb_arg = NULL;
   calendar_enable(&CALENDAR_0); // start RTC
   _calendar_register_callback(&CALENDAR_0.device, rtc_cb_trampoline);
 }
@@ -158,11 +158,11 @@ mu_port_time_t mu_port_rtc_now(void) {
  */
 void mu_port_rtc_set_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
-    s_rtc_cb = fn;
-    s_rtc_cb_arg = arg;
+    s_port.rtc_cb = fn;
+    s_port.rtc_cb_arg = arg;
   } else {
-    s_rtc_cb = NULL;
-    s_rtc_cb_arg = NULL;
+    s_port.rtc_cb = NULL;
+    s_port.rtc_cb_arg = NULL;
   }
 }
 
@@ -189,11 +189,11 @@ bool mu_port_button_is_pressed(void) {
 
 void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
-    s_button_cb = fn;
-    s_button_cb_arg = arg;
+    s_port.button_cb = fn;
+    s_port.button_cb_arg = arg;
   } else {
-    s_button_cb = NULL;
-    s_button_cb_arg = NULL;
+    s_port.button_cb = NULL;
+    s_port.button_cb_arg = NULL;
   }
 }
 
@@ -224,11 +224,11 @@ int mu_port_serial_write(const uint8_t *const buf, int n_bytes) {
  */
 void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
-    s_tx_cb = fn;
-    s_tx_cb_arg = arg;
+    s_port.tx_cb = fn;
+    s_port.tx_cb_arg = arg;
   } else {
-    s_tx_cb = NULL;
-    s_tx_cb_arg = NULL;
+    s_port.tx_cb = NULL;
+    s_port.tx_cb_arg = NULL;
   }
 }
 
@@ -255,11 +255,11 @@ int mu_port_serial_read(uint8_t *const buf, int n_bytes) {
  */
 void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
-    s_rx_cb = fn;
-    s_rx_cb_arg = arg;
+    s_port.rx_cb = fn;
+    s_port.rx_cb_arg = arg;
   } else {
-    s_rx_cb = NULL;
-    s_rx_cb_arg = NULL;
+    s_port.rx_cb = NULL;
+    s_port.rx_cb_arg = NULL;
   }
 }
 
@@ -295,14 +295,14 @@ void button_cb_trampoline(void) {
 void tx_cb_trampoline(const struct usart_async_descriptor *const io_descr) {
   // arrive here when the previous call to serial_write() completes.
   s_tx_in_progress = false;
-  if (s_tx_cb) {
-    s_tx_cb(s_tx_cb_arg);
+  if (s_port.tx_cb) {
+    s_port.tx_cb(s_port.tx_cb_arg);
   }
 }
 
 void rx_cb_trampoline(const struct usart_async_descriptor *const io_descr) {
-  if (s_rx_cb) {
-    s_rx_cb(s_rx_cb_arg);
+  if (s_port.rx_cb) {
+    s_port.rx_cb(s_port.rx_cb_arg);
   }
 }
 
@@ -310,8 +310,8 @@ void rtc_cb_trampoline(struct calendar_dev *const dev) {
   // Arrive here when the RTC count register matches the RTC compare register.
   // Even if the user hasn't registered a callback, this will wake the processor
   // from sleep...
-  if (s_rtc_cb) {
-    s_rtc_cb(s_rtc_cb_arg);
+  if (s_port.rtc_cb) {
+    s_port.rtc_cb(s_port.rtc_cb_arg);
   }
 }
 
