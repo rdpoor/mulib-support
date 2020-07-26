@@ -83,6 +83,9 @@ typedef struct {
   void *rx_cb_arg;
   void (*rtc_cb)(void *arg);
   void *rtc_cb_arg;
+  uint8_t *rx_buf;       // destination for incoming serial data
+  size_t rx_buf_size;    // size of rx_buf
+  size_t rx_buf_count;   // # of bytes in rx_buf
 } port_t;
 
 static port_t s_port;
@@ -235,8 +238,19 @@ void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
   }
 }
 
+/**
+ * Implementation note: Because ASF4 provides byte-at-a-time callback, we do
+ * the following:
+ * - initiate a single byte read request
+ * - upon notification of a byte, call io_read to fetch the byte and copy it
+ *   into the user-supplied buffer.
+ * - if n_bytes have been copied, call the user-supplied callback.
+ */
 bool mu_port_serial_read(uint8_t *const buf, int n_bytes) {
-  io_read(s_usart_descriptor, buf, n_bytes);
+  s_port.rx_buf = buf;
+  s_port.rx_buf_size = n_bytes;
+  s_port.rx_buf_count = 0;
+  io_read(s_usart_descriptor, buf, 1);  // initiate one-byte read
   return true;
 }
 
@@ -245,9 +259,7 @@ bool mu_port_serial_can_read(void) {
 }
 
 int mu_port_serial_read_count(void) {
-  struct usart_async_status status;
-  usart_async_get_status(&USART_0, &status);
-  return status.rxcnt;
+  return s_port.rx_buf_count;
 }
 
 void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
@@ -298,9 +310,18 @@ void tx_cb_trampoline(const struct usart_async_descriptor *const io_descr) {
 }
 
 void rx_cb_trampoline(const struct usart_async_descriptor *const io_descr) {
-  // arrive here when the previous call to mu_port_serial_read() completes.
-  if (s_port.rx_cb) {
-    s_port.rx_cb(s_port.rx_cb_arg);
+  // arrive here whenever a character is received on the serial port.
+  if (s_port.rx_buf_count == s_port.rx_buf_size) {
+    // rx buffer is full -- discard char
+    return;
+  }
+  // copy new char into rx_buff
+  io_read(s_usart_descriptor, &s_port.rx_buf[s_port.rx_buf_count++], 1);
+  if (s_port.rx_buf_count == s_port.rx_buf_size) {
+    // n_chars have been read.  invoke user callback
+    if (s_port.rx_cb) {
+      s_port.rx_cb(s_port.rx_cb_arg);
+    }
   }
 }
 

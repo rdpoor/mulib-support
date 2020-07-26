@@ -167,9 +167,8 @@ void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg);
  *
  * Initiate a read operation of up to n_bytes from the serial port.   The
  * data transfer happens in the background with a callback generated after
- * n_bytes have been read.  Until the operation completes,
- * Read up to n_bytes from the serial port.  Returns the number of bytes read,
- * which may be zero if no bytes available or negative on an error.
+ * n_bytes have been read.  In the interim, mu_port_serial_read_count() will
+ * indicate how many bytes have been read.
  */
 bool mu_port_serial_read(uint8_t *const buf, int n_bytes);
 
