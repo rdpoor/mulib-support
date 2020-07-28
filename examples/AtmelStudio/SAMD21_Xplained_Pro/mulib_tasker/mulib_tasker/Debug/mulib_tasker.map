@@ -684,9 +684,9 @@ Discarded input sections
                 0x00000000        0x4 mulib/core/mu_task.o
  .text.mu_task_call_count
                 0x00000000        0x4 mulib/core/mu_task.o
- .text.mu_task_runtime
+ .text.mu_task_runtime_s
                 0x00000000       0x10 mulib/core/mu_task.o
- .text.mu_task_max_duration
+ .text.mu_task_max_duration_s
                 0x00000000       0x10 mulib/core/mu_task.o
  .debug_macro   0x00000000      0x89e mulib/core/mu_task.o
  .debug_macro   0x00000000       0x16 mulib/core/mu_task.o

@@ -121,22 +121,21 @@ void mulib_port_test_step(void) {
   test_port_printf("received button press.\r\n");
 
   test_port_printf("waiting for keyboard input (synchronous)...");
-  // initiate the read operation
-  mu_port_serial_read(&c, 1);
-  while (mu_port_serial_read_count() < 1) {
-    // wait for mu_port_serial_read() operation to complete...
+  while (!mu_port_serial_can_read()) {
     asm("nop");
   }
+  c = mu_port_serial_read(&c, 1);
   test_port_printf("received '%c'\r\n", c);
 
-  s_char_available = false;
-  // set callback and initiate the read operation
-  mu_port_serial_set_read_cb(serial_read_cb, NULL);
-  mu_port_serial_read(&c, 1);
+
   test_port_printf("waiting for keyboard input (asynchronous)...");
+  // set callback
+  s_char_available = false;
+  mu_port_serial_set_read_cb(serial_read_cb, NULL);
   while (!s_char_available) {
-    // buzz...
+    asm("nop");
   }
+  c = mu_port_serial_read(&c, 1);
   test_port_printf("received '%c'\r\n", c);
 
 #ifdef MU_PORT_CAN_SLEEP
@@ -181,21 +180,26 @@ static void test_wait_ms(int ms) {
 
 static void test_port_printf(const char *fmt, ...) {
   static uint8_t buf[MAX_CHARS];
-  size_t n_written;
+  size_t n_remaining;
+
+  while (!mu_port_serial_can_write()) {
+    asm("nop");
+    // buzz...
+  }
 
   va_list ap;
   va_start(ap, fmt);
-  n_written = vsnprintf((char *)buf, MAX_CHARS, fmt, ap);
+  n_remaining = vsnprintf((char *)buf, MAX_CHARS, fmt, ap);
   va_end(ap);
 
-  // initiate the write operation
-  mu_port_serial_write(buf, n_written);
-
-  while (mu_port_serial_write_count() < n_written) {
-    // wait for mu_port_serial_write() operation to complete...
-    asm("nop");
+  uint8_t *p = buf;
+  while (n_remaining > 0) {
+    int n_written = mu_port_serial_write(p, n_remaining);
+    if (n_written < 0)
+      break;
+    n_remaining -= n_written;
+    p += n_written;
   }
-
 }
 
 static void test_print_time(mu_port_time_t t) {

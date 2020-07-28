@@ -72,6 +72,7 @@ mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms) {
   return mu_port_time_ms_to_duration(ms);
 }
 
+#ifdef MU_PORT_FLOAT
 mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt) {
   return mu_port_time_duration_to_seconds(dt);
 }
@@ -79,6 +80,7 @@ mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt) {
 mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s) {
   return mu_port_time_seconds_to_duration(s);
 }
+#endif
 
 mu_time_t mu_time_now() {
   return mu_port_rtc_now();

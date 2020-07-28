@@ -86,13 +86,23 @@ unsigned int mu_task_call_count(mu_task_t *task) {
   return task->call_count;
 }
 
-mu_time_seconds_dt mu_task_runtime(mu_task_t *task) {
+mu_time_ms_dt mu_task_runtime_ms(mu_task_t *task) {
+  return mu_time_duration_to_ms(task->runtime);
+}
+
+mu_time_ms_dt mu_task_max_duration_ms(mu_task_t *task) {
+  return mu_time_duration_to_ms(task->max_duration);
+}
+
+#ifdef MU_PORT_FLOAT
+mu_time_seconds_dt mu_task_runtime_s(mu_task_t *task) {
   return mu_time_duration_to_seconds(task->runtime);
 }
 
-mu_time_seconds_dt mu_task_max_duration(mu_task_t *task) {
+mu_time_seconds_dt mu_task_max_duration_s(mu_task_t *task) {
   return mu_time_duration_to_seconds(task->max_duration);
 }
+#endif
 
 #endif
 

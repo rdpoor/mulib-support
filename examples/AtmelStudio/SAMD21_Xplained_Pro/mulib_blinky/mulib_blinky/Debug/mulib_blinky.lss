@@ -711,7 +711,7 @@ bool mu_time_precedes(mu_time_t t1, mu_time_t t2) {
 00000424 <mu_time_follows>:
 
 bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_equal(t1, t2);
+  return mu_port_time_equals(t1, t2);
 }
 
 bool mu_time_follows(mu_time_t t1, mu_time_t t2) {

@@ -1,72 +1,120 @@
 /**
- * @file mu_port.c
+ * MIT License
  *
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
- //DOM-IGNORE-BEGIN
- /******************************************************************************
- MIT License
-
- Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-*******************************************************************************/
-//DOM-IGNORE-END
+/**
+ * @file mu_port.c
+ *
+ * Reference implementation of mu_port.c for the SAMD21 running under Atmel
+ * Studio 7 / Atmel START / ASF4.
+ *
+ * Note: this implementation assumes the Atmel START project specifies the HAL
+ * Async serial driver.
+ */
 
 // =============================================================================
-// include files
+// includes
 
+#include "mu_port.h"
 #include "atmel_start.h"
-#include "mulib.h"
-#include <stdint.h>
-#include <stddef.h>
+#include "peripheral_clk_config.h"
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h> // memset
 
 // =============================================================================
-// types and definitions
+// private types and definitions
 
 #define MAX_DURATION ((uint32_t)0x7fffffff)
 
-// =============================================================================
-// forward declarations to local functions
+#define MU_PORT_TIME_MS_TO_DURATION(ms) (((ms) * CONF_GCLK_RTC_FREQUENCY) / 1000)
 
-// For future reference:
-// To set compare / interrupt value:
-//   hri_rtcmode0_write_COMP_COMP_bf(&CALENDAR_0.device.hw, 0, comp);
-// To enable RTC interrupt:
-//   typedef void (*calendar_drv_cb_alarm_t)(struct calendar_dev *const dev);
-//   _calendar_register_callback(&CALENDAR0.device, cb)
+// don't sleep for less than 1ms (32 RTC tics)
+#define MIN_SLEEP_DURATION MU_PORT_TIME_MS_TO_DURATION(1)
 
 // =============================================================================
-// local (static) storage
+// private declarations
 
-static mu_port_time_seconds_dt s_rtc_period;
+static void button_cb_trampoline(void);
+static void tx_cb_trampoline(const struct usart_async_descriptor *const io_descr);
+static void rx_cb_trampoline(const struct usart_async_descriptor *const io_descr);
+static void rtc_cb_trampoline(struct calendar_dev *const dev);
+static void go_to_sleep(void);
+static int quo_rounded(int x, int y);
 
 // =============================================================================
-// main code starts here
+// local storage
 
-void mu_port_init() {
+#ifdef MU_PORT_FLOAT
+MU_PORT_FLOAT s_rtc_period; // 1.0/RTC_FREQUENCY
+#endif
+
+static struct io_descriptor *s_usart_descriptor;
+
+static volatile bool s_tx_in_progress;
+
+typedef struct {
+  void (*button_cb)(void *arg);
+  void *button_cb_arg;
+  void (*tx_cb)(void *arg);
+  void *tx_cb_arg;
+  void (*rx_cb)(void *arg);
+  void *rx_cb_arg;
+  void (*rtc_cb)(void *arg);
+  void *rtc_cb_arg;
+  uint8_t *rx_buf;       // destination for incoming serial data
+  size_t rx_buf_size;    // size of rx_buf
+  size_t rx_buf_count;   // # of bytes in rx_buf
+} port_t;
+
+static port_t s_port;
+
+// =============================================================================
+// public code
+
+void mu_port_init(void) {
+#ifdef MU_PORT_FLOAT
+  s_rtc_period = 1.0 / (MU_PORT_FLOAT)CONF_GCLK_RTC_FREQUENCY;
+#endif
+  memset(&s_port, 0, sizeof(s_port));
+
+  ext_irq_register(PIN_PA15, button_cb_trampoline);
+
+  s_tx_in_progress = false;
+  usart_async_get_io_descriptor(&USART_0, &s_usart_descriptor);
+  usart_async_register_callback(&USART_0, USART_ASYNC_TXC_CB, tx_cb_trampoline);
+  usart_async_register_callback(&USART_0, USART_ASYNC_RXC_CB, rx_cb_trampoline);
+  // usart_async_register_callback(&USART_0, USART_ASYNC_ERROR_CB, err_cb);
+  usart_async_enable(&USART_0);
+
   // Initialize the RTC.  Use CALENDAR_0 since that's the only published
   // interface for interacting with the underlying RTC.
-	calendar_enable(&CALENDAR_0);  // start RTC
-  s_rtc_period = 1.0/(mu_port_time_seconds_dt)CONF_GCLK_RTC_FREQUENCY;
+  calendar_enable(&CALENDAR_0); // start RTC
+  _calendar_register_callback(&CALENDAR_0.device, rtc_cb_trampoline);
 }
+
+// TIME
 
 mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
   return t + dt;
@@ -80,7 +128,7 @@ bool mu_port_time_precedes(mu_port_time_t t1, mu_port_time_t t2) {
   return mu_port_time_difference(t1, t2) > MAX_DURATION;
 }
 
-bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
+bool mu_port_time_equals(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 == t2;
 }
 
@@ -89,51 +137,216 @@ bool mu_port_time_follows(mu_port_time_t t1, mu_port_time_t t2) {
 }
 
 mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms) {
-    return mu_port_time_seconds_to_duration(ms / 1000.0); // could be better
+  return quo_rounded(ms * CONF_GCLK_RTC_FREQUENCY, 1000);
 }
 
 mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt) {
-    return mu_port_time_duration_to_seconds(dt) * 1000;   // could be better
+  return quo_rounded(dt * 1000, CONF_GCLK_RTC_FREQUENCY);
 }
 
-mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_dt secs) {
-  return secs / s_rtc_period;
-}
-
+#ifdef MU_PORT_FLOAT
 mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-mu_port_time_t mu_port_rtc_now() {
-	return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_dt seconds) {
+  return seconds / s_rtc_period;
+}
+#endif
+
+// REAL TIME CLOCK
+
+mu_port_time_t mu_port_rtc_now(void) {
+  return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
 }
 
-// ================
-// support for printf()
-
-int _write(int file, char *ptr, int len) {
-  // void file;
-  int n = len;
-
-  while (n-- > 0) {
-    while (!USART_0_is_byte_sent())
-  		;
-    USART_0_write_byte(*ptr++);
+/**
+ * Register a callback to be called when rtc matches.
+ */
+void mu_port_rtc_set_cb(mu_port_callback_fn fn, void *arg) {
+  if (fn) {
+    s_port.rtc_cb = fn;
+    s_port.rtc_cb_arg = arg;
+  } else {
+    s_port.rtc_cb = NULL;
+    s_port.rtc_cb_arg = NULL;
   }
-  return len;
 }
 
-int _read(int file, char *ptr, int len) {
-  // void file;
-  int n = len;
+void mu_port_rtc_alarm_at(mu_port_time_t at) {
+  _calendar_set_comp(&CALENDAR_0.device, at);
+  // Particular to the SAMD21, hri_rtcmode0_write_COMP_COMP_bf() clears the
+  // READREQ_RCONT bit, which prevents subsequent RTC reads from updating.
+  // Restore it here.
+  hri_rtcmode0_set_READREQ_RCONT_bit(RTC);
+  hri_rtcmode0_set_READREQ_RREQ_bit(RTC);
+}
 
-  while (n-- > 0) {
-    while (!USART_0_is_byte_received())
-			;
-    *ptr++ = USART_0_read_byte();
+// LED
+
+void mu_port_led_set(bool on) { gpio_set_pin_level(USER_LED_AL, !on); }
+
+bool mu_port_led_get(void) { return !gpio_get_pin_level(USER_LED_AL); }
+
+// BUTTON
+
+bool mu_port_button_is_pressed(void) {
+  return !gpio_get_pin_level(USER_BUTTON_AL);
+}
+
+void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg) {
+  if (fn) {
+    s_port.button_cb = fn;
+    s_port.button_cb_arg = arg;
+  } else {
+    s_port.button_cb = NULL;
+    s_port.button_cb_arg = NULL;
   }
-  return len;
 }
+
+// SERIAL
+
+bool mu_port_serial_write(const uint8_t *const buf, int n_bytes) {
+  s_tx_in_progress = true;
+  if (io_write(s_usart_descriptor, buf, n_bytes) < 0) {
+    // previous operation not yet completed
+    return false;
+  } else {
+    return true;
+  }
+}
+
+int mu_port_serial_write_count(void) {
+  struct usart_async_status status;
+  usart_async_get_status(&USART_0, &status);
+  return status.txcnt;
+}
+
+bool mu_port_serial_can_write(void) {
+  struct usart_async_status status;
+  usart_async_get_status(&USART_0, &status);
+  return status.flags == 0;
+}
+
+void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
+  if (fn) {
+    s_port.tx_cb = fn;
+    s_port.tx_cb_arg = arg;
+  } else {
+    s_port.tx_cb = NULL;
+    s_port.tx_cb_arg = NULL;
+  }
+}
+
+/**
+ * Implementation note: Because ASF4 provides byte-at-a-time callback, we do
+ * the following:
+ * - initiate a single byte read request
+ * - upon notification of a byte, call io_read to fetch the byte and copy it
+ *   into the user-supplied buffer.
+ * - if n_bytes have been copied, call the user-supplied callback.
+ */
+bool mu_port_serial_read(uint8_t *const buf, int n_bytes) {
+  s_port.rx_buf = buf;
+  s_port.rx_buf_size = n_bytes;
+  s_port.rx_buf_count = 0;
+  io_read(s_usart_descriptor, buf, 1);  // initiate one-byte read
+  return true;
+}
+
+bool mu_port_serial_can_read(void) {
+  return usart_async_is_rx_not_empty(&USART_0);
+}
+
+int mu_port_serial_read_count(void) {
+  return s_port.rx_buf_count;
+}
+
+void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
+  if (fn) {
+    s_port.rx_cb = fn;
+    s_port.rx_cb_arg = arg;
+  } else {
+    s_port.rx_cb = NULL;
+    s_port.rx_cb_arg = NULL;
+  }
+}
+
+// SLEEP
+
+/**
+ * @brief Put the processor into low-power mode until time t arrives, or an
+ * external event wakes the processor.
+ */
+void mu_port_sleep_until(mu_port_time_t then) {
+  mu_port_time_t now = mu_port_rtc_now();
+  if (mu_port_time_difference(then, now) > MIN_SLEEP_DURATION) {
+    mu_port_rtc_alarm_at(then);
+    go_to_sleep();
+  }
+}
+
+/**
+ * @brief Put the processor into low-power mode until an external event wakes
+ * the processor.
+ */
+void mu_port_sleep(void) { go_to_sleep(); }
 
 // =============================================================================
-// private code
+// private (local) code
+
+void button_cb_trampoline(void) {
+  if (s_port.button_cb) {
+    s_port.button_cb(s_port.button_cb_arg);
+  }
+}
+
+void tx_cb_trampoline(const struct usart_async_descriptor *const io_descr) {
+  // arrive here when the previous call to mu_port_serial_write() completes.
+  s_tx_in_progress = false;
+  if (s_port.tx_cb) {
+    s_port.tx_cb(s_port.tx_cb_arg);
+  }
+}
+
+void rx_cb_trampoline(const struct usart_async_descriptor *const io_descr) {
+  // arrive here whenever a character is received on the serial port.
+  if (s_port.rx_buf_count == s_port.rx_buf_size) {
+    // rx buffer is full -- discard char
+    return;
+  }
+  // copy new char into rx_buff
+  io_read(s_usart_descriptor, &s_port.rx_buf[s_port.rx_buf_count++], 1);
+  if (s_port.rx_buf_count == s_port.rx_buf_size) {
+    // n_chars have been read.  invoke user callback
+    if (s_port.rx_cb) {
+      s_port.rx_cb(s_port.rx_cb_arg);
+    }
+  }
+}
+
+void rtc_cb_trampoline(struct calendar_dev *const dev) {
+  // Arrive here when the RTC count register matches the RTC compare register.
+  // Even if the user hasn't registered a callback, this will wake the processor
+  // from sleep...
+  if (s_port.rtc_cb) {
+    s_port.rtc_cb(s_port.rtc_cb_arg);
+  }
+}
+
+static void go_to_sleep(void) {
+  sleep(3); // in hal_sleep
+}
+
+// See https://stackoverflow.com/a/18067292/558639
+//
+static int quo_rounded(int x, int y) {
+  // What does it all mean?
+  //   (x < 0) is false (zero) if x is non-negative
+  //   (y < 0) is false (zero) if x is non-negative
+  //   (x < 0) ^ (y < 0) is true if x and y have opposite signs
+  //   x/y would be the quotient, but it is truncated towards zero.  To round:
+  //   (x + y/2)/y is the rounded quotient when x and y have the same sign
+  //   (x - y/2)/y is the rounded quotient when x and y have opposite signs
+  return ((x < 0) ^ (y < 0)) ? ((x - y/2)/y) : ((x + y/2)/y);
+}

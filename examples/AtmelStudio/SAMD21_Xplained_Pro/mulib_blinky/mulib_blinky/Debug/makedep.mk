@@ -30,10 +30,6 @@
 
 atmel_start.c
 
-mulib_blinky.c
-
-button_task.c
-
 Device_Startup\startup_samd21.c
 
 Device_Startup\system_samd21.c
@@ -58,11 +54,15 @@ hal\src\hal_io.c
 
 hal\src\hal_sleep.c
 
+hal\src\hal_usart_async.c
+
 hal\utils\src\utils_assert.c
 
 hal\utils\src\utils_event.c
 
 hal\utils\src\utils_list.c
+
+hal\utils\src\utils_ringbuffer.c
 
 hal\utils\src\utils_syscalls.c
 
@@ -80,9 +80,13 @@ hpl\pm\hpl_pm.c
 
 hpl\rtc\hpl_rtc.c
 
+hpl\sercom\hpl_sercom.c
+
 hpl\sysctrl\hpl_sysctrl.c
 
-hpl\usart\usart_lite.c
+mulib_blinky.c
+
+button_task.c
 
 led_task.c
 

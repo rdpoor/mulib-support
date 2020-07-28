@@ -13,26 +13,21 @@
 #include <hpl_gclk_base.h>
 #include <hpl_pm_base.h>
 
+/*! The buffer size for USART */
+#define USART_0_BUFFER_SIZE 16
+
+struct usart_async_descriptor USART_0;
+
+static uint8_t USART_0_buffer[USART_0_BUFFER_SIZE];
+
 struct calendar_descriptor CALENDAR_0;
 
 void EXTERNAL_IRQ_0_init(void)
 {
 	_gclk_enable_channel(EIC_GCLK_ID, CONF_GCLK_EIC_SRC);
 
-	gpio_set_pin_direction(USER_BUTTON_AL,
-	                       // <y> Pin direction
-	                       // <id> pad_direction
-	                       // <GPIO_DIRECTION_OFF"> Off
-	                       // <GPIO_DIRECTION_IN"> In
-	                       // <GPIO_DIRECTION_OUT"> Out
-	                       GPIO_DIRECTION_IN);
-
-	gpio_set_pin_level(USER_BUTTON_AL,
-	                   // <y> Initial level
-	                   // <id> pad_initial_level
-	                   // <false"> Low
-	                   // <true"> High
-	                   true);
+	// Set pin direction to input
+	gpio_set_pin_direction(USER_BUTTON_AL, GPIO_DIRECTION_IN);
 
 	gpio_set_pin_pull_mode(USER_BUTTON_AL,
 	                       // <y> Pull configuration
@@ -42,21 +37,7 @@ void EXTERNAL_IRQ_0_init(void)
 	                       // <GPIO_PULL_DOWN"> Pull-down
 	                       GPIO_PULL_UP);
 
-	gpio_set_pin_function(USER_BUTTON_AL,
-	                      // <y> Pin function
-	                      // <id> pad_function
-	                      // <i> Auto : use driver pinmux if signal is imported by driver, else turn off function
-	                      // <PINMUX_PA15A_EIC_EXTINT15"> Auto
-	                      // <GPIO_PIN_FUNCTION_OFF"> Off
-	                      // <GPIO_PIN_FUNCTION_A"> A
-	                      // <GPIO_PIN_FUNCTION_B"> B
-	                      // <GPIO_PIN_FUNCTION_C"> C
-	                      // <GPIO_PIN_FUNCTION_D"> D
-	                      // <GPIO_PIN_FUNCTION_E"> E
-	                      // <GPIO_PIN_FUNCTION_F"> F
-	                      // <GPIO_PIN_FUNCTION_G"> G
-	                      // <GPIO_PIN_FUNCTION_H"> H
-	                      PINMUX_PA15A_EIC_EXTINT15);
+	gpio_set_pin_function(USER_BUTTON_AL, PINMUX_PA15A_EIC_EXTINT15);
 
 	ext_irq_init();
 }
@@ -81,9 +62,21 @@ void USART_0_CLOCK_init()
 void USART_0_PORT_init()
 {
 
-	gpio_set_pin_function(EDBG_TX, PINMUX_PA22C_SERCOM3_PAD0);
+	gpio_set_pin_function(PA22, PINMUX_PA22C_SERCOM3_PAD0);
 
-	gpio_set_pin_function(EDBG_RX, PINMUX_PA23C_SERCOM3_PAD1);
+	gpio_set_pin_function(PA23, PINMUX_PA23C_SERCOM3_PAD1);
+}
+
+/**
+ * \brief USART initialization function
+ *
+ * Enables USART peripheral, clocks and initializes USART driver
+ */
+void USART_0_init(void)
+{
+	USART_0_CLOCK_init();
+	usart_async_init(&USART_0, SERCOM3, USART_0_buffer, USART_0_BUFFER_SIZE, (void *)NULL);
+	USART_0_PORT_init();
 }
 
 void CALENDAR_0_CLOCK_init(void)
@@ -118,9 +111,7 @@ void system_init(void)
 
 	EXTERNAL_IRQ_0_init();
 
-	USART_0_CLOCK_init();
 	USART_0_init();
-	USART_0_PORT_init();
 
 	CALENDAR_0_init();
 }

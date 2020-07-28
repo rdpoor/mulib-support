@@ -741,9 +741,9 @@ Discarded input sections
  .text          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .data          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .bss           0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
- .text.mu_task_runtime
+ .text.mu_task_runtime_s
                 0x00000000        0xa build/same54_xplained_pro/production/_ext/265365281/mu_task.o
- .text.mu_task_max_duration
+ .text.mu_task_max_duration_s
                 0x00000000        0xa build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .text          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
  .data          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_time.o

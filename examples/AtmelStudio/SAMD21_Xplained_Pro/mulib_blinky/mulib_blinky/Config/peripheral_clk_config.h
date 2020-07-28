@@ -25,7 +25,7 @@
 
 // <i> Select the clock source for EIC.
 #ifndef CONF_GCLK_EIC_SRC
-#define CONF_GCLK_EIC_SRC GCLK_CLKCTRL_GEN_GCLK0_Val
+#define CONF_GCLK_EIC_SRC GCLK_CLKCTRL_GEN_GCLK3_Val
 #endif
 
 /**
@@ -33,7 +33,7 @@
  * \brief EIC's Clock frequency
  */
 #ifndef CONF_GCLK_EIC_FREQUENCY
-#define CONF_GCLK_EIC_FREQUENCY 8000000
+#define CONF_GCLK_EIC_FREQUENCY 32768
 #endif
 
 /**
@@ -89,7 +89,7 @@
 
 // <i> Select the slow clock source.
 #ifndef CONF_GCLK_SERCOM3_SLOW_SRC
-#define CONF_GCLK_SERCOM3_SLOW_SRC GCLK_CLKCTRL_GEN_GCLK1_Val
+#define CONF_GCLK_SERCOM3_SLOW_SRC GCLK_CLKCTRL_GEN_GCLK3_Val
 #endif
 
 /**
@@ -105,7 +105,7 @@
  * \brief SERCOM3's Slow Clock frequency
  */
 #ifndef CONF_GCLK_SERCOM3_SLOW_FREQUENCY
-#define CONF_GCLK_SERCOM3_SLOW_FREQUENCY 400000
+#define CONF_GCLK_SERCOM3_SLOW_FREQUENCY 32768
 #endif
 
 // <y> RTC Clock Source

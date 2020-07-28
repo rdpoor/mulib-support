@@ -32,6 +32,124 @@
  * Async serial driver.
  */
 
+ /**
+Serial Notes:
+
+We break a few levels of abstraction to implement the mu_port serial interface.
+
+Note the distinction between descr.usart_cb which is a
+`struct usart_async_callbacks` for the user level callbacks, and
+descr.device.usart_cb, which is a `struct _usart_async_callbacks`
+and is used for driver level callbacks.  It's this one that we
+need to modify.
+
+USART_0 is a `struct usart_async_descriptor`:
+
+struct usart_async_descriptor {
+	struct io_descriptor         io;           // _read, _write fns: not used yet
+	struct _usart_async_device   device;       // used -- see below
+	struct usart_async_callbacks usart_cb;     // user-level callbacks
+	uint32_t                     stat;         // not used
+
+	struct ringbuffer rx;                      // not used
+	uint16_t          tx_por;                  // not used
+	uint8_t *         tx_buffer;               // not used
+	uint16_t          tx_buffer_length;        // not used
+};
+
+struct _usart_async_device {
+	struct _usart_async_callbacks usart_cb;    // used -- see below
+	struct _irq_descriptor        irq;         // not clear
+	void *                        hw;          // SERCOM3 (0x42001400)
+};
+
+USART_0.device.usart_cb is a struct of four function pointers:
+
+struct _usart_async_callbacks {
+	void (*tx_byte_sent)(struct _usart_async_device *device);
+	void (*rx_done_cb)(struct _usart_async_device *device, uint8_t data);
+	void (*tx_done_cb)(struct _usart_async_device *device);
+	void (*error_cb)(struct _usart_async_device *device);
+};
+
+After the system calls USART_0_Init(), but before we use USART_0, we modify
+USART_0.device.usart_cb to point at our own interrupt callbacks.
+
+NEED TO UNDERSTAND:
+
+INTEN_TXC ("tx_done") means the byte has been completely transmitted.
+INTEN_DRE ("byte_sent") means the tx register is ready to accept a char.
+INTEN_RXC
+
+USART_0_Init() called from system_init():
+
+  USART_0_CLOCK_init();
+  usart_async_init(&USART_0, SERCOM3, USART_0_buffer, USART_0_BUFFER_SIZE, (void *)NULL);
+  USART_0_PORT_init();
+
+usart_async_init called from USART_0_init():
+
+  int32_t init_status;
+  ASSERT(descr && hw && rx_buffer && rx_buffer_length);
+
+  if (ERR_NONE != ringbuffer_init(&descr->rx, rx_buffer, rx_buffer_length)) {
+    return ERR_INVALID_ARG;
+  }
+  init_status = _usart_async_init(&descr->device, hw);
+  if (init_status) {
+    return init_status;
+  }
+
+  descr->io.read  = usart_async_read;
+  descr->io.write = usart_async_write;
+
+  descr->device.usart_cb.tx_byte_sent = usart_process_byte_sent;
+  descr->device.usart_cb.rx_done_cb   = usart_fill_rx_buffer;
+  descr->device.usart_cb.tx_done_cb   = usart_transmission_complete;
+  descr->device.usart_cb.error_cb     = usart_error;
+
+  return ERR_NONE;
+
+_usart_async_init called from usart_async_init:
+
+int32_t _usart_async_init(struct _usart_async_device *const device, void *const hw) {
+	int32_t init_status;
+
+	ASSERT(device);
+
+	init_status = _usart_init(hw);
+	if (init_status) {
+		return init_status;
+	}
+	device->hw = hw;
+	_sercom_init_irq_param(hw, (void *)device);
+	NVIC_DisableIRQ((IRQn_Type)_sercom_get_irq_num(hw));
+	NVIC_ClearPendingIRQ((IRQn_Type)_sercom_get_irq_num(hw));
+	NVIC_EnableIRQ((IRQn_Type)_sercom_get_irq_num(hw));
+
+	return ERR_NONE;
+}
+
+_usart_init called from _usart_async_init:
+
+_sercom_init_irq_param called from _usart_async_init:
+
+static void _sercom_init_irq_param(const void *const hw, void *dev) {
+	if (hw == SERCOM3) {
+		_sercom3_dev = (struct _usart_async_device *)dev;
+	}
+}
+
+
+_usart_async_enable called from usart_async_enable:
+
+void _usart_async_enable(struct _usart_async_device *const device) {
+	hri_sercomusart_set_CTRLA_ENABLE_bit(device->hw);
+}
+
+
+  */
+
 // =============================================================================
 // includes
 
@@ -48,10 +166,10 @@
 
 #define MAX_DURATION ((uint32_t)0x7fffffff)
 
-#define MU_TIME_MS_TO_DURATION(ms) (((ms) * CONF_GCLK_RTC_FREQUENCY) / 1000)
+#define MU_PORT_TIME_MS_TO_DURATION(ms) (((ms) * CONF_GCLK_RTC_FREQUENCY) / 1000)
 
 // don't sleep for less than 1ms (32 RTC tics)
-#define MIN_SLEEP_DURATION MU_TIME_MS_TO_DURATION(1)
+#define MIN_SLEEP_DURATION MU_PORT_TIME_MS_TO_DURATION(1)
 
 // =============================================================================
 // private declarations
@@ -66,8 +184,8 @@ static int quo_rounded(int x, int y);
 // =============================================================================
 // local storage
 
-#ifdef PORT_FLOAT
-PORT_FLOAT s_rtc_period; // 1.0/RTC_FREQUENCY
+#ifdef MU_PORT_FLOAT
+MU_PORT_FLOAT s_rtc_period; // 1.0/RTC_FREQUENCY
 #endif
 
 static struct io_descriptor *s_usart_descriptor;
@@ -94,8 +212,8 @@ static port_t s_port;
 // public code
 
 void mu_port_init(void) {
-#ifdef PORT_FLOAT
-  s_rtc_period = 1.0 / (PORT_FLOAT)CONF_GCLK_RTC_FREQUENCY;
+#ifdef MU_PORT_FLOAT
+  s_rtc_period = 1.0 / (MU_PORT_FLOAT)CONF_GCLK_RTC_FREQUENCY;
 #endif
   memset(&s_port, 0, sizeof(s_port));
 
@@ -128,7 +246,7 @@ bool mu_port_time_precedes(mu_port_time_t t1, mu_port_time_t t2) {
   return mu_port_time_difference(t1, t2) > MAX_DURATION;
 }
 
-bool mu_port_time_is_equal(mu_port_time_t t1, mu_port_time_t t2) {
+bool mu_port_time_equals(mu_port_time_t t1, mu_port_time_t t2) {
   return t1 == t2;
 }
 
@@ -136,20 +254,20 @@ bool mu_port_time_follows(mu_port_time_t t1, mu_port_time_t t2) {
   return mu_port_time_difference(t2, t1) > MAX_DURATION;
 }
 
-mu_port_time_dt mu_port_time_ms_to_duration(int ms) {
+mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms) {
   return quo_rounded(ms * CONF_GCLK_RTC_FREQUENCY, 1000);
 }
 
-int mu_port_time_duration_to_ms(mu_port_time_dt dt) {
+mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt) {
   return quo_rounded(dt * 1000, CONF_GCLK_RTC_FREQUENCY);
 }
 
-#ifdef PORT_FLOAT
-PORT_FLOAT mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
+#ifdef MU_PORT_FLOAT
+mu_port_time_seconds_dt mu_port_time_duration_to_seconds(mu_port_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-mu_port_time_dt mu_port_time_seconds_to_duration(PORT_FLOAT seconds) {
+mu_port_time_dt mu_port_time_seconds_to_duration(mu_port_time_seconds_dt seconds) {
   return seconds / s_rtc_period;
 }
 #endif

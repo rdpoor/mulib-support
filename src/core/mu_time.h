@@ -42,7 +42,9 @@ extern "C";
 typedef mu_port_time_t mu_time_t;
 typedef mu_port_time_dt mu_time_dt;
 typedef mu_port_time_ms_dt mu_time_ms_dt;
+#ifdef MU_PORT_FLOAT
 typedef mu_port_time_seconds_dt mu_time_seconds_dt;
+#endif
 
 #define MU_TIME_MS_TO_DURATION(ms) MU_PORT_TIME_MS_TO_DURATION(ms)
 
@@ -122,6 +124,7 @@ mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt);
  */
 mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms);
 
+#ifdef MU_PORT_FLOAT
 /**
  * @brief Convert a duration to seconds.
  *
@@ -137,6 +140,7 @@ mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt);
  * @return A duration object
  */
 mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s);
+#endif
 
 /**
  * @brief Get the current system time.
