@@ -129,8 +129,6 @@
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <logicalFolder name="core" displayName="core" projectFiles="true">
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_bitvec.c</itemPath>
-          <itemPath>C:/Users/r/Projects/mulib/src/core/mu_buf.c</itemPath>
-          <itemPath>C:/Users/r/Projects/mulib/src/core/mu_bufref.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_list.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_pstore.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_queue.c</itemPath>

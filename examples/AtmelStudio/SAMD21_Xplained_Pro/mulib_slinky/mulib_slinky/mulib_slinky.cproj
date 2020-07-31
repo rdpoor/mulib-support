@@ -167,7 +167,7 @@
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.edbg</ToolType>
       <ToolNumber>ATML2130031800033320</ToolNumber>
-      <ToolName>EDBG</ToolName>
+      <ToolName>EDBG MSD</ToolName>
     </com_atmel_avrdbg_tool_edbg>
     <avrtoolinterfaceclock>2000000</avrtoolinterfaceclock>
   </PropertyGroup>

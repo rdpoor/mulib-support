@@ -686,9 +686,9 @@ Discarded input sections
                 0x00000000        0x4 mulib/core/mu_task.o
  .text.mu_task_call_count
                 0x00000000        0x4 mulib/core/mu_task.o
- .text.mu_task_runtime_s
+ .text.mu_task_runtime_ms
                 0x00000000       0x10 mulib/core/mu_task.o
- .text.mu_task_max_duration_s
+ .text.mu_task_max_duration_ms
                 0x00000000       0x10 mulib/core/mu_task.o
  .debug_macro   0x00000000      0x89e mulib/core/mu_task.o
  .debug_macro   0x00000000       0x16 mulib/core/mu_task.o
@@ -720,10 +720,6 @@ Discarded input sections
  .text.mu_time_duration_to_ms
                 0x00000000        0xc mulib/core/mu_time.o
  .text.mu_time_ms_to_duration
-                0x00000000        0xc mulib/core/mu_time.o
- .text.mu_time_duration_to_seconds
-                0x00000000        0xc mulib/core/mu_time.o
- .text.mu_time_seconds_to_duration
                 0x00000000        0xc mulib/core/mu_time.o
  .debug_macro   0x00000000      0x89e mulib/core/mu_time.o
  .debug_macro   0x00000000       0x22 mulib/core/mu_time.o
@@ -8452,33 +8448,33 @@ OUTPUT(mulib_slinky.elf elf32-littlearm)
  .comment       0x00000059       0x5a main.o
  .comment       0x00000059       0x5a mu_port.o
 
-.debug_info     0x00000000    0x21d56
+.debug_info     0x00000000    0x21ca9
  .debug_info    0x00000000     0x1958 mulib/core/mu_sched.o
  .debug_info    0x00001958      0x319 mulib/core/mu_spscq.o
  .debug_info    0x00001c71      0x372 mulib/core/mu_task.o
- .debug_info    0x00001fe3      0x44f mulib/core/mu_time.o
- .debug_info    0x00002432      0x20e atmel_start.o
- .debug_info    0x00002640     0x3a28 Device_Startup/startup_samd21.o
- .debug_info    0x00006068     0x9076 driver_init.o
- .debug_info    0x0000f0de     0x119d hal/src/hal_calendar.o
- .debug_info    0x0001027b      0x367 hal/src/hal_ext_irq.o
- .debug_info    0x000105e2      0x12c hal/src/hal_sleep.o
- .debug_info    0x0001070e      0x107 hal/utils/src/utils_assert.o
- .debug_info    0x00010815      0xdca hal/utils/src/utils_syscalls.o
- .debug_info    0x000115df      0x859 hpl/core/hpl_core_m0plus_base.o
- .debug_info    0x00011e38      0x677 hpl/core/hpl_init.o
- .debug_info    0x000124af     0x1fb3 hpl/eic/hpl_eic.o
- .debug_info    0x00014462      0x5ad hpl/gclk/hpl_gclk.o
- .debug_info    0x00014a0f      0xc6d hpl/pm/hpl_pm.o
- .debug_info    0x0001567c     0x227b hpl/rtc/hpl_rtc.o
- .debug_info    0x000178f7     0x1452 hpl/sysctrl/hpl_sysctrl.o
- .debug_info    0x00018d49     0x25ec hpl/usart/usart_lite.o
- .debug_info    0x0001b335      0xfc5 idle_task.o
- .debug_info    0x0001c2fa      0xec4 mulib_slinky.o
- .debug_info    0x0001d1be      0xee7 button_task.o
- .debug_info    0x0001e0a5     0x16d6 led_task.o
- .debug_info    0x0001f77b      0x23e main.o
- .debug_info    0x0001f9b9     0x239d mu_port.o
+ .debug_info    0x00001fe3      0x3a2 mulib/core/mu_time.o
+ .debug_info    0x00002385      0x20e atmel_start.o
+ .debug_info    0x00002593     0x3a28 Device_Startup/startup_samd21.o
+ .debug_info    0x00005fbb     0x9076 driver_init.o
+ .debug_info    0x0000f031     0x119d hal/src/hal_calendar.o
+ .debug_info    0x000101ce      0x367 hal/src/hal_ext_irq.o
+ .debug_info    0x00010535      0x12c hal/src/hal_sleep.o
+ .debug_info    0x00010661      0x107 hal/utils/src/utils_assert.o
+ .debug_info    0x00010768      0xdca hal/utils/src/utils_syscalls.o
+ .debug_info    0x00011532      0x859 hpl/core/hpl_core_m0plus_base.o
+ .debug_info    0x00011d8b      0x677 hpl/core/hpl_init.o
+ .debug_info    0x00012402     0x1fb3 hpl/eic/hpl_eic.o
+ .debug_info    0x000143b5      0x5ad hpl/gclk/hpl_gclk.o
+ .debug_info    0x00014962      0xc6d hpl/pm/hpl_pm.o
+ .debug_info    0x000155cf     0x227b hpl/rtc/hpl_rtc.o
+ .debug_info    0x0001784a     0x1452 hpl/sysctrl/hpl_sysctrl.o
+ .debug_info    0x00018c9c     0x25ec hpl/usart/usart_lite.o
+ .debug_info    0x0001b288      0xfc5 idle_task.o
+ .debug_info    0x0001c24d      0xec4 mulib_slinky.o
+ .debug_info    0x0001d111      0xee7 button_task.o
+ .debug_info    0x0001dff8     0x16d6 led_task.o
+ .debug_info    0x0001f6ce      0x23e main.o
+ .debug_info    0x0001f90c     0x239d mu_port.o
 
 .debug_abbrev   0x00000000     0x3a48
  .debug_abbrev  0x00000000      0x479 mulib/core/mu_sched.o
@@ -8508,34 +8504,34 @@ OUTPUT(mulib_slinky.elf elf32-littlearm)
  .debug_abbrev  0x000035a5       0xda main.o
  .debug_abbrev  0x0000367f      0x3c9 mu_port.o
 
-.debug_loc      0x00000000     0x4fe6
+.debug_loc      0x00000000     0x4f62
  .debug_loc     0x00000000      0xd5b mulib/core/mu_sched.o
  .debug_loc     0x00000d5b      0x1df mulib/core/mu_spscq.o
  .debug_loc     0x00000f3a      0x1b5 mulib/core/mu_task.o
- .debug_loc     0x000010ef      0x331 mulib/core/mu_time.o
- .debug_loc     0x00001420       0x20 atmel_start.o
- .debug_loc     0x00001440       0x40 Device_Startup/startup_samd21.o
- .debug_loc     0x00001480      0x751 driver_init.o
- .debug_loc     0x00001bd1      0xec7 hal/src/hal_calendar.o
- .debug_loc     0x00002a98      0x32d hal/src/hal_ext_irq.o
- .debug_loc     0x00002dc5       0x41 hal/src/hal_sleep.o
- .debug_loc     0x00002e06      0x13b hal/utils/src/utils_syscalls.o
- .debug_loc     0x00002f41      0x1f7 hpl/core/hpl_core_m0plus_base.o
- .debug_loc     0x00003138       0x4c hpl/core/hpl_init.o
- .debug_loc     0x00003184      0x4b5 hpl/eic/hpl_eic.o
- .debug_loc     0x00003639      0x18e hpl/gclk/hpl_gclk.o
- .debug_loc     0x000037c7      0x11b hpl/pm/hpl_pm.o
- .debug_loc     0x000038e2      0x7b0 hpl/rtc/hpl_rtc.o
- .debug_loc     0x00004092      0x160 hpl/sysctrl/hpl_sysctrl.o
- .debug_loc     0x000041f2      0x42e hpl/usart/usart_lite.o
- .debug_loc     0x00004620      0x189 idle_task.o
- .debug_loc     0x000047a9       0x40 mulib_slinky.o
- .debug_loc     0x000047e9      0x14c button_task.o
- .debug_loc     0x00004935      0x2a7 led_task.o
- .debug_loc     0x00004bdc       0x20 main.o
- .debug_loc     0x00004bfc      0x3ea mu_port.o
+ .debug_loc     0x000010ef      0x2ad mulib/core/mu_time.o
+ .debug_loc     0x0000139c       0x20 atmel_start.o
+ .debug_loc     0x000013bc       0x40 Device_Startup/startup_samd21.o
+ .debug_loc     0x000013fc      0x751 driver_init.o
+ .debug_loc     0x00001b4d      0xec7 hal/src/hal_calendar.o
+ .debug_loc     0x00002a14      0x32d hal/src/hal_ext_irq.o
+ .debug_loc     0x00002d41       0x41 hal/src/hal_sleep.o
+ .debug_loc     0x00002d82      0x13b hal/utils/src/utils_syscalls.o
+ .debug_loc     0x00002ebd      0x1f7 hpl/core/hpl_core_m0plus_base.o
+ .debug_loc     0x000030b4       0x4c hpl/core/hpl_init.o
+ .debug_loc     0x00003100      0x4b5 hpl/eic/hpl_eic.o
+ .debug_loc     0x000035b5      0x18e hpl/gclk/hpl_gclk.o
+ .debug_loc     0x00003743      0x11b hpl/pm/hpl_pm.o
+ .debug_loc     0x0000385e      0x7b0 hpl/rtc/hpl_rtc.o
+ .debug_loc     0x0000400e      0x160 hpl/sysctrl/hpl_sysctrl.o
+ .debug_loc     0x0000416e      0x42e hpl/usart/usart_lite.o
+ .debug_loc     0x0000459c      0x189 idle_task.o
+ .debug_loc     0x00004725       0x40 mulib_slinky.o
+ .debug_loc     0x00004765      0x14c button_task.o
+ .debug_loc     0x000048b1      0x2a7 led_task.o
+ .debug_loc     0x00004b58       0x20 main.o
+ .debug_loc     0x00004b78      0x3ea mu_port.o
 
-.debug_aranges  0x00000000      0x788
+.debug_aranges  0x00000000      0x778
  .debug_aranges
                 0x00000000       0xf0 mulib/core/mu_sched.o
  .debug_aranges
@@ -8543,79 +8539,79 @@ OUTPUT(mulib_slinky.elf elf32-littlearm)
  .debug_aranges
                 0x00000148       0x48 mulib/core/mu_task.o
  .debug_aranges
-                0x00000190       0x70 mulib/core/mu_time.o
+                0x00000190       0x60 mulib/core/mu_time.o
  .debug_aranges
-                0x00000200       0x20 atmel_start.o
+                0x000001f0       0x20 atmel_start.o
  .debug_aranges
-                0x00000220       0x28 Device_Startup/startup_samd21.o
+                0x00000210       0x28 Device_Startup/startup_samd21.o
  .debug_aranges
-                0x00000248       0x48 driver_init.o
+                0x00000238       0x48 driver_init.o
  .debug_aranges
-                0x00000290       0x98 hal/src/hal_calendar.o
+                0x00000280       0x98 hal/src/hal_calendar.o
  .debug_aranges
-                0x00000328       0x50 hal/src/hal_ext_irq.o
+                0x00000318       0x50 hal/src/hal_ext_irq.o
  .debug_aranges
-                0x00000378       0x28 hal/src/hal_sleep.o
+                0x00000368       0x28 hal/src/hal_sleep.o
  .debug_aranges
-                0x000003a0       0x20 hal/utils/src/utils_assert.o
+                0x00000390       0x20 hal/utils/src/utils_assert.o
  .debug_aranges
-                0x000003c0       0x60 hal/utils/src/utils_syscalls.o
+                0x000003b0       0x60 hal/utils/src/utils_syscalls.o
  .debug_aranges
-                0x00000420       0x80 hpl/core/hpl_core_m0plus_base.o
+                0x00000410       0x80 hpl/core/hpl_core_m0plus_base.o
  .debug_aranges
-                0x000004a0       0x20 hpl/core/hpl_init.o
+                0x00000490       0x20 hpl/core/hpl_init.o
  .debug_aranges
-                0x000004c0       0x38 hpl/eic/hpl_eic.o
+                0x000004b0       0x38 hpl/eic/hpl_eic.o
  .debug_aranges
-                0x000004f8       0x28 hpl/gclk/hpl_gclk.o
+                0x000004e8       0x28 hpl/gclk/hpl_gclk.o
  .debug_aranges
-                0x00000520       0x30 hpl/pm/hpl_pm.o
+                0x00000510       0x30 hpl/pm/hpl_pm.o
  .debug_aranges
-                0x00000550       0x70 hpl/rtc/hpl_rtc.o
+                0x00000540       0x70 hpl/rtc/hpl_rtc.o
  .debug_aranges
-                0x000005c0       0x28 hpl/sysctrl/hpl_sysctrl.o
+                0x000005b0       0x28 hpl/sysctrl/hpl_sysctrl.o
  .debug_aranges
-                0x000005e8       0x50 hpl/usart/usart_lite.o
+                0x000005d8       0x50 hpl/usart/usart_lite.o
  .debug_aranges
-                0x00000638       0x30 idle_task.o
+                0x00000628       0x30 idle_task.o
  .debug_aranges
-                0x00000668       0x28 mulib_slinky.o
+                0x00000658       0x28 mulib_slinky.o
  .debug_aranges
-                0x00000690       0x30 button_task.o
+                0x00000680       0x30 button_task.o
  .debug_aranges
-                0x000006c0       0x28 led_task.o
+                0x000006b0       0x28 led_task.o
  .debug_aranges
-                0x000006e8       0x20 main.o
+                0x000006d8       0x20 main.o
  .debug_aranges
-                0x00000708       0x80 mu_port.o
+                0x000006f8       0x80 mu_port.o
 
-.debug_ranges   0x00000000      0x708
+.debug_ranges   0x00000000      0x6f8
  .debug_ranges  0x00000000      0x158 mulib/core/mu_sched.o
  .debug_ranges  0x00000158       0x48 mulib/core/mu_spscq.o
  .debug_ranges  0x000001a0       0x38 mulib/core/mu_task.o
- .debug_ranges  0x000001d8       0x60 mulib/core/mu_time.o
- .debug_ranges  0x00000238       0x10 atmel_start.o
- .debug_ranges  0x00000248       0x18 Device_Startup/startup_samd21.o
- .debug_ranges  0x00000260       0x38 driver_init.o
- .debug_ranges  0x00000298       0xd0 hal/src/hal_calendar.o
- .debug_ranges  0x00000368       0x40 hal/src/hal_ext_irq.o
- .debug_ranges  0x000003a8       0x18 hal/src/hal_sleep.o
- .debug_ranges  0x000003c0       0x10 hal/utils/src/utils_assert.o
- .debug_ranges  0x000003d0       0x50 hal/utils/src/utils_syscalls.o
- .debug_ranges  0x00000420       0x70 hpl/core/hpl_core_m0plus_base.o
- .debug_ranges  0x00000490       0x10 hpl/core/hpl_init.o
- .debug_ranges  0x000004a0       0x40 hpl/eic/hpl_eic.o
- .debug_ranges  0x000004e0       0x18 hpl/gclk/hpl_gclk.o
- .debug_ranges  0x000004f8       0x20 hpl/pm/hpl_pm.o
- .debug_ranges  0x00000518       0x78 hpl/rtc/hpl_rtc.o
- .debug_ranges  0x00000590       0x30 hpl/sysctrl/hpl_sysctrl.o
- .debug_ranges  0x000005c0       0x40 hpl/usart/usart_lite.o
- .debug_ranges  0x00000600       0x38 idle_task.o
- .debug_ranges  0x00000638       0x18 mulib_slinky.o
- .debug_ranges  0x00000650       0x20 button_task.o
- .debug_ranges  0x00000670       0x18 led_task.o
- .debug_ranges  0x00000688       0x10 main.o
- .debug_ranges  0x00000698       0x70 mu_port.o
+ .debug_ranges  0x000001d8       0x50 mulib/core/mu_time.o
+ .debug_ranges  0x00000228       0x10 atmel_start.o
+ .debug_ranges  0x00000238       0x18 Device_Startup/startup_samd21.o
+ .debug_ranges  0x00000250       0x38 driver_init.o
+ .debug_ranges  0x00000288       0xd0 hal/src/hal_calendar.o
+ .debug_ranges  0x00000358       0x40 hal/src/hal_ext_irq.o
+ .debug_ranges  0x00000398       0x18 hal/src/hal_sleep.o
+ .debug_ranges  0x000003b0       0x10 hal/utils/src/utils_assert.o
+ .debug_ranges  0x000003c0       0x50 hal/utils/src/utils_syscalls.o
+ .debug_ranges  0x00000410       0x70 hpl/core/hpl_core_m0plus_base.o
+ .debug_ranges  0x00000480       0x10 hpl/core/hpl_init.o
+ .debug_ranges  0x00000490       0x40 hpl/eic/hpl_eic.o
+ .debug_ranges  0x000004d0       0x18 hpl/gclk/hpl_gclk.o
+ .debug_ranges  0x000004e8       0x20 hpl/pm/hpl_pm.o
+ .debug_ranges  0x00000508       0x78 hpl/rtc/hpl_rtc.o
+ .debug_ranges  0x00000580       0x30 hpl/sysctrl/hpl_sysctrl.o
+ .debug_ranges  0x000005b0       0x40 hpl/usart/usart_lite.o
+ .debug_ranges  0x000005f0       0x38 idle_task.o
+ .debug_ranges  0x00000628       0x18 mulib_slinky.o
+ .debug_ranges  0x00000640       0x20 button_task.o
+ .debug_ranges  0x00000660       0x18 led_task.o
+ .debug_ranges  0x00000678       0x10 main.o
+ .debug_ranges  0x00000688       0x70 mu_port.o
 
 .debug_macro    0x00000000    0x198fc
  .debug_macro   0x00000000      0x16c mulib/core/mu_sched.o
@@ -8775,141 +8771,141 @@ OUTPUT(mulib_slinky.elf elf32-littlearm)
  .debug_macro   0x00018ced      0x531 main.o
  .debug_macro   0x0001921e      0x6de mu_port.o
 
-.debug_line     0x00000000     0xf261
+.debug_line     0x00000000     0xf23d
  .debug_line    0x00000000      0x5cc mulib/core/mu_sched.o
  .debug_line    0x000005cc      0x313 mulib/core/mu_spscq.o
  .debug_line    0x000008df      0x30d mulib/core/mu_task.o
- .debug_line    0x00000bec      0x329 mulib/core/mu_time.o
- .debug_line    0x00000f15      0xac5 atmel_start.o
- .debug_line    0x000019da      0x709 Device_Startup/startup_samd21.o
- .debug_line    0x000020e3      0xbe0 driver_init.o
- .debug_line    0x00002cc3      0xbfd hal/src/hal_calendar.o
- .debug_line    0x000038c0      0x9f1 hal/src/hal_ext_irq.o
- .debug_line    0x000042b1      0x966 hal/src/hal_sleep.o
- .debug_line    0x00004c17      0x950 hal/utils/src/utils_assert.o
- .debug_line    0x00005567      0x40b hal/utils/src/utils_syscalls.o
- .debug_line    0x00005972      0xb20 hpl/core/hpl_core_m0plus_base.o
- .debug_line    0x00006492      0xa30 hpl/core/hpl_init.o
- .debug_line    0x00006ec2      0xb39 hpl/eic/hpl_eic.o
- .debug_line    0x000079fb      0x9ca hpl/gclk/hpl_gclk.o
- .debug_line    0x000083c5      0x9f6 hpl/pm/hpl_pm.o
- .debug_line    0x00008dbb      0xc78 hpl/rtc/hpl_rtc.o
- .debug_line    0x00009a33      0x9e3 hpl/sysctrl/hpl_sysctrl.o
- .debug_line    0x0000a416      0xa9a hpl/usart/usart_lite.o
- .debug_line    0x0000aeb0      0xca8 idle_task.o
- .debug_line    0x0000bb58      0x503 mulib_slinky.o
- .debug_line    0x0000c05b      0xd46 button_task.o
- .debug_line    0x0000cda1      0xc8e led_task.o
- .debug_line    0x0000da2f      0xad9 main.o
- .debug_line    0x0000e508      0xd59 mu_port.o
+ .debug_line    0x00000bec      0x305 mulib/core/mu_time.o
+ .debug_line    0x00000ef1      0xac5 atmel_start.o
+ .debug_line    0x000019b6      0x709 Device_Startup/startup_samd21.o
+ .debug_line    0x000020bf      0xbe0 driver_init.o
+ .debug_line    0x00002c9f      0xbfd hal/src/hal_calendar.o
+ .debug_line    0x0000389c      0x9f1 hal/src/hal_ext_irq.o
+ .debug_line    0x0000428d      0x966 hal/src/hal_sleep.o
+ .debug_line    0x00004bf3      0x950 hal/utils/src/utils_assert.o
+ .debug_line    0x00005543      0x40b hal/utils/src/utils_syscalls.o
+ .debug_line    0x0000594e      0xb20 hpl/core/hpl_core_m0plus_base.o
+ .debug_line    0x0000646e      0xa30 hpl/core/hpl_init.o
+ .debug_line    0x00006e9e      0xb39 hpl/eic/hpl_eic.o
+ .debug_line    0x000079d7      0x9ca hpl/gclk/hpl_gclk.o
+ .debug_line    0x000083a1      0x9f6 hpl/pm/hpl_pm.o
+ .debug_line    0x00008d97      0xc78 hpl/rtc/hpl_rtc.o
+ .debug_line    0x00009a0f      0x9e3 hpl/sysctrl/hpl_sysctrl.o
+ .debug_line    0x0000a3f2      0xa9a hpl/usart/usart_lite.o
+ .debug_line    0x0000ae8c      0xca8 idle_task.o
+ .debug_line    0x0000bb34      0x503 mulib_slinky.o
+ .debug_line    0x0000c037      0xd46 button_task.o
+ .debug_line    0x0000cd7d      0xc8e led_task.o
+ .debug_line    0x0000da0b      0xad9 main.o
+ .debug_line    0x0000e4e4      0xd59 mu_port.o
 
-.debug_str      0x00000000    0x868de
- .debug_str     0x00000000     0x6832 mulib/core/mu_sched.o
+.debug_str      0x00000000    0x868ae
+ .debug_str     0x00000000     0x6847 mulib/core/mu_sched.o
                                0x6b26 (size before relaxing)
- .debug_str     0x00006832       0xb6 mulib/core/mu_spscq.o
+ .debug_str     0x00006847       0xb6 mulib/core/mu_spscq.o
                                0x3875 (size before relaxing)
- .debug_str     0x000068e8       0xda mulib/core/mu_task.o
-                               0x39ad (size before relaxing)
- .debug_str     0x000069c2      0x190 mulib/core/mu_time.o
-                               0x3746 (size before relaxing)
- .debug_str     0x00006b52    0x75f2d atmel_start.o
+ .debug_str     0x000068fd       0xd1 mulib/core/mu_task.o
+                               0x39a4 (size before relaxing)
+ .debug_str     0x000069ce       0xfa mulib/core/mu_time.o
+                               0x36a1 (size before relaxing)
+ .debug_str     0x00006ac8    0x75f2d atmel_start.o
                               0x798a8 (size before relaxing)
- .debug_str     0x0007ca7f     0x10b3 Device_Startup/startup_samd21.o
+ .debug_str     0x0007c9f5     0x10b3 Device_Startup/startup_samd21.o
                               0x717b0 (size before relaxing)
- .debug_str     0x0007db32     0x18ab driver_init.o
+ .debug_str     0x0007daa8     0x18ab driver_init.o
                               0x7bfe3 (size before relaxing)
- .debug_str     0x0007f3dd      0x59f hal/src/hal_calendar.o
+ .debug_str     0x0007f353      0x59f hal/src/hal_calendar.o
                               0x79e8d (size before relaxing)
- .debug_str     0x0007f97c       0xe7 hal/src/hal_ext_irq.o
+ .debug_str     0x0007f8f2       0xe7 hal/src/hal_ext_irq.o
                               0x79331 (size before relaxing)
- .debug_str     0x0007fa63       0x46 hal/src/hal_sleep.o
+ .debug_str     0x0007f9d9       0x46 hal/src/hal_sleep.o
                               0x79253 (size before relaxing)
- .debug_str     0x0007faa9       0x2a hal/utils/src/utils_assert.o
+ .debug_str     0x0007fa1f       0x2a hal/utils/src/utils_assert.o
                               0x7927c (size before relaxing)
- .debug_str     0x0007fad3     0x18d8 hal/utils/src/utils_syscalls.o
+ .debug_str     0x0007fa49     0x18d8 hal/utils/src/utils_syscalls.o
                                0x731b (size before relaxing)
- .debug_str     0x000813ab      0x32c hpl/core/hpl_core_m0plus_base.o
+ .debug_str     0x00081321      0x32c hpl/core/hpl_core_m0plus_base.o
                               0x79d0f (size before relaxing)
- .debug_str     0x000816d7     0x17d7 hpl/core/hpl_init.o
+ .debug_str     0x0008164d     0x17d7 hpl/core/hpl_init.o
                               0x7ae4c (size before relaxing)
- .debug_str     0x00082eae      0xed6 hpl/eic/hpl_eic.o
+ .debug_str     0x00082e24      0xed6 hpl/eic/hpl_eic.o
                               0x7d59c (size before relaxing)
- .debug_str     0x00083d84      0x84f hpl/gclk/hpl_gclk.o
+ .debug_str     0x00083cfa      0x84f hpl/gclk/hpl_gclk.o
                               0x79b99 (size before relaxing)
- .debug_str     0x000845d3      0x184 hpl/pm/hpl_pm.o
+ .debug_str     0x00084549      0x184 hpl/pm/hpl_pm.o
                               0x799ab (size before relaxing)
- .debug_str     0x00084757      0x419 hpl/rtc/hpl_rtc.o
+ .debug_str     0x000846cd      0x419 hpl/rtc/hpl_rtc.o
                               0x79e3f (size before relaxing)
- .debug_str     0x00084b70     0x11c2 hpl/sysctrl/hpl_sysctrl.o
+ .debug_str     0x00084ae6     0x11c2 hpl/sysctrl/hpl_sysctrl.o
                               0x7a54b (size before relaxing)
- .debug_str     0x00085d32      0x352 hpl/usart/usart_lite.o
+ .debug_str     0x00085ca8      0x352 hpl/usart/usart_lite.o
                               0x79eaa (size before relaxing)
- .debug_str     0x00086084      0x5ec idle_task.o
+ .debug_str     0x00085ffa      0x5ec idle_task.o
                               0x7ce85 (size before relaxing)
- .debug_str     0x00086670      0x1b1 mulib_slinky.o
+ .debug_str     0x000865e6      0x1b1 mulib_slinky.o
                                0x7f6d (size before relaxing)
- .debug_str     0x00086821       0x2c button_task.o
+ .debug_str     0x00086797       0x2c button_task.o
                               0x7df88 (size before relaxing)
- .debug_str     0x0008684d       0x2b led_task.o
+ .debug_str     0x000867c3       0x2b led_task.o
                               0x7d02e (size before relaxing)
- .debug_str     0x00086878        0xc main.o
+ .debug_str     0x000867ee        0xc main.o
                               0x798d0 (size before relaxing)
- .debug_str     0x00086884       0x5a mu_port.o
+ .debug_str     0x000867fa       0xb4 mu_port.o
                               0x7d226 (size before relaxing)
 
-.debug_frame    0x00000000     0x175c
+.debug_frame    0x00000000     0x172c
  .debug_frame   0x00000000      0x254 mulib/core/mu_sched.o
  .debug_frame   0x00000254       0xa4 mulib/core/mu_spscq.o
  .debug_frame   0x000002f8       0x90 mulib/core/mu_task.o
- .debug_frame   0x00000388      0x110 mulib/core/mu_time.o
- .debug_frame   0x00000498       0x28 atmel_start.o
- .debug_frame   0x000004c0       0x40 Device_Startup/startup_samd21.o
- .debug_frame   0x00000500       0x98 driver_init.o
- .debug_frame   0x00000598      0x1d0 hal/src/hal_calendar.o
- .debug_frame   0x00000768       0xb4 hal/src/hal_ext_irq.o
- .debug_frame   0x0000081c       0x38 hal/src/hal_sleep.o
- .debug_frame   0x00000854       0x20 hal/utils/src/utils_assert.o
- .debug_frame   0x00000874       0xa8 hal/utils/src/utils_syscalls.o
- .debug_frame   0x0000091c       0xfc hpl/core/hpl_core_m0plus_base.o
- .debug_frame   0x00000a18       0x28 hpl/core/hpl_init.o
- .debug_frame   0x00000a40       0x68 hpl/eic/hpl_eic.o
- .debug_frame   0x00000aa8       0x30 hpl/gclk/hpl_gclk.o
- .debug_frame   0x00000ad8       0x40 hpl/pm/hpl_pm.o
- .debug_frame   0x00000b18      0x11c hpl/rtc/hpl_rtc.o
- .debug_frame   0x00000c34       0x30 hpl/sysctrl/hpl_sysctrl.o
- .debug_frame   0x00000c64       0x80 hpl/usart/usart_lite.o
- .debug_frame   0x00000ce4       0x58 idle_task.o
- .debug_frame   0x00000d3c       0x44 mulib_slinky.o
- .debug_frame   0x00000d80       0x5c button_task.o
- .debug_frame   0x00000ddc       0x44 led_task.o
- .debug_frame   0x00000e20       0x28 main.o
- .debug_frame   0x00000e48      0x130 mu_port.o
- .debug_frame   0x00000f78       0x20 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m\libgcc.a(_udivsi3.o)
- .debug_frame   0x00000f98       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m\libgcc.a(_ffssi2.o)
- .debug_frame   0x00000fc0       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-init.o)
- .debug_frame   0x00000fec       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x00001014       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memmove.o)
- .debug_frame   0x0000103c       0x20 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memset.o)
- .debug_frame   0x0000105c       0x50 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-printf.o)
- .debug_frame   0x000010ac       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-puts.o)
- .debug_frame   0x000010f0       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-wbuf.o)
- .debug_frame   0x00001138       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-wsetup.o)
- .debug_frame   0x00001164       0x68 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-fflush.o)
- .debug_frame   0x000011cc      0x140 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-findfp.o)
- .debug_frame   0x0000130c       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-fwalk.o)
- .debug_frame   0x00001364       0x54 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-makebuf.o)
- .debug_frame   0x000013b8       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x000013e4       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x00001410       0x9c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-vfprintf.o)
- .debug_frame   0x000014ac       0x54 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_frame   0x00001500       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x0000152c       0x90 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-stdio.o)
- .debug_frame   0x000015bc       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-writer.o)
- .debug_frame   0x000015e8       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-closer.o)
- .debug_frame   0x00001614       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-fstatr.o)
- .debug_frame   0x00001640       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-isattyr.o)
- .debug_frame   0x0000166c       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-lseekr.o)
- .debug_frame   0x00001698       0x20 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memchr-stub.o)
- .debug_frame   0x000016b8       0x30 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-mlock.o)
- .debug_frame   0x000016e8       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-readr.o)
- .debug_frame   0x00001714       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-reent.o)
+ .debug_frame   0x00000388       0xe0 mulib/core/mu_time.o
+ .debug_frame   0x00000468       0x28 atmel_start.o
+ .debug_frame   0x00000490       0x40 Device_Startup/startup_samd21.o
+ .debug_frame   0x000004d0       0x98 driver_init.o
+ .debug_frame   0x00000568      0x1d0 hal/src/hal_calendar.o
+ .debug_frame   0x00000738       0xb4 hal/src/hal_ext_irq.o
+ .debug_frame   0x000007ec       0x38 hal/src/hal_sleep.o
+ .debug_frame   0x00000824       0x20 hal/utils/src/utils_assert.o
+ .debug_frame   0x00000844       0xa8 hal/utils/src/utils_syscalls.o
+ .debug_frame   0x000008ec       0xfc hpl/core/hpl_core_m0plus_base.o
+ .debug_frame   0x000009e8       0x28 hpl/core/hpl_init.o
+ .debug_frame   0x00000a10       0x68 hpl/eic/hpl_eic.o
+ .debug_frame   0x00000a78       0x30 hpl/gclk/hpl_gclk.o
+ .debug_frame   0x00000aa8       0x40 hpl/pm/hpl_pm.o
+ .debug_frame   0x00000ae8      0x11c hpl/rtc/hpl_rtc.o
+ .debug_frame   0x00000c04       0x30 hpl/sysctrl/hpl_sysctrl.o
+ .debug_frame   0x00000c34       0x80 hpl/usart/usart_lite.o
+ .debug_frame   0x00000cb4       0x58 idle_task.o
+ .debug_frame   0x00000d0c       0x44 mulib_slinky.o
+ .debug_frame   0x00000d50       0x5c button_task.o
+ .debug_frame   0x00000dac       0x44 led_task.o
+ .debug_frame   0x00000df0       0x28 main.o
+ .debug_frame   0x00000e18      0x130 mu_port.o
+ .debug_frame   0x00000f48       0x20 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m\libgcc.a(_udivsi3.o)
+ .debug_frame   0x00000f68       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m\libgcc.a(_ffssi2.o)
+ .debug_frame   0x00000f90       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-init.o)
+ .debug_frame   0x00000fbc       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x00000fe4       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memmove.o)
+ .debug_frame   0x0000100c       0x20 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memset.o)
+ .debug_frame   0x0000102c       0x50 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-printf.o)
+ .debug_frame   0x0000107c       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-puts.o)
+ .debug_frame   0x000010c0       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-wbuf.o)
+ .debug_frame   0x00001108       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-wsetup.o)
+ .debug_frame   0x00001134       0x68 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-fflush.o)
+ .debug_frame   0x0000119c      0x140 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-findfp.o)
+ .debug_frame   0x000012dc       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-fwalk.o)
+ .debug_frame   0x00001334       0x54 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-makebuf.o)
+ .debug_frame   0x00001388       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x000013b4       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x000013e0       0x9c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-vfprintf.o)
+ .debug_frame   0x0000147c       0x54 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_frame   0x000014d0       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x000014fc       0x90 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-stdio.o)
+ .debug_frame   0x0000158c       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-writer.o)
+ .debug_frame   0x000015b8       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-closer.o)
+ .debug_frame   0x000015e4       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-fstatr.o)
+ .debug_frame   0x00001610       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-isattyr.o)
+ .debug_frame   0x0000163c       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-lseekr.o)
+ .debug_frame   0x00001668       0x20 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-memchr-stub.o)
+ .debug_frame   0x00001688       0x30 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-mlock.o)
+ .debug_frame   0x000016b8       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-readr.o)
+ .debug_frame   0x000016e4       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc_nano.a(lib_a-reent.o)

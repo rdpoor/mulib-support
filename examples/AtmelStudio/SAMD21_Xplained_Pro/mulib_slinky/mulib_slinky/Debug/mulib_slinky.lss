@@ -15,23 +15,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .comment      00000059  00000000  00000000  0002008c  2**0
                   CONTENTS, READONLY
-  6 .debug_info   00021d56  00000000  00000000  000200e5  2**0
+  6 .debug_info   00021ca9  00000000  00000000  000200e5  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00003a48  00000000  00000000  00041e3b  2**0
+  7 .debug_abbrev 00003a48  00000000  00000000  00041d8e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_loc    00004fe6  00000000  00000000  00045883  2**0
+  8 .debug_loc    00004f62  00000000  00000000  000457d6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_aranges 00000788  00000000  00000000  0004a869  2**0
+  9 .debug_aranges 00000778  00000000  00000000  0004a738  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000708  00000000  00000000  0004aff1  2**0
+ 10 .debug_ranges 000006f8  00000000  00000000  0004aeb0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_macro  000198fc  00000000  00000000  0004b6f9  2**0
+ 11 .debug_macro  000198fc  00000000  00000000  0004b5a8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_line   0000f261  00000000  00000000  00064ff5  2**0
+ 12 .debug_line   0000f23d  00000000  00000000  00064ea4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_str    000868de  00000000  00000000  00074256  2**0
+ 13 .debug_str    000868ae  00000000  00000000  000740e1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  0000175c  00000000  00000000  000fab34  2**2
+ 14 .debug_frame  0000172c  00000000  00000000  000fa990  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -734,10 +734,10 @@ bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
      438:	00001039 	.word	0x00001039
 
 0000043c <mu_time_now>:
-
 mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s) {
   return mu_port_time_seconds_to_duration(s);
 }
+#endif
 
 mu_time_t mu_time_now() {
      43c:	b510      	push	{r4, lr}

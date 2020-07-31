@@ -143,11 +143,10 @@ void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg);
  * byte.  You can use the mu_port_serial_can_write() function to find if this
  * function will block.
  *
- * If a callback has been set (via mu_port_serial_set_write_cb), an interrupt is
- * enabled to trigger the callback after the byte is consumed by the uart.
+ * Alternatively, you can set a callback using `mu_port_serial_set_write_cb()`,
+ * which will be called when the UART is ready to accept a character.
  */
-// void mu_port_serial_write(uint8_t byte);
-bool mu_port_serial_write(const uint8_t *const buf, int n_bytes);
+void mu_port_serial_write(uint8_t byte);
 
 /**
  * @brief Return true if mu_port_serial_write() will return immediately without
@@ -195,7 +194,7 @@ bool mu_port_serial_write_in_progress(void);
  *     // schedule a task to call mu_port_serial_read()...
  *   }
  */
-bool mu_port_serial_read(uint8_t *const buf, int n_bytes);
+uint8_t mu_port_serial_read(void);
 
 /**
  * @brief Return true if mu_serial_read() will return immediately without
