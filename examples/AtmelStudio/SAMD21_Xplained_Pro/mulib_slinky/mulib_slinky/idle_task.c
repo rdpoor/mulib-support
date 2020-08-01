@@ -27,15 +27,12 @@
 
 #include "idle_task.h"
 #include "mulib.h"
+#include "mu_vm.h"
 #include <atmel_start.h>
-// #include <hal_sleep.h>
 #include <stddef.h>
 
 // =============================================================================
 // local types and definitions
-
-// don't sleep for less than 1ms (32 RTC tics)
-#define MIN_SLEEP_DURATION MU_TIME_MS_TO_DURATION(1)
 
 // =============================================================================
 // local (forward) declarations
@@ -43,9 +40,7 @@
 static void *idle_task_fn(void *self, void *arg);
 static bool is_ready_to_sleep(void);
 static void will_sleep(void);
-static void go_to_sleep(void);
 static void did_wake(void);
-static void rtc_callback(struct calendar_dev *const dev);
 
 // =============================================================================
 // local storage
@@ -54,9 +49,6 @@ static void rtc_callback(struct calendar_dev *const dev);
 // public code
 
 mu_task_t *idle_task_init(mu_task_t *idle_task, mu_sched_t *sched) {
-  // register RTC callback and enable interrupts
-  _calendar_register_callback(&CALENDAR_0.device, rtc_callback);
-
   // Initialize the idle task and install as scheduler's idle task
   mu_task_init(idle_task, idle_task_fn, NULL, "Sleeping Idle");
   mu_sched_set_idle_task(sched, idle_task);
@@ -78,15 +70,10 @@ static void *idle_task_fn(void *ctx, void *arg) {
     if (next_event) {
       // There is a future event: sleep until it arrives or skip sleeping if
       // the event is imminent.
-      mu_time_t now = mu_sched_get_current_time(sched);
-      mu_time_t then = next_event->time;
-      if (mu_time_difference(then, now) > MIN_SLEEP_DURATION) {
-        _calendar_set_comp(&CALENDAR_0.device, then);
-        go_to_sleep();
-      }
+      mu_vm_sleep_until(next_event->time);
     } else {
       // no future events are scheduled -- only an interrupt will wake us
-      go_to_sleep();
+      mu_vm_sleep();
     }
     did_wake();
   }
@@ -103,24 +90,13 @@ static bool is_ready_to_sleep(void) {
 static void will_sleep(void) {
   // If you have any last-moment cleanup that needs to be done before the
   // processor goes to sleep, you would do it here.
-  USART_0_disable();
+  usart_async_disable(&USART_0);
   asm("nop");
-}
-
-static void go_to_sleep(void) {
-  sleep(3); // in hal_sleep
 }
 
 static void did_wake(void) {
   // If you have anything that needs to be done when the processor wakes from
   // sleep, you would do it here.
-  USART_0_enable();
-  asm("nop");
-}
-
-static void rtc_callback(struct calendar_dev *const dev) {
-  // arrive here on an RTC interrupt, in this case, when the there is a compare
-  // match.  No other action is required; we use the interrupt only to wake the
-  // processor from Standby mode.  The system code clears the interrupt state.
+  usart_async_enable(&USART_0);
   asm("nop");
 }

@@ -26,7 +26,7 @@
 // includes
 
 #include "mu_time.h"
-#include "mu_port.h"
+#include "mu_vm.h"
 
 // =============================================================================
 // private types and definitions
@@ -41,47 +41,47 @@
 // public code
 
 void mu_time_init(void) {
-  // mu_port_init() must be called separately
+  // mu_vm_init() must be called separately
 }
 
 mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt) {
-  return mu_port_time_offset(t1, dt);
+  return mu_vm_time_offset(t1, dt);
 }
 
 mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_difference(t1, t2);
+  return mu_vm_time_difference(t1, t2);
 }
 
 bool mu_time_precedes(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_precedes(t1, t2);
+  return mu_vm_time_precedes(t1, t2);
 }
 
-bool mu_time_is_equal(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_is_equal(t1, t2);
+bool mu_time_equals(mu_time_t t1, mu_time_t t2) {
+  return mu_vm_time_equals(t1, t2);
 }
 
 bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
-  return mu_port_time_precedes(t2, t1);
+  return mu_vm_time_precedes(t2, t1);
 }
 
 mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt) {
-  return mu_port_time_duration_to_ms(dt);
+  return mu_vm_time_duration_to_ms(dt);
 }
 
 mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms) {
-  return mu_port_time_ms_to_duration(ms);
+  return mu_vm_time_ms_to_duration(ms);
 }
 
-#ifdef MU_PORT_FLOAT
+#ifdef MU_VM_FLOAT
 mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt) {
-  return mu_port_time_duration_to_seconds(dt);
+  return mu_vm_time_duration_to_seconds(dt);
 }
 
 mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s) {
-  return mu_port_time_seconds_to_duration(s);
+  return mu_vm_time_seconds_to_duration(s);
 }
 #endif
 
 mu_time_t mu_time_now() {
-  return mu_port_rtc_now();
+  return mu_vm_rtc_now();
 }

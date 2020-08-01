@@ -52,11 +52,15 @@ hal\src\hal_io.c
 
 hal\src\hal_sleep.c
 
+hal\src\hal_usart_async.c
+
 hal\utils\src\utils_assert.c
 
 hal\utils\src\utils_event.c
 
 hal\utils\src\utils_list.c
+
+hal\utils\src\utils_ringbuffer.c
 
 hal\utils\src\utils_syscalls.c
 
@@ -74,9 +78,9 @@ hpl\pm\hpl_pm.c
 
 hpl\rtc\hpl_rtc.c
 
-hpl\sysctrl\hpl_sysctrl.c
+hpl\sercom\hpl_sercom.c
 
-hpl\usart\usart_lite.c
+hpl\sysctrl\hpl_sysctrl.c
 
 idle_task.c
 
@@ -88,5 +92,7 @@ led_task.c
 
 main.c
 
-mu_port.c
+mu_vm.c
+
+printf_support.c
 

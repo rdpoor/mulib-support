@@ -87,7 +87,7 @@ C_SRCS +=  \
 ../hpl/sysctrl/hpl_sysctrl.c \
 ../main.c \
 ../mulib_port_test.c \
-../mu_port.c
+../mu_vm.c
 
 
 PREPROCESSING_SRCS += 
@@ -127,7 +127,7 @@ hpl/sercom/hpl_sercom.o \
 hpl/sysctrl/hpl_sysctrl.o \
 main.o \
 mulib_port_test.o \
-mu_port.o
+mu_vm.o
 
 OBJS_AS_ARGS +=  \
 atmel_start.o \
@@ -160,7 +160,7 @@ hpl/sercom/hpl_sercom.o \
 hpl/sysctrl/hpl_sysctrl.o \
 main.o \
 mulib_port_test.o \
-mu_port.o
+mu_vm.o
 
 C_DEPS +=  \
 atmel_start.d \
@@ -193,7 +193,7 @@ hpl/sercom/hpl_sercom.d \
 hpl/sysctrl/hpl_sysctrl.d \
 main.d \
 mulib_port_test.d \
-mu_port.d
+mu_vm.d
 
 C_DEPS_AS_ARGS +=  \
 atmel_start.d \
@@ -226,7 +226,7 @@ hpl/sercom/hpl_sercom.d \
 hpl/sysctrl/hpl_sysctrl.d \
 main.d \
 mulib_port_test.d \
-mu_port.d
+mu_vm.d
 
 OUTPUT_FILE_PATH +=mulib_port_test.elf
 
@@ -454,7 +454,7 @@ hpl/sysctrl/hpl_sysctrl.o: ../hpl/sysctrl/hpl_sysctrl.c
 	@echo Finished building: $<
 	
 
-./mu_port.o: .././mu_port.c
+./mu_vm.o: .././mu_vm.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 6.3.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sercom" -I"../hpl/sysctrl" -I"../hri" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include"  -O0 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

@@ -168,7 +168,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.__malloc_lock         0x2afe            0x2           2   
 .text.SERCOM2_USART_Int     0x2b00           0xe8         232   
 .rodata.__mprec_tens        0x2be8           0xc8         200   
-.text.mu_port_init          0x2cb0           0xbc         188   
+.text.mu_vm_init          0x2cb0           0xbc         188   
 .text.__mdiff               0x2d6c           0xbc         188   
 .text._malloc_r             0x2e28           0xbc         188   
 .text.__ssputs_r            0x2ee4           0xb6         182   
@@ -203,11 +203,11 @@ section                    address  length [bytes]      (dec)  Description
 .text.memmove               0x3a44           0x34          52   
 .text.__mcmp                0x3a78           0x34          52   
 .text.SYS_Initialize        0x3aac           0x30          48   
-.text.mu_port_sleep_unt     0x3adc           0x30          48   
+.text.mu_vm_sleep_unt     0x3adc           0x30          48   
 .text.wait_ms               0x3b0c           0x2e          46   
 .text._Bfree                0x3b3a           0x2e          46   
 .text.EIC_CallbackRegis     0x3b68           0x2c          44   
-.text.mu_port_time_ms_t     0x3b94           0x2c          44   
+.text.mu_vm_time_ms_t     0x3b94           0x2c          44   
 .text._sbrk                 0x3bc0           0x2c          44   
 .text                       0x3bec           0x2c          44  App's exec code 
 .text.RTC_InterruptHand     0x3c18           0x28          40   
@@ -216,16 +216,16 @@ section                    address  length [bytes]      (dec)  Description
 .text.SERCOM2_USART_Err     0x3c8c           0x24          36   
 .text.__ascii_mbtowc        0x3cb0           0x24          36   
 .rodata                     0x3cd4           0x22          34  Read-only const 
-.text.mu_port_rtc_set_c     0x3cf8           0x20          32   
-.text.mu_port_button_se     0x3d18           0x20          32   
-.text.mu_port_serial_se     0x3d38           0x20          32   
+.text.mu_vm_rtc_set_c     0x3cf8           0x20          32   
+.text.mu_vm_button_se     0x3d18           0x20          32   
+.text.mu_vm_serial_se     0x3d38           0x20          32   
 .rodata.__sf_fake_stder     0x3d58           0x20          32   
 .rodata.__sf_fake_stdin     0x3d78           0x20          32   
 .rodata.__sf_fake_stdou     0x3d98           0x20          32   
 .text._sbrk_r               0x3db8           0x20          32   
 .text.RTC_Timer32Start      0x3dd8           0x1c          28   
 .text.SERCOM2_USART_Err     0x3df4           0x1c          28   
-.text.mu_port_serial_re     0x3e10           0x1c          28   
+.text.mu_vm_serial_re     0x3e10           0x1c          28   
 .text.vsnprintf             0x3e2c           0x1c          28   
 .text._localeconv_r         0x3e48           0x1c          28   
 .text._calloc_r             0x3e64           0x1c          28   
@@ -237,26 +237,26 @@ section                    address  length [bytes]      (dec)  Description
 .text.tx_cb_trampoline      0x3efc           0x18          24   
 .text.rx_cb_trampoline      0x3f14           0x18          24   
 .text.rtc_cb_trampoline     0x3f2c           0x18          24   
-.text.mu_port_led_set       0x3f44           0x18          24   
-.text.mu_port_led_get       0x3f5c           0x18          24   
+.text.mu_vm_led_set       0x3f44           0x18          24   
+.text.mu_vm_led_get       0x3f5c           0x18          24   
 .text.memcpy                0x3f74           0x16          22   
 .text.PM_Initialize         0x3f8c           0x14          20   
 .text.RTC_Timer32Compar     0x3fa0           0x14          20   
 .text.SUPC_Initialize       0x3fb4           0x14          20   
-.text.mu_port_button_is     0x3fc8           0x14          20   
-.text.mu_port_sleep         0x3fdc           0x14          20   
+.text.mu_vm_button_is     0x3fc8           0x14          20   
+.text.mu_vm_sleep         0x3fdc           0x14          20   
 .text.main                  0x3ff0           0x12          18   
 .text.__i2b                 0x4002           0x12          18   
 .text._malloc_usable_si     0x4014           0x12          18   
 .rodata                     0x4026           0x11          17  Read-only const 
 .text.BSP_Initialize        0x4038           0x10          16   
 .text.EIC_InterruptEnab     0x4048           0x10          16   
-.text.mu_port_serial_ca     0x4058           0x10          16   
+.text.mu_vm_serial_ca     0x4058           0x10          16   
 .text                       0x4068           0x10          16  App's exec code 
 .text.malloc                0x4078           0x10          16   
 .text.memset                0x4088           0x10          16   
 .rodata                     0x4098            0xf          15  Read-only const 
-.text.mu_port_serial_ca     0x40a8            0xe          14   
+.text.mu_vm_serial_ca     0x40a8            0xe          14   
 .text.NVMCTRL_Initializ     0x40b8            0xc          12   
 .text.PORT_GroupWrite       0x40c4            0xc          12   
 .text.RTC_Timer32Interr     0x40d0            0xc          12   
@@ -269,14 +269,14 @@ section                    address  length [bytes]      (dec)  Description
 .text.button_press_cb       0x4124            0xc          12   
 .text.serial_read_cb        0x4130            0xc          12   
 .text.rtc_cb                0x413c            0xc          12   
-.text.mu_port_serial_wr     0x4148            0xc          12   
+.text.mu_vm_serial_wr     0x4148            0xc          12   
 .rodata.p05.7204            0x4154            0xc          12   
 .rodata                     0x4160            0xb          11  Read-only const 
 .text.mulib_port_test_i     0x416c            0x8           8   
-.text.mu_port_rtc_now       0x4174            0x8           8   
-.text.mu_port_rtc_alarm     0x417c            0x8           8   
+.text.mu_vm_rtc_now       0x4174            0x8           8   
+.text.mu_vm_rtc_alarm     0x417c            0x8           8   
 .text.RTC_Timer32Freque     0x4184            0x6           6   
-.text.mu_port_time_prec     0x418a            0x6           6   
+.text.mu_vm_time_prec     0x418a            0x6           6   
 .text.PORT_GroupOutputE     0x4190            0x4           4   
 .text.Dummy_Handler         0x4194            0x4           4   
 .text.NonMaskableInt_Ha     0x4198            0x4           4   
@@ -285,7 +285,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.MemoryManagement_     0x41a4            0x4           4   
 .text.BusFault_Handler      0x41a8            0x4           4   
 .text.UsageFault_Handle     0x41ac            0x4           4   
-.text.mu_port_time_offs     0x41b0            0x4           4   
+.text.mu_vm_time_offs     0x41b0            0x4           4   
       Total ROM used  :      0x419f       16799  1.6% of 0x100000
         --------------------------------------------------------------------------
          Total Program Memory used  :      0x419f       16799  1.6% of 0x100000
@@ -537,19 +537,19 @@ Discarded input sections
  .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
  .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
  .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
- .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
- .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
- .text.mu_port_time_difference
-                0x00000000        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
- .text.mu_port_time_is_equal
-                0x00000000        0xa build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
- .text.mu_port_time_follows
-                0x00000000        0x6 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
- .text.mu_port_time_duration_to_ms
-                0x00000000       0x2c build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
- .text.mu_port_serial_set_write_cb
-                0x00000000       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+ .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+ .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+ .text.mu_vm_time_difference
+                0x00000000        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+ .text.mu_vm_time_is_equal
+                0x00000000        0xa build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+ .text.mu_vm_time_follows
+                0x00000000        0x6 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+ .text.mu_vm_time_duration_to_ms
+                0x00000000       0x2c build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+ .text.mu_vm_serial_set_write_cb
+                0x00000000       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/1360937237/main.o
@@ -1256,7 +1256,7 @@ LOAD build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
 LOAD build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
 LOAD build/same54_xplained_pro/debug/_ext/602300742/libc_syscalls.o
 LOAD build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
-LOAD build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+LOAD build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 LOAD build/same54_xplained_pro/debug/_ext/1360937237/main.o
                 0x00000001                __MPLAB_BUILD = 0x1
                 0x00000001                __ICD2RAM = 0x1
@@ -1420,7 +1420,7 @@ LOAD data_init
  .ARM.attributes
                 0x000003ad       0x39 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
  .ARM.attributes
-                0x000003e6       0x39 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x000003e6       0x39 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .ARM.attributes
                 0x0000041f       0x39 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .ARM.attributes
@@ -1517,7 +1517,7 @@ LOAD data_init
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .comment       0x0000003c       0x3d c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
  .comment       0x0000003c       0x3d c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -1566,7 +1566,7 @@ LOAD data_init
  .debug_info    0x0000cb94      0xf85 build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
  .debug_info    0x0000db19     0x1475 build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .debug_info    0x0000ef8e     0x173e build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .debug_info    0x000106cc     0x31e4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .debug_info    0x000106cc     0x31e4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_info    0x000138b0      0xeef build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_info    0x0001479f      0x2a2 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
  .debug_info    0x00014a41      0x41f c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -1622,7 +1622,7 @@ LOAD data_init
  .debug_abbrev  0x000014e7      0x196 build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
  .debug_abbrev  0x0000167d      0x269 build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .debug_abbrev  0x000018e6      0x2a6 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .debug_abbrev  0x00001b8c      0x479 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .debug_abbrev  0x00001b8c      0x479 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_abbrev  0x00002005      0x1d0 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_abbrev  0x000021d5       0x2a c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
  .debug_abbrev  0x000021ff       0xa3 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -1695,7 +1695,7 @@ LOAD data_init
  .debug_aranges
                 0x00000438       0x58 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
  .debug_aranges
-                0x00000490       0xf0 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x00000490       0xf0 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_aranges
                 0x00000580       0x20 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_aranges
@@ -1788,7 +1788,7 @@ LOAD data_init
  .debug_ranges  0x00000300       0x38 build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
  .debug_ranges  0x00000338       0x10 build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .debug_ranges  0x00000348       0x48 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .debug_ranges  0x00000390       0xe0 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .debug_ranges  0x00000390       0xe0 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_ranges  0x00000470       0x10 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_ranges  0x00000480       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
  .debug_ranges  0x00000490       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -1835,7 +1835,7 @@ LOAD data_init
  .debug_line    0x00001f33      0x230 build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
  .debug_line    0x00002163      0x270 build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .debug_line    0x000023d3      0x2e1 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .debug_line    0x000026b4      0x5ec build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .debug_line    0x000026b4      0x5ec build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_line    0x00002ca0      0x204 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_line    0x00002ea4       0xd8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
  .debug_line    0x00002f7c      0x11d c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -1891,7 +1891,7 @@ LOAD data_init
  .debug_str     0x00000389        0xe build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
  .debug_str     0x00000397       0x79 build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .debug_str     0x00000410      0x18a build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .debug_str     0x0000059a      0x30c build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .debug_str     0x0000059a      0x30c build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_str     0x000008a6       0x47 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_str     0x000008ed        0x0 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
  .debug_str     0x000008ed        0x0 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -1940,7 +1940,7 @@ LOAD data_init
  .debug_frame   0x00000694       0x70 build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
  .debug_frame   0x00000704       0x28 build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .debug_frame   0x0000072c       0xf0 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .debug_frame   0x0000081c      0x244 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .debug_frame   0x0000081c      0x244 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_frame   0x00000a60       0x28 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_frame   0x00000a88       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
  .debug_frame   0x00000ab4       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -1986,7 +1986,7 @@ LOAD data_init
  .debug_loc     0x00000dae       0x41 build/same54_xplained_pro/debug/_ext/602300742/initialization.o
  .debug_loc     0x00000def       0x34 build/same54_xplained_pro/debug/_ext/602300742/startup_xc32.o
  .debug_loc     0x00000e23      0x1f8 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
- .debug_loc     0x0000101b      0x594 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .debug_loc     0x0000101b      0x594 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
  .debug_loc     0x000015af       0x20 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_loc     0x000015cf       0x74 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
  .debug_loc     0x00001643       0xb2 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-memcpy-stub.o)
@@ -2037,49 +2037,49 @@ LOAD data_init
 .bss.s_button_cb%5
                 0x2000031c        0x4
  .bss.s_button_cb
-                0x2000031c        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x2000031c        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_button_cb_arg%6
                 0x20000320        0x4
  .bss.s_button_cb_arg
-                0x20000320        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x20000320        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_min_sleep_duration%7
                 0x20000324        0x4
  .bss.s_min_sleep_duration
-                0x20000324        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x20000324        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_rtc_cb%8
                 0x20000328        0x4
- .bss.s_rtc_cb  0x20000328        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .bss.s_rtc_cb  0x20000328        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_rtc_cb_arg%9
                 0x2000032c        0x4
  .bss.s_rtc_cb_arg
-                0x2000032c        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x2000032c        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_rtc_frequency%10
                 0x20000330        0x4
  .bss.s_rtc_frequency
-                0x20000330        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x20000330        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_rx_cb%11
                 0x20000334        0x4
- .bss.s_rx_cb   0x20000334        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .bss.s_rx_cb   0x20000334        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_rx_cb_arg%12
                 0x20000338        0x4
  .bss.s_rx_cb_arg
-                0x20000338        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x20000338        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_tx_cb%13
                 0x2000033c        0x4
- .bss.s_tx_cb   0x2000033c        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+ .bss.s_tx_cb   0x2000033c        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .bss.s_tx_cb_arg%14
                 0x20000340        0x4
  .bss.s_tx_cb_arg
-                0x20000340        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x20000340        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .data._impure_ptr%15
                 0x20000344        0x4
@@ -2231,11 +2231,11 @@ LOAD data_init
                 0x00002be8       0xc8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-mprec.o)
                 0x00002be8                __mprec_tens
 
-.text.mu_port_init%38
+.text.mu_vm_init%38
                 0x00002cb0       0xbc
- .text.mu_port_init
-                0x00002cb0       0xbc build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00002cb0                mu_port_init
+ .text.mu_vm_init
+                0x00002cb0       0xbc build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00002cb0                mu_vm_init
 
 .text.__mdiff%39
                 0x00002d6c       0xbc
@@ -2413,11 +2413,11 @@ LOAD data_init
                 0x00003aac       0x30 build/same54_xplained_pro/debug/_ext/602300742/initialization.o
                 0x00003aac                SYS_Initialize
 
-.text.mu_port_sleep_until%71
+.text.mu_vm_sleep_until%71
                 0x00003adc       0x30
- .text.mu_port_sleep_until
-                0x00003adc       0x30 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003adc                mu_port_sleep_until
+ .text.mu_vm_sleep_until
+                0x00003adc       0x30 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003adc                mu_vm_sleep_until
 
 .text.wait_ms%72
                 0x00003b0c       0x2e
@@ -2434,11 +2434,11 @@ LOAD data_init
                 0x00003b68       0x2c build/same54_xplained_pro/debug/_ext/18086165/plib_eic.o
                 0x00003b68                EIC_CallbackRegister
 
-.text.mu_port_time_ms_to_duration%75
+.text.mu_vm_time_ms_to_duration%75
                 0x00003b94       0x2c
- .text.mu_port_time_ms_to_duration
-                0x00003b94       0x2c build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003b94                mu_port_time_ms_to_duration
+ .text.mu_vm_time_ms_to_duration
+                0x00003b94       0x2c build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003b94                mu_vm_time_ms_to_duration
 
 .text._sbrk%76  0x00003bc0       0x2c
  .text._sbrk    0x00003bc0       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(sbrk.o)
@@ -2481,23 +2481,23 @@ LOAD data_init
 .rodata%83      0x00003cd4       0x22
  .rodata        0x00003cd4       0x22 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-nano-vfprintf_i.o)
 
-.text.mu_port_rtc_set_cb%84
+.text.mu_vm_rtc_set_cb%84
                 0x00003cf8       0x20
- .text.mu_port_rtc_set_cb
-                0x00003cf8       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003cf8                mu_port_rtc_set_cb
+ .text.mu_vm_rtc_set_cb
+                0x00003cf8       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003cf8                mu_vm_rtc_set_cb
 
-.text.mu_port_button_set_cb%85
+.text.mu_vm_button_set_cb%85
                 0x00003d18       0x20
- .text.mu_port_button_set_cb
-                0x00003d18       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003d18                mu_port_button_set_cb
+ .text.mu_vm_button_set_cb
+                0x00003d18       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003d18                mu_vm_button_set_cb
 
-.text.mu_port_serial_set_read_cb%86
+.text.mu_vm_serial_set_read_cb%86
                 0x00003d38       0x20
- .text.mu_port_serial_set_read_cb
-                0x00003d38       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003d38                mu_port_serial_set_read_cb
+ .text.mu_vm_serial_set_read_cb
+                0x00003d38       0x20 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003d38                mu_vm_serial_set_read_cb
 
 .rodata.__sf_fake_stderr%87
                 0x00003d58       0x20
@@ -2534,11 +2534,11 @@ LOAD data_init
                 0x00003df4       0x1c build/same54_xplained_pro/debug/_ext/1547227007/plib_sercom2_usart.o
                 0x00003df4                SERCOM2_USART_ErrorGet
 
-.text.mu_port_serial_read%93
+.text.mu_vm_serial_read%93
                 0x00003e10       0x1c
- .text.mu_port_serial_read
-                0x00003e10       0x1c build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003e10                mu_port_serial_read
+ .text.mu_vm_serial_read
+                0x00003e10       0x1c build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003e10                mu_vm_serial_read
 
 .text.vsnprintf%94
                 0x00003e2c       0x1c
@@ -2585,34 +2585,34 @@ LOAD data_init
 .text.button_cb_trampoline%101
                 0x00003ee4       0x18
  .text.button_cb_trampoline
-                0x00003ee4       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x00003ee4       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .text.tx_cb_trampoline%102
                 0x00003efc       0x18
  .text.tx_cb_trampoline
-                0x00003efc       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x00003efc       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .text.rx_cb_trampoline%103
                 0x00003f14       0x18
  .text.rx_cb_trampoline
-                0x00003f14       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x00003f14       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
 .text.rtc_cb_trampoline%104
                 0x00003f2c       0x18
  .text.rtc_cb_trampoline
-                0x00003f2c       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
+                0x00003f2c       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
 
-.text.mu_port_led_set%105
+.text.mu_vm_led_set%105
                 0x00003f44       0x18
- .text.mu_port_led_set
-                0x00003f44       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003f44                mu_port_led_set
+ .text.mu_vm_led_set
+                0x00003f44       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003f44                mu_vm_led_set
 
-.text.mu_port_led_get%106
+.text.mu_vm_led_get%106
                 0x00003f5c       0x18
- .text.mu_port_led_get
-                0x00003f5c       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003f5c                mu_port_led_get
+ .text.mu_vm_led_get
+                0x00003f5c       0x18 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003f5c                mu_vm_led_get
 
 .text.memcpy%107
                 0x00003f74       0x16
@@ -2637,17 +2637,17 @@ LOAD data_init
                 0x00003fb4       0x14 build/same54_xplained_pro/debug/_ext/561100223/plib_supc.o
                 0x00003fb4                SUPC_Initialize
 
-.text.mu_port_button_is_pressed%111
+.text.mu_vm_button_is_pressed%111
                 0x00003fc8       0x14
- .text.mu_port_button_is_pressed
-                0x00003fc8       0x14 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003fc8                mu_port_button_is_pressed
+ .text.mu_vm_button_is_pressed
+                0x00003fc8       0x14 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003fc8                mu_vm_button_is_pressed
 
-.text.mu_port_sleep%112
+.text.mu_vm_sleep%112
                 0x00003fdc       0x14
- .text.mu_port_sleep
-                0x00003fdc       0x14 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00003fdc                mu_port_sleep
+ .text.mu_vm_sleep
+                0x00003fdc       0x14 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00003fdc                mu_vm_sleep
 
 .text.main%113  0x00003ff0       0x12
  .text.main     0x00003ff0       0x12 build/same54_xplained_pro/debug/_ext/1360937237/main.o
@@ -2679,11 +2679,11 @@ LOAD data_init
                 0x00004048       0x10 build/same54_xplained_pro/debug/_ext/18086165/plib_eic.o
                 0x00004048                EIC_InterruptEnable
 
-.text.mu_port_serial_can_read%119
+.text.mu_vm_serial_can_read%119
                 0x00004058       0x10
- .text.mu_port_serial_can_read
-                0x00004058       0x10 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00004058                mu_port_serial_can_read
+ .text.mu_vm_serial_can_read
+                0x00004058       0x10 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00004058                mu_vm_serial_can_read
 
 .text%120       0x00004068       0x10
  .text          0x00004068       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-strlen.o)
@@ -2702,11 +2702,11 @@ LOAD data_init
 .rodata%123     0x00004098        0xf
  .rodata        0x00004098        0xf c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-dtoa.o)
 
-.text.mu_port_serial_can_write%124
+.text.mu_vm_serial_can_write%124
                 0x000040a8        0xe
- .text.mu_port_serial_can_write
-                0x000040a8        0xe build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x000040a8                mu_port_serial_can_write
+ .text.mu_vm_serial_can_write
+                0x000040a8        0xe build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x000040a8                mu_vm_serial_can_write
 
 .text.NVMCTRL_Initialize%125
                 0x000040b8        0xc
@@ -2776,11 +2776,11 @@ LOAD data_init
                 0x0000413c        0xc
  .text.rtc_cb   0x0000413c        0xc build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
 
-.text.mu_port_serial_write%137
+.text.mu_vm_serial_write%137
                 0x00004148        0xc
- .text.mu_port_serial_write
-                0x00004148        0xc build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00004148                mu_port_serial_write
+ .text.mu_vm_serial_write
+                0x00004148        0xc build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00004148                mu_vm_serial_write
 
 .rodata.p05.7204%138
                 0x00004154        0xc
@@ -2796,17 +2796,17 @@ LOAD data_init
                 0x0000416c        0x8 build/same54_xplained_pro/debug/_ext/2127081275/mulib_port_test.o
                 0x0000416c                mulib_port_test_init
 
-.text.mu_port_rtc_now%141
+.text.mu_vm_rtc_now%141
                 0x00004174        0x8
- .text.mu_port_rtc_now
-                0x00004174        0x8 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x00004174                mu_port_rtc_now
+ .text.mu_vm_rtc_now
+                0x00004174        0x8 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x00004174                mu_vm_rtc_now
 
-.text.mu_port_rtc_alarm_at%142
+.text.mu_vm_rtc_alarm_at%142
                 0x0000417c        0x8
- .text.mu_port_rtc_alarm_at
-                0x0000417c        0x8 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x0000417c                mu_port_rtc_alarm_at
+ .text.mu_vm_rtc_alarm_at
+                0x0000417c        0x8 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x0000417c                mu_vm_rtc_alarm_at
 
 .text.RTC_Timer32FrequencyGet%143
                 0x00004184        0x6
@@ -2814,11 +2814,11 @@ LOAD data_init
                 0x00004184        0x6 build/same54_xplained_pro/debug/_ext/18098999/plib_rtc_timer.o
                 0x00004184                RTC_Timer32FrequencyGet
 
-.text.mu_port_time_precedes%144
+.text.mu_vm_time_precedes%144
                 0x0000418a        0x6
- .text.mu_port_time_precedes
-                0x0000418a        0x6 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x0000418a                mu_port_time_precedes
+ .text.mu_vm_time_precedes
+                0x0000418a        0x6 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x0000418a                mu_vm_time_precedes
 
 .text.PORT_GroupRead%145
                 0x00000284        0x4
@@ -3011,11 +3011,11 @@ LOAD data_init
                 0x000041ac        0x4 build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
                 0x000041ac                UsageFault_Handler
 
-.text.mu_port_time_offset%155
+.text.mu_vm_time_offset%155
                 0x000041b0        0x4
- .text.mu_port_time_offset
-                0x000041b0        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_port.o
-                0x000041b0                mu_port_time_offset
+ .text.mu_vm_time_offset
+                0x000041b0        0x4 build/same54_xplained_pro/debug/_ext/2127081275/mu_vm.o
+                0x000041b0                mu_vm_time_offset
 
 .text.EVSYS_Initialize%156
                 0x000027fe        0x2

@@ -23,7 +23,7 @@ mulib strives towards the following design goals (though some are evolving):
 * **Well-documented:** API documentation is driven by documentation strings in
     the header files.
 * **Well-tested:** unit tests validate the API.
-* **Super portable:** One concise mu_ports.c file defines mulib's interface to
+* **Super portable:** One concise mu_vms.c file defines mulib's interface to
     the target environment.
 * **Fast and Dangerous:** mulib favors minimizing time and code space over
     argument validation.  But note that `MU_ASSERT()` provides a safety net that

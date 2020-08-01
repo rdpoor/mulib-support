@@ -94,7 +94,7 @@ mu_time_ms_dt mu_task_max_duration_ms(mu_task_t *task) {
   return mu_time_duration_to_ms(task->max_duration);
 }
 
-#ifdef MU_PORT_FLOAT
+#ifdef MU_VM_FLOAT
 mu_time_seconds_dt mu_task_runtime_s(mu_task_t *task) {
   return mu_time_duration_to_seconds(task->runtime);
 }

@@ -203,8 +203,8 @@
       </logicalFolder>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/mulib_slinky.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/mulib_slinky.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/mu_port.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/mu_port.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/mu_vm.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/mu_vm.h</itemPath>
       <itemPath>../src/main.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/button_task.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_slinky/firmware/src/button_task.h</itemPath>

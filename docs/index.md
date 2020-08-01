@@ -29,7 +29,7 @@ goals are more aspirational than factual):
 * **No malloc. Ever**: All of mulib's modules support user-allocated data
   structures.  Of course, if you want to use malloc and free for the data
   structures, you're free to do so.
-* **Super portable:** One concise mu_ports.c file defines mulib's interface
+* **Super portable:** One concise mu_vms.c file defines mulib's interface
   to your target system's environment.
 * **Fast and Dangerous:** <tt>mulib</tt> is written for embedded applications,
   so it favors minimizing time and code space over argument validation.

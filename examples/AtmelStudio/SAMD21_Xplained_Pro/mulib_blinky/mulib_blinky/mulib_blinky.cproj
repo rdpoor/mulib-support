@@ -886,10 +886,16 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="mu_port.c">
+    <Compile Include="mu_vm.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="mu_port.h">
+    <Compile Include="mu_vm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="printf_support.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="printf_support.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

@@ -9533,7 +9533,7 @@ static volatile int s_tx_index = 0;
 void mulib_port_test_init(void) {
     3684:	b580      	push	{r7, lr}
     3686:	af00      	add	r7, sp, #0
-	mu_port_init();
+	mu_vm_init();
     3688:	4b02      	ldr	r3, [pc, #8]	; (3694 <mulib_port_test_init+0x10>)
     368a:	4798      	blx	r3
 }
@@ -9552,14 +9552,14 @@ void mulib_port_test_step(void) {
   uint8_t c;
 
   // capture start up time...
-  s_epoch = mu_port_rtc_now();
+  s_epoch = mu_vm_rtc_now();
     369e:	4ba9      	ldr	r3, [pc, #676]	; (3944 <mulib_port_test_step+0x2ac>)
     36a0:	4798      	blx	r3
     36a2:	0002      	movs	r2, r0
     36a4:	4ba8      	ldr	r3, [pc, #672]	; (3948 <mulib_port_test_step+0x2b0>)
     36a6:	601a      	str	r2, [r3, #0]
 
-  test_sync_printf("\r\n================\r\nstarting mu_port_test\r\n");
+  test_sync_printf("\r\n================\r\nstarting mu_vm_test\r\n");
     36a8:	4ba8      	ldr	r3, [pc, #672]	; (394c <mulib_port_test_step+0x2b4>)
     36aa:	0018      	movs	r0, r3
     36ac:	4ba8      	ldr	r3, [pc, #672]	; (3950 <mulib_port_test_step+0x2b8>)
@@ -9580,7 +9580,7 @@ void mulib_port_test_step(void) {
     36c2:	0018      	movs	r0, r3
     36c4:	4ba2      	ldr	r3, [pc, #648]	; (3950 <mulib_port_test_step+0x2b8>)
     36c6:	4798      	blx	r3
-  test_print_time(mu_port_rtc_now());
+  test_print_time(mu_vm_rtc_now());
     36c8:	4b9e      	ldr	r3, [pc, #632]	; (3944 <mulib_port_test_step+0x2ac>)
     36ca:	4798      	blx	r3
     36cc:	0003      	movs	r3, r0
@@ -9607,7 +9607,7 @@ void mulib_port_test_step(void) {
     36ee:	0018      	movs	r0, r3
     36f0:	4b97      	ldr	r3, [pc, #604]	; (3950 <mulib_port_test_step+0x2b8>)
     36f2:	4798      	blx	r3
-  test_print_time(mu_port_rtc_now());
+  test_print_time(mu_vm_rtc_now());
     36f4:	4b93      	ldr	r3, [pc, #588]	; (3944 <mulib_port_test_step+0x2ac>)
     36f6:	4798      	blx	r3
     36f8:	0003      	movs	r3, r0
@@ -9624,13 +9624,13 @@ void mulib_port_test_step(void) {
     3708:	4b9c      	ldr	r3, [pc, #624]	; (397c <mulib_port_test_step+0x2e4>)
     370a:	2200      	movs	r2, #0
     370c:	701a      	strb	r2, [r3, #0]
-  mu_port_rtc_set_cb(rtc_cb, NULL);
+  mu_vm_rtc_set_cb(rtc_cb, NULL);
     370e:	4b9c      	ldr	r3, [pc, #624]	; (3980 <mulib_port_test_step+0x2e8>)
     3710:	2100      	movs	r1, #0
     3712:	0018      	movs	r0, r3
     3714:	4b9b      	ldr	r3, [pc, #620]	; (3984 <mulib_port_test_step+0x2ec>)
     3716:	4798      	blx	r3
-  mu_port_rtc_alarm_at(mu_port_time_offset(mu_port_rtc_now(),
+  mu_vm_rtc_alarm_at(mu_vm_time_offset(mu_vm_rtc_now(),
     3718:	4b8a      	ldr	r3, [pc, #552]	; (3944 <mulib_port_test_step+0x2ac>)
     371a:	4798      	blx	r3
     371c:	0004      	movs	r4, r0
@@ -9647,7 +9647,7 @@ void mulib_port_test_step(void) {
     3732:	0018      	movs	r0, r3
     3734:	4b96      	ldr	r3, [pc, #600]	; (3990 <mulib_port_test_step+0x2f8>)
     3736:	4798      	blx	r3
-                                           mu_port_time_ms_to_duration(2500)));
+                                           mu_vm_time_ms_to_duration(2500)));
   test_sync_printf("waiting 2.5 seconds for RTC match...");
     3738:	4b96      	ldr	r3, [pc, #600]	; (3994 <mulib_port_test_step+0x2fc>)
     373a:	0018      	movs	r0, r3
@@ -9673,7 +9673,7 @@ void mulib_port_test_step(void) {
     3756:	0018      	movs	r0, r3
     3758:	4b7d      	ldr	r3, [pc, #500]	; (3950 <mulib_port_test_step+0x2b8>)
     375a:	4798      	blx	r3
-  test_print_time(mu_port_rtc_now());
+  test_print_time(mu_vm_rtc_now());
     375c:	4b79      	ldr	r3, [pc, #484]	; (3944 <mulib_port_test_step+0x2ac>)
     375e:	4798      	blx	r3
     3760:	0003      	movs	r3, r0
@@ -9695,7 +9695,7 @@ void mulib_port_test_step(void) {
     3778:	2300      	movs	r3, #0
     377a:	607b      	str	r3, [r7, #4]
     377c:	e015      	b.n	37aa <mulib_port_test_step+0x112>
-    mu_port_led_set(!mu_port_led_get());
+    mu_vm_led_set(!mu_vm_led_get());
     377e:	4b88      	ldr	r3, [pc, #544]	; (39a0 <mulib_port_test_step+0x308>)
     3780:	4798      	blx	r3
     3782:	0003      	movs	r3, r0
@@ -9724,7 +9724,7 @@ void mulib_port_test_step(void) {
     37ac:	2b09      	cmp	r3, #9
     37ae:	dde6      	ble.n	377e <mulib_port_test_step+0xe6>
   }
-  mu_port_led_set(false);
+  mu_vm_led_set(false);
     37b0:	2000      	movs	r0, #0
     37b2:	4b7c      	ldr	r3, [pc, #496]	; (39a4 <mulib_port_test_step+0x30c>)
     37b4:	4798      	blx	r3
@@ -9733,7 +9733,7 @@ void mulib_port_test_step(void) {
     37b8:	0018      	movs	r0, r3
     37ba:	4b65      	ldr	r3, [pc, #404]	; (3950 <mulib_port_test_step+0x2b8>)
     37bc:	4798      	blx	r3
-  test_print_time(mu_port_rtc_now());
+  test_print_time(mu_vm_rtc_now());
     37be:	4b61      	ldr	r3, [pc, #388]	; (3944 <mulib_port_test_step+0x2ac>)
     37c0:	4798      	blx	r3
     37c2:	0003      	movs	r3, r0
@@ -9751,7 +9751,7 @@ void mulib_port_test_step(void) {
     37d4:	0018      	movs	r0, r3
     37d6:	4b5e      	ldr	r3, [pc, #376]	; (3950 <mulib_port_test_step+0x2b8>)
     37d8:	4798      	blx	r3
-  while (!mu_port_button_is_pressed()) {
+  while (!mu_vm_button_is_pressed()) {
     37da:	46c0      	nop			; (mov r8, r8)
     37dc:	4b73      	ldr	r3, [pc, #460]	; (39ac <mulib_port_test_step+0x314>)
     37de:	4798      	blx	r3
@@ -9776,7 +9776,7 @@ void mulib_port_test_step(void) {
     37f6:	200a      	movs	r0, #10
     37f8:	4b5e      	ldr	r3, [pc, #376]	; (3974 <mulib_port_test_step+0x2dc>)
     37fa:	4798      	blx	r3
-  } while (mu_port_button_is_pressed());
+  } while (mu_vm_button_is_pressed());
     37fc:	4b6b      	ldr	r3, [pc, #428]	; (39ac <mulib_port_test_step+0x314>)
     37fe:	4798      	blx	r3
     3800:	1e03      	subs	r3, r0, #0
@@ -9786,7 +9786,7 @@ void mulib_port_test_step(void) {
     3804:	4b6b      	ldr	r3, [pc, #428]	; (39b4 <mulib_port_test_step+0x31c>)
     3806:	2200      	movs	r2, #0
     3808:	701a      	strb	r2, [r3, #0]
-  mu_port_button_set_cb(button_press_cb, NULL);
+  mu_vm_button_set_cb(button_press_cb, NULL);
     380a:	4b6b      	ldr	r3, [pc, #428]	; (39b8 <mulib_port_test_step+0x320>)
     380c:	2100      	movs	r1, #0
     380e:	0018      	movs	r0, r3
@@ -9820,7 +9820,7 @@ void mulib_port_test_step(void) {
     3838:	0018      	movs	r0, r3
     383a:	4b45      	ldr	r3, [pc, #276]	; (3950 <mulib_port_test_step+0x2b8>)
     383c:	4798      	blx	r3
-  c = mu_port_serial_read();
+  c = mu_vm_serial_read();
     383e:	1cfc      	adds	r4, r7, #3
     3840:	4b61      	ldr	r3, [pc, #388]	; (39c8 <mulib_port_test_step+0x330>)
     3842:	4798      	blx	r3
@@ -9846,7 +9846,7 @@ void mulib_port_test_step(void) {
     385e:	4b5d      	ldr	r3, [pc, #372]	; (39d4 <mulib_port_test_step+0x33c>)
     3860:	2200      	movs	r2, #0
     3862:	701a      	strb	r2, [r3, #0]
-  mu_port_serial_set_read_cb(serial_read_cb, NULL);
+  mu_vm_serial_set_read_cb(serial_read_cb, NULL);
     3864:	4b5c      	ldr	r3, [pc, #368]	; (39d8 <mulib_port_test_step+0x340>)
     3866:	2100      	movs	r1, #0
     3868:	0018      	movs	r0, r3
@@ -9866,7 +9866,7 @@ void mulib_port_test_step(void) {
     387e:	2b00      	cmp	r3, #0
     3880:	d1f6      	bne.n	3870 <mulib_port_test_step+0x1d8>
   }
-  c = mu_port_serial_read();
+  c = mu_vm_serial_read();
     3882:	1cfc      	adds	r4, r7, #3
     3884:	4b50      	ldr	r3, [pc, #320]	; (39c8 <mulib_port_test_step+0x330>)
     3886:	4798      	blx	r3
@@ -9881,18 +9881,18 @@ void mulib_port_test_step(void) {
     3896:	4b2e      	ldr	r3, [pc, #184]	; (3950 <mulib_port_test_step+0x2b8>)
     3898:	4798      	blx	r3
 
-#ifdef MU_PORT_CAN_SLEEP
+#ifdef MU_VM_CAN_SLEEP
   test_sync_printf("sleeping for 2.5 seconds...");
     389a:	4b51      	ldr	r3, [pc, #324]	; (39e0 <mulib_port_test_step+0x348>)
     389c:	0018      	movs	r0, r3
     389e:	4b2c      	ldr	r3, [pc, #176]	; (3950 <mulib_port_test_step+0x2b8>)
     38a0:	4798      	blx	r3
   // Assure line gets printed before sleeping
-  while (!mu_port_serial_can_write()) {
+  while (!mu_vm_serial_can_write()) {
     38a2:	e000      	b.n	38a6 <mulib_port_test_step+0x20e>
 	  asm("nop");
     38a4:	46c0      	nop			; (mov r8, r8)
-  while (!mu_port_serial_can_write()) {
+  while (!mu_vm_serial_can_write()) {
     38a6:	4b4f      	ldr	r3, [pc, #316]	; (39e4 <mulib_port_test_step+0x34c>)
     38a8:	4798      	blx	r3
     38aa:	0003      	movs	r3, r0
@@ -9904,7 +9904,7 @@ void mulib_port_test_step(void) {
     38b6:	d1f5      	bne.n	38a4 <mulib_port_test_step+0x20c>
 	  // buzz...
   }
-  mu_port_sleep_until(mu_port_time_offset(mu_port_rtc_now(),
+  mu_vm_sleep_until(mu_vm_time_offset(mu_vm_rtc_now(),
     38b8:	4b22      	ldr	r3, [pc, #136]	; (3944 <mulib_port_test_step+0x2ac>)
     38ba:	4798      	blx	r3
     38bc:	0004      	movs	r4, r0
@@ -9921,13 +9921,13 @@ void mulib_port_test_step(void) {
     38d2:	0018      	movs	r0, r3
     38d4:	4b44      	ldr	r3, [pc, #272]	; (39e8 <mulib_port_test_step+0x350>)
     38d6:	4798      	blx	r3
-                                          mu_port_time_ms_to_duration(2500)));
+                                          mu_vm_time_ms_to_duration(2500)));
   test_sync_printf("done.  time is now ");
     38d8:	4b2f      	ldr	r3, [pc, #188]	; (3998 <mulib_port_test_step+0x300>)
     38da:	0018      	movs	r0, r3
     38dc:	4b1c      	ldr	r3, [pc, #112]	; (3950 <mulib_port_test_step+0x2b8>)
     38de:	4798      	blx	r3
-  test_print_time(mu_port_rtc_now());
+  test_print_time(mu_vm_rtc_now());
     38e0:	4b18      	ldr	r3, [pc, #96]	; (3944 <mulib_port_test_step+0x2ac>)
     38e2:	4798      	blx	r3
     38e4:	0003      	movs	r3, r0
@@ -9946,11 +9946,11 @@ void mulib_port_test_step(void) {
     38f8:	4b15      	ldr	r3, [pc, #84]	; (3950 <mulib_port_test_step+0x2b8>)
     38fa:	4798      	blx	r3
   // Assure line gets printed before sleeping
-  while (!mu_port_serial_can_write()) {
+  while (!mu_vm_serial_can_write()) {
     38fc:	e000      	b.n	3900 <mulib_port_test_step+0x268>
 	  asm("nop");
     38fe:	46c0      	nop			; (mov r8, r8)
-  while (!mu_port_serial_can_write()) {
+  while (!mu_vm_serial_can_write()) {
     3900:	4b38      	ldr	r3, [pc, #224]	; (39e4 <mulib_port_test_step+0x34c>)
     3902:	4798      	blx	r3
     3904:	0003      	movs	r3, r0
@@ -9962,7 +9962,7 @@ void mulib_port_test_step(void) {
     3910:	d1f5      	bne.n	38fe <mulib_port_test_step+0x266>
 	  // buzz...
   }
-  mu_port_sleep();
+  mu_vm_sleep();
     3912:	4b37      	ldr	r3, [pc, #220]	; (39f0 <mulib_port_test_step+0x358>)
     3914:	4798      	blx	r3
   test_sync_printf("done.  time is now ");
@@ -9970,7 +9970,7 @@ void mulib_port_test_step(void) {
     3918:	0018      	movs	r0, r3
     391a:	4b0d      	ldr	r3, [pc, #52]	; (3950 <mulib_port_test_step+0x2b8>)
     391c:	4798      	blx	r3
-  test_print_time(mu_port_rtc_now());
+  test_print_time(mu_vm_rtc_now());
     391e:	4b09      	ldr	r3, [pc, #36]	; (3944 <mulib_port_test_step+0x2ac>)
     3920:	4798      	blx	r3
     3922:	0003      	movs	r3, r0
@@ -9984,7 +9984,7 @@ void mulib_port_test_step(void) {
     3930:	4798      	blx	r3
 #endif
 
-  test_sync_printf("end of mu_port_test\r\n================\r\n");
+  test_sync_printf("end of mu_vm_test\r\n================\r\n");
     3932:	4b30      	ldr	r3, [pc, #192]	; (39f4 <mulib_port_test_step+0x35c>)
     3934:	0018      	movs	r0, r3
     3936:	4b06      	ldr	r3, [pc, #24]	; (3950 <mulib_port_test_step+0x2b8>)
@@ -10051,8 +10051,8 @@ static void test_wait_ms(int ms) {
     39fa:	b085      	sub	sp, #20
     39fc:	af00      	add	r7, sp, #0
     39fe:	6078      	str	r0, [r7, #4]
-  mu_port_time_t then =
-      mu_port_time_offset(mu_port_rtc_now(), mu_port_time_ms_to_duration(ms));
+  mu_vm_time_t then =
+      mu_vm_time_offset(mu_vm_rtc_now(), mu_vm_time_ms_to_duration(ms));
     3a00:	4b0e      	ldr	r3, [pc, #56]	; (3a3c <test_wait_ms+0x44>)
     3a02:	4798      	blx	r3
     3a04:	0004      	movs	r4, r0
@@ -10061,18 +10061,18 @@ static void test_wait_ms(int ms) {
     3a0a:	4b0d      	ldr	r3, [pc, #52]	; (3a40 <test_wait_ms+0x48>)
     3a0c:	4798      	blx	r3
     3a0e:	0003      	movs	r3, r0
-  mu_port_time_t then =
+  mu_vm_time_t then =
     3a10:	0019      	movs	r1, r3
     3a12:	0020      	movs	r0, r4
     3a14:	4b0b      	ldr	r3, [pc, #44]	; (3a44 <test_wait_ms+0x4c>)
     3a16:	4798      	blx	r3
     3a18:	0003      	movs	r3, r0
     3a1a:	60fb      	str	r3, [r7, #12]
-  while (mu_port_time_precedes(mu_port_rtc_now(), then)) {
+  while (mu_vm_time_precedes(mu_vm_rtc_now(), then)) {
     3a1c:	e000      	b.n	3a20 <test_wait_ms+0x28>
 	  asm("nop");
     3a1e:	46c0      	nop			; (mov r8, r8)
-  while (mu_port_time_precedes(mu_port_rtc_now(), then)) {
+  while (mu_vm_time_precedes(mu_vm_rtc_now(), then)) {
     3a20:	4b06      	ldr	r3, [pc, #24]	; (3a3c <test_wait_ms+0x44>)
     3a22:	4798      	blx	r3
     3a24:	0002      	movs	r2, r0
@@ -10127,10 +10127,10 @@ static void test_sync_printf(const char *fmt, ...) {
 
   while (n_chars > 0) {
     3a6e:	e013      	b.n	3a98 <test_sync_printf+0x4c>
-    while (!mu_port_serial_can_write()) {
+    while (!mu_vm_serial_can_write()) {
       asm("nop");
     3a70:	46c0      	nop			; (mov r8, r8)
-    while (!mu_port_serial_can_write()) {
+    while (!mu_vm_serial_can_write()) {
     3a72:	4b10      	ldr	r3, [pc, #64]	; (3ab4 <test_sync_printf+0x68>)
     3a74:	4798      	blx	r3
     3a76:	0003      	movs	r3, r0
@@ -10142,7 +10142,7 @@ static void test_sync_printf(const char *fmt, ...) {
     3a82:	d1f5      	bne.n	3a70 <test_sync_printf+0x24>
       // buzz...
     }
-    mu_port_serial_write(*p++);
+    mu_vm_serial_write(*p++);
     3a84:	68bb      	ldr	r3, [r7, #8]
     3a86:	1c5a      	adds	r2, r3, #1
     3a88:	60ba      	str	r2, [r7, #8]
@@ -10208,7 +10208,7 @@ static void test_async_printf(const char *fmt, ...) {
     3ae6:	2b00      	cmp	r3, #0
     3ae8:	dd15      	ble.n	3b16 <test_async_printf+0x5a>
     // install callback to handle subsequent writes
-    mu_port_serial_set_write_cb(serial_write_cb, NULL);
+    mu_vm_serial_set_write_cb(serial_write_cb, NULL);
     3aea:	4b16      	ldr	r3, [pc, #88]	; (3b44 <test_async_printf+0x88>)
     3aec:	2100      	movs	r1, #0
     3aee:	0018      	movs	r0, r3
@@ -10227,7 +10227,7 @@ static void test_async_printf(const char *fmt, ...) {
     3b02:	1e5a      	subs	r2, r3, #1
     3b04:	4b0d      	ldr	r3, [pc, #52]	; (3b3c <test_async_printf+0x80>)
     3b06:	601a      	str	r2, [r3, #0]
-    mu_port_serial_write(s_tx_buf[0]);
+    mu_vm_serial_write(s_tx_buf[0]);
     3b08:	4b0a      	ldr	r3, [pc, #40]	; (3b34 <test_async_printf+0x78>)
     3b0a:	781b      	ldrb	r3, [r3, #0]
     3b0c:	0018      	movs	r0, r3
@@ -10248,7 +10248,7 @@ static void test_async_printf(const char *fmt, ...) {
   }
 
   // de-install callbacks.
-  mu_port_serial_set_write_cb(NULL, NULL);
+  mu_vm_serial_set_write_cb(NULL, NULL);
     3b1e:	2100      	movs	r1, #0
     3b20:	2000      	movs	r0, #0
     3b22:	4b09      	ldr	r3, [pc, #36]	; (3b48 <test_async_printf+0x8c>)
@@ -10271,12 +10271,12 @@ static void test_async_printf(const char *fmt, ...) {
 
 00003b50 <test_print_time>:
 
-static void test_print_time(mu_port_time_t t) {
+static void test_print_time(mu_vm_time_t t) {
     3b50:	b580      	push	{r7, lr}
     3b52:	b084      	sub	sp, #16
     3b54:	af00      	add	r7, sp, #0
     3b56:	6078      	str	r0, [r7, #4]
-  mu_port_time_dt uptime = mu_port_time_difference(t, s_epoch);
+  mu_vm_time_dt uptime = mu_vm_time_difference(t, s_epoch);
     3b58:	4b0c      	ldr	r3, [pc, #48]	; (3b8c <test_print_time+0x3c>)
     3b5a:	681a      	ldr	r2, [r3, #0]
     3b5c:	687b      	ldr	r3, [r7, #4]
@@ -10286,7 +10286,7 @@ static void test_print_time(mu_port_time_t t) {
     3b64:	4798      	blx	r3
     3b66:	0003      	movs	r3, r0
     3b68:	60fb      	str	r3, [r7, #12]
-  int ms = mu_port_time_duration_to_ms(uptime);
+  int ms = mu_vm_time_duration_to_ms(uptime);
     3b6a:	68fb      	ldr	r3, [r7, #12]
     3b6c:	0018      	movs	r0, r3
     3b6e:	4b09      	ldr	r3, [pc, #36]	; (3b94 <test_print_time+0x44>)
@@ -10294,7 +10294,7 @@ static void test_print_time(mu_port_time_t t) {
     3b72:	0003      	movs	r3, r0
     3b74:	60bb      	str	r3, [r7, #8]
 #ifdef PORT_FLOAT
-  PORT_FLOAT s = mu_port_time_duration_to_s(uptime);
+  PORT_FLOAT s = mu_vm_time_duration_to_s(uptime);
   test_sync_printf("time = %d ms (%f s)", ms, s);
 #else
   test_sync_printf("time = %d ms", ms);
@@ -10349,7 +10349,7 @@ static void serial_write_cb(void *arg) {
     3bc6:	681b      	ldr	r3, [r3, #0]
     3bc8:	2b00      	cmp	r3, #0
     3bca:	dd0e      	ble.n	3bea <serial_write_cb+0x2e>
-    mu_port_serial_write(s_tx_buf[s_tx_index++]);
+    mu_vm_serial_write(s_tx_buf[s_tx_index++]);
     3bcc:	4b0a      	ldr	r3, [pc, #40]	; (3bf8 <serial_write_cb+0x3c>)
     3bce:	681b      	ldr	r3, [r3, #0]
     3bd0:	1c59      	adds	r1, r3, #1
@@ -10911,56 +10911,56 @@ static inline bool gpio_get_pin_level(const uint8_t pin)
     3f62:	46c0      	nop			; (mov r8, r8)
     3f64:	00003e5d 	.word	0x00003e5d
 
-00003f68 <mu_port_init>:
+00003f68 <mu_vm_init>:
 static volatile bool s_rx_has_data;
 
 // =============================================================================
 // public code
 
-void mu_port_init(void) {
+void mu_vm_init(void) {
     3f68:	b580      	push	{r7, lr}
     3f6a:	af00      	add	r7, sp, #0
-#ifdef MU_PORT_FLOAT
-  s_rtc_period = 1.0 / (MU_PORT_FLOAT)CONF_GCLK_RTC_FREQUENCY;
+#ifdef MU_VM_FLOAT
+  s_rtc_period = 1.0 / (MU_VM_FLOAT)CONF_GCLK_RTC_FREQUENCY;
 #endif
   memset(&s_port, 0, sizeof(s_port));
-    3f6c:	4b0e      	ldr	r3, [pc, #56]	; (3fa8 <mu_port_init+0x40>)
+    3f6c:	4b0e      	ldr	r3, [pc, #56]	; (3fa8 <mu_vm_init+0x40>)
     3f6e:	2220      	movs	r2, #32
     3f70:	2100      	movs	r1, #0
     3f72:	0018      	movs	r0, r3
-    3f74:	4b0d      	ldr	r3, [pc, #52]	; (3fac <mu_port_init+0x44>)
+    3f74:	4b0d      	ldr	r3, [pc, #52]	; (3fac <mu_vm_init+0x44>)
     3f76:	4798      	blx	r3
 
   ext_irq_register(PIN_PA15, button_cb_trampoline);
-    3f78:	4b0d      	ldr	r3, [pc, #52]	; (3fb0 <mu_port_init+0x48>)
+    3f78:	4b0d      	ldr	r3, [pc, #52]	; (3fb0 <mu_vm_init+0x48>)
     3f7a:	0019      	movs	r1, r3
     3f7c:	200f      	movs	r0, #15
-    3f7e:	4b0d      	ldr	r3, [pc, #52]	; (3fb4 <mu_port_init+0x4c>)
+    3f7e:	4b0d      	ldr	r3, [pc, #52]	; (3fb4 <mu_vm_init+0x4c>)
     3f80:	4798      	blx	r3
 
   // Commandeer the USART driver to do our bidding...
   customize_usart_driver();
-    3f82:	4b0d      	ldr	r3, [pc, #52]	; (3fb8 <mu_port_init+0x50>)
+    3f82:	4b0d      	ldr	r3, [pc, #52]	; (3fb8 <mu_vm_init+0x50>)
     3f84:	4798      	blx	r3
   usart_async_enable(&USART_0);
-    3f86:	4b0d      	ldr	r3, [pc, #52]	; (3fbc <mu_port_init+0x54>)
+    3f86:	4b0d      	ldr	r3, [pc, #52]	; (3fbc <mu_vm_init+0x54>)
     3f88:	0018      	movs	r0, r3
-    3f8a:	4b0d      	ldr	r3, [pc, #52]	; (3fc0 <mu_port_init+0x58>)
+    3f8a:	4b0d      	ldr	r3, [pc, #52]	; (3fc0 <mu_vm_init+0x58>)
     3f8c:	4798      	blx	r3
 
   // Initialize the RTC.  Use CALENDAR_0 since that's the only published
   // interface for interacting with the underlying RTC.
   calendar_enable(&CALENDAR_0); // start RTC
-    3f8e:	4b0d      	ldr	r3, [pc, #52]	; (3fc4 <mu_port_init+0x5c>)
+    3f8e:	4b0d      	ldr	r3, [pc, #52]	; (3fc4 <mu_vm_init+0x5c>)
     3f90:	0018      	movs	r0, r3
-    3f92:	4b0d      	ldr	r3, [pc, #52]	; (3fc8 <mu_port_init+0x60>)
+    3f92:	4b0d      	ldr	r3, [pc, #52]	; (3fc8 <mu_vm_init+0x60>)
     3f94:	4798      	blx	r3
   _calendar_register_callback(&CALENDAR_0.device, rtc_cb_trampoline);
-    3f96:	4a0d      	ldr	r2, [pc, #52]	; (3fcc <mu_port_init+0x64>)
-    3f98:	4b0a      	ldr	r3, [pc, #40]	; (3fc4 <mu_port_init+0x5c>)
+    3f96:	4a0d      	ldr	r2, [pc, #52]	; (3fcc <mu_vm_init+0x64>)
+    3f98:	4b0a      	ldr	r3, [pc, #40]	; (3fc4 <mu_vm_init+0x5c>)
     3f9a:	0011      	movs	r1, r2
     3f9c:	0018      	movs	r0, r3
-    3f9e:	4b0c      	ldr	r3, [pc, #48]	; (3fd0 <mu_port_init+0x68>)
+    3f9e:	4b0c      	ldr	r3, [pc, #48]	; (3fd0 <mu_vm_init+0x68>)
     3fa0:	4798      	blx	r3
 }
     3fa2:	46c0      	nop			; (mov r8, r8)
@@ -10978,11 +10978,11 @@ void mu_port_init(void) {
     3fcc:	000044ed 	.word	0x000044ed
     3fd0:	00002705 	.word	0x00002705
 
-00003fd4 <mu_port_time_offset>:
+00003fd4 <mu_vm_time_offset>:
 
 // TIME
 
-mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
+mu_vm_time_t mu_vm_time_offset(mu_vm_time_t t, mu_vm_time_dt dt) {
     3fd4:	b580      	push	{r7, lr}
     3fd6:	b082      	sub	sp, #8
     3fd8:	af00      	add	r7, sp, #0
@@ -10998,9 +10998,9 @@ mu_port_time_t mu_port_time_offset(mu_port_time_t t, mu_port_time_dt dt) {
     3fe8:	b002      	add	sp, #8
     3fea:	bd80      	pop	{r7, pc}
 
-00003fec <mu_port_time_difference>:
+00003fec <mu_vm_time_difference>:
 
-mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
+mu_vm_time_dt mu_vm_time_difference(mu_vm_time_t t1, mu_vm_time_t t2) {
     3fec:	b580      	push	{r7, lr}
     3fee:	b082      	sub	sp, #8
     3ff0:	af00      	add	r7, sp, #0
@@ -11016,20 +11016,20 @@ mu_port_time_dt mu_port_time_difference(mu_port_time_t t1, mu_port_time_t t2) {
     4000:	b002      	add	sp, #8
     4002:	bd80      	pop	{r7, pc}
 
-00004004 <mu_port_time_precedes>:
+00004004 <mu_vm_time_precedes>:
 
-bool mu_port_time_precedes(mu_port_time_t t1, mu_port_time_t t2) {
+bool mu_vm_time_precedes(mu_vm_time_t t1, mu_vm_time_t t2) {
     4004:	b580      	push	{r7, lr}
     4006:	b082      	sub	sp, #8
     4008:	af00      	add	r7, sp, #0
     400a:	6078      	str	r0, [r7, #4]
     400c:	6039      	str	r1, [r7, #0]
-  return mu_port_time_difference(t1, t2) > MAX_DURATION;
+  return mu_vm_time_difference(t1, t2) > MAX_DURATION;
     400e:	683a      	ldr	r2, [r7, #0]
     4010:	687b      	ldr	r3, [r7, #4]
     4012:	0011      	movs	r1, r2
     4014:	0018      	movs	r0, r3
-    4016:	4b04      	ldr	r3, [pc, #16]	; (4028 <mu_port_time_precedes+0x24>)
+    4016:	4b04      	ldr	r3, [pc, #16]	; (4028 <mu_vm_time_precedes+0x24>)
     4018:	4798      	blx	r3
     401a:	0003      	movs	r3, r0
     401c:	0fdb      	lsrs	r3, r3, #31
@@ -11041,13 +11041,13 @@ bool mu_port_time_precedes(mu_port_time_t t1, mu_port_time_t t2) {
     4026:	bd80      	pop	{r7, pc}
     4028:	00003fed 	.word	0x00003fed
 
-0000402c <mu_port_time_ms_to_duration>:
+0000402c <mu_vm_time_ms_to_duration>:
 
-bool mu_port_time_follows(mu_port_time_t t1, mu_port_time_t t2) {
-  return mu_port_time_difference(t2, t1) > MAX_DURATION;
+bool mu_vm_time_follows(mu_vm_time_t t1, mu_vm_time_t t2) {
+  return mu_vm_time_difference(t2, t1) > MAX_DURATION;
 }
 
-mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms) {
+mu_vm_time_dt mu_vm_time_ms_to_duration(mu_vm_time_ms_dt ms) {
     402c:	b580      	push	{r7, lr}
     402e:	b082      	sub	sp, #8
     4030:	af00      	add	r7, sp, #0
@@ -11059,7 +11059,7 @@ mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms) {
     403a:	009b      	lsls	r3, r3, #2
     403c:	0019      	movs	r1, r3
     403e:	0010      	movs	r0, r2
-    4040:	4b03      	ldr	r3, [pc, #12]	; (4050 <mu_port_time_ms_to_duration+0x24>)
+    4040:	4b03      	ldr	r3, [pc, #12]	; (4050 <mu_vm_time_ms_to_duration+0x24>)
     4042:	4798      	blx	r3
     4044:	0003      	movs	r3, r0
 }
@@ -11070,9 +11070,9 @@ mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms) {
     404e:	46c0      	nop			; (mov r8, r8)
     4050:	00004529 	.word	0x00004529
 
-00004054 <mu_port_time_duration_to_ms>:
+00004054 <mu_vm_time_duration_to_ms>:
 
-mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt) {
+mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt) {
     4054:	b580      	push	{r7, lr}
     4056:	b082      	sub	sp, #8
     4058:	af00      	add	r7, sp, #0
@@ -11086,7 +11086,7 @@ mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt) {
     4066:	021b      	lsls	r3, r3, #8
     4068:	0019      	movs	r1, r3
     406a:	0010      	movs	r0, r2
-    406c:	4b03      	ldr	r3, [pc, #12]	; (407c <mu_port_time_duration_to_ms+0x28>)
+    406c:	4b03      	ldr	r3, [pc, #12]	; (407c <mu_vm_time_duration_to_ms+0x28>)
     406e:	4798      	blx	r3
     4070:	0003      	movs	r3, r0
 }
@@ -11097,20 +11097,20 @@ mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt) {
     407a:	46c0      	nop			; (mov r8, r8)
     407c:	00004529 	.word	0x00004529
 
-00004080 <mu_port_rtc_now>:
+00004080 <mu_vm_rtc_now>:
 }
 #endif
 
 // REAL TIME CLOCK
 
-mu_port_time_t mu_port_rtc_now(void) {
+mu_vm_time_t mu_vm_rtc_now(void) {
     4080:	b580      	push	{r7, lr}
     4082:	af00      	add	r7, sp, #0
   return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
-    4084:	4b04      	ldr	r3, [pc, #16]	; (4098 <mu_port_rtc_now+0x18>)
+    4084:	4b04      	ldr	r3, [pc, #16]	; (4098 <mu_vm_rtc_now+0x18>)
     4086:	681b      	ldr	r3, [r3, #0]
     4088:	0018      	movs	r0, r3
-    408a:	4b04      	ldr	r3, [pc, #16]	; (409c <mu_port_rtc_now+0x1c>)
+    408a:	4b04      	ldr	r3, [pc, #16]	; (409c <mu_vm_rtc_now+0x1c>)
     408c:	4798      	blx	r3
     408e:	0003      	movs	r3, r0
 }
@@ -11121,12 +11121,12 @@ mu_port_time_t mu_port_rtc_now(void) {
     4098:	2000018c 	.word	0x2000018c
     409c:	00003d65 	.word	0x00003d65
 
-000040a0 <mu_port_rtc_set_cb>:
+000040a0 <mu_vm_rtc_set_cb>:
 
 /**
  * Register a callback to be called when rtc matches.
  */
-void mu_port_rtc_set_cb(mu_port_callback_fn fn, void *arg) {
+void mu_vm_rtc_set_cb(mu_vm_callback_fn fn, void *arg) {
     40a0:	b580      	push	{r7, lr}
     40a2:	b082      	sub	sp, #8
     40a4:	af00      	add	r7, sp, #0
@@ -11135,13 +11135,13 @@ void mu_port_rtc_set_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
     40aa:	687b      	ldr	r3, [r7, #4]
     40ac:	2b00      	cmp	r3, #0
-    40ae:	d006      	beq.n	40be <mu_port_rtc_set_cb+0x1e>
+    40ae:	d006      	beq.n	40be <mu_vm_rtc_set_cb+0x1e>
     s_port.rtc_cb = fn;
-    40b0:	4b08      	ldr	r3, [pc, #32]	; (40d4 <mu_port_rtc_set_cb+0x34>)
+    40b0:	4b08      	ldr	r3, [pc, #32]	; (40d4 <mu_vm_rtc_set_cb+0x34>)
     40b2:	687a      	ldr	r2, [r7, #4]
     40b4:	619a      	str	r2, [r3, #24]
     s_port.rtc_cb_arg = arg;
-    40b6:	4b07      	ldr	r3, [pc, #28]	; (40d4 <mu_port_rtc_set_cb+0x34>)
+    40b6:	4b07      	ldr	r3, [pc, #28]	; (40d4 <mu_vm_rtc_set_cb+0x34>)
     40b8:	683a      	ldr	r2, [r7, #0]
     40ba:	61da      	str	r2, [r3, #28]
   } else {
@@ -11149,13 +11149,13 @@ void mu_port_rtc_set_cb(mu_port_callback_fn fn, void *arg) {
     s_port.rtc_cb_arg = NULL;
   }
 }
-    40bc:	e005      	b.n	40ca <mu_port_rtc_set_cb+0x2a>
+    40bc:	e005      	b.n	40ca <mu_vm_rtc_set_cb+0x2a>
     s_port.rtc_cb = NULL;
-    40be:	4b05      	ldr	r3, [pc, #20]	; (40d4 <mu_port_rtc_set_cb+0x34>)
+    40be:	4b05      	ldr	r3, [pc, #20]	; (40d4 <mu_vm_rtc_set_cb+0x34>)
     40c0:	2200      	movs	r2, #0
     40c2:	619a      	str	r2, [r3, #24]
     s_port.rtc_cb_arg = NULL;
-    40c4:	4b03      	ldr	r3, [pc, #12]	; (40d4 <mu_port_rtc_set_cb+0x34>)
+    40c4:	4b03      	ldr	r3, [pc, #12]	; (40d4 <mu_vm_rtc_set_cb+0x34>)
     40c6:	2200      	movs	r2, #0
     40c8:	61da      	str	r2, [r3, #28]
 }
@@ -11166,32 +11166,32 @@ void mu_port_rtc_set_cb(mu_port_callback_fn fn, void *arg) {
     40d2:	46c0      	nop			; (mov r8, r8)
     40d4:	20000160 	.word	0x20000160
 
-000040d8 <mu_port_rtc_alarm_at>:
+000040d8 <mu_vm_rtc_alarm_at>:
 
-void mu_port_rtc_alarm_at(mu_port_time_t at) {
+void mu_vm_rtc_alarm_at(mu_vm_time_t at) {
     40d8:	b580      	push	{r7, lr}
     40da:	b082      	sub	sp, #8
     40dc:	af00      	add	r7, sp, #0
     40de:	6078      	str	r0, [r7, #4]
   _calendar_set_comp(&CALENDAR_0.device, at);
     40e0:	687a      	ldr	r2, [r7, #4]
-    40e2:	4b08      	ldr	r3, [pc, #32]	; (4104 <mu_port_rtc_alarm_at+0x2c>)
+    40e2:	4b08      	ldr	r3, [pc, #32]	; (4104 <mu_vm_rtc_alarm_at+0x2c>)
     40e4:	0011      	movs	r1, r2
     40e6:	0018      	movs	r0, r3
-    40e8:	4b07      	ldr	r3, [pc, #28]	; (4108 <mu_port_rtc_alarm_at+0x30>)
+    40e8:	4b07      	ldr	r3, [pc, #28]	; (4108 <mu_vm_rtc_alarm_at+0x30>)
     40ea:	4798      	blx	r3
   // Particular to the SAMD21, hri_rtcmode0_write_COMP_COMP_bf() clears the
   // READREQ_RCONT bit, which prevents subsequent RTC reads from updating.
   // Restore it here.
   hri_rtcmode0_set_READREQ_RCONT_bit(RTC);
-    40ec:	4b07      	ldr	r3, [pc, #28]	; (410c <mu_port_rtc_alarm_at+0x34>)
+    40ec:	4b07      	ldr	r3, [pc, #28]	; (410c <mu_vm_rtc_alarm_at+0x34>)
     40ee:	0018      	movs	r0, r3
-    40f0:	4b07      	ldr	r3, [pc, #28]	; (4110 <mu_port_rtc_alarm_at+0x38>)
+    40f0:	4b07      	ldr	r3, [pc, #28]	; (4110 <mu_vm_rtc_alarm_at+0x38>)
     40f2:	4798      	blx	r3
   hri_rtcmode0_set_READREQ_RREQ_bit(RTC);
-    40f4:	4b05      	ldr	r3, [pc, #20]	; (410c <mu_port_rtc_alarm_at+0x34>)
+    40f4:	4b05      	ldr	r3, [pc, #20]	; (410c <mu_vm_rtc_alarm_at+0x34>)
     40f6:	0018      	movs	r0, r3
-    40f8:	4b06      	ldr	r3, [pc, #24]	; (4114 <mu_port_rtc_alarm_at+0x3c>)
+    40f8:	4b06      	ldr	r3, [pc, #24]	; (4114 <mu_vm_rtc_alarm_at+0x3c>)
     40fa:	4798      	blx	r3
 }
     40fc:	46c0      	nop			; (mov r8, r8)
@@ -11204,11 +11204,11 @@ void mu_port_rtc_alarm_at(mu_port_time_t at) {
     4110:	00003d1d 	.word	0x00003d1d
     4114:	00003d41 	.word	0x00003d41
 
-00004118 <mu_port_led_set>:
+00004118 <mu_vm_led_set>:
 
 // LED
 
-void mu_port_led_set(bool on) { gpio_set_pin_level(USER_LED_AL, !on); }
+void mu_vm_led_set(bool on) { gpio_set_pin_level(USER_LED_AL, !on); }
     4118:	b580      	push	{r7, lr}
     411a:	b082      	sub	sp, #8
     411c:	af00      	add	r7, sp, #0
@@ -11229,7 +11229,7 @@ void mu_port_led_set(bool on) { gpio_set_pin_level(USER_LED_AL, !on); }
     413a:	b2db      	uxtb	r3, r3
     413c:	0019      	movs	r1, r3
     413e:	203e      	movs	r0, #62	; 0x3e
-    4140:	4b02      	ldr	r3, [pc, #8]	; (414c <mu_port_led_set+0x34>)
+    4140:	4b02      	ldr	r3, [pc, #8]	; (414c <mu_vm_led_set+0x34>)
     4142:	4798      	blx	r3
     4144:	46c0      	nop			; (mov r8, r8)
     4146:	46bd      	mov	sp, r7
@@ -11237,13 +11237,13 @@ void mu_port_led_set(bool on) { gpio_set_pin_level(USER_LED_AL, !on); }
     414a:	bd80      	pop	{r7, pc}
     414c:	00003ee9 	.word	0x00003ee9
 
-00004150 <mu_port_led_get>:
+00004150 <mu_vm_led_get>:
 
-bool mu_port_led_get(void) { return !gpio_get_pin_level(USER_LED_AL); }
+bool mu_vm_led_get(void) { return !gpio_get_pin_level(USER_LED_AL); }
     4150:	b580      	push	{r7, lr}
     4152:	af00      	add	r7, sp, #0
     4154:	203e      	movs	r0, #62	; 0x3e
-    4156:	4b08      	ldr	r3, [pc, #32]	; (4178 <mu_port_led_get+0x28>)
+    4156:	4b08      	ldr	r3, [pc, #32]	; (4178 <mu_vm_led_get+0x28>)
     4158:	4798      	blx	r3
     415a:	0003      	movs	r3, r0
     415c:	1e5a      	subs	r2, r3, #1
@@ -11262,16 +11262,16 @@ bool mu_port_led_get(void) { return !gpio_get_pin_level(USER_LED_AL); }
     4176:	46c0      	nop			; (mov r8, r8)
     4178:	00003f29 	.word	0x00003f29
 
-0000417c <mu_port_button_is_pressed>:
+0000417c <mu_vm_button_is_pressed>:
 
 // BUTTON
 
-bool mu_port_button_is_pressed(void) {
+bool mu_vm_button_is_pressed(void) {
     417c:	b580      	push	{r7, lr}
     417e:	af00      	add	r7, sp, #0
   return !gpio_get_pin_level(USER_BUTTON_AL);
     4180:	200f      	movs	r0, #15
-    4182:	4b08      	ldr	r3, [pc, #32]	; (41a4 <mu_port_button_is_pressed+0x28>)
+    4182:	4b08      	ldr	r3, [pc, #32]	; (41a4 <mu_vm_button_is_pressed+0x28>)
     4184:	4798      	blx	r3
     4186:	0003      	movs	r3, r0
     4188:	1e5a      	subs	r2, r3, #1
@@ -11291,9 +11291,9 @@ bool mu_port_button_is_pressed(void) {
     41a2:	46c0      	nop			; (mov r8, r8)
     41a4:	00003f29 	.word	0x00003f29
 
-000041a8 <mu_port_button_set_cb>:
+000041a8 <mu_vm_button_set_cb>:
 
-void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg) {
+void mu_vm_button_set_cb(mu_vm_callback_fn fn, void *arg) {
     41a8:	b580      	push	{r7, lr}
     41aa:	b082      	sub	sp, #8
     41ac:	af00      	add	r7, sp, #0
@@ -11302,13 +11302,13 @@ void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
     41b2:	687b      	ldr	r3, [r7, #4]
     41b4:	2b00      	cmp	r3, #0
-    41b6:	d006      	beq.n	41c6 <mu_port_button_set_cb+0x1e>
+    41b6:	d006      	beq.n	41c6 <mu_vm_button_set_cb+0x1e>
     s_port.button_cb = fn;
-    41b8:	4b08      	ldr	r3, [pc, #32]	; (41dc <mu_port_button_set_cb+0x34>)
+    41b8:	4b08      	ldr	r3, [pc, #32]	; (41dc <mu_vm_button_set_cb+0x34>)
     41ba:	687a      	ldr	r2, [r7, #4]
     41bc:	601a      	str	r2, [r3, #0]
     s_port.button_cb_arg = arg;
-    41be:	4b07      	ldr	r3, [pc, #28]	; (41dc <mu_port_button_set_cb+0x34>)
+    41be:	4b07      	ldr	r3, [pc, #28]	; (41dc <mu_vm_button_set_cb+0x34>)
     41c0:	683a      	ldr	r2, [r7, #0]
     41c2:	605a      	str	r2, [r3, #4]
   } else {
@@ -11316,13 +11316,13 @@ void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg) {
     s_port.button_cb_arg = NULL;
   }
 }
-    41c4:	e005      	b.n	41d2 <mu_port_button_set_cb+0x2a>
+    41c4:	e005      	b.n	41d2 <mu_vm_button_set_cb+0x2a>
     s_port.button_cb = NULL;
-    41c6:	4b05      	ldr	r3, [pc, #20]	; (41dc <mu_port_button_set_cb+0x34>)
+    41c6:	4b05      	ldr	r3, [pc, #20]	; (41dc <mu_vm_button_set_cb+0x34>)
     41c8:	2200      	movs	r2, #0
     41ca:	601a      	str	r2, [r3, #0]
     s_port.button_cb_arg = NULL;
-    41cc:	4b03      	ldr	r3, [pc, #12]	; (41dc <mu_port_button_set_cb+0x34>)
+    41cc:	4b03      	ldr	r3, [pc, #12]	; (41dc <mu_vm_button_set_cb+0x34>)
     41ce:	2200      	movs	r2, #0
     41d0:	605a      	str	r2, [r3, #4]
 }
@@ -11333,11 +11333,11 @@ void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg) {
     41da:	46c0      	nop			; (mov r8, r8)
     41dc:	20000160 	.word	0x20000160
 
-000041e0 <mu_port_serial_write>:
+000041e0 <mu_vm_serial_write>:
 
 // SERIAL
 
-void mu_port_serial_write(uint8_t byte) {
+void mu_vm_serial_write(uint8_t byte) {
     41e0:	b580      	push	{r7, lr}
     41e2:	b082      	sub	sp, #8
     41e4:	af00      	add	r7, sp, #0
@@ -11345,53 +11345,53 @@ void mu_port_serial_write(uint8_t byte) {
     41e8:	1dfb      	adds	r3, r7, #7
     41ea:	701a      	strb	r2, [r3, #0]
   if (s_port.tx_cb) {
-    41ec:	4b16      	ldr	r3, [pc, #88]	; (4248 <mu_port_serial_write+0x68>)
+    41ec:	4b16      	ldr	r3, [pc, #88]	; (4248 <mu_vm_serial_write+0x68>)
     41ee:	689b      	ldr	r3, [r3, #8]
     41f0:	2b00      	cmp	r3, #0
-    41f2:	d015      	beq.n	4220 <mu_port_serial_write+0x40>
+    41f2:	d015      	beq.n	4220 <mu_vm_serial_write+0x40>
     // in async mode.  Enable the transmit interrupt to make that happen.
     // The character will be written in the interrupt routine.
     //
     // NOTE: _sercom_usart_interrupt_handler() will disable TX interrupts after
     // transmitting a byte, so they must be re-enabled before sending the next.
     while (s_tx_has_data) {
-    41f4:	e000      	b.n	41f8 <mu_port_serial_write+0x18>
+    41f4:	e000      	b.n	41f8 <mu_vm_serial_write+0x18>
       asm("nop");
     41f6:	46c0      	nop			; (mov r8, r8)
     while (s_tx_has_data) {
-    41f8:	4b14      	ldr	r3, [pc, #80]	; (424c <mu_port_serial_write+0x6c>)
+    41f8:	4b14      	ldr	r3, [pc, #80]	; (424c <mu_vm_serial_write+0x6c>)
     41fa:	781b      	ldrb	r3, [r3, #0]
     41fc:	b2db      	uxtb	r3, r3
     41fe:	2b00      	cmp	r3, #0
-    4200:	d1f9      	bne.n	41f6 <mu_port_serial_write+0x16>
+    4200:	d1f9      	bne.n	41f6 <mu_vm_serial_write+0x16>
     }
     s_tx_data = byte;
-    4202:	4b13      	ldr	r3, [pc, #76]	; (4250 <mu_port_serial_write+0x70>)
+    4202:	4b13      	ldr	r3, [pc, #76]	; (4250 <mu_vm_serial_write+0x70>)
     4204:	1dfa      	adds	r2, r7, #7
     4206:	7812      	ldrb	r2, [r2, #0]
     4208:	701a      	strb	r2, [r3, #0]
     s_tx_has_data = true;
-    420a:	4b10      	ldr	r3, [pc, #64]	; (424c <mu_port_serial_write+0x6c>)
+    420a:	4b10      	ldr	r3, [pc, #64]	; (424c <mu_vm_serial_write+0x6c>)
     420c:	2201      	movs	r2, #1
     420e:	701a      	strb	r2, [r3, #0]
     _usart_async_set_irq_state(&USART_0.device, USART_ASYNC_BYTE_SENT, true);
-    4210:	4b10      	ldr	r3, [pc, #64]	; (4254 <mu_port_serial_write+0x74>)
+    4210:	4b10      	ldr	r3, [pc, #64]	; (4254 <mu_vm_serial_write+0x74>)
     4212:	2201      	movs	r2, #1
     4214:	2100      	movs	r1, #0
     4216:	0018      	movs	r0, r3
-    4218:	4b0f      	ldr	r3, [pc, #60]	; (4258 <mu_port_serial_write+0x78>)
+    4218:	4b0f      	ldr	r3, [pc, #60]	; (4258 <mu_vm_serial_write+0x78>)
     421a:	4798      	blx	r3
-    while (!mu_port_serial_can_write()) {
+    while (!mu_vm_serial_can_write()) {
       asm("nop");
     }
     _usart_async_write_byte(&USART_0.device, byte);
   }
 }
-    421c:	e010      	b.n	4240 <mu_port_serial_write+0x60>
+    421c:	e010      	b.n	4240 <mu_vm_serial_write+0x60>
       asm("nop");
     421e:	46c0      	nop			; (mov r8, r8)
-    while (!mu_port_serial_can_write()) {
-    4220:	4b0e      	ldr	r3, [pc, #56]	; (425c <mu_port_serial_write+0x7c>)
+    while (!mu_vm_serial_can_write()) {
+    4220:	4b0e      	ldr	r3, [pc, #56]	; (425c <mu_vm_serial_write+0x7c>)
     4222:	4798      	blx	r3
     4224:	0003      	movs	r3, r0
     4226:	001a      	movs	r2, r3
@@ -11399,14 +11399,14 @@ void mu_port_serial_write(uint8_t byte) {
     422a:	4053      	eors	r3, r2
     422c:	b2db      	uxtb	r3, r3
     422e:	2b00      	cmp	r3, #0
-    4230:	d1f5      	bne.n	421e <mu_port_serial_write+0x3e>
+    4230:	d1f5      	bne.n	421e <mu_vm_serial_write+0x3e>
     _usart_async_write_byte(&USART_0.device, byte);
     4232:	1dfb      	adds	r3, r7, #7
     4234:	781a      	ldrb	r2, [r3, #0]
-    4236:	4b07      	ldr	r3, [pc, #28]	; (4254 <mu_port_serial_write+0x74>)
+    4236:	4b07      	ldr	r3, [pc, #28]	; (4254 <mu_vm_serial_write+0x74>)
     4238:	0011      	movs	r1, r2
     423a:	0018      	movs	r0, r3
-    423c:	4b08      	ldr	r3, [pc, #32]	; (4260 <mu_port_serial_write+0x80>)
+    423c:	4b08      	ldr	r3, [pc, #32]	; (4260 <mu_vm_serial_write+0x80>)
     423e:	4798      	blx	r3
 }
     4240:	46c0      	nop			; (mov r8, r8)
@@ -11421,17 +11421,17 @@ void mu_port_serial_write(uint8_t byte) {
     425c:	00004265 	.word	0x00004265
     4260:	00002f21 	.word	0x00002f21
 
-00004264 <mu_port_serial_can_write>:
+00004264 <mu_vm_serial_can_write>:
 
-bool mu_port_serial_can_write(void) {
+bool mu_vm_serial_can_write(void) {
     4264:	b580      	push	{r7, lr}
     4266:	af00      	add	r7, sp, #0
   // returns DRE bit
   return hri_sercomusart_get_interrupt_DRE_bit(USART_0.device.hw);
-    4268:	4b04      	ldr	r3, [pc, #16]	; (427c <mu_port_serial_can_write+0x18>)
+    4268:	4b04      	ldr	r3, [pc, #16]	; (427c <mu_vm_serial_can_write+0x18>)
     426a:	6a1b      	ldr	r3, [r3, #32]
     426c:	0018      	movs	r0, r3
-    426e:	4b04      	ldr	r3, [pc, #16]	; (4280 <mu_port_serial_can_write+0x1c>)
+    426e:	4b04      	ldr	r3, [pc, #16]	; (4280 <mu_vm_serial_can_write+0x1c>)
     4270:	4798      	blx	r3
     4272:	0003      	movs	r3, r0
   // return _usart_sync_is_ready_to_send(&USART_0.device);
@@ -11443,9 +11443,9 @@ bool mu_port_serial_can_write(void) {
     427c:	200001a8 	.word	0x200001a8
     4280:	00003dbd 	.word	0x00003dbd
 
-00004284 <mu_port_serial_set_write_cb>:
+00004284 <mu_vm_serial_set_write_cb>:
 
-void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
+void mu_vm_serial_set_write_cb(mu_vm_callback_fn fn, void *arg) {
     4284:	b580      	push	{r7, lr}
     4286:	b082      	sub	sp, #8
     4288:	af00      	add	r7, sp, #0
@@ -11454,13 +11454,13 @@ void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
     428e:	687b      	ldr	r3, [r7, #4]
     4290:	2b00      	cmp	r3, #0
-    4292:	d006      	beq.n	42a2 <mu_port_serial_set_write_cb+0x1e>
+    4292:	d006      	beq.n	42a2 <mu_vm_serial_set_write_cb+0x1e>
     s_port.tx_cb = fn;
-    4294:	4b08      	ldr	r3, [pc, #32]	; (42b8 <mu_port_serial_set_write_cb+0x34>)
+    4294:	4b08      	ldr	r3, [pc, #32]	; (42b8 <mu_vm_serial_set_write_cb+0x34>)
     4296:	687a      	ldr	r2, [r7, #4]
     4298:	609a      	str	r2, [r3, #8]
     s_port.tx_cb_arg = arg;
-    429a:	4b07      	ldr	r3, [pc, #28]	; (42b8 <mu_port_serial_set_write_cb+0x34>)
+    429a:	4b07      	ldr	r3, [pc, #28]	; (42b8 <mu_vm_serial_set_write_cb+0x34>)
     429c:	683a      	ldr	r2, [r7, #0]
     429e:	60da      	str	r2, [r3, #12]
   } else {
@@ -11468,13 +11468,13 @@ void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
     s_port.tx_cb_arg = NULL;
   }
 }
-    42a0:	e005      	b.n	42ae <mu_port_serial_set_write_cb+0x2a>
+    42a0:	e005      	b.n	42ae <mu_vm_serial_set_write_cb+0x2a>
     s_port.tx_cb = NULL;
-    42a2:	4b05      	ldr	r3, [pc, #20]	; (42b8 <mu_port_serial_set_write_cb+0x34>)
+    42a2:	4b05      	ldr	r3, [pc, #20]	; (42b8 <mu_vm_serial_set_write_cb+0x34>)
     42a4:	2200      	movs	r2, #0
     42a6:	609a      	str	r2, [r3, #8]
     s_port.tx_cb_arg = NULL;
-    42a8:	4b03      	ldr	r3, [pc, #12]	; (42b8 <mu_port_serial_set_write_cb+0x34>)
+    42a8:	4b03      	ldr	r3, [pc, #12]	; (42b8 <mu_vm_serial_set_write_cb+0x34>)
     42aa:	2200      	movs	r2, #0
     42ac:	60da      	str	r2, [r3, #12]
 }
@@ -11485,29 +11485,29 @@ void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg) {
     42b6:	46c0      	nop			; (mov r8, r8)
     42b8:	20000160 	.word	0x20000160
 
-000042bc <mu_port_serial_read>:
+000042bc <mu_vm_serial_read>:
 
-bool mu_port_serial_write_in_progress(void) {
+bool mu_vm_serial_write_in_progress(void) {
   return !hri_sercomusart_get_INTEN_TXC_bit(USART_0.device.hw);
 }
 
-uint8_t mu_port_serial_read(void) {
+uint8_t mu_vm_serial_read(void) {
     42bc:	b580      	push	{r7, lr}
     42be:	af00      	add	r7, sp, #0
-  // RXC interrupts must be enabled before mu_port_serial_can_read() goes true.
+  // RXC interrupts must be enabled before mu_vm_serial_can_read() goes true.
   _usart_async_set_irq_state(&USART_0.device, USART_ASYNC_RX_DONE, true);
-    42c0:	4b0c      	ldr	r3, [pc, #48]	; (42f4 <mu_port_serial_read+0x38>)
+    42c0:	4b0c      	ldr	r3, [pc, #48]	; (42f4 <mu_vm_serial_read+0x38>)
     42c2:	2201      	movs	r2, #1
     42c4:	2101      	movs	r1, #1
     42c6:	0018      	movs	r0, r3
-    42c8:	4b0b      	ldr	r3, [pc, #44]	; (42f8 <mu_port_serial_read+0x3c>)
+    42c8:	4b0b      	ldr	r3, [pc, #44]	; (42f8 <mu_vm_serial_read+0x3c>)
     42ca:	4798      	blx	r3
-  while (!mu_port_serial_can_read()) {
-    42cc:	e000      	b.n	42d0 <mu_port_serial_read+0x14>
+  while (!mu_vm_serial_can_read()) {
+    42cc:	e000      	b.n	42d0 <mu_vm_serial_read+0x14>
     asm("nop");
     42ce:	46c0      	nop			; (mov r8, r8)
-  while (!mu_port_serial_can_read()) {
-    42d0:	4b0a      	ldr	r3, [pc, #40]	; (42fc <mu_port_serial_read+0x40>)
+  while (!mu_vm_serial_can_read()) {
+    42d0:	4b0a      	ldr	r3, [pc, #40]	; (42fc <mu_vm_serial_read+0x40>)
     42d2:	4798      	blx	r3
     42d4:	0003      	movs	r3, r0
     42d6:	001a      	movs	r2, r3
@@ -11515,15 +11515,15 @@ uint8_t mu_port_serial_read(void) {
     42da:	4053      	eors	r3, r2
     42dc:	b2db      	uxtb	r3, r3
     42de:	2b00      	cmp	r3, #0
-    42e0:	d1f5      	bne.n	42ce <mu_port_serial_read+0x12>
+    42e0:	d1f5      	bne.n	42ce <mu_vm_serial_read+0x12>
   }
   // rx_has_data is set in the rx_done_cb handler
   s_rx_has_data = false;       // clear the virtual RXD bit
-    42e2:	4b07      	ldr	r3, [pc, #28]	; (4300 <mu_port_serial_read+0x44>)
+    42e2:	4b07      	ldr	r3, [pc, #28]	; (4300 <mu_vm_serial_read+0x44>)
     42e4:	2200      	movs	r2, #0
     42e6:	701a      	strb	r2, [r3, #0]
   return s_rx_data;
-    42e8:	4b06      	ldr	r3, [pc, #24]	; (4304 <mu_port_serial_read+0x48>)
+    42e8:	4b06      	ldr	r3, [pc, #24]	; (4304 <mu_vm_serial_read+0x48>)
     42ea:	781b      	ldrb	r3, [r3, #0]
     42ec:	b2db      	uxtb	r3, r3
 }
@@ -11536,14 +11536,14 @@ uint8_t mu_port_serial_read(void) {
     4300:	20000183 	.word	0x20000183
     4304:	20000182 	.word	0x20000182
 
-00004308 <mu_port_serial_can_read>:
+00004308 <mu_vm_serial_can_read>:
 
-bool mu_port_serial_can_read(void) {
+bool mu_vm_serial_can_read(void) {
     4308:	b580      	push	{r7, lr}
     430a:	af00      	add	r7, sp, #0
   // Returns the "virtual RXD" bit, set in the rx_done_cb handler
   return s_rx_has_data;
-    430c:	4b02      	ldr	r3, [pc, #8]	; (4318 <mu_port_serial_can_read+0x10>)
+    430c:	4b02      	ldr	r3, [pc, #8]	; (4318 <mu_vm_serial_can_read+0x10>)
     430e:	781b      	ldrb	r3, [r3, #0]
     4310:	b2db      	uxtb	r3, r3
 }
@@ -11552,9 +11552,9 @@ bool mu_port_serial_can_read(void) {
     4316:	bd80      	pop	{r7, pc}
     4318:	20000183 	.word	0x20000183
 
-0000431c <mu_port_serial_set_read_cb>:
+0000431c <mu_vm_serial_set_read_cb>:
 
-void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
+void mu_vm_serial_set_read_cb(mu_vm_callback_fn fn, void *arg) {
     431c:	b580      	push	{r7, lr}
     431e:	b082      	sub	sp, #8
     4320:	af00      	add	r7, sp, #0
@@ -11563,13 +11563,13 @@ void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
   if (fn) {
     4326:	687b      	ldr	r3, [r7, #4]
     4328:	2b00      	cmp	r3, #0
-    432a:	d006      	beq.n	433a <mu_port_serial_set_read_cb+0x1e>
+    432a:	d006      	beq.n	433a <mu_vm_serial_set_read_cb+0x1e>
     s_port.rx_cb = fn;
-    432c:	4b08      	ldr	r3, [pc, #32]	; (4350 <mu_port_serial_set_read_cb+0x34>)
+    432c:	4b08      	ldr	r3, [pc, #32]	; (4350 <mu_vm_serial_set_read_cb+0x34>)
     432e:	687a      	ldr	r2, [r7, #4]
     4330:	611a      	str	r2, [r3, #16]
     s_port.rx_cb_arg = arg;
-    4332:	4b07      	ldr	r3, [pc, #28]	; (4350 <mu_port_serial_set_read_cb+0x34>)
+    4332:	4b07      	ldr	r3, [pc, #28]	; (4350 <mu_vm_serial_set_read_cb+0x34>)
     4334:	683a      	ldr	r2, [r7, #0]
     4336:	615a      	str	r2, [r3, #20]
   } else {
@@ -11577,13 +11577,13 @@ void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
     s_port.rx_cb_arg = NULL;
   }
 }
-    4338:	e005      	b.n	4346 <mu_port_serial_set_read_cb+0x2a>
+    4338:	e005      	b.n	4346 <mu_vm_serial_set_read_cb+0x2a>
     s_port.rx_cb = NULL;
-    433a:	4b05      	ldr	r3, [pc, #20]	; (4350 <mu_port_serial_set_read_cb+0x34>)
+    433a:	4b05      	ldr	r3, [pc, #20]	; (4350 <mu_vm_serial_set_read_cb+0x34>)
     433c:	2200      	movs	r2, #0
     433e:	611a      	str	r2, [r3, #16]
     s_port.rx_cb_arg = NULL;
-    4340:	4b03      	ldr	r3, [pc, #12]	; (4350 <mu_port_serial_set_read_cb+0x34>)
+    4340:	4b03      	ldr	r3, [pc, #12]	; (4350 <mu_vm_serial_set_read_cb+0x34>)
     4342:	2200      	movs	r2, #0
     4344:	615a      	str	r2, [r3, #20]
 }
@@ -11594,39 +11594,39 @@ void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg) {
     434e:	46c0      	nop			; (mov r8, r8)
     4350:	20000160 	.word	0x20000160
 
-00004354 <mu_port_sleep_until>:
+00004354 <mu_vm_sleep_until>:
 
 /**
  * @brief Put the processor into low-power mode until time t arrives, or an
  * external event wakes the processor.
  */
-void mu_port_sleep_until(mu_port_time_t then) {
+void mu_vm_sleep_until(mu_vm_time_t then) {
     4354:	b580      	push	{r7, lr}
     4356:	b084      	sub	sp, #16
     4358:	af00      	add	r7, sp, #0
     435a:	6078      	str	r0, [r7, #4]
-  mu_port_time_t now = mu_port_rtc_now();
-    435c:	4b0b      	ldr	r3, [pc, #44]	; (438c <mu_port_sleep_until+0x38>)
+  mu_vm_time_t now = mu_vm_rtc_now();
+    435c:	4b0b      	ldr	r3, [pc, #44]	; (438c <mu_vm_sleep_until+0x38>)
     435e:	4798      	blx	r3
     4360:	0003      	movs	r3, r0
     4362:	60fb      	str	r3, [r7, #12]
-  if (mu_port_time_difference(then, now) > MIN_SLEEP_DURATION) {
+  if (mu_vm_time_difference(then, now) > MIN_SLEEP_DURATION) {
     4364:	68fa      	ldr	r2, [r7, #12]
     4366:	687b      	ldr	r3, [r7, #4]
     4368:	0011      	movs	r1, r2
     436a:	0018      	movs	r0, r3
-    436c:	4b08      	ldr	r3, [pc, #32]	; (4390 <mu_port_sleep_until+0x3c>)
+    436c:	4b08      	ldr	r3, [pc, #32]	; (4390 <mu_vm_sleep_until+0x3c>)
     436e:	4798      	blx	r3
     4370:	0003      	movs	r3, r0
     4372:	2b20      	cmp	r3, #32
-    4374:	dd05      	ble.n	4382 <mu_port_sleep_until+0x2e>
-    mu_port_rtc_alarm_at(then);
+    4374:	dd05      	ble.n	4382 <mu_vm_sleep_until+0x2e>
+    mu_vm_rtc_alarm_at(then);
     4376:	687b      	ldr	r3, [r7, #4]
     4378:	0018      	movs	r0, r3
-    437a:	4b06      	ldr	r3, [pc, #24]	; (4394 <mu_port_sleep_until+0x40>)
+    437a:	4b06      	ldr	r3, [pc, #24]	; (4394 <mu_vm_sleep_until+0x40>)
     437c:	4798      	blx	r3
     go_to_sleep();
-    437e:	4b06      	ldr	r3, [pc, #24]	; (4398 <mu_port_sleep_until+0x44>)
+    437e:	4b06      	ldr	r3, [pc, #24]	; (4398 <mu_vm_sleep_until+0x44>)
     4380:	4798      	blx	r3
   }
 }
@@ -11640,16 +11640,16 @@ void mu_port_sleep_until(mu_port_time_t then) {
     4394:	000040d9 	.word	0x000040d9
     4398:	00004515 	.word	0x00004515
 
-0000439c <mu_port_sleep>:
+0000439c <mu_vm_sleep>:
 
 /**
  * @brief Put the processor into low-power mode until an external event wakes
  * the processor.
  */
-void mu_port_sleep(void) { go_to_sleep(); }
+void mu_vm_sleep(void) { go_to_sleep(); }
     439c:	b580      	push	{r7, lr}
     439e:	af00      	add	r7, sp, #0
-    43a0:	4b02      	ldr	r3, [pc, #8]	; (43ac <mu_port_sleep+0x10>)
+    43a0:	4b02      	ldr	r3, [pc, #8]	; (43ac <mu_vm_sleep+0x10>)
     43a2:	4798      	blx	r3
     43a4:	46c0      	nop			; (mov r8, r8)
     43a6:	46bd      	mov	sp, r7
@@ -11810,7 +11810,7 @@ static void rx_done_cb(struct _usart_async_device *device, uint8_t data) {
     4488:	2201      	movs	r2, #1
     448a:	701a      	strb	r2, [r3, #0]
 
-  // clear the start of frame flag so mu_port_serial_read_in_progress() will
+  // clear the start of frame flag so mu_vm_serial_read_in_progress() will
   // return false.
   hri_sercomusart_clear_INTFLAG_RXS_bit(USART_0.device.hw);
     448c:	4b0b      	ldr	r3, [pc, #44]	; (44bc <rx_done_cb+0x4c>)
@@ -11857,7 +11857,7 @@ static void tx_done_cb(struct _usart_async_device *device) {
     44cc:	af00      	add	r7, sp, #0
     44ce:	6078      	str	r0, [r7, #4]
   // No action.  In the future, we might use this for an async version of
-  // mu_port_serial_write_in_progress().
+  // mu_vm_serial_write_in_progress().
   asm("nop");
     44d0:	46c0      	nop			; (mov r8, r8)
 }

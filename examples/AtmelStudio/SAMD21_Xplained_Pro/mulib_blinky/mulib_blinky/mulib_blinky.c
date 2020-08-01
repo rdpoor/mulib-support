@@ -68,11 +68,11 @@ static button_ctx_t s_button_ctx;
 // public code
 
 void mulib_blinky_init() {
+  // initialize the port-specific interface
+  mu_vm_init();
+
   printf("\r\n\r\n# ===========\r\n");
   printf("# mulib_blinky %s: see https://github.com/rdpoor/mulib\r\n", BLINKY_VERSION);
-
-  // initialize the port-specific interface
-  mu_port_init();
 
   // set up the isr queue and the scheduler
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, ISR_Q_CAPACITY);

@@ -55,8 +55,8 @@ void mu_time_test() {
   ASSERT(mu_time_precedes(t1, t1) == false);
   ASSERT(mu_time_precedes(t2, t1) == false);
 
-  ASSERT(mu_time_is_equal(t1, t1) == true);
-  ASSERT(mu_time_is_equal(t1, t2) == false);
+  ASSERT(mu_time_equals(t1, t1) == true);
+  ASSERT(mu_time_equals(t1, t2) == false);
 
   ASSERT(mu_time_follows(t1, t2) == false);
   ASSERT(mu_time_follows(t1, t1) == false);

@@ -34,19 +34,19 @@ extern "C";
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "mu_port.h"
+#include "mu_vm.h"
 
 // =============================================================================
 // types and definitions
 
-typedef mu_port_time_t mu_time_t;
-typedef mu_port_time_dt mu_time_dt;
-typedef mu_port_time_ms_dt mu_time_ms_dt;
-#ifdef MU_PORT_FLOAT
-typedef mu_port_time_seconds_dt mu_time_seconds_dt;
+typedef mu_vm_time_t mu_time_t;
+typedef mu_vm_time_dt mu_time_dt;
+typedef mu_vm_time_ms_dt mu_time_ms_dt;
+#ifdef MU_VM_FLOAT
+typedef mu_vm_time_seconds_dt mu_time_seconds_dt;
 #endif
 
-#define MU_TIME_MS_TO_DURATION(ms) MU_PORT_TIME_MS_TO_DURATION(ms)
+#define MU_TIME_MS_TO_DURATION(ms) MU_VM_TIME_MS_TO_DURATION(ms)
 
 // =============================================================================
 // declarations
@@ -94,7 +94,7 @@ bool mu_time_precedes(mu_time_t t1, mu_time_t t2);
  * @param t2 A time object
  * @return true if t1 equals t2, false otherwise.
  */
-bool mu_time_is_equal(mu_time_t t1, mu_time_t t2);
+bool mu_time_equals(mu_time_t t1, mu_time_t t2);
 
 /**
  * @brief Return true if t1 is strictly after t2
@@ -124,7 +124,7 @@ mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt);
  */
 mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms);
 
-#ifdef MU_PORT_FLOAT
+#ifdef MU_VM_FLOAT
 /**
  * @brief Convert a duration to seconds.
  *

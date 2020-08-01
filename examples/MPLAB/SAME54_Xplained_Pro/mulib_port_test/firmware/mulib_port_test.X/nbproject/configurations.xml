@@ -182,8 +182,8 @@
       </logicalFolder>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mulib_port_test.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mulib_port_test.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mu_port.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mu_port.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mu_vm.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mulib_port_test/firmware/src/mu_vm.h</itemPath>
       <itemPath>../src/main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"

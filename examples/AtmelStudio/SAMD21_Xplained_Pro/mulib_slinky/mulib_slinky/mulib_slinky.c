@@ -73,11 +73,14 @@ static mu_task_t s_idle_task;
 // public code
 
 void mulib_slinky_init() {
+  // initialize the port-specific interface
+  mu_vm_init();
+
   printf("\r\n\r\n# ===========\r\n");
   printf("# mulib_slinky %s: see https://github.com/rdpoor/mulib\r\n", MULIB_SLINKY_VERSION);
 
   // initialize the port-specific interface
-  mu_port_init();
+  mu_vm_init();
 
   // set up the isr queue and the scheduler
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, ISR_Q_CAPACITY);
