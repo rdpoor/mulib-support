@@ -31,7 +31,8 @@
  * * A user button that can generate an asynchronous event
  * * A clock / counter that can be used as a time base for all time-dependent
  *   functions and generate an asynchronous event
- * * A serial port that supports asynchronous read and write operations
+ * * A serial port that supports byte at a time read and write operations, and
+ *   generates an asynchronous callback when a byte becomes available for read.
  * * [Optional] The ability to sleep (i.e. run in a power-reduced mode) until
  *   an asynchronous event wakes it.
  *
@@ -80,6 +81,10 @@ extern "C" {
  */
 typedef uint32_t mu_port_time_t;
 typedef int32_t mu_port_time_dt;
+typedef int32_t mu_port_time_ms_dt;
+#ifdef MU_PORT_FLOAT
+typedef MU_PORT_FLOAT mu_port_time_seconds_dt;
+#endif
 
 /**
  * If your platform is able to sleep in order to conserver power, un-comment
@@ -101,12 +106,12 @@ mu_port_time_dt mu_port_time_difference(mu_port_time_t a, mu_port_time_t b);
 bool mu_port_time_precedes(mu_port_time_t a, mu_port_time_t b);
 bool mu_port_time_equals(mu_port_time_t a, mu_port_time_t b);
 bool mu_port_time_follows(mu_port_time_t a, mu_port_time_t b);
-int mu_port_time_duration_to_ms(mu_port_time_dt dt);
-mu_port_time_dt mu_port_time_ms_to_duration(int ms);
+mu_port_time_ms_dt mu_port_time_duration_to_ms(mu_port_time_dt dt);
+mu_port_time_dt mu_port_time_ms_to_duration(mu_port_time_ms_dt ms);
 
-#ifdef PORT_FLOAT
-PORT_FLOAT mu_port_time_duration_to_s(mu_port_time_dt dt);
-mu_port_time_dt mu_port_time_s_to_duration(PORT_FLOAT seconds);
+#ifdef MU_PORT_FLOAT
+mu_port_time_seconds_dt mu_port_time_duration_to_s(mu_port_time_dt dt);
+mu_port_time_dt mu_port_time_s_to_duration(mu_port_time_seconds_dt seconds);
 #endif
 
 // ==========
@@ -132,71 +137,90 @@ void mu_port_button_set_cb(mu_port_callback_fn fn, void *arg);
 // SERIAL I/O
 
 /**
- * @brief Non-blocking write to the serial port.
+ * @brief Write a byte to the serial port.
  *
- * Initiate a write operation on the serial port.  The actual transfer happens
- * in the background, with a callback generated upon completion.  Until the
- * operation completes, mu_port_serial_can_write() will return false.
+ * This function will block (busy wait) until the UART hardware can accept the
+ * byte.  You can use the mu_port_serial_can_write() function to find if this
+ * function will block.
  *
- * Note: since buf may be used directly, do not modify its contents until
- * mu_port_serial_can_write() returns true or the write callback fires.
+ * Alternatively, you can set a callback using `mu_port_serial_set_write_cb()`,
+ * which will be called when the UART is ready to accept a character.
  */
-bool mu_port_serial_write(const uint8_t *const buf, int n_bytes);
+void mu_port_serial_write(uint8_t byte);
 
 /**
- * @brief Return true if the previous call to mu_port_serial_write has completed.
+ * @brief Return true if mu_port_serial_write() will return immediately without
+ * blocking.
  */
 bool mu_port_serial_can_write(void);
 
 /**
- * @brief Return the number of bytes that have been written since the most
- * recent call to mu_port_serial_write().
- *
- * Note: since writing happens asynchronously, this function may underestimate
- * the number of bytes written.
- */
-int mu_port_serial_write_count(void);
-
-/**
- * Register a callback to be called when a write operation completes.
+ * Register a callback to be called after a write operation completes, which
+ * indicates that mu_port_serial_write() will not block.
  */
 void mu_port_serial_set_write_cb(mu_port_callback_fn fn, void *arg);
 
 /**
- * @brief Non-blocking read from the serial port.
- *
- * Initiate a read operation of up to n_bytes from the serial port.   The
- * data transfer happens in the background with a callback generated after
- * n_bytes have been read.  Until the operation completes,
- * Read up to n_bytes from the serial port.  Returns the number of bytes read,
- * which may be zero if no bytes available or negative on an error.
+ * Return true if a serial byte is in the process of being transmitted, i.e. a
+ * byte has been written to the UART but it is not yet fully transmitted. This
+ * function is primarily intended to indicate whether it is permissable to
+ * put the processor to sleep.
  */
-bool mu_port_serial_read(uint8_t *const buf, int n_bytes);
+bool mu_port_serial_write_in_progress(void);
 
 /**
- * @brief Return true if a call to mu_port_serial_read() would return at least one
- * character.
+ * @brief Read a byte from the serial port.
+ *
+ * If no data is available, this function will block until a character is
+ * received.
+ *
+ * If a read callback has been set via mu_port_serial_set_read_cb, serial read
+ * interrtups are enabled after the read operation, otherwise read interrupts
+ * are disabled.
+ *
+ * For blocking style reads (without interrupts):
+ *   if (!mu_port_serial_can_read()) {
+ *     // return to the scheduler...
+ *   } else {
+ *     uint8_t ch = mu_port_serial_read();
+ *     // process character
+ *   }
+ *
+ * For non-blocking style reads (using interrupts):
+ *   mu_port_serial_set_read_cb(serial_cb, NULL);
+ *   // return to the scheduler...
+ *   ...
+ *   void serial_cb(void *arg) {
+ *     // schedule a task to call mu_port_serial_read()...
+ *   }
+ */
+uint8_t mu_port_serial_read(void);
+
+/**
+ * @brief Return true if mu_serial_read() will return immediately without
+ * blocking.
  */
 bool mu_port_serial_can_read(void);
 
 /**
- * @brief Return the number of bytes that have been read since the most
- * recent call to mu_port_serial_read().
- *
- * Note: since reading happens asynchronously, this function may underestimate
- * the number of bytes read.
- */
-int mu_port_serial_read_count(void);
 
-/**
- * Register a callback to be called after a read operation has read n_bytes.
+ * Register a callback to be called when the serial port has a new byte
+ * available and enable serial read interrupts.
  */
 void mu_port_serial_set_read_cb(mu_port_callback_fn fn, void *arg);
+
+/**
+ * Return true if a serial byte is in the process of being received, i.e. a
+ * start bit has been detected but the byte is not yet fully received.  This
+ * function is primarily intended to indicate whether it is permissable to
+ * put the processor to sleep.
+ */
+bool mu_port_serial_read_in_progress(void);
 
 // ==========
 // SLEEP
 
-#ifdef PORT_CAN_SLEEP
+#ifdef MU_PORT_CAN_SLEEP
 /**
  * @brief Put the processor into low-power mode until time t arrives, or an
  * external event wakes the processor.
