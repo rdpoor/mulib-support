@@ -246,6 +246,33 @@ void mu_substr_test() {
   reset();
   ASSERT(mu_substr_to_cstr(ss1, s_cstr2, 5) == ss1);
   ASSERT(strcmp("disc", s_cstr2) == 0);
+
+  // =========
+  // mu_substr_t *mu_substr_printf(mu_substr_t *dst, const char *fmt, ...)
+  reset();
+  mu_substr_clear(ss2);
+  ASSERT(mu_substr_start(ss2) == 0);
+  ASSERT(mu_substr_end(ss2) == 0);
+  ASSERT(substr_equals(ss2, ""));
+
+  ASSERT(mu_substr_printf(ss2, "%c", 'c') == ss2);
+  ASSERT(mu_substr_start(ss2) == 0);
+  ASSERT(mu_substr_end(ss2) == 1);
+  ASSERT(substr_equals(ss2, "c"));
+
+  ASSERT(mu_substr_printf(ss2, "%s", "apacity is ") == ss2);
+  ASSERT(mu_substr_start(ss2) == 0);
+  ASSERT(mu_substr_end(ss2) == 12);
+  ASSERT(substr_equals(ss2, "capacity is "));
+
+  ASSERT(mu_substr_printf(ss2, "%d", 15) == ss2);
+  ASSERT(mu_substr_start(ss2) == 0);
+  ASSERT(mu_substr_end(ss2) == 14);
+  ASSERT(substr_equals(ss2, "capacity is 15"));
+
+  ASSERT(mu_substr_printf(ss2, "%s", " bytes") == ss2);
+  ASSERT(mu_substr_start(ss2) == 0);
+  ASSERT(mu_substr_end(ss2) == 15);
 }
 
 // =============================================================================
@@ -263,7 +290,9 @@ static void reset(void) {
 static bool substr_equals(mu_substr_t *substr, const char *cstr) {
   char *s;
   int to_compare = strlen(cstr);
-  if (to_compare > mu_substr_length(substr)) {
+  if (to_compare == 0) {
+    return true;
+  } else if (to_compare > mu_substr_length(substr)) {
     to_compare = mu_substr_length(substr);
   }
   // Get a pointer to substr's string and compare againt cstr

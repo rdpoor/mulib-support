@@ -30,6 +30,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 // #include <stdio.h>
 
@@ -241,6 +243,26 @@ mu_substr_t *mu_substr_to_cstr(mu_substr_t *s, char *cstr, size_t cstr_length) {
   size_t to_copy = min_size(mu_substr_length(s), cstr_length-1);
   memmove(cstr, ref_offset(s, 0), to_copy);
   cstr[to_copy] = '\0';  // null terminate
+  return s;
+}
+
+
+mu_substr_t *mu_substr_printf(mu_substr_t *s, const char *fmt, ...) {
+  size_t available = mu_substr_remaining(s);
+
+  if (available > 0) {
+    size_t printed;
+    va_list ap;
+    va_start(ap, fmt);
+    printed = vsnprintf(&s->str->data[s->end], mu_substr_remaining(s), fmt, ap);
+    va_end(ap);
+    // Note: count is the number of bytes that *would* have been printed if
+    // there was enough room, NOT the number of bytes actually printed.
+    if (printed > available) {
+      printed = available;
+    }
+    s->end += printed;
+  }
   return s;
 }
 

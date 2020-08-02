@@ -44,12 +44,13 @@
 void mu_time_test() {
   mu_time_t t1;
   mu_time_t t2;
-  mu_time_dt d1;
-  mu_time_dt d2;
+
+  mu_time_dt dt1;
+  mu_time_ms_dt dm1;
 
   t1 = mu_time_now();   // an arbitrary time
-  d1 = mu_time_seconds_to_duration(1.0);
-  t2 = mu_time_offset(t1, d1);
+  dm1 = mu_time_ms_to_duration(1000);
+  t2 = mu_time_offset(t1, dm1);
 
   ASSERT(mu_time_precedes(t1, t2) == true);
   ASSERT(mu_time_precedes(t1, t1) == false);
@@ -62,14 +63,30 @@ void mu_time_test() {
   ASSERT(mu_time_follows(t1, t1) == false);
   ASSERT(mu_time_follows(t2, t1) == true);
 
-  d2 = mu_time_difference(t2, t1);
-  ASSERT(mu_time_duration_to_seconds(d2) == 1.0);  // may fail due to rounding
+  dt1 = mu_time_difference(t2, t1);
+  ASSERT(mu_time_duration_to_ms(dt1) == 1000);
 
-  // sleeping for 100 mSec
-  t1 = mu_time_offset(mu_time_now(), mu_time_seconds_to_duration(0.1));
-  usleep(100000);
-  t2 = mu_time_now();
-  ASSERT(mu_time_follows(t1, t2) == true);
+#ifdef MU_VM_FLOAT
+  mu_time_seconds_dt ds1;
+
+  t1 = mu_time_now();   // an arbitrary time
+  ds1 = mu_time_seconds_to_duration(1.0);
+  t2 = mu_time_offset(t1, dm1);
+
+  ASSERT(mu_time_precedes(t1, t2) == true);
+  ASSERT(mu_time_precedes(t1, t1) == false);
+  ASSERT(mu_time_precedes(t2, t1) == false);
+
+  ASSERT(mu_time_equals(t1, t1) == true);
+  ASSERT(mu_time_equals(t1, t2) == false);
+
+  ASSERT(mu_time_follows(t1, t2) == false);
+  ASSERT(mu_time_follows(t1, t1) == false);
+  ASSERT(mu_time_follows(t2, t1) == true);
+
+  dt1 = mu_time_difference(t2, t1);
+  ASSERT(mu_time_duration_to_seconds(dt1) == 1.0);
+#endif
 }
 
 // =============================================================================

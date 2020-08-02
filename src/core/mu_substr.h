@@ -93,6 +93,11 @@ mu_substr_t *mu_substr_strstr(mu_substr_t *dst, mu_substr_t *needle, mu_substr_t
 
 mu_substr_t *mu_substr_to_cstr(mu_substr_t *src, char *cstr, size_t cstr_length);
 
+/**
+ * @brief Append formatted data to substring, increment end pointer.
+ */
+mu_substr_t *mu_substr_printf(mu_substr_t *dst, const char *fmt, ...);
+
 #ifdef __cplusplus
 }
 #endif
