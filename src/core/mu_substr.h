@@ -98,6 +98,11 @@ mu_substr_t *mu_substr_to_cstr(mu_substr_t *src, char *cstr, size_t cstr_length)
  */
 mu_substr_t *mu_substr_printf(mu_substr_t *dst, const char *fmt, ...);
 
+/**
+ * @brief Append a C-style string to substring, incrementing end pointer.
+ */
+mu_substr_t *mu_substr_puts(mu_substr_t *dst, const char *str);
+
 #ifdef __cplusplus
 }
 #endif

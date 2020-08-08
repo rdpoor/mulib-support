@@ -41,12 +41,18 @@ extern "C" {
 
 typedef struct {
   mu_task_t *screen_redraw_task;
+  size_t n_tasks;
+  mu_task_t *tasks;
+  mu_sched_t *sched;
+  mu_substr_t *screen_buffer;
+  uint8_t slice;
 } screen_update_ctx_t;
 
 // =============================================================================
 // declarations
 
-mu_task_t *screen_update_task_init(mu_task_t *screen_update_task, screen_update_ctx_t *screen_update_ctx, mu_task_t *screen_redraw_task);
+mu_task_t *screen_update_task_init(mu_task_t *screen_update_task,
+                                   screen_update_ctx_t *screen_update_ctx);
 
 #ifdef __cplusplus
 }

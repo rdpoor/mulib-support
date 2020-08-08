@@ -67,10 +67,10 @@ void mu_time_test() {
   ASSERT(mu_time_duration_to_ms(dt1) == 1000);
 
 #ifdef MU_VM_FLOAT
-  mu_time_seconds_dt ds1;
+  mu_time_s_dt ds1;
 
   t1 = mu_time_now();   // an arbitrary time
-  ds1 = mu_time_seconds_to_duration(1.0);
+  ds1 = mu_time_s_to_duration(1.0);
   t2 = mu_time_offset(t1, dm1);
 
   ASSERT(mu_time_precedes(t1, t2) == true);
@@ -85,7 +85,7 @@ void mu_time_test() {
   ASSERT(mu_time_follows(t2, t1) == true);
 
   dt1 = mu_time_difference(t2, t1);
-  ASSERT(mu_time_duration_to_seconds(dt1) == 1.0);
+  ASSERT(mu_time_duration_to_s(dt1) == 1.0);
 #endif
 }
 

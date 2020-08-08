@@ -28,8 +28,10 @@
 #include "atmel_start.h"
 #include "led_task.h"
 #include "mulib.h"
+#include "mu_vm.h"
 #include <stddef.h>
 
+#include <stdio.h>
 // =============================================================================
 // local types and definitions
 
@@ -37,9 +39,6 @@
 // local (forward) declarations
 
 static void *led_task_fn(void *self, void *arg);
-
-static void LED_On(void);
-static void LED_Off(void);
 
 // =============================================================================
 // local storage
@@ -62,23 +61,14 @@ static void *led_task_fn(void *ctx, void *arg) {
   mu_sched_t *sched = (mu_sched_t *)arg;
 
   if (led_ctx->state == LED_OFF) {
-    LED_On();
+    mu_vm_led_set(true);
     led_ctx->state = LED_ON;
     mu_sched_reschedule_in(sched, mu_time_ms_to_duration(LED_ON_TIME_MS));
 
   } else {
-    LED_Off();
+    mu_vm_led_set(false);
     led_ctx->state = LED_OFF;
     mu_sched_reschedule_in(sched, mu_time_ms_to_duration(LED_OFF_TIME_MS));
   }
-
   return NULL;
-}
-
-static void LED_On(void) {
-  gpio_set_pin_level(USER_LED_AL, false);
-}
-
-static void LED_Off(void) {
-  gpio_set_pin_level(USER_LED_AL, true);
 }

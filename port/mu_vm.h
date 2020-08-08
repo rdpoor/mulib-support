@@ -83,7 +83,7 @@ typedef uint32_t mu_vm_time_t;
 typedef int32_t mu_vm_time_dt;
 typedef int32_t mu_vm_time_ms_dt;
 #ifdef MU_VM_FLOAT
-typedef MU_VM_FLOAT mu_vm_time_seconds_dt;
+typedef MU_VM_FLOAT mu_vm_time_s_dt;
 #endif
 
 /**
@@ -110,8 +110,8 @@ mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt);
 mu_vm_time_dt mu_vm_time_ms_to_duration(mu_vm_time_ms_dt ms);
 
 #ifdef MU_VM_FLOAT
-mu_vm_time_seconds_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt);
-mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_seconds_dt seconds);
+mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt);
+mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds);
 #endif
 
 // ==========

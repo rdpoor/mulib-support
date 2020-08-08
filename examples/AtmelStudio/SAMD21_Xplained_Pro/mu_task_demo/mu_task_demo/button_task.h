@@ -50,9 +50,7 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_task_t *button_task_init(mu_task_t *button_task,
-                            button_ctx_t *button_ctx,
-                            mu_sched_t *sched);
+mu_task_t *button_task_init(mu_task_t *button_task, button_ctx_t *button_ctx);
 
 #ifdef __cplusplus
 }

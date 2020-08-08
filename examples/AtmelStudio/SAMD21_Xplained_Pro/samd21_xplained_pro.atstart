@@ -121,11 +121,11 @@ drivers:
       domain_group:
         nodes:
         - name: EIC
-          input: Generic clock generator 3
+          input: Generic clock generator 0
           external: false
           external_frequency: 0
         configuration:
-          eic_gclk_selection: Generic clock generator 3
+          eic_gclk_selection: Generic clock generator 0
   GCLK:
     user_label: GCLK
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::GCLK::driver_config_definition::GCLK::HAL:HPL:GCLK
@@ -245,7 +245,7 @@ drivers:
     functionality: USART
     api: HAL:Driver:USART_Async
     configuration:
-      usart_advanced: false
+      usart_advanced: true
       usart_arch_clock_mode: USART with internal clock
       usart_arch_cloden: false
       usart_arch_dbgstop: Keep running

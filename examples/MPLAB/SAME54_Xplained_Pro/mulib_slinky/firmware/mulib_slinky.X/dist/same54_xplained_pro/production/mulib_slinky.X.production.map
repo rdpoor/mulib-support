@@ -742,9 +742,9 @@ Discarded input sections
                 0x00000000        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
  .text.mu_time_ms_to_duration
                 0x00000000        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
- .text.mu_time_duration_to_seconds
+ .text.mu_time_duration_to_s
                 0x00000000        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
- .text.mu_time_seconds_to_duration
+ .text.mu_time_s_to_duration
                 0x00000000        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
  .text          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_version.o
  .data          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_version.o
@@ -974,9 +974,9 @@ Discarded input sections
                 0x00000000       0x34 build/same54_xplained_pro/production/_ext/1017879673/mu_vm.o
  .text.mu_vm_time_duration_to_ms
                 0x00000000       0x2c build/same54_xplained_pro/production/_ext/1017879673/mu_vm.o
- .text.mu_vm_time_seconds_to_duration
+ .text.mu_vm_time_s_to_duration
                 0x00000000       0x18 build/same54_xplained_pro/production/_ext/1017879673/mu_vm.o
- .text.mu_vm_time_duration_to_seconds
+ .text.mu_vm_time_duration_to_s
                 0x00000000       0x18 build/same54_xplained_pro/production/_ext/1017879673/mu_vm.o
  .text          0x00000000        0x0 build/same54_xplained_pro/production/_ext/1360937237/main.o
  .data          0x00000000        0x0 build/same54_xplained_pro/production/_ext/1360937237/main.o

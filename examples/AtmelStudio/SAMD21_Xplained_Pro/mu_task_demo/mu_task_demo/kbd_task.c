@@ -40,7 +40,6 @@
 static void *kbd_task_fn(void *ctx, void *arg);
 
 // If using ring buffer:
-// static void kbd_cb(SERCOM_USART_EVENT event, uintptr_t context);
 static void kbd_cb(void *context);
 
 // =============================================================================
@@ -49,12 +48,13 @@ static void kbd_cb(void *context);
 // =============================================================================
 // public code
 
-mu_task_t *kbd_task_init(mu_task_t *kbd_task,
-                         kbd_ctx_t *kbd_ctx,
-                         mu_sched_t *sched) {
-  // Register the kbd_cb function to be called upon an serial interrupt.
+mu_task_t *kbd_task_init(mu_task_t *kbd_task, kbd_ctx_t *kbd_ctx) {
+  // The keyboard callback function takes one user-supplied argument.  But in
+  // the callback, we need a reference to both the scheduler and to the task,
+  // so we store them both in the kbd_ctx structure and pass that as an argument
+  // to mu_vm_serial_set_read_cb()
   kbd_ctx->task = kbd_task;
-  kbd_ctx->sched = sched;
+  kbd_ctx->sched = mu_task_demo_get_scheduler();
 
   // initialize the kbd_task object
   mu_task_init(kbd_task, kbd_task_fn, kbd_ctx, "Keyboard Task");

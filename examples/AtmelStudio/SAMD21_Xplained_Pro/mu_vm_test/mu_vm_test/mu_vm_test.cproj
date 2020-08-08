@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>mv_vm_test</AssemblyName>
-    <Name>mv_vm_test</Name>
-    <RootNamespace>mv_vm_test</RootNamespace>
+    <AssemblyName>mu_vm_test</AssemblyName>
+    <Name>mu_vm_test</Name>
+    <RootNamespace>mu_vm_test</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -301,8 +301,10 @@
       <Value>../hpl/sysctrl</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.395\samd21a\include</Value>
+      <Value>../../..</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
+  <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
@@ -368,6 +370,14 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\mu_vm.c">
+      <SubType>compile</SubType>
+      <Link>mu_vm.c</Link>
+    </Compile>
+    <Compile Include="..\..\mu_vm.h">
+      <SubType>compile</SubType>
+      <Link>mu_vm.h</Link>
+    </Compile>
     <Compile Include="atmel_start.c">
       <SubType>compile</SubType>
     </Compile>
@@ -734,16 +744,10 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="mv_vm_test.c">
+    <Compile Include="mu_vm_test.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="mv_vm_test.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="mu_vm.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="mu_vm.h">
+    <Compile Include="mu_vm_test.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

@@ -50,12 +50,10 @@ static mu_sched_t *s_sched;
 // =============================================================================
 // public code
 
-mu_task_t *button_task_init(mu_task_t *button_task,
-                            button_ctx_t *button_ctx,
-                            mu_sched_t *sched) {
+mu_task_t *button_task_init(mu_task_t *button_task, button_ctx_t *button_ctx) {
   // Register the button_cb function to be called upon button push.
   s_button_task = button_task;
-  s_sched = sched;
+  s_sched = mu_task_demo_get_scheduler();
   mu_vm_button_set_cb(button_cb, NULL);
 
   mu_task_init(button_task, button_task_fn, NULL, "Button Pushed");

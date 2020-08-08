@@ -26,6 +26,8 @@
 
 ..\..\..\..\..\src\core\mu_version.c
 
+..\..\mu_vm.c
+
 atmel_start.c
 
 Device_Startup\startup_samd21.c
@@ -91,8 +93,6 @@ button_task.c
 led_task.c
 
 main.c
-
-mu_vm.c
 
 printf_support.c
 

@@ -53,6 +53,8 @@ typedef enum {
   TASK_COUNT
 } task_idx_t;
 
+#define SCREEN_BUFFER_SIZE 1024 // size of screen buffer in bytes
+
 // =============================================================================
 // local (forward) declarations
 
@@ -81,6 +83,10 @@ static screen_update_ctx_t s_screen_update_ctx;
 static screen_redraw_ctx_t s_screen_redraw_ctx;
 static kbd_ctx_t s_kbd_ctx;
 
+static uint8_t s_screen_buf[SCREEN_BUFFER_SIZE];
+static mu_str_t s_screen_str;
+static mu_substr_t s_screen_buffer;
+
 static bool s_is_low_power_mode;
 
 // =============================================================================
@@ -90,8 +96,8 @@ void mu_task_demo_init() {
   // initialize the port-specific interface
   mu_vm_init();
 
-  printf("\n\n# ===========\n");
-  printf("# mu_task_demo %s: see https://github.com/rdpoor/mulib\n",
+  printf("\r\n# ===========\n");
+  printf("# mu_task_demo %s: see https://github.com/rdpoor/mulib\r\n",
          MU_TASK_DEMO_VERSION);
 
   // set up the isr queue and the scheduler
@@ -100,15 +106,12 @@ void mu_task_demo_init() {
 
   // initialize tasks
   led_task_init(&s_tasks[LED_TASK_IDX], &s_led_ctx);
-  button_task_init(&s_tasks[BUTTON_TASK_IDX], &s_button_ctx, &s_sched);
+  button_task_init(&s_tasks[BUTTON_TASK_IDX], &s_button_ctx);
   screen_update_task_init(&s_tasks[SCREEN_UPDATE_TASK_IDX],
-                          &s_screen_update_ctx,
-                          &s_tasks[SCREEN_REDRAW_TASK_IDX]);
+                          &s_screen_update_ctx);
   screen_redraw_task_init(&s_tasks[SCREEN_REDRAW_TASK_IDX],
-                          &s_screen_redraw_ctx,
-                          s_tasks,
-                          TASK_COUNT);
-  kbd_task_init(&s_tasks[KBD_TASK_IDX], &s_kbd_ctx, &s_sched);
+                          &s_screen_redraw_ctx);
+  kbd_task_init(&s_tasks[KBD_TASK_IDX], &s_kbd_ctx);
   idle_task_init(&s_tasks[IDLE_TASK_IDX], &s_sched);
 
   // install the sleep-aware idle task as the scheduler's idle task
@@ -119,6 +122,10 @@ void mu_task_demo_init() {
   mu_task_demo_start_screen_update_task();
 
   mu_task_demo_set_low_power_mode(false);  // start in full power mode
+
+  // initialize the screen buffer
+  mu_str_init(&s_screen_str, (mu_str_data_t *)s_screen_buf, SCREEN_BUFFER_SIZE);
+  mu_substr_init(&s_screen_buffer, &s_screen_str);
 }
 
 void mu_task_demo_step() {
@@ -151,4 +158,24 @@ void mu_task_demo_set_low_power_mode(bool low_power) {
 
 bool mu_task_demo_is_low_power_mode(void) {
   return s_is_low_power_mode;
+}
+
+mu_substr_t *mu_task_demo_get_screen_buffer(void) {
+  return &s_screen_buffer;
+}
+
+mu_sched_t *mu_task_demo_get_scheduler(void) {
+  return &s_sched;
+}
+
+mu_task_t *mu_task_demo_get_screen_redraw_task(void) {
+  return &s_tasks[SCREEN_REDRAW_TASK_IDX];
+}
+
+size_t mu_task_demo_get_task_count(void) {
+  return TASK_COUNT;
+}
+
+mu_task_t *mu_task_demo_get_tasks(void) {
+  return s_tasks;
 }

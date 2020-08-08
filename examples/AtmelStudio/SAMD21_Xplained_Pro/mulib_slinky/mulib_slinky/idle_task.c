@@ -30,6 +30,7 @@
 #include "mu_vm.h"
 #include <atmel_start.h>
 #include <stddef.h>
+#include "mulib_slinky.h"
 
 // =============================================================================
 // local types and definitions

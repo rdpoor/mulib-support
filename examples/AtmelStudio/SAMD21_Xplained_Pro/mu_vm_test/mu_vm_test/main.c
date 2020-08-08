@@ -1,5 +1,5 @@
 #include <atmel_start.h>
-#include "mv_vm_test.h"
+#include "mu_vm_test.h"
 
 int main(void)
 {

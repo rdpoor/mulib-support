@@ -76,9 +76,9 @@ void *mu_task_call(mu_task_t *task, void *arg);
   mu_time_ms_dt mu_task_max_duration_ms(mu_task_t *task);
 
   #ifdef MU_VM_FLOAT
-    mu_time_seconds_dt mu_task_runtime_s(mu_task_t *task);
+    mu_time_s_dt mu_task_runtime_s(mu_task_t *task);
 
-    mu_time_seconds_dt mu_task_max_duration_s(mu_task_t *task);
+    mu_time_s_dt mu_task_max_duration_s(mu_task_t *task);
   #endif
 
 #endif

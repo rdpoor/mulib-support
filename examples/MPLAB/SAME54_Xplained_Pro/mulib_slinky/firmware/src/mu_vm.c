@@ -52,14 +52,14 @@
 // =============================================================================
 // local (static) storage
 
-static mu_vm_time_seconds_dt s_rtc_period;
+static mu_vm_time_s_dt s_rtc_period;
 
 // =============================================================================
 // main code starts here
 
 void mu_vm_init() {
   RTC_Initialize();
-  s_rtc_period = 1.0/(mu_vm_time_seconds_dt)RTC_Timer32FrequencyGet();
+  s_rtc_period = 1.0/(mu_vm_time_s_dt)RTC_Timer32FrequencyGet();
   RTC_Timer32Start();        // start counting
 }
 
@@ -84,18 +84,18 @@ bool mu_vm_time_follows(mu_vm_time_t t1, mu_vm_time_t t2) {
 }
 
 mu_vm_time_dt mu_vm_time_ms_to_duration(mu_vm_time_ms_dt ms) {
-    return mu_vm_time_seconds_to_duration(ms / 1000.0); // could be better
+    return mu_vm_time_s_to_duration(ms / 1000.0); // could be better
 }
 
 mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt) {
-    return mu_vm_time_duration_to_seconds(dt) * 1000;   // could be better
+    return mu_vm_time_duration_to_s(dt) * 1000;   // could be better
 }
 
-mu_vm_time_dt mu_vm_time_seconds_to_duration(mu_vm_time_seconds_dt secs) {
+mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt secs) {
   return secs / s_rtc_period;
 }
 
-mu_vm_time_seconds_dt mu_vm_time_duration_to_seconds(mu_vm_time_dt dt) {
+mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt) {
   return dt * s_rtc_period;
 }
 

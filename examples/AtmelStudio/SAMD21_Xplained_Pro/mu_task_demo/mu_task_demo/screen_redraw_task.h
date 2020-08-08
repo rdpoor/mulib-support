@@ -33,24 +33,22 @@ extern "C" {
 // includes
 
 #include "mulib.h"
+#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
 
 typedef struct {
-  int s1;             // major state (steps through lines to display)
-  int s2;             // minor state (steps through tasks to display)
-  mu_task_t *tasks;
-  size_t n_tasks;
+  bool in_progress;
+  mu_sched_t *sched;
+  mu_task_t *task;
 } screen_redraw_ctx_t;
 
 // =============================================================================
 // declarations
 
 mu_task_t *screen_redraw_task_init(mu_task_t *screen_redraw_task,
-                                   screen_redraw_ctx_t *screen_redraw_ctx,
-                                   mu_task_t *tasks,
-                                   size_t n_tasks);
+                                   screen_redraw_ctx_t *screen_redraw_ctx);
 
 #ifdef __cplusplus
 }

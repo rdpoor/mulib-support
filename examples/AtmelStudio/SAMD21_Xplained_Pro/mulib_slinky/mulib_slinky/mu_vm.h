@@ -25,7 +25,7 @@
 /**
  * @file mu_vm.h
  *
- * Every target system for mulib is assumed to provide a few resources:
+ * mu_vm defines a virtual machine that provides a few common resources:
  *
  * * An LED that can be turned on and off
  * * A user button that can generate an asynchronous event
@@ -36,11 +36,11 @@
  * * [Optional] The ability to sleep (i.e. run in a power-reduced mode) until
  *   an asynchronous event wakes it.
  *
- * This file, port.h, defines the interface to those resources.  To port mulib
+ * This file, mu_vm.h, defines the interface to those resources.  To port mulib
  * to a new target system, you must implement the functions and types described
  * here.
  *
- * In addition, some compile-time macros control the behavior of port.h:
+ * In addition, some compile-time macros control the behavior of the system:
  *
  * * `MU_VM_FLOAT`: If your system supports floating point operations, define
  *   this to be `float` or `double` as appropriate.  Note that including
@@ -48,6 +48,55 @@
  * * `MU_VM_CAN_SLEEP`: If your system supports a low-power sleep mode,
  *   define this macro and include defintions for `mu_vm_sleep_until()` and
  *   `mu_vm_sleep()`
+ */
+
+/**
+ * A note on serial I/O:
+ *
+ * The virtual machine defines a byte-at-a-time interface for reading and
+ * writing serial data, and is designed to support both synchronous (polled)
+ * and asynchronous (interrupt-driven) operations.
+ *
+ * Synchronous serial writes (polled):
+ *
+ * if (there is a character to write) {
+ *   // optional: wait until uart can write (but mu_serial_write() does this)
+ *   while (!mu_vm_serial_can_write()) { }
+ *   mu_serial_write(ch);
+ * }
+ *
+ * Asynchronous serial writes (interrupt driven):
+ *
+ *   // [foreground level] Set the write callback to initiate the write process.
+ *   mu_serial_set_write_cb(write_cb, arg);
+ *
+ *   // [interupt level] Arrive here whenever the UART can accept another char
+ *   // for transmission.
+ *   void write_cb(void *arg) {
+ *     if (there is a character to write) {
+ *       mu_serial_write(ch);
+ *     } else {
+ *       // no more characters to write -- disable subsequent callbacks
+ *       mu_serial_set_write_cb(NULL, NULL);
+ *   }
+ *
+ * Synchronous serial reads (polled):
+ *
+ *   // optional: wait until uart can read (but mu_serial_read() does this)
+ *   while (!mu_vm_serial_can_read()) { }
+ *   process_character(mu_serial_read());
+ *
+ * Asynchronous serial reads (interrupt driven):
+ *
+ *   // [foreground level] Set the read callback to initiate the read process.
+ *   mu_serial_set_read_cb(read_cb, arg);
+ *
+ *   // [interrupt level] Arrive here when the UART has a character available
+ *   // for reading
+ *   void read_cb(void *arg) {
+ *     process_character(mu_serial_read());
+ *   }
+ *
  */
 
 #ifndef _MU_VM_H_
@@ -83,7 +132,7 @@ typedef uint32_t mu_vm_time_t;
 typedef int32_t mu_vm_time_dt;
 typedef int32_t mu_vm_time_ms_dt;
 #ifdef MU_VM_FLOAT
-typedef MU_VM_FLOAT mu_vm_time_seconds_dt;
+typedef MU_VM_FLOAT mu_vm_time_s_dt;
 #endif
 
 /**
@@ -110,8 +159,8 @@ mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt);
 mu_vm_time_dt mu_vm_time_ms_to_duration(mu_vm_time_ms_dt ms);
 
 #ifdef MU_VM_FLOAT
-mu_vm_time_seconds_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt);
-mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_seconds_dt seconds);
+mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt);
+mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds);
 #endif
 
 // ==========
@@ -175,7 +224,7 @@ bool mu_vm_serial_write_in_progress(void);
  * received.
  *
  * If a read callback has been set via mu_vm_serial_set_read_cb, serial read
- * interrtups are enabled after the read operation, otherwise read interrupts
+ * interrupts are enabled after the read operation, otherwise read interrupts
  * are disabled.
  *
  * For blocking style reads (without interrupts):

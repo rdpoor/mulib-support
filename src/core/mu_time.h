@@ -43,7 +43,7 @@ typedef mu_vm_time_t mu_time_t;
 typedef mu_vm_time_dt mu_time_dt;
 typedef mu_vm_time_ms_dt mu_time_ms_dt;
 #ifdef MU_VM_FLOAT
-typedef mu_vm_time_seconds_dt mu_time_seconds_dt;
+typedef mu_vm_time_s_dt mu_time_s_dt;
 #endif
 
 #define MU_TIME_MS_TO_DURATION(ms) MU_VM_TIME_MS_TO_DURATION(ms)
@@ -131,7 +131,7 @@ mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms);
  * @param dt A duration object
  * @return The duration in seconds
  */
-mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt);
+mu_time_s_dt mu_time_duration_to_s(mu_time_dt dt);
 
 /**
  * @brief Convert seconds to a duration.
@@ -139,7 +139,7 @@ mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt);
  * @param s The duration in seconds
  * @return A duration object
  */
-mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s);
+mu_time_dt mu_time_s_to_duration(mu_time_s_dt s);
 #endif
 
 /**

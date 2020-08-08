@@ -40,129 +40,6 @@ We break a few levels of abstraction to implement the mu_vm serial interface.
 After the system calls USART_0_Init(), but before we use USART_0, we modify
 USART_0.device.usart_cb to point at our own interrupt callbacks.
 
-But (ugh) _sercom_usart_interrupt_handler(struct _usart_async_device *device)
-defined in hpl_sercom.c is the function that dispatches to the callbacks.  But
-we can't use it as is: the RXC interrupt calls hri_sercomusart_read_DATA_reg(hw)
-which has the effect of clearing the RXC bit.  We need an interrupt handler
-to notify us, but not to clear that bit.
-
-So we have to replace it.  But since SERCOM3_Handler() is already defined, is
-there a way to replace its pointer in exception_table?  That way I could point
-to my own handler without modifying ASF4 sources.
-
-void SERCOM3_Handler(void)
-{
-	_sercom_usart_interrupt_handler(_sercom3_dev);
-}
-
-Note the distinction between descr.usart_cb which is a
-`struct usart_async_callbacks` for the user level callbacks, and
-descr.device.usart_cb, which is a `struct _usart_async_callbacks`
-and is used for driver level callbacks.  It's this one that we
-need to modify.
-
-USART_0 is a `struct usart_async_descriptor`:
-
-struct usart_async_descriptor {
-	struct io_descriptor         io;           // _read, _write fns: not used yet
-	struct _usart_async_device   device;       // used -- see below
-	struct usart_async_callbacks usart_cb;     // user-level callbacks
-	uint32_t                     stat;         // not used
-
-	struct ringbuffer rx;                      // not used
-	uint16_t          tx_por;                  // not used
-	uint8_t *         tx_buffer;               // not used
-	uint16_t          tx_buffer_length;        // not used
-};
-
-struct _usart_async_device {
-	struct _usart_async_callbacks usart_cb;    // used -- see below
-	struct _irq_descriptor        irq;         // not clear
-	void *                        hw;          // SERCOM3 (0x42001400)
-};
-
-USART_0.device.usart_cb is a struct of four function pointers:
-
-struct _usart_async_callbacks {
-	void (*tx_byte_sent)(struct _usart_async_device *device);
-	void (*rx_done_cb)(struct _usart_async_device *device, uint8_t data);
-	void (*tx_done_cb)(struct _usart_async_device *device);
-	void (*error_cb)(struct _usart_async_device *device);
-};
-
-NEED TO UNDERSTAND:
-
-INTEN_TXC ("tx_done") means the byte has been completely transmitted.
-INTEN_DRE ("byte_sent") means the tx register is ready to accept a char.
-INTEN_RXC
-
-USART_0_Init() called from system_init():
-
-  USART_0_CLOCK_init();
-  usart_async_init(&USART_0, SERCOM3, USART_0_buffer, USART_0_BUFFER_SIZE, (void *)NULL);
-  USART_0_PORT_init();
-
-usart_async_init called from USART_0_init():
-
-  int32_t init_status;
-  ASSERT(descr && hw && rx_buffer && rx_buffer_length);
-
-  if (ERR_NONE != ringbuffer_init(&descr->rx, rx_buffer, rx_buffer_length)) {
-    return ERR_INVALID_ARG;
-  }
-  init_status = _usart_async_init(&descr->device, hw);
-  if (init_status) {
-    return init_status;
-  }
-
-  descr->io.read  = usart_async_read;
-  descr->io.write = usart_async_write;
-
-  descr->device.usart_cb.tx_byte_sent = usart_process_byte_sent;
-  descr->device.usart_cb.rx_done_cb   = usart_fill_rx_buffer;
-  descr->device.usart_cb.tx_done_cb   = usart_transmission_complete;
-  descr->device.usart_cb.error_cb     = usart_error;
-
-  return ERR_NONE;
-
-_usart_async_init called from usart_async_init:
-
-int32_t _usart_async_init(struct _usart_async_device *const device, void *const hw) {
-	int32_t init_status;
-
-	ASSERT(device);
-
-	init_status = _usart_init(hw);
-	if (init_status) {
-		return init_status;
-	}
-	device->hw = hw;
-	_sercom_init_irq_param(hw, (void *)device);
-	NVIC_DisableIRQ((IRQn_Type)_sercom_get_irq_num(hw));
-	NVIC_ClearPendingIRQ((IRQn_Type)_sercom_get_irq_num(hw));
-	NVIC_EnableIRQ((IRQn_Type)_sercom_get_irq_num(hw));
-
-	return ERR_NONE;
-}
-
-_usart_init called from _usart_async_init:
-
-_sercom_init_irq_param called from _usart_async_init:
-
-static void _sercom_init_irq_param(const void *const hw, void *dev) {
-	if (hw == SERCOM3) {
-		_sercom3_dev = (struct _usart_async_device *)dev;
-	}
-}
-
-
-_usart_async_enable called from usart_async_enable:
-
-void _usart_async_enable(struct _usart_async_device *const device) {
-	hri_sercomusart_set_CTRLA_ENABLE_bit(device->hw);
-}
-
-
   */
 
 // =============================================================================
@@ -221,8 +98,6 @@ typedef struct {
 
 static port_t s_port;
 
-static volatile uint8_t s_tx_data;
-static volatile bool s_tx_has_data;
 static volatile uint8_t s_rx_data;
 static volatile bool s_rx_has_data;
 
@@ -242,11 +117,12 @@ void mu_vm_init(void) {
   usart_async_enable(&USART_0);
 
   // Initialize the RTC.  Use CALENDAR_0 since that's the only published
-  // interface for interacting with the underlying RTC.
+  // interface for setting up the RTC compare callback.
   calendar_enable(&CALENDAR_0); // start RTC
   _calendar_register_callback(&CALENDAR_0.device, rtc_cb_trampoline);
 }
 
+// ==========
 // TIME
 
 mu_vm_time_t mu_vm_time_offset(mu_vm_time_t t, mu_vm_time_dt dt) {
@@ -278,19 +154,20 @@ mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt) {
 }
 
 #ifdef MU_VM_FLOAT
-mu_vm_time_seconds_dt mu_vm_time_duration_to_seconds(mu_vm_time_dt dt) {
+mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-mu_vm_time_dt mu_vm_time_seconds_to_duration(mu_vm_time_seconds_dt seconds) {
+mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds) {
   return seconds / s_rtc_period;
 }
 #endif
 
+// ==========
 // REAL TIME CLOCK
 
 mu_vm_time_t mu_vm_rtc_now(void) {
-  return hri_rtcmode0_read_COUNT_COUNT_bf(CALENDAR_0.device.hw);
+  return hri_rtcmode0_read_COUNT_COUNT_bf(RTC);
 }
 
 /**
@@ -307,7 +184,7 @@ void mu_vm_rtc_set_cb(mu_vm_callback_fn fn, void *arg) {
 }
 
 void mu_vm_rtc_alarm_at(mu_vm_time_t at) {
-  _calendar_set_comp(&CALENDAR_0.device, at);
+  hri_rtcmode0_write_COMP_COMP_bf(RTC, 0, at);
   // Particular to the SAMD21, hri_rtcmode0_write_COMP_COMP_bf() clears the
   // READREQ_RCONT bit, which prevents subsequent RTC reads from updating.
   // Restore it here.
@@ -315,12 +192,14 @@ void mu_vm_rtc_alarm_at(mu_vm_time_t at) {
   hri_rtcmode0_set_READREQ_RREQ_bit(RTC);
 }
 
+// ==========
 // LED
 
 void mu_vm_led_set(bool on) { gpio_set_pin_level(USER_LED_AL, !on); }
 
 bool mu_vm_led_get(void) { return !gpio_get_pin_level(USER_LED_AL); }
 
+// ==========
 // BUTTON
 
 bool mu_vm_button_is_pressed(void) {
@@ -337,43 +216,39 @@ void mu_vm_button_set_cb(mu_vm_callback_fn fn, void *arg) {
   }
 }
 
+// ==========
 // SERIAL
 
 void mu_vm_serial_write(uint8_t byte) {
+  // for either synchronous or asynchronous writes: make sure the UART DRE bit
+  // is set (data ready) and write the byte:
+  while (!mu_vm_serial_can_write()) {
+    asm("nop");
+  }
+  _usart_async_write_byte(&USART_0.device, byte);
+
   if (s_port.tx_cb) {
-    // here, the user is requesting notifications via callback, i.e. transmit
-    // in async mode.  Enable the transmit interrupt to make that happen.
-    // The character will be written in the interrupt routine.
-    //
-    // NOTE: _sercom_usart_interrupt_handler() will disable TX interrupts after
-    // transmitting a byte, so they must be re-enabled before sending the next.
-    while (s_tx_has_data) {
-      asm("nop");
-    }
-    s_tx_data = byte;
-    s_tx_has_data = true;
+    // If the callback function is set, the user is requesting asynchronous
+    // operation (interrupt driven).  Enable DRE interrupts so that the user
+    // callback will be triggered as soon as this write completes.
     _usart_async_set_irq_state(&USART_0.device, USART_ASYNC_BYTE_SENT, true);
-  } else {
-    // Synchronous mode.  Write the character as soon as the Data Register
-    // Empty bit goes true.
-    while (!mu_vm_serial_can_write()) {
-      asm("nop");
-    }
-    _usart_async_write_byte(&USART_0.device, byte);
   }
 }
 
 bool mu_vm_serial_can_write(void) {
   // returns DRE bit
   return hri_sercomusart_get_interrupt_DRE_bit(USART_0.device.hw);
-  // return _usart_sync_is_ready_to_send(&USART_0.device);
 }
 
 void mu_vm_serial_set_write_cb(mu_vm_callback_fn fn, void *arg) {
   if (fn) {
     s_port.tx_cb = fn;
     s_port.tx_cb_arg = arg;
+    // enable DRE interrupts
+    _usart_async_set_irq_state(&USART_0.device, USART_ASYNC_BYTE_SENT, true);
   } else {
+    // disable DRE interrupts
+    _usart_async_set_irq_state(&USART_0.device, USART_ASYNC_BYTE_SENT, false);
     s_port.tx_cb = NULL;
     s_port.tx_cb_arg = NULL;
   }
@@ -403,7 +278,6 @@ void mu_vm_serial_set_read_cb(mu_vm_callback_fn fn, void *arg) {
   if (fn) {
     s_port.rx_cb = fn;
     s_port.rx_cb_arg = arg;
-    // TODO: back propogate as needed
     _usart_async_set_irq_state(&USART_0.device, USART_ASYNC_RX_DONE, true);
   } else {
     s_port.rx_cb = NULL;
@@ -412,7 +286,7 @@ void mu_vm_serial_set_read_cb(mu_vm_callback_fn fn, void *arg) {
 }
 
 bool mu_vm_serial_read_in_progress(void) {
-  // Return true if the start of frame deteceted but receive not yet complete.
+  // Return true if the start of frame detecteted but receive not yet complete.
   // See also mu_vm_serial_read()
   //
   // NB: start-of-frame detection must be enabled(CTRLB.SFDE is '1')
@@ -422,6 +296,7 @@ bool mu_vm_serial_read_in_progress(void) {
     hri_sercomusart_get_INTEN_RXS_bit(USART_0.device.hw);
 }
 
+// ==========
 // SLEEP
 
 /**
@@ -465,25 +340,8 @@ static void customize_usart_driver(void) {
 
 /**
  * Arrive here when the USART is ready to accept a new character.
- * original code:
- *
- // static void usart_process_byte_sent(struct _usart_async_device *device)
- // {
- // 	struct usart_async_descriptor *descr = CONTAINER_OF(device, struct usart_async_descriptor, device);
- // 	if (descr->tx_por != descr->tx_buffer_length) {
- // 		_usart_async_write_byte(&descr->device, descr->tx_buffer[descr->tx_por++]);
- // 		_usart_async_enable_byte_sent_irq(&descr->device);
- // 	} else {
- // 		_usart_async_enable_tx_done_irq(&descr->device);
- // 	}
- // }
  */
 static void tx_byte_sent(struct _usart_async_device *device) {
-  if (s_tx_has_data) {
-    _usart_async_write_byte(&USART_0.device, s_tx_data);
-    s_tx_has_data = false;
-  }
-
   // notify user callback if set
   if (s_port.tx_cb) {
     s_port.tx_cb(s_port.tx_cb_arg);
@@ -492,22 +350,12 @@ static void tx_byte_sent(struct _usart_async_device *device) {
 
 /**
  * Arrive here when a character has been fully received.
- * original code:
- *
- // static void usart_fill_rx_buffer(struct _usart_async_device *device, uint8_t data)
- // {
- // 	struct usart_async_descriptor *descr = CONTAINER_OF(device, struct usart_async_descriptor, device);
- //
- // 	ringbuffer_put(&descr->rx, data);
- //
- // 	if (descr->usart_cb.rx_done) {
- // 		descr->usart_cb.rx_done(descr);
- // 	}
- // }
  */
 static void rx_done_cb(struct _usart_async_device *device, uint8_t data) {
-  // capture the data (since the _sercom_usart_interrupt_handler has already
-  // read the data and cleared the RXD bit)
+  // The ASF4 serial interrupt handler reads the data register which clears the
+  // RXD bit (as well as fetching the data).  The user needs to know if there is
+  // data available, so we shadow the RXD bit and the data register with
+  // s_rx_has_data and s_rx_data respectively.
   s_rx_data = data;
   s_rx_has_data = true;
 
@@ -523,17 +371,6 @@ static void rx_done_cb(struct _usart_async_device *device, uint8_t data) {
 
 /**
  * Arrive here when the previous character has been fully transmitted.
- * original code:
- *
- // static void usart_transmission_complete(struct _usart_async_device *device)
- // {
- // 	struct usart_async_descriptor *descr = CONTAINER_OF(device, struct usart_async_descriptor, device);
- //
- // 	descr->stat = 0;
- // 	if (descr->usart_cb.tx_done) {
- // 		descr->usart_cb.tx_done(descr);
- // 	}
- // }
  */
 static void tx_done_cb(struct _usart_async_device *device) {
   // No action.  In the future, we might use this for an async version of
@@ -543,17 +380,6 @@ static void tx_done_cb(struct _usart_async_device *device) {
 
 /**
  * Arrive here on an error condition.
- * original code:
- *
- // static void usart_error(struct _usart_async_device *device)
- // {
- // 	struct usart_async_descriptor *descr = CONTAINER_OF(device, struct usart_async_descriptor, device);
- //
- // 	descr->stat = 0;
- // 	if (descr->usart_cb.error) {
- // 		descr->usart_cb.error(descr);
- // 	}
- // }
  */
 static void error_cb(struct _usart_async_device *device) {
   asm("nop");
@@ -570,6 +396,8 @@ static void rtc_cb_trampoline(struct calendar_dev *const dev) {
 
 static void go_to_sleep(void) {
   sleep(3); // in hal_sleep
+  //Mystery bug in SAMD21: won't wake from sleep without a following delay.
+  delay_us(200);
 }
 
 // See https://stackoverflow.com/a/18067292/558639

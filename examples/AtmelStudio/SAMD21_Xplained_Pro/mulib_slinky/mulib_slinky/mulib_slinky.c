@@ -29,9 +29,11 @@
 #include "button_task.h"
 #include "idle_task.h"
 #include "led_task.h"
+#include "mu_vm.h"
 #include "mulib.h"
 #include <stddef.h>
 #include <stdio.h>
+#include "hal_delay.h"
 
 // =============================================================================
 // local types and definitions
@@ -39,7 +41,7 @@
 #define MULIB_SLINKY_VERSION "1.0.0"
 
 #define EVENT_QUEUE_CAPACITY 10
-#define ISR_Q_CAPACITY 8           // must be a power of two
+#define ISR_Q_CAPACITY 8 // must be a power of two
 
 // =============================================================================
 // local (forward) declarations
@@ -77,10 +79,8 @@ void mulib_slinky_init() {
   mu_vm_init();
 
   printf("\r\n\r\n# ===========\r\n");
-  printf("# mulib_slinky %s: see https://github.com/rdpoor/mulib\r\n", MULIB_SLINKY_VERSION);
-
-  // initialize the port-specific interface
-  mu_vm_init();
+  printf("# mulib_slinky %s: see https://github.com/rdpoor/mulib\r\n",
+         MULIB_SLINKY_VERSION);
 
   // set up the isr queue and the scheduler
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, ISR_Q_CAPACITY);
@@ -98,4 +98,13 @@ void mulib_slinky_init() {
 void mulib_slinky_step() {
   // called repeatedly from main(): run the scheduler
   mu_sched_step(&s_sched);
+}
+
+void blink_led(int n) {
+  for (int i=0; i<n; i++) {
+    mu_vm_led_set(true);
+    delay_ms(50);
+    mu_vm_led_set(false);
+    delay_ms(50);
+  }
 }

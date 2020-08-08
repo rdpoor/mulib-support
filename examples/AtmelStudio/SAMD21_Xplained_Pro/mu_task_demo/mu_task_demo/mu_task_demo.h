@@ -33,6 +33,7 @@ extern "C" {
 // includes
 
 #include <stdbool.h>
+#include <mulib.h>
 
 // =============================================================================
 // types and definitions
@@ -57,6 +58,16 @@ void mu_task_demo_stop_screen_update_task(void);
 void mu_task_demo_set_low_power_mode(bool low_power);
 
 bool mu_task_demo_is_low_power_mode(void);
+
+mu_substr_t *mu_task_demo_get_screen_buffer(void);
+
+mu_sched_t *mu_task_demo_get_scheduler(void);
+
+mu_task_t *mu_task_demo_get_screen_redraw_task(void);
+
+size_t mu_task_demo_get_task_count(void);
+
+mu_task_t *mu_task_demo_get_tasks(void);
 
 #ifdef __cplusplus
 }

@@ -45,15 +45,12 @@ extern "C" {
 typedef struct {
   mu_task_t *task;
   mu_sched_t *sched;
-  uint8_t ch;              // one-character buffer for serial read
 } kbd_ctx_t;
 
 // =============================================================================
 // declarations
 
-mu_task_t *kbd_task_init(mu_task_t *kbd_task,
-                         kbd_ctx_t *kbd_ctx,
-                         mu_sched_t *sched);
+mu_task_t *kbd_task_init(mu_task_t *kbd_task, kbd_ctx_t *kbd_ctx);
 
 #ifdef __cplusplus
 }

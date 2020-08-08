@@ -86,7 +86,7 @@ void mu_vm_init(void) {
   s_rtc_frequency = RTC_Timer32FrequencyGet();
   s_min_sleep_duration = mu_vm_time_ms_to_duration(MIN_SLEEP_DURATION_MS);
 #ifdef PORT_FLOAT
-  s_rtc_period = 1.0/(mu_vm_time_seconds_dt)s_rtc_frequency;
+  s_rtc_period = 1.0/(mu_vm_time_s_dt)s_rtc_frequency;
 #endif
   RTC_Timer32Start();        // start counting
 
@@ -147,11 +147,11 @@ int mu_vm_time_duration_to_ms(mu_vm_time_dt dt) {
 }
 
 #ifdef PORT_FLOAT
-PORT_FLOAT mu_vm_time_duration_to_seconds(mu_vm_time_dt dt) {
+PORT_FLOAT mu_vm_time_duration_to_s(mu_vm_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-mu_vm_time_dt mu_vm_time_seconds_to_duration(PORT_FLOAT seconds) {
+mu_vm_time_dt mu_vm_time_s_to_duration(PORT_FLOAT seconds) {
   return seconds / s_rtc_period;
 }
 #endif

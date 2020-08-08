@@ -73,12 +73,12 @@ mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms) {
 }
 
 #ifdef MU_VM_FLOAT
-mu_time_seconds_dt mu_time_duration_to_seconds(mu_time_dt dt) {
-  return mu_vm_time_duration_to_seconds(dt);
+mu_time_s_dt mu_time_duration_to_s(mu_time_dt dt) {
+  return mu_vm_time_duration_to_s(dt);
 }
 
-mu_time_dt mu_time_seconds_to_duration(mu_time_seconds_dt s) {
-  return mu_vm_time_seconds_to_duration(s);
+mu_time_dt mu_time_s_to_duration(mu_time_s_dt s) {
+  return mu_vm_time_s_to_duration(s);
 }
 #endif
 

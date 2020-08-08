@@ -494,6 +494,14 @@
       <SubType>compile</SubType>
       <Link>mulib\mulib.h</Link>
     </Compile>
+    <Compile Include="..\..\mu_vm.c">
+      <SubType>compile</SubType>
+      <Link>mu_vm.c</Link>
+    </Compile>
+    <Compile Include="..\..\mu_vm.h">
+      <SubType>compile</SubType>
+      <Link>mu_vm.h</Link>
+    </Compile>
     <Compile Include="atmel_start.c">
       <SubType>compile</SubType>
     </Compile>
@@ -882,12 +890,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="mu_vm.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="mu_vm.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="printf_support.c">

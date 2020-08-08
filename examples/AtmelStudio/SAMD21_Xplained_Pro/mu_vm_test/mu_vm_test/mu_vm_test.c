@@ -25,6 +25,7 @@
 // =============================================================================
 // includes
 
+#include "mu_vm_test.h"
 #include "mu_vm.h"
 #include <stdarg.h>
 #include <stdbool.h>

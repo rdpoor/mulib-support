@@ -266,6 +266,20 @@ mu_substr_t *mu_substr_printf(mu_substr_t *s, const char *fmt, ...) {
   return s;
 }
 
+mu_substr_t *mu_substr_puts(mu_substr_t *s, const char *src) {
+  size_t available = mu_substr_remaining(s);
+
+  if (available > 0) {
+    size_t copied = strlen(src);  // does not include null terminator
+    if (copied > available) {
+      copied = available;
+    }
+    memcpy(&s->str->data[s->end], src, copied);
+    s->end += copied;
+  }
+  return s;
+}
+
 // =============================================================================
 // local (static) code
 

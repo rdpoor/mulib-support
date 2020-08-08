@@ -42,6 +42,12 @@ void mulib_slinky_init(void);
 
 void mulib_slinky_step(void);
 
+/*
+ * for low-level debugging when the debugger affects the clocks and UART is
+ * not available.
+ */
+void blink_led(int n);
+
 #ifdef __cplusplus
 }
 #endif

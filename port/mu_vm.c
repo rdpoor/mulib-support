@@ -278,11 +278,11 @@ mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt) {
 }
 
 #ifdef MU_VM_FLOAT
-mu_vm_time_seconds_dt mu_vm_time_duration_to_seconds(mu_vm_time_dt dt) {
+mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt) {
   return dt * s_rtc_period;
 }
 
-mu_vm_time_dt mu_vm_time_seconds_to_duration(mu_vm_time_seconds_dt seconds) {
+mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds) {
   return seconds / s_rtc_period;
 }
 #endif

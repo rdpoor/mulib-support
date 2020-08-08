@@ -41,7 +41,7 @@ extern "C" {
 typedef uint32_t mu_vm_time_t;           // an absolute time
 typedef int32_t mu_vm_time_dt;           // the interval between two times
 typedef int32_t mu_vm_time_ms_dt;        // an interval expressed in milliseconds
-typedef float mu_vm_time_seconds_dt;     // an interval expressed in seconds
+typedef float mu_vm_time_s_dt;     // an interval expressed in seconds
 
 #define MU_VM_RTC_CLOCK_RATE 32768
 #define MU_VM_TIME_MS_TO_DURATION(ms) (((ms) * MU_VM_RTC_CLOCK_RATE) / 1000)
@@ -65,9 +65,9 @@ mu_vm_time_dt mu_vm_time_ms_to_duration(mu_vm_time_ms_dt ms);
 
 mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt);
 
-mu_vm_time_dt mu_vm_time_seconds_to_duration(mu_vm_time_seconds_dt seconds);
+mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds);
 
-mu_vm_time_seconds_dt mu_vm_time_duration_to_seconds(mu_vm_time_dt dt);
+mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt);
 
 mu_vm_time_t mu_vm_rtc_now();
 

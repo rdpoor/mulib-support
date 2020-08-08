@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+..\..\mu_vm.c
+
 atmel_start.c
 
 Device_Startup\startup_samd21.c
@@ -60,7 +62,5 @@ hpl\sysctrl\hpl_sysctrl.c
 
 main.c
 
-mv_vm_test.c
-
-mu_vm.c
+mu_vm_test.c
 

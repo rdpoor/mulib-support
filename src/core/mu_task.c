@@ -95,12 +95,12 @@ mu_time_ms_dt mu_task_max_duration_ms(mu_task_t *task) {
 }
 
 #ifdef MU_VM_FLOAT
-mu_time_seconds_dt mu_task_runtime_s(mu_task_t *task) {
-  return mu_time_duration_to_seconds(task->runtime);
+mu_time_s_dt mu_task_runtime_s(mu_task_t *task) {
+  return mu_time_duration_to_s(task->runtime);
 }
 
-mu_time_seconds_dt mu_task_max_duration_s(mu_task_t *task) {
-  return mu_time_duration_to_seconds(task->max_duration);
+mu_time_s_dt mu_task_max_duration_s(mu_task_t *task) {
+  return mu_time_duration_to_s(task->max_duration);
 }
 #endif
 

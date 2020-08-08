@@ -39,7 +39,7 @@
  *
  * \acme_license_stop
  *
- * Project: mv_vm_test
+ * Project: mu_vm_test
  * Target:  ATSAMD21J18A 
  *
  **/
