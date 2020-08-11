@@ -447,13 +447,13 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_spscq.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_str.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_strbuf.c">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_str.c</Link>
+      <Link>mulib\core\mu_strbuf.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_str.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_strbuf.h">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_str.h</Link>
+      <Link>mulib\core\mu_strbuf.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\..\src\core\mu_substr.c">
       <SubType>compile</SubType>

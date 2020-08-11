@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_str.h"
+#include "mu_strbuf.h"
 #include "mu_substr.h"
 #include <string.h>
 #include <stdbool.h>
@@ -43,7 +43,7 @@
 
 static size_t min_size(size_t a, size_t b);
 static bool index_is_valid(mu_substr_t *s, size_t index);
-static mu_str_data_t *ref_offset(mu_substr_t *s, size_t offset);
+static mu_strbuf_data_t *ref_offset(mu_substr_t *s, size_t offset);
 
 // =============================================================================
 // local storage
@@ -51,7 +51,7 @@ static mu_str_data_t *ref_offset(mu_substr_t *s, size_t offset);
 // =============================================================================
 // public code
 
-mu_substr_t *mu_substr_init(mu_substr_t *s, mu_str_t *str) {
+mu_substr_t *mu_substr_init(mu_substr_t *s, mu_strbuf_t *str) {
   s->str = str;
   return mu_substr_reset(s);
 }
@@ -65,7 +65,7 @@ mu_substr_t *mu_substr_duplicate(mu_substr_t *dst, mu_substr_t *src) {
 
 mu_substr_t *mu_substr_reset(mu_substr_t *s) {
   s->start = 0;
-  s->end = mu_str_capacity(s->str);
+  s->end = mu_strbuf_capacity(s->str);
   return s;
 }
 
@@ -75,7 +75,7 @@ mu_substr_t *mu_substr_clear(mu_substr_t *s) {
   return s;
 }
 
-mu_str_t *mu_substr_str(mu_substr_t *s) {
+mu_strbuf_t *mu_substr_str(mu_substr_t *s) {
   return s->str;
 }
 
@@ -92,10 +92,10 @@ size_t mu_substr_length(mu_substr_t *s) {
 }
 
 size_t mu_substr_remaining(mu_substr_t *s) {
-  return mu_str_capacity(s->str) - s->end;
+  return mu_strbuf_capacity(s->str) - s->end;
 }
 
-mu_substr_err_t mu_substr_ref(mu_substr_t *s, size_t index, mu_str_data_t **p) {
+mu_substr_err_t mu_substr_ref(mu_substr_t *s, size_t index, mu_strbuf_data_t **p) {
   if (index_is_valid(s, index)) {
     *p = ref_offset(s, index);
     return MU_SUBSTR_ERR_NONE;
@@ -105,7 +105,7 @@ mu_substr_err_t mu_substr_ref(mu_substr_t *s, size_t index, mu_str_data_t **p) {
   }
 }
 
-mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_str_data_t *d) {
+mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_strbuf_data_t *d) {
   if (index_is_valid(s, index)) {
     *d = *ref_offset(s, index);
     return MU_SUBSTR_ERR_NONE;
@@ -115,7 +115,7 @@ mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_str_data_t *d) {
   }
 }
 
-mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_str_data_t d) {
+mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_strbuf_data_t d) {
   if (index_is_valid(s, index)) {
     *ref_offset(s, index) = d;
     return MU_SUBSTR_ERR_NONE;
@@ -125,7 +125,7 @@ mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_str_data_t d) {
 }
 
 mu_substr_err_t mu_substr_slice_str(mu_substr_t *s, int start, int end) {
-  size_t capacity = mu_str_capacity(mu_substr_str(s));
+  size_t capacity = mu_strbuf_capacity(mu_substr_str(s));
   int s1, e1;
 
   if (start >= 0) {
@@ -165,9 +165,9 @@ mu_substr_t *mu_substr_copy(mu_substr_t *dst, mu_substr_t *src) {
 int mu_substr_cmp(mu_substr_t *s1, mu_substr_t *s2) {
   size_t len1 = mu_substr_length(s1);
   size_t len2 = mu_substr_length(s2);
-  mu_str_data_t *p1 = ref_offset(s1, 0);
-  mu_str_data_t *p2 = ref_offset(s2, 0);
-  mu_str_data_t c1, c2;
+  mu_strbuf_data_t *p1 = ref_offset(s1, 0);
+  mu_strbuf_data_t *p2 = ref_offset(s2, 0);
+  mu_strbuf_data_t c1, c2;
 
   c1 = *p1;
   c2 = *p2;
@@ -198,8 +198,8 @@ bool mu_substr_equals(mu_substr_t *s1, mu_substr_t *s2) {
 
 mu_substr_t *mu_substr_append(mu_substr_t *dst, mu_substr_t *src) {
   size_t to_copy = min_size(mu_substr_length(src), mu_substr_remaining(dst));
-  mu_str_data_t *sp = ref_offset(src, 0);
-  mu_str_data_t *dp = ref_offset(dst, dst->end);
+  mu_strbuf_data_t *sp = ref_offset(src, 0);
+  mu_strbuf_data_t *dp = ref_offset(dst, dst->end);
   memcpy(dp, sp, to_copy);
   dst->end += to_copy;
   return dst;
@@ -292,7 +292,7 @@ static bool index_is_valid(mu_substr_t *s, size_t index) {
   return (s->start <= abs_i) && (abs_i < s->end);
 }
 
-static mu_str_data_t *ref_offset(mu_substr_t *s, size_t offset) {
-  // Violate mu_str's data abstraction in the name of efficiency...
+static mu_strbuf_data_t *ref_offset(mu_substr_t *s, size_t offset) {
+  // Violate mu_strbuf's data abstraction in the name of efficiency...
   return &s->str->data[s->start + offset];
 }

@@ -19,7 +19,7 @@ c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../.
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-puts.o)
                               build/same54_xplained_pro/production/_ext/135519299/mu_task_demo.o (puts)
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-strlen.o)
-                              build/same54_xplained_pro/production/_ext/265365281/mu_str.o (strlen)
+                              build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o (strlen)
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-vsnprintf.o)
                               build/same54_xplained_pro/production/_ext/265365281/mu_substr.o (vsnprintf)
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libc_nano.a(lib_a-wbuf.o)
@@ -179,7 +179,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.mu_task_demo_init     0x2e94           0xe0         224   
 .text.__swsetup_r           0x2f74           0xdc         220   
 .text._puts_r               0x3050           0xcc         204   
-.text.mu_str_capacity       0x311c            0x4           4   
+.text.mu_strbuf_capacity       0x311c            0x4           4   
 .rodata.__mprec_tens        0x3120           0xc8         200   
 .text.mu_vm_init            0x31e8           0xc4         196   
 .text.__swbuf_r             0x32ac           0xbc         188   
@@ -380,7 +380,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.mu_vm_rtc_now         0x55a4            0x8           8   
 .text.__sclose              0x55ac            0x8           8   
 .text.close                 0x55b4            0x8           8   
-.text.mu_str_init           0x55bc            0x6           6   
+.text.mu_strbuf_init           0x55bc            0x6           6   
 .text.RTC_Timer32Freque     0x55c2            0x6           6   
 .text.mu_vm_time_preced     0x55c8            0x6           6   
 .text.mu_task_call_coun     0x55ce            0x4           4   
@@ -687,21 +687,21 @@ Discarded input sections
                 0x00000000       0x10 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
  .text.mu_spscq_is_empty
                 0x00000000       0x12 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .text          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .data          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .bss           0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .text.mu_str_init_from_cstr
-                0x00000000       0x12 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .text.mu_str_to_cstr
-                0x00000000       0x1a build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .text.mu_str_data
-                0x00000000        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .text.mu_str_ref
-                0x00000000       0x18 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .text.mu_str_get
-                0x00000000       0x18 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
- .text.mu_str_put
-                0x00000000       0x10 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .text          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .data          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .bss           0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .text.mu_strbuf_init_from_cstr
+                0x00000000       0x12 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .text.mu_strbuf_to_cstr
+                0x00000000       0x1a build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .text.mu_strbuf_data
+                0x00000000        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .text.mu_strbuf_ref
+                0x00000000       0x18 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .text.mu_strbuf_get
+                0x00000000       0x18 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+ .text.mu_strbuf_put
+                0x00000000       0x10 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .text          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .data          0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .bss           0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
@@ -1326,7 +1326,7 @@ LOAD build/same54_xplained_pro/production/_ext/265365281/mu_pstore.o
 LOAD build/same54_xplained_pro/production/_ext/265365281/mu_queue.o
 LOAD build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
 LOAD build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
-LOAD build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+LOAD build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
 LOAD build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
 LOAD build/same54_xplained_pro/production/_ext/265365281/mu_task.o
 LOAD build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -1488,7 +1488,7 @@ LOAD data_init
  .ARM.attributes
                 0x0000008f       0x39 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
  .ARM.attributes
-                0x000000c8       0x39 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+                0x000000c8       0x39 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .ARM.attributes
                 0x00000101       0x39 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .ARM.attributes
@@ -1685,7 +1685,7 @@ LOAD data_init
                                  0x3d (size before relaxing)
  .comment       0x0000003c       0x3d build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .comment       0x0000003c       0x3d build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .comment       0x0000003c       0x3d build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -1777,7 +1777,7 @@ LOAD data_init
 .debug_info     0x00000000    0x5fcb0
  .debug_info    0x00000000     0x2211 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .debug_info    0x00002211      0x621 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .debug_info    0x00002832     0x111e build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .debug_info    0x00002832     0x111e build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_info    0x00003950     0x1cd3 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_info    0x00005623      0x6d5 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .debug_info    0x00005cf8      0x6e8 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -1876,7 +1876,7 @@ LOAD data_init
 .debug_abbrev   0x00000000     0x99ad
  .debug_abbrev  0x00000000      0x473 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .debug_abbrev  0x00000473      0x140 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .debug_abbrev  0x000005b3      0x20a build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .debug_abbrev  0x000005b3      0x20a build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_abbrev  0x000007bd      0x3cd build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_abbrev  0x00000b8a      0x137 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .debug_abbrev  0x00000cc1       0xbf build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -1975,7 +1975,7 @@ LOAD data_init
 .debug_loc      0x00000000     0xc3d9
  .debug_loc     0x00000000      0xe45 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .debug_loc     0x00000e45      0x1d5 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .debug_loc     0x0000101a      0x1eb build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .debug_loc     0x0000101a      0x1eb build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_loc     0x00001205      0xbc9 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_loc     0x00001dce      0x1c8 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .debug_loc     0x00001f96      0x2a2 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -2049,7 +2049,7 @@ LOAD data_init
  .debug_aranges
                 0x000000f0       0x58 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
  .debug_aranges
-                0x00000148       0x58 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+                0x00000148       0x58 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_aranges
                 0x000001a0       0xc0 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_aranges
@@ -2242,7 +2242,7 @@ LOAD data_init
 .debug_ranges   0x00000000     0x12a8
  .debug_ranges  0x00000000      0x110 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .debug_ranges  0x00000110       0x48 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .debug_ranges  0x00000158       0x48 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .debug_ranges  0x00000158       0x48 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_ranges  0x000001a0       0xc8 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_ranges  0x00000268       0x38 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .debug_ranges  0x000002a0       0x50 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -2332,7 +2332,7 @@ LOAD data_init
 .debug_line     0x00000000     0xdda8
  .debug_line    0x00000000      0x44b build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .debug_line    0x0000044b      0x198 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .debug_line    0x000005e3      0x1de build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .debug_line    0x000005e3      0x1de build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_line    0x000007c1      0x3cd build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_line    0x00000b8e      0x184 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .debug_line    0x00000d12      0x1a0 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -2431,7 +2431,7 @@ LOAD data_init
 .debug_str      0x00000000     0x2468
  .debug_str     0x00000000       0xc6 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .debug_str     0x000000c6        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .debug_str     0x000000c6       0x17 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .debug_str     0x000000c6       0x17 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_str     0x000000dd       0x49 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_str     0x00000126       0x3b build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .debug_str     0x00000161       0x90 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -2523,7 +2523,7 @@ LOAD data_init
 .debug_frame    0x00000000     0x25e8
  .debug_frame   0x00000000      0x258 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .debug_frame   0x00000258       0x9c build/same54_xplained_pro/production/_ext/265365281/mu_spscq.o
- .debug_frame   0x000002f4       0xa4 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
+ .debug_frame   0x000002f4       0xa4 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
  .debug_frame   0x00000398      0x218 build/same54_xplained_pro/production/_ext/265365281/mu_substr.o
  .debug_frame   0x000005b0       0x98 build/same54_xplained_pro/production/_ext/265365281/mu_task.o
  .debug_frame   0x00000648       0xe0 build/same54_xplained_pro/production/_ext/265365281/mu_time.o
@@ -3989,11 +3989,11 @@ LOAD data_init
  .text.close    0x000055b4        0x8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(close.o)
                 0x000055b4                close
 
-.text.mu_str_init%250
+.text.mu_strbuf_init%250
                 0x000055bc        0x6
- .text.mu_str_init
-                0x000055bc        0x6 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
-                0x000055bc                mu_str_init
+ .text.mu_strbuf_init
+                0x000055bc        0x6 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+                0x000055bc                mu_strbuf_init
 
 .text.RTC_Timer32FrequencyGet%251
                 0x000055c2        0x6
@@ -4013,11 +4013,11 @@ LOAD data_init
                 0x00000284        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
                 0x00000284                mu_sched_set_idle_task
 
-.text.mu_str_capacity%254
+.text.mu_strbuf_capacity%254
                 0x0000311c        0x4
- .text.mu_str_capacity
-                0x0000311c        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_str.o
-                0x0000311c                mu_str_capacity
+ .text.mu_strbuf_capacity
+                0x0000311c        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_strbuf.o
+                0x0000311c                mu_strbuf_capacity
 
 .text.mu_task_name%255
                 0x00004c84        0x4

@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_str.h"
+#include "mu_strbuf.h"
 #include <stddef.h>
 #include <string.h>
 
@@ -41,33 +41,33 @@
 // =============================================================================
 // public code
 
-mu_str_t *mu_str_init(mu_str_t *s, mu_str_data_t *data, size_t capacity) {
+mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *s, mu_strbuf_data_t *data, size_t capacity) {
   s->data = data;
   s->capacity = capacity;
   return s;
 }
 
-mu_str_t *mu_str_init_from_cstr(mu_str_t *s, const char *cstr) {
-  s->data = (mu_str_data_t *)cstr;
+mu_strbuf_t *mu_strbuf_init_from_cstr(mu_strbuf_t *s, const char *cstr) {
+  s->data = (mu_strbuf_data_t *)cstr;
   s->capacity = strlen(cstr);  // does not include null termination
   return s;
 }
 
-mu_str_t *mu_str_to_cstr(mu_str_t *s, char *cstr, size_t cstr_length) {
+mu_strbuf_t *mu_strbuf_to_cstr(mu_strbuf_t *s, char *cstr, size_t cstr_length) {
   memmove(cstr, s->data, cstr_length-1); // leave one byte for null termination
   cstr[cstr_length-1] = '\0';            // null terminate
   return s;
 }
 
-size_t mu_str_capacity(mu_str_t *s) {
+size_t mu_strbuf_capacity(mu_strbuf_t *s) {
   return s->capacity;
 }
 
-mu_str_data_t *mu_str_data(mu_str_t *s) {
+mu_strbuf_data_t *mu_strbuf_data(mu_strbuf_t *s) {
   return s->data;
 }
 
-mu_str_err_t mu_str_ref(mu_str_t *s, size_t index, mu_str_data_t **p) {
+mu_strbuf_err_t mu_strbuf_ref(mu_strbuf_t *s, size_t index, mu_strbuf_data_t **p) {
   if (index >= s->capacity) {
     *p = NULL;
     return MU_STR_ERR_INDEX;
@@ -77,7 +77,7 @@ mu_str_err_t mu_str_ref(mu_str_t *s, size_t index, mu_str_data_t **p) {
   }
 }
 
-mu_str_err_t mu_str_get(mu_str_t *s, size_t index, mu_str_data_t *d) {
+mu_strbuf_err_t mu_strbuf_get(mu_strbuf_t *s, size_t index, mu_strbuf_data_t *d) {
   if (index >= s->capacity) {
     *d = '\0';
     return MU_STR_ERR_INDEX;
@@ -87,7 +87,7 @@ mu_str_err_t mu_str_get(mu_str_t *s, size_t index, mu_str_data_t *d) {
   }
 }
 
-mu_str_err_t mu_str_put(mu_str_t *s, size_t index, mu_str_data_t d) {
+mu_strbuf_err_t mu_strbuf_put(mu_strbuf_t *s, size_t index, mu_strbuf_data_t d) {
   if (index >= s->capacity) {
     return MU_STR_ERR_INDEX;
   } else {

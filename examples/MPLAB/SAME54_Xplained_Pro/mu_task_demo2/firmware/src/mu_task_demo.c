@@ -84,7 +84,7 @@ static screen_redraw_ctx_t s_screen_redraw_ctx;
 static kbd_ctx_t s_kbd_ctx;
 
 static uint8_t s_screen_buf[SCREEN_BUFFER_SIZE];
-static mu_str_t s_screen_str;
+static mu_strbuf_t s_screen_str;
 static mu_substr_t s_screen_buffer;
 
 static bool s_is_low_power_mode;
@@ -124,7 +124,7 @@ void mu_task_demo_init() {
   mu_task_demo_set_low_power_mode(false);  // start in full power mode
 
   // initialize the screen buffer
-  mu_str_init(&s_screen_str, (mu_str_data_t *)s_screen_buf, SCREEN_BUFFER_SIZE);
+  mu_strbuf_init(&s_screen_str, (mu_strbuf_data_t *)s_screen_buf, SCREEN_BUFFER_SIZE);
   mu_substr_init(&s_screen_buffer, &s_screen_str);
 }
 

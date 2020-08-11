@@ -69,14 +69,14 @@ primarily for use by `mu_sched` to transfer control between interrupt and the
 foreground levels, but -- despite its intentionally obscure name -- may be
 useful elsewhere.
 
-### `mu_str`
+### `mu_strbuf`
 
 Container for safe read and write access to strings, with methods for exchange
 with c-style null-terminated strings.  Companion to mu_substr
 
 ### `mu_substr`
 
-Companion to mu_str, implements in-place string manipulation, including slicing,
+Companion to mu_strbuf, implements in-place string manipulation, including slicing,
 appending and searching.
 
 ### `mu_task`

@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_STR_H_
-#define _MU_STR_H_
+#ifndef _MU_STRBUF_H_
+#define _MU_STRBUF_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,40 +39,40 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-typedef char mu_str_data_t;
+typedef char mu_strbuf_data_t;
 
 typedef enum {
   MU_STR_ERR_NONE,
   MU_STR_ERR_INDEX
-} mu_str_err_t;
+} mu_strbuf_err_t;
 
 typedef struct {
-  mu_str_data_t *data;  // backing store
+  mu_strbuf_data_t *data;  // backing store
   size_t capacity;      // length of backing store
-} mu_str_t;
+} mu_strbuf_t;
 
 
 // =============================================================================
 // declarations
 
-mu_str_t *mu_str_init(mu_str_t *s, mu_str_data_t *data, size_t capacity);
+mu_strbuf_t *mu_strbuf_init(mu_strbuf_t *s, mu_strbuf_data_t *data, size_t capacity);
 
-mu_str_t *mu_str_init_from_cstr(mu_str_t *s, const char *cstr);
+mu_strbuf_t *mu_strbuf_init_from_cstr(mu_strbuf_t *s, const char *cstr);
 
-mu_str_t *mu_str_to_cstr(mu_str_t *s, char *cstr, size_t cstr_length);
+mu_strbuf_t *mu_strbuf_to_cstr(mu_strbuf_t *s, char *cstr, size_t cstr_length);
 
-size_t mu_str_capacity(mu_str_t *s);
+size_t mu_strbuf_capacity(mu_strbuf_t *s);
 
-mu_str_data_t *mu_str_data(mu_str_t *s);
+mu_strbuf_data_t *mu_strbuf_data(mu_strbuf_t *s);
 
-mu_str_err_t mu_str_ref(mu_str_t *s, size_t index, mu_str_data_t **p);
+mu_strbuf_err_t mu_strbuf_ref(mu_strbuf_t *s, size_t index, mu_strbuf_data_t **p);
 
-mu_str_err_t mu_str_get(mu_str_t *s, size_t index, mu_str_data_t *d);
+mu_strbuf_err_t mu_strbuf_get(mu_strbuf_t *s, size_t index, mu_strbuf_data_t *d);
 
-mu_str_err_t mu_str_put(mu_str_t *s, size_t index, mu_str_data_t d);
+mu_strbuf_err_t mu_strbuf_put(mu_strbuf_t *s, size_t index, mu_strbuf_data_t d);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MU_STR_H_ */
+#endif /* #ifndef _MU_STRBUF_H_ */

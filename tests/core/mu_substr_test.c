@@ -49,7 +49,7 @@ static bool substr_equals(mu_substr_t *substr, const char *str);
 static char s_cstr1[] = "discover! ";
 static char s_cstr2[ELEMENT_COUNT];
 
-static mu_str_t s_str1, s_str2;
+static mu_strbuf_t s_str1, s_str2;
 
 static mu_substr_t s_sstr1, s_sstr2, s_sstr3;
 
@@ -85,9 +85,9 @@ void mu_substr_test() {
   ASSERT(mu_substr_end(ss3) == mu_substr_end(ss1));
 
   // ==========
-  // mu_substr_err_t mu_substr_ref(mu_substr_t *s, size_t index, mu_str_data_t **p);
-  // mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_str_data_t *d);
-  // mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_str_data_t d);
+  // mu_substr_err_t mu_substr_ref(mu_substr_t *s, size_t index, mu_strbuf_data_t **p);
+  // mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_strbuf_data_t *d);
+  // mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_strbuf_data_t d);
   reset();
   ASSERT(mu_substr_slice_str(ss1, 3, 7) == MU_SUBSTR_ERR_NONE);
   ASSERT(substr_equals(ss1, "cove") == true);
@@ -279,11 +279,11 @@ void mu_substr_test() {
 // private code
 
 static void reset(void) {
-  mu_str_init_from_cstr(&s_str1, s_cstr1);
+  mu_strbuf_init_from_cstr(&s_str1, s_cstr1);
   mu_substr_init(&s_sstr1, &s_str1);
 
   memset(s_cstr2, '\0', ELEMENT_COUNT);
-  mu_str_init(&s_str2, s_cstr2, ELEMENT_COUNT);
+  mu_strbuf_init(&s_str2, s_cstr2, ELEMENT_COUNT);
   mu_substr_init(&s_sstr2, &s_str2);
 }
 

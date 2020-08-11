@@ -85,7 +85,7 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
     } else {
       // Arrive here from a write callback.  UART is ready to accept another
       // byte: fetch from the screen buffer and send it to the UART.
-      mu_str_data_t ch;
+      mu_strbuf_data_t ch;
       // CODE SMELL ALERT: mu_substr_get() fetches a character relative to
       // strbuf->start.  But we don't provide a way to modify start.  So...
       mu_substr_err_t err = mu_substr_get(screen_buffer, 0, &ch);

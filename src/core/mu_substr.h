@@ -35,7 +35,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "mu_str.h"
+#include "mu_strbuf.h"
 
 // =============================================================================
 // types and definitions
@@ -46,7 +46,7 @@ typedef enum {
 } mu_substr_err_t;
 
 typedef struct {
-  mu_str_t *str;      // backing store
+  mu_strbuf_t *str;      // backing store
   size_t start;       // starting index (inclusive)
   size_t end;         // ending index (exclusive)
 } mu_substr_t;
@@ -55,7 +55,7 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_substr_t *mu_substr_init(mu_substr_t *s, mu_str_t *str);
+mu_substr_t *mu_substr_init(mu_substr_t *s, mu_strbuf_t *str);
 
 mu_substr_t *mu_substr_duplicate(mu_substr_t *dst, mu_substr_t *src);
 
@@ -63,7 +63,7 @@ mu_substr_t *mu_substr_reset(mu_substr_t *s);
 
 mu_substr_t *mu_substr_clear(mu_substr_t *s);
 
-mu_str_t *mu_substr_str(mu_substr_t *s);
+mu_strbuf_t *mu_substr_str(mu_substr_t *s);
 
 size_t mu_substr_start(mu_substr_t *s);
 
@@ -73,11 +73,11 @@ size_t mu_substr_length(mu_substr_t *s);
 
 size_t mu_substr_remaining(mu_substr_t *s);
 
-mu_substr_err_t mu_substr_ref(mu_substr_t *s, size_t index, mu_str_data_t **p);
+mu_substr_err_t mu_substr_ref(mu_substr_t *s, size_t index, mu_strbuf_data_t **p);
 
-mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_str_data_t *d);
+mu_substr_err_t mu_substr_get(mu_substr_t *s, size_t index, mu_strbuf_data_t *d);
 
-mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_str_data_t d);
+mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_strbuf_data_t d);
 
 mu_substr_err_t mu_substr_slice_str(mu_substr_t *s, int start, int end);
 

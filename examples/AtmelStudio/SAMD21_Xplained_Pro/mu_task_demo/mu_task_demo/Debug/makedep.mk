@@ -14,7 +14,7 @@
 
 ..\..\..\..\..\src\core\mu_spscq.c
 
-..\..\..\..\..\src\core\mu_str.c
+..\..\..\..\..\src\core\mu_strbuf.c
 
 ..\..\..\..\..\src\core\mu_substr.c
 
