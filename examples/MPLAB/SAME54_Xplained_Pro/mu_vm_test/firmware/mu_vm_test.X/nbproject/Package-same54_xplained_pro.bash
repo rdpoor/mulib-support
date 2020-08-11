@@ -10,9 +10,9 @@ CND_CONF=same54_xplained_pro
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/mv_vm_test.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=mv_vm_test.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=mulibporttest.x/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/mu_vm_test.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=mu_vm_test.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=muvmtest.x/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/mulibporttest.x/bin
+makeDirectory ${TMPDIR}/muvmtest.x/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/mulibporttest.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/muvmtest.x.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/mulibporttest.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/muvmtest.x.tar *
 checkReturnCode
 
 # Cleanup

@@ -46,8 +46,6 @@ typedef mu_vm_time_ms_dt mu_time_ms_dt;
 typedef mu_vm_time_s_dt mu_time_s_dt;
 #endif
 
-#define MU_TIME_MS_TO_DURATION(ms) MU_VM_TIME_MS_TO_DURATION(ms)
-
 // =============================================================================
 // declarations
 

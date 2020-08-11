@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=mv_vm_test.X
+PROJECTNAME=mu_vm_test.X
 
 # Active Configuration
 DEFAULTCONF=same54_xplained_pro

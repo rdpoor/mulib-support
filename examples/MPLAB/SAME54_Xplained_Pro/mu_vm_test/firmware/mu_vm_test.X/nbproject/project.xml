@@ -12,7 +12,9 @@
             <asminc-extensions/>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
-            <sourceRootList/>
+            <sourceRootList>
+                <sourceRootElem>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro</sourceRootElem>
+            </sourceRootList>
             <confList>
                 <confElem>
                     <name>same54_xplained_pro</name>

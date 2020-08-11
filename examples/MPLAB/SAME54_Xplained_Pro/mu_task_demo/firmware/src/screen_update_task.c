@@ -64,7 +64,7 @@ static void *screen_update_task_fn(void *ctx, void *arg) {
   // schedule a call to the screen_redraw task now...
   mu_sched_task_now(sched, screen_update_ctx->screen_redraw_task);
   // ... and schedule a subsequent call to the screen_update_task
-  mu_sched_reschedule_in(sched, MU_TIME_MS_TO_DURATION(SCREEN_UPDATE_INTERVAL_MS));
+  mu_sched_reschedule_in(sched, mu_time_ms_to_duration(SCREEN_UPDATE_INTERVAL_MS));
 
   return NULL;
 }

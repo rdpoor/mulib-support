@@ -26,7 +26,7 @@
 #include <stdbool.h>                    // Defines true
 #include <stdlib.h>                     // Defines EXIT_FAILURE
 #include "definitions.h"                // SYS function prototypes
-#include "mv_vm_test.h"
+#include "mu_vm_test.h"
 
 // *****************************************************************************
 // *****************************************************************************

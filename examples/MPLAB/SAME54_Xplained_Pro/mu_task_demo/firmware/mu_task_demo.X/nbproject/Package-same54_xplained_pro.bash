@@ -12,7 +12,7 @@ TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
 OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/mu_task_demo.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 OUTPUT_BASENAME=mu_task_demo.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=mulibtasker.x/
+PACKAGE_TOP_DIR=mutaskdemo.x/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/mulibtasker.x/bin
+makeDirectory ${TMPDIR}/mutaskdemo.x/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/mulibtasker.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/mutaskdemo.x.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/mulibtasker.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/mutaskdemo.x.tar *
 checkReturnCode
 
 # Cleanup

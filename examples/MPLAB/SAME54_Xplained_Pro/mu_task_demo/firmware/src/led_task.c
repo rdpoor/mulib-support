@@ -61,12 +61,12 @@ static void *led_task_fn(void *ctx, void *arg) {
   if (led_ctx->state == LED_OFF) {
     LED_On();
     led_ctx->state = LED_ON;
-    mu_sched_reschedule_in(sched, MU_TIME_MS_TO_DURATION(LED_ON_TIME_MS));
+    mu_sched_reschedule_in(sched, mu_time_ms_to_duration(LED_ON_TIME_MS));
 
   } else {
     LED_Off();
     led_ctx->state = LED_OFF;
-    mu_sched_reschedule_in(sched, MU_TIME_MS_TO_DURATION(LED_OFF_TIME_MS));
+    mu_sched_reschedule_in(sched, mu_time_ms_to_duration(LED_OFF_TIME_MS));
   }
 
   return NULL;

@@ -25,18 +25,18 @@
 // =============================================================================
 // includes
 
-#include "definitions.h"
 #include "idle_task.h"
+#include "definitions.h"
 #include "kbd_task.h"
-#include "mulib.h"
 #include "mu_task_demo.h"
+#include "mulib.h"
 #include <stddef.h>
 
 // =============================================================================
 // local types and definitions
 
 // don't sleep for less than 1ms (32 RTC tics)
-#define MIN_SLEEP_DURATION MU_TIME_MS_TO_DURATION(1)
+#define MIN_SLEEP_DURATION mu_time_ms_to_duration(1)
 
 // =============================================================================
 // local (forward) declarations
