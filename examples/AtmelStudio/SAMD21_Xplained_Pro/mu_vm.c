@@ -167,6 +167,9 @@ mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds) {
 // REAL TIME CLOCK
 
 mu_vm_time_t mu_vm_rtc_now(void) {
+  // Assure that Read Request bit is set and sync'd before reading COUNT
+  hri_rtcmode0_set_READREQ_RREQ_bit(RTC);
+  // hri_rtc_wait_for_sync(RTC); -- done in hri_rtcmode0_read_COUNT_COUNT_bf()
   return hri_rtcmode0_read_COUNT_COUNT_bf(RTC);
 }
 
@@ -185,11 +188,6 @@ void mu_vm_rtc_set_cb(mu_vm_callback_fn fn, void *arg) {
 
 void mu_vm_rtc_alarm_at(mu_vm_time_t at) {
   hri_rtcmode0_write_COMP_COMP_bf(RTC, 0, at);
-  // Particular to the SAMD21, hri_rtcmode0_write_COMP_COMP_bf() clears the
-  // READREQ_RCONT bit, which prevents subsequent RTC reads from updating.
-  // Restore it here.
-  hri_rtcmode0_set_READREQ_RCONT_bit(RTC);
-  hri_rtcmode0_set_READREQ_RREQ_bit(RTC);
 }
 
 // ==========
@@ -396,8 +394,6 @@ static void rtc_cb_trampoline(struct calendar_dev *const dev) {
 
 static void go_to_sleep(void) {
   sleep(3); // in hal_sleep
-  //Mystery bug in SAMD21: won't wake from sleep without a following delay.
-  delay_us(200);
 }
 
 // See https://stackoverflow.com/a/18067292/558639
