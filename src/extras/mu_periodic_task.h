@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _MULIB_H_
-#define _MULIB_H_
+#ifndef _MU_PERIODIC_TASK_H_
+#define _MU_PERIODIC_TASK _H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,33 +32,36 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "core/mu_config.h"
-#include "core/mu_list.h"
-#include "core/mu_log.h"
-#include "core/mu_pstore.h"
-#include "core/mu_queue.h"
-#include "core/mu_sched.h"
-#include "core/mu_spscq.h"
-#include "core/mu_strbuf.h"
-#include "core/mu_strref.h"
-#include "core/mu_substr.h"
-#include "core/mu_task.h"
-#include "core/mu_time.h"
-#include "core/mu_types.h"
-#include "core/mu_vect.h"
-#include "core/mu_version.h"
-
-#include "extras/mu_periodic_task.h"
+#include "mulib.h"
+#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
 
+typedef struct {
+  mu_task_t *triggered_task;
+  mu_sched_t *sched;
+  mu_vm_time_ms_dt interval_ms;
+} mu_periodic_task_ctx;
 
 // =============================================================================
 // declarations
+
+mu_task_t *mu_periodic_task_init(mu_task_t *periodic_task,
+                                 mu_periodic_task_ctx *ctx,
+                                 mu_task_t *triggered_task,
+                                 mu_sched_t *scheduler,
+                                 mu_vm_time_ms_dt interval,
+                                 const char *task_name);
+
+bool mu_periodic_task_is_active(void);
+
+void mu_periodic_task_start(mu_task_t *periodic_task);
+
+void mu_periodic_task_stop(mu_task_t *periodic_task);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MULIB_H_ */
+#endif /* #ifndef _MU_PERIODIC_TASK _H_ */

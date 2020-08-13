@@ -54,7 +54,8 @@ SUBDIRS :=  \
 ../hpl/sysctrl/ \
 ../hri/ \
 ../mulib \
-../mulib/core
+../mulib/core \
+../mulib/extras
 
 
 # Add inputs and outputs from these tool invocations to the build variables 
@@ -71,6 +72,7 @@ C_SRCS +=  \
 ../../../../../../src/core/mu_time.c \
 ../../../../../../src/core/mu_vect.c \
 ../../../../../../src/core/mu_version.c \
+../../../../../../src/extras/mu_periodic_task.c \
 ../../../mu_vm.c \
 ../atmel_start.c \
 ../Device_Startup/startup_samd21.c \
@@ -130,6 +132,7 @@ mulib/core/mu_task.o \
 mulib/core/mu_time.o \
 mulib/core/mu_vect.o \
 mulib/core/mu_version.o \
+mulib/extras/mu_periodic_task.o \
 mu_vm.o \
 atmel_start.o \
 Device_Startup/startup_samd21.o \
@@ -182,6 +185,7 @@ mulib/core/mu_task.o \
 mulib/core/mu_time.o \
 mulib/core/mu_vect.o \
 mulib/core/mu_version.o \
+mulib/extras/mu_periodic_task.o \
 mu_vm.o \
 atmel_start.o \
 Device_Startup/startup_samd21.o \
@@ -234,6 +238,7 @@ mulib/core/mu_task.d \
 mulib/core/mu_time.d \
 mulib/core/mu_vect.d \
 mulib/core/mu_version.d \
+mulib/extras/mu_periodic_task.d \
 mu_vm.d \
 atmel_start.d \
 Device_Startup/startup_samd21.d \
@@ -286,6 +291,7 @@ mulib/core/mu_task.d \
 mulib/core/mu_time.d \
 mulib/core/mu_vect.d \
 mulib/core/mu_version.d \
+mulib/extras/mu_periodic_task.d \
 mu_vm.d \
 atmel_start.d \
 Device_Startup/startup_samd21.d \
@@ -419,6 +425,13 @@ mulib/core/mu_vect.o: ../../../../../../src/core/mu_vect.c
 	
 
 mulib/core/mu_version.o: ../../../../../../src/core/mu_version.c
+	@echo Building file: $<
+	@echo Invoking: ARM/GNU C Compiler : 6.3.1
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../../../../../../src" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sercom" -I"../hpl/sysctrl" -I"../hri" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../.."  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+mulib/extras/mu_periodic_task.o: ../../../../../../src/extras/mu_periodic_task.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 6.3.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../../../../../../src" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sercom" -I"../hpl/sysctrl" -I"../hri" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../.."  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

@@ -491,6 +491,14 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_version.h</Link>
     </Compile>
+    <Compile Include="..\..\..\..\..\src\extras\mu_periodic_task.c">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_periodic_task.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\src\extras\mu_periodic_task.h">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_periodic_task.h</Link>
+    </Compile>
     <Compile Include="..\..\..\..\..\src\mulib.h">
       <SubType>compile</SubType>
       <Link>mulib\mulib.h</Link>
@@ -941,6 +949,7 @@
     <Folder Include="hri\" />
     <Folder Include="mulib" />
     <Folder Include="mulib\core" />
+    <Folder Include="mulib\extras" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Device_Startup\samd21j18a_flash.ld">

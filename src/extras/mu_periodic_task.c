@@ -25,9 +25,7 @@
 // =============================================================================
 // includes
 
-#include "kbd_task.h"
 #include "mulib.h"
-#include "mu_task_demo.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -37,10 +35,7 @@
 // =============================================================================
 // local (forward) declarations
 
-static void *kbd_task_fn(void *ctx, void *arg);
-
-// If using ring buffer:
-static void kbd_cb(void *context);
+static void *periodic_task_fn(void *a1, void *a2);
 
 // =============================================================================
 // local storage
@@ -48,61 +43,49 @@ static void kbd_cb(void *context);
 // =============================================================================
 // public code
 
-mu_task_t *kbd_task_init(mu_task_t *kbd_task, kbd_ctx_t *kbd_ctx) {
-  // The keyboard callback function takes one user-supplied argument.  But in
-  // the callback, we need a reference to both the scheduler and to the task,
-  // so we store them both in the kbd_ctx structure and pass that as an argument
-  // to mu_vm_serial_set_read_cb()
-  kbd_ctx->task = kbd_task;
-  kbd_ctx->sched = mu_task_demo_get_scheduler();
+mu_task_t *mu_periodic_task_init(mu_task_t *periodic_task,
+                                 mu_periodic_task_ctx *ctx,
+                                 mu_task_t *triggered_task,
+                                 mu_sched_t *scheduler,
+                                 mu_vm_time_ms_dt interval_ms,
+                                 const char *task_name) {
+  ctx->triggered_task = triggered_task;
+  ctx->sched = scheduler;
+  ctx->interval_ms = interval_ms;
+  mu_task_init(periodic_task, periodic_task_fn, ctx, task_name);
+  return periodic_task;
+}
 
-  // initialize the kbd_task object
-  mu_task_init(kbd_task, kbd_task_fn, kbd_ctx, "Keyboard Task");
+void mu_periodic_task_start(mu_task_t *periodic_task) {
+  mu_periodic_task_ctx *ctx = (mu_periodic_task_ctx *)periodic_task->ctx;
+  mu_sched_t *sched = ctx->sched;
 
-  // establish keyboard read interrupt callback.
-  mu_vm_serial_set_read_cb(kbd_cb, kbd_ctx);
+  mu_periodic_task_stop(periodic_task);  // make sure it's not already in sched
+  mu_sched_task_now(sched, periodic_task);
+}
 
-  return kbd_task;
+void mu_periodic_task_stop(mu_task_t *periodic_task) {
+  mu_periodic_task_ctx *ctx = (mu_periodic_task_ctx *)periodic_task->ctx;
+  mu_sched_t *sched = ctx->sched;
+
+  mu_sched_remove_task(sched, periodic_task);
 }
 
 // =============================================================================
 // local (static) code
 
 /**
- * Arrive here when a character is available for reading.
+ * @brief Periodically run the target task.
  */
-static void *kbd_task_fn(void *ctx, void *arg) {
-  // keyoard context is passed as first argument, scheduler as the second, but
-  // neither are used.
-  // kbd_ctx_t *kbd_ctx = (kbd_ctx_t *)ctx;
-  // mu_sched_t *sched = (mu_sched_t *)arg;
-  uint8_t ch = mu_vm_serial_read();
-  switch (ch) {
-  case 'b':
-    mu_task_demo_start_led_task();
-    break;
-  case 'B':
-    mu_task_demo_stop_led_task();
-    break;
-  case 'd':
-    mu_task_demo_start_screen_trigger_task();
-    break;
-  case 'D':
-    mu_task_demo_stop_screen_trigger_task();
-    break;
-  case 'p':
-    mu_task_demo_set_low_power_mode(true);
-    break;
-  }
-  return NULL;
-}
+static void *periodic_task_fn(void *a1, void *a2) {
+  // periodic_task context is passed as a1, scheduler as a2
+  mu_periodic_task_ctx *ctx = (mu_periodic_task_ctx *)a1;
 
-// kbd_cb is triggered when the UART receives a character and generates an
-// interrupt.  From interrupt level, schedule the kbd task upon leaving
-// interrupt level.
-static void kbd_cb(void *context) {
-  kbd_ctx_t *kbd_ctx = (kbd_ctx_t *)context;
-  mu_task_t *task = kbd_ctx->task;
-  mu_sched_t *sched = kbd_ctx->sched;
-  mu_sched_task_from_isr(sched, task);
+  // trigger the given task...
+  mu_sched_task_now(ctx->sched, ctx->triggered_task);
+
+  // ...and repeat after the given interval
+  mu_sched_reschedule_in(ctx->sched, mu_time_ms_to_duration(ctx->interval_ms));
+
+  return NULL;
 }

@@ -51,9 +51,9 @@ void mu_task_demo_start_led_task(void);
 
 void mu_task_demo_stop_led_task(void);
 
-void mu_task_demo_start_screen_update_task(void);
+void mu_task_demo_start_screen_trigger_task(void);
 
-void mu_task_demo_stop_screen_update_task(void);
+void mu_task_demo_stop_screen_trigger_task(void);
 
 void mu_task_demo_set_low_power_mode(bool low_power);
 

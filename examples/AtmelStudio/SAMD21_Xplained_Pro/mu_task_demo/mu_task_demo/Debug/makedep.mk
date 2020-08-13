@@ -26,6 +26,8 @@
 
 ..\..\..\..\..\src\core\mu_version.c
 
+..\..\..\..\..\src\extras\mu_periodic_task.c
+
 ..\..\mu_vm.c
 
 atmel_start.c

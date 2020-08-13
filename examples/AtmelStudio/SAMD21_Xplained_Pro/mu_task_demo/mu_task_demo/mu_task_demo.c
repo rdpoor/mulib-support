@@ -44,14 +44,17 @@
 #define ISR_Q_CAPACITY 8 // must be a power of two
 
 typedef enum {
-  LED_TASK_IDX,           // blink the LED periodically
-  BUTTON_TASK_IDX,        // monitor button push interrupts
-  SCREEN_UPDATE_TASK_IDX, // periodically start the screen refresh task
-  SCREEN_REDRAW_TASK_IDX, // update the screen, then stop.
-  KBD_TASK_IDX,           // keyboard monitor
-  IDLE_TASK_IDX,          // run when there is nothing else to run
+  LED_TASK_IDX,            // blink the LED periodically
+  BUTTON_TASK_IDX,         // monitor button push interrupts
+  SCREEN_TRIGGER_TASK_IDX, // periodically start the screen update task
+  SCREEN_UPDATE_TASK_IDX,  // update the text on the screen
+  SCREEN_REDRAW_TASK_IDX,  // push the text to the screen
+  KBD_TASK_IDX,            // keyboard monitor
+  IDLE_TASK_IDX,           // run when there is nothing else to run
   TASK_COUNT
 } task_idx_t;
+
+#define SCREEN_TRIGGER_INTERVAL_MS 2500
 
 #define SCREEN_BUFFER_SIZE 1024 // size of screen buffer in bytes
 
@@ -79,6 +82,7 @@ static mu_task_t s_tasks[TASK_COUNT];
 
 static led_ctx_t s_led_ctx;
 static button_ctx_t s_button_ctx;
+static mu_periodic_task_ctx s_periodic_screen_trigger_ctx;
 static screen_update_ctx_t s_screen_update_ctx;
 static screen_redraw_ctx_t s_screen_redraw_ctx;
 static kbd_ctx_t s_kbd_ctx;
@@ -107,6 +111,12 @@ void mu_task_demo_init() {
   // initialize tasks
   led_task_init(&s_tasks[LED_TASK_IDX], &s_led_ctx);
   button_task_init(&s_tasks[BUTTON_TASK_IDX], &s_button_ctx);
+  mu_periodic_task_init(&s_tasks[SCREEN_TRIGGER_TASK_IDX],
+                        &s_periodic_screen_trigger_ctx,
+                        &s_tasks[SCREEN_UPDATE_TASK_IDX],
+                        &s_sched,
+                        SCREEN_TRIGGER_INTERVAL_MS,
+                        "Screen Trigger");
   screen_update_task_init(&s_tasks[SCREEN_UPDATE_TASK_IDX],
                           &s_screen_update_ctx);
   screen_redraw_task_init(&s_tasks[SCREEN_REDRAW_TASK_IDX],
@@ -117,9 +127,9 @@ void mu_task_demo_init() {
   // install the sleep-aware idle task as the scheduler's idle task
   mu_sched_set_idle_task(&s_sched, &s_tasks[IDLE_TASK_IDX]);
 
-  // start the LED and Screen Update tasks
+  // start the LED and Screen Trigger tasks
   mu_task_demo_start_led_task();
-  mu_task_demo_start_screen_update_task();
+  mu_task_demo_start_screen_trigger_task();
 
   mu_task_demo_set_low_power_mode(false);  // start in full power mode
 
@@ -142,18 +152,17 @@ void mu_task_demo_stop_led_task(void) {
   mu_sched_remove_task(&s_sched, &s_tasks[LED_TASK_IDX]);
 }
 
-void mu_task_demo_start_screen_update_task(void) {
-  mu_task_demo_stop_screen_update_task();
-  mu_sched_task_now(&s_sched, &s_tasks[SCREEN_UPDATE_TASK_IDX]);
+void mu_task_demo_start_screen_trigger_task(void) {
+  mu_periodic_task_start(&s_tasks[SCREEN_TRIGGER_TASK_IDX]);
 }
 
-void mu_task_demo_stop_screen_update_task(void) {
-  mu_sched_remove_task(&s_sched, &s_tasks[SCREEN_UPDATE_TASK_IDX]);
+void mu_task_demo_stop_screen_trigger_task(void) {
+  mu_periodic_task_stop(&s_tasks[SCREEN_TRIGGER_TASK_IDX]);
 }
 
 void mu_task_demo_set_low_power_mode(bool low_power) {
   s_is_low_power_mode = low_power;
-  mu_task_demo_start_screen_update_task(); // force immediate redraw
+  mu_task_demo_start_screen_trigger_task(); // force immediate redraw
 }
 
 bool mu_task_demo_is_low_power_mode(void) {
