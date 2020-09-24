@@ -35,6 +35,7 @@
 // declarations
 
 int mu_bitvec_test();
+int mu_cirq_test();
 int mu_list_test();
 int mu_log_test();
 int mu_pstore_test();
@@ -58,6 +59,7 @@ int main() {
   printf("\r\nstarting mu_test...");
 
   mu_bitvec_test();
+  mu_cirq_test();
   mu_list_test();
   mu_log_test();
   mu_pstore_test();

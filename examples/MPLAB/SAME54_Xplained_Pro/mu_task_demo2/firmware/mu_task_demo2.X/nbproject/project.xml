@@ -14,6 +14,7 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro</sourceRootElem>
+                <sourceRootElem>C:/Users/r/Projects/mulib/src/extras</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

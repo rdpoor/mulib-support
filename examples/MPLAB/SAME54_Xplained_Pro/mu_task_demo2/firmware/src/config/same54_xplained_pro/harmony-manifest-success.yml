@@ -4,11 +4,11 @@
 
 
 project: mu_task_demo2
-creation_date: 2020-07-09T07:15:22.777-07:00[America/Los_Angeles]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+creation_date: 2020-08-14T06:10:48.111-07:00[America/Los_Angeles]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
 operating_system: Windows 10
 mhc_mode: IDE            # [IDE|Standalone|Headless]
-mplabx_version: v5.35        # if MPLAB X plugin only
-plugin_version: v3.5.0        # if MPLAB X plugin only
+mplabx_version: v5.40        # if MPLAB X plugin only
+plugin_version: v3.5.1        # if MPLAB X plugin only
 
 modules:
     - {name: "bsp", version: "v3.7.0"}

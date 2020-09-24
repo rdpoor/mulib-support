@@ -93,6 +93,8 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
 
       if (err == MU_SUBSTR_ERR_NONE) {
         mu_vm_serial_write(ch);
+      } else {
+        asm("nop");  // debuggable
       }
     }
 

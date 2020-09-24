@@ -84,12 +84,9 @@ static void *screen_update_task_fn(void *ctx, void *arg) {
     mu_sched_reschedule_now(sched);
 
   } else {
-    // screen buffer has been repainted.  Trigger screen_redraw_task and also
-    // reschedule screen_update_task to run in SCREEN_UPDATE_INTERVAL_MS
+    // screen buffer has been repainted.  Trigger screen_redraw_task.
     screen_update_ctx->slice = 0;
     mu_sched_task_now(sched, screen_update_ctx->screen_redraw_task);
-    mu_sched_reschedule_in(sched,
-                           mu_time_ms_to_duration(SCREEN_UPDATE_INTERVAL_MS));
   }
 
   return NULL;

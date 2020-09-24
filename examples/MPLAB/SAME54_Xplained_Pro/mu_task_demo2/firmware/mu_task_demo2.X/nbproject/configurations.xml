@@ -141,6 +141,8 @@
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_version.c</itemPath>
         </logicalFolder>
         <logicalFolder name="extras" displayName="extras" projectFiles="true">
+          <itemPath>C:/Users/r/Projects/mulib/src/extras/mu_periodic_task.c</itemPath>
+          <itemPath>C:/Users/r/Projects/mulib/src/extras/mu_periodic_task.h</itemPath>
         </logicalFolder>
       </logicalFolder>
     </logicalFolder>
@@ -213,9 +215,9 @@
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/screen_update_task.h</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/mu_task_demo.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/mu_task_demo.h</itemPath>
-      <itemPath>../src/main.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_vm.c</itemPath>
       <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_vm.h</itemPath>
+      <itemPath>../src/main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -227,6 +229,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro</Elem>
+    <Elem>C:/Users/r/Projects/mulib/src/extras</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

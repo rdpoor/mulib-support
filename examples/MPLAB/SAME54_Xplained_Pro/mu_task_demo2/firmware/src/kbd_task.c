@@ -98,10 +98,10 @@ static void *kbd_task_fn(void *ctx, void *arg) {
     mu_task_demo_stop_led_task();
     break;
   case 'd':
-    mu_task_demo_start_screen_update_task();
+    mu_task_demo_start_screen_trigger_task();
     break;
   case 'D':
-    mu_task_demo_stop_screen_update_task();
+    mu_task_demo_stop_screen_trigger_task();
     break;
   case 'p':
     mu_task_demo_set_low_power_mode(true);

@@ -22,8 +22,14 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_TASK_DEMO_H_
-#define _MU_TASK_DEMO_H_
+/**
+ * @file mu_vm_serial.h
+ *
+ * Sketches for serial routines for virtual machine.
+ */
+
+#ifndef _MU_VM_SERIAL_H_
+#define _MU_VM_SERIAL_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,44 +39,55 @@ extern "C" {
 // includes
 
 #include <stdbool.h>
-#include <mulib.h>
+#include <stdint.h>
 
 // =============================================================================
 // types and definitions
 
-#define MU_TASK_DEMO_VERSION "1.0.0"
-
 // =============================================================================
 // declarations
 
-void mu_task_demo_init(void);
+// ==========
+// SERIAL I/O
 
-void mu_task_demo_step(void);
+/**
+ * @brief Write a byte to the serial port.
+ *
+ * If a callback is set, works in synchronous mode and returns immediately.
+ *
+ * If no callback is set, works in asynchronous mode: it blocks until all of the
+ * data in cirq has been sent.
+ *
+ * @param cirq A ring buffer containing the data to be transmitted.
+ */
+void mu_vm_serial_write(mu_cirq_t *cirq);
 
-void mu_task_demo_start_led_task(void);
+/**
+ * @brief Register a callback to be called when the most recent all to
+ * mu_vm_serial_write() has no more bytes to transmit.
+ */
+void mu_vm_serial_register_write_cb(mu_vm_callback_fn fn, void *arg);
 
-void mu_task_demo_stop_led_task(void);
+/**
+ * @brief Read serial data into a ring buffer.
+ *
+ * Works in synchronous mode if a callback is set.  The callback will be
+ * triggered when one or more characters are received.
+ *
+ * Works in asynchronous mode if no callback is set.  It blocks until one or
+ * more characters are received and stored in the ring buffer.
+ *
+ * @param cirq A ring buffer to receive the data.
+ */
+void mu_vm_serial_read(mu_cirq_t *cirq);
 
-void mu_task_demo_start_screen_trigger_task(void);
-
-void mu_task_demo_stop_screen_trigger_task(void);
-
-void mu_task_demo_set_low_power_mode(bool low_power);
-
-bool mu_task_demo_is_low_power_mode(void);
-
-mu_substr_t *mu_task_demo_get_screen_buffer(void);
-
-mu_sched_t *mu_task_demo_get_scheduler(void);
-
-mu_task_t *mu_task_demo_get_screen_redraw_task(void);
-
-size_t mu_task_demo_get_task_count(void);
-
-mu_task_t *mu_task_demo_get_tasks(void);
+/**
+ * @brief Register a callback to be called when a serial byte is received.
+ */
+void mu_vm_serial_set_read_cb(mu_vm_callback_fn fn, void *arg);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MU_TASK_DEMO_H_ */
+#endif /* #ifndef _MU_VM_SERIAL_H_ */

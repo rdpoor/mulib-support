@@ -106,7 +106,7 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
 }
 
 /**
- * Called from interrupt level when the USART is reay to accept a char.
+ * Called from interrupt level when the USART is ready to accept a char.
  * Schedule a call to screen_redraw_task_fn() to write the char.
  */
 static void serial_write_cb(void *arg) {
