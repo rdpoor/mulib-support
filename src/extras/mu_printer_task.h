@@ -22,68 +22,48 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+#ifndef _MU_PRINTER_TASK_H_
+#define _MU_PRINTER_TASK _H_
 
-#include <stdio.h>
-#include "mu_test_utils.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// =============================================================================
+// includes
+
+#include "mulib.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 // =============================================================================
 // types and definitions
 
+typedef struct {
+  mu_task_t printer_task;
+  mu_task_t *on_completion;
+  uint8_t const *data;
+  size_t data_len;
+} mu_printer_task_ctx;
+
 // =============================================================================
 // declarations
 
-int mu_bitvec_test();
-int mu_cirq_test();
-int mu_list_test();
-int mu_log_test();
-int mu_pstore_test();
-int mu_queue_test();
-int mu_sched_test();
-int mu_spscq_test();
-int mu_strbuf_test();
-int mu_strref_test();
-int mu_substr_test();
-int mu_task_test();
-int mu_time_test();
-int mu_timer_test();
-int mu_vect_test();
-int mu_version_test();
+/**
+ * @brief Start a mu_task that prints a string to the mu_vm_serial port.
+ */
+mu_printer_task_ctx *mu_printer_task_init(mu_printer_task_ctx *ctx,
+                                          mu_task_t *on_completion,
+                                          mu_sched_t *scheduler);
 
-// =============================================================================
-// public code
+mu_printer_task_ctx *mu_printer_task_print(mu_printer_task_ctx *ctx,
+                                           uint8_t *data,
+                                           size_t data_len);
 
-int main() {
+bool mu_printer_task_is_active(mu_printer_task_ctx *ctx);
 
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
-
-  mu_bitvec_test();
-  mu_cirq_test();
-  mu_list_test();
-  mu_log_test();
-  mu_pstore_test();
-  mu_queue_test();
-  mu_sched_test();
-  mu_spscq_test();
-  mu_strbuf_test();
-  mu_strref_test();
-  mu_substr_test();
-  mu_task_test();
-  mu_time_test();
-  mu_timer_test();
-  mu_vect_test();
-  mu_version_test();
-
-  printf("ending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
-
-  return mu_test_error_count();  // return error code 0 on success
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _MU_PRINTER_TASK_H_ */

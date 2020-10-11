@@ -25,7 +25,7 @@
 /**
  * @file mu_vm.h
  *
- * mu_vm defines a virtual machine that provides a few common resources:
+ * Every target system for mulib is assumed to provide a few resources:
  *
  * * An LED that can be turned on and off
  * * A user button that can generate an asynchronous event
@@ -36,67 +36,21 @@
  * * [Optional] The ability to sleep (i.e. run in a power-reduced mode) until
  *   an asynchronous event wakes it.
  *
- * This file, mu_vm.h, defines the interface to those resources.  To port mulib
+ * This file, port.h, defines the interface to those resources.  To port mulib
  * to a new target system, you must implement the functions and types described
  * here.
  *
- * In addition, some compile-time macros control the behavior of the system:
+ * In addition, some compile-time macros control the behavior of port.h:
  *
- * * `MU_VM_FLOAT`: If your system supports floating point operations, define
- *   this to be `float` or `double` as appropriate.  Note that including
- *   floating point operations may increase the size of your image.
+ * * `MU_VM_HAS_FLOAT`: If your system supports floating point operations,
+ *   define this to be true.  Note that including floating point operations may
+ *   increase the size of your image.
+ * * `MU_VM_HAS_DOUBLE`: If your system supports double operations, define this
+ *   to be true.  Note that including double operations may increase the size of
+ *   your image.
  * * `MU_VM_CAN_SLEEP`: If your system supports a low-power sleep mode,
  *   define this macro and include defintions for `mu_vm_sleep_until()` and
  *   `mu_vm_sleep()`
- */
-
-/**
- * A note on serial I/O:
- *
- * The virtual machine defines a byte-at-a-time interface for reading and
- * writing serial data, and is designed to support both synchronous (polled)
- * and asynchronous (interrupt-driven) operations.
- *
- * Synchronous serial writes (polled):
- *
- * if (there is a character to write) {
- *   // optional: wait until uart can write (but mu_serial_write() does this)
- *   while (!mu_vm_serial_can_write()) { }
- *   mu_serial_write(ch);
- * }
- *
- * Asynchronous serial writes (interrupt driven):
- *
- *   // [foreground level] Set the write callback to initiate the write process.
- *   mu_serial_set_write_cb(write_cb, arg);
- *
- *   // [interupt level] Arrive here whenever the UART can accept another char
- *   // for transmission.
- *   void write_cb(void *arg) {
- *     if (there is a character to write) {
- *       mu_serial_write(ch);
- *     } else {
- *       // no more characters to write -- disable subsequent callbacks
- *       mu_serial_set_write_cb(NULL, NULL);
- *   }
- *
- * Synchronous serial reads (polled):
- *
- *   // optional: wait until uart can read (but mu_serial_read() does this)
- *   while (!mu_vm_serial_can_read()) { }
- *   process_character(mu_serial_read());
- *
- * Asynchronous serial reads (interrupt driven):
- *
- *   // [foreground level] Set the read callback to initiate the read process.
- *   mu_serial_set_read_cb(read_cb, arg);
- *
- *   // [interrupt level] Arrive here when the UART has a character available
- *   // for reading
- *   void read_cb(void *arg) {
- *     process_character(mu_serial_read());
- *   }
- *
  */
 
 #ifndef _MU_VM_H_
@@ -115,13 +69,22 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-#undef MU_VM_FLOAT
 /**
  * If your port supports floating point operations, choose one of the following
- * and implement mu_vm_time_duration_to_s() and mu_vm_time_s_to_duration().
+ * either by uncommenting one of the following lines, or by setting the symbol
+ * in the compiler.
+ *
+ * IF floating point is enabled, you must implement mu_vm_time_duration_to_s()
+ * and mu_vm_time_s_to_duration().
  */
-// #define MU_VM_FLOAT float
-// #define MU_VM_FLOAT double
+// #define MU_VM_HAS_FLOAT
+// #define MU_VM_HAS_DOUBLE
+
+#if defined(MU_VM_HAS_FLOAT)
+#define MU_VM_FLOAT float
+#elif defined(MU_VM_HAS_DOUBLE)
+#define MU_VM_FLOAT double
+#endif
 
 /**
  * Define the data type that holds a time value and a duration value.  Using
@@ -137,11 +100,32 @@ typedef MU_VM_FLOAT mu_vm_time_s_dt;
 
 /**
  * If your platform is able to sleep in order to conserver power, un-comment
- * MU_VM_CAN_SLEEP and define mu_vm_sleep_until() and mu_vm_sleep().
+ * MU_VM_CAN_SLEEP.
  */
 #define MU_VM_CAN_SLEEP
 
+/**
+ * @brief Signature for a generic callback function.
+ *
+ * @param arg A user-defined "pointer sized" argument.
+ */
 typedef void (*mu_vm_callback_fn)(void *arg);
+
+/**
+ * @brief Signature for serial write callbacks.
+ *
+ * This will be called at interrupt level whenever the serial subsystem is ready
+ * to accept a new byte for writing.
+ */
+typedef void (*mu_vm_serial_write_cb)(void);
+
+/**
+ * @brief Signature for serial read callbacks.
+ *
+ * This will be called at interrupt level whenever the serial subsystem has
+ * received a new byte.
+ */
+typedef void (*mu_vm_serial_read_cb)(uint8_t data);
 
 // =============================================================================
 // declarations
@@ -186,90 +170,85 @@ void mu_vm_button_set_cb(mu_vm_callback_fn fn, void *arg);
 // SERIAL I/O
 
 /**
- * @brief Write a byte to the serial port.
+ * @brief Set the serial write callback function.
  *
- * This function will block (busy wait) until the UART hardware can accept the
- * byte.  You can use the mu_vm_serial_can_write() function to find if this
- * function will block.
+ * @param cb The callback to be invoked when the serial subsystem is ready to
+ *           accept a new byte for writing.  Passing NULL disables the callback.
+ */
+void mu_vm_serial_set_write_cb(mu_vm_serial_write_cb cb);
+
+/**
+ * @brief Is the system ready for a call to mu_vm_serial_write()?
  *
- * Alternatively, you can set a callback using `mu_vm_serial_set_write_cb()`,
- * which will be called when the UART is ready to accept a character.
+ * @return true if the serial subsystem is ready to accept a new byte for
+ * writing.
  */
-void mu_vm_serial_write(uint8_t byte);
+bool mu_vm_serial_is_ready_to_write(void);
 
 /**
- * @brief Return true if mu_vm_serial_write() will return immediately without
- * blocking.
- */
-bool mu_vm_serial_can_write(void);
-
-/**
- * Register a callback to be called after a write operation completes, which
- * indicates that mu_vm_serial_write() will not block.
- */
-void mu_vm_serial_set_write_cb(mu_vm_callback_fn fn, void *arg);
-
-/**
- * Return true if a serial byte is in the process of being transmitted, i.e. a
- * byte has been written to the UART but it is not yet fully transmitted. This
- * function is primarily intended to indicate whether it is permissable to
- * put the processor to sleep.
- */
-bool mu_vm_serial_write_in_progress(void);
-
-/**
- * @brief Read a byte from the serial port.
+ * @brief Initiate a write a byte to the serial subsystem.
  *
- * If no data is available, this function will block until a character is
- * received.
+ * This should only be called if mu_vm_serial_is_ready_to_write() returns true,
+ * or from within a serial write callback.  Otherwise, previously written data
+ * may be over-written, leading to garbled results.
  *
- * If a read callback has been set via mu_vm_serial_set_read_cb, serial read
- * interrupts are enabled after the read operation, otherwise read interrupts
- * are disabled.
+ * After sending the character is complete, the write callback will be called.
  *
- * For blocking style reads (without interrupts):
- *   if (!mu_vm_serial_can_read()) {
- *     // return to the scheduler...
- *   } else {
- *     uint8_t ch = mu_vm_serial_read();
- *     // process character
- *   }
- *
- * For non-blocking style reads (using interrupts):
- *   mu_vm_serial_set_read_cb(serial_cb, NULL);
- *   // return to the scheduler...
- *   ...
- *   void serial_cb(void *arg) {
- *     // schedule a task to call mu_vm_serial_read()...
- *   }
+ * @param data byte to be written.
  */
-uint8_t mu_vm_serial_read(void);
+void mu_vm_serial_write(uint8_t data);
 
 /**
- * @brief Return true if mu_serial_read() will return immediately without
- * blocking.
+ * @brief Is the serial subsystem busy writing?
+ *
+ * @return true if the serial subsystem has initiated but not yet completed a
+ * write operation.
  */
-bool mu_vm_serial_can_read(void);
+bool mu_vm_serial_write_is_in_progress(void);
 
 /**
-
- * Register a callback to be called when the serial port has a new byte
- * available and enable serial read interrupts.
+ * @brief Set the serial read callback function.
+ *
+ * @param cb the callback function to be invoked when the serial subsystem has
+ * received a new byte.  Passing NULL disables the callback.
  */
-void mu_vm_serial_set_read_cb(mu_vm_callback_fn fn, void *arg);
+void mu_vm_serial_set_read_cb(mu_vm_serial_read_cb cb);
 
 /**
- * Return true if a serial byte is in the process of being received, i.e. a
- * start bit has been detected but the byte is not yet fully received.  This
- * function is primarily intended to indicate whether it is permissable to
- * put the processor to sleep.
+* @brief Is the system ready for a call to mu_vm_serial_read()?
+ *
+ * @return true if a call to vm_serial_read() will return a valid value.
  */
-bool mu_vm_serial_read_in_progress(void);
+bool mu_vm_serial_is_ready_to_read(void);
+
+/**
+ * @brief Initiate the reading of a byte from the serial subsystem.
+ *
+ * This should only be called if mu_vm_serial_is_ready_to_read() returns true.
+ * Otherwise, it may return garbled data or repeat the previous byte.
+ *
+ * When a byte is completely read, the read callback will be triggered.
+ */
+void mu_vm_serial_read(void);
+
+/**
+ * @brief Is the serial subsystem busy reading?
+ *
+ * @return true if the serial subsystem has initiated but not yet completed a
+ * read operation.
+ */
+bool mu_vm_serial_read_is_in_progress(void);
 
 // ==========
 // SLEEP
 
 #ifdef MU_VM_CAN_SLEEP
+
+/**
+ * @brief Return true unless one or more of the vm resources are busy.
+ */
+bool mu_vm_is_ready_to_sleep(void);
+
 /**
  * @brief Put the processor into low-power mode until time t arrives, or an
  * external event wakes the processor.

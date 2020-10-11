@@ -3,6 +3,7 @@
 
 .PHONY: all clean
 
+SOURCE_DIR = ../src
 CORE_SOURCE_DIR = ../src/core
 UNIT_TEST_DIR = ../tests/core
 BUILD_DIR = ../build
@@ -16,7 +17,7 @@ OBJECTS := $(patsubst $(UNIT_TEST_DIR)/%.c, $(BUILD_DIR)/%.o, $(UNIT_TEST_SOURCE
 
 CFLAGS = -Wall -g
 
-IFLAGS = -I $(TEST_DRIVER_DIR) -I $(CORE_SOURCE_DIR)
+IFLAGS = -I $(TEST_DRIVER_DIR) -I $(SOURCE_DIR) -I $(CORE_SOURCE_DIR)
 
 $(BUILD_DIR)/%.o : $(UNIT_TEST_DIR)/%.c $(TEST_DRIVER_INCLUDES)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@

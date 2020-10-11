@@ -25,7 +25,6 @@
 // =============================================================================
 // includes
 
-#include "mu_vm_test.h"
 #include "mu_vm.h"
 #include <stdarg.h>
 #include <stdbool.h>
@@ -41,12 +40,11 @@
 // private declarations
 
 static void test_wait_ms(int ms);
-static void test_sync_printf(const char *fmt, ...);
-static void test_async_printf(const char *fmt, ...);
+static void test_printf(const char *fmt, ...);
+static uint8_t test_getc(void);
 static void test_print_time(mu_vm_time_t t);
 static void button_press_cb(void *arg);
-static void serial_write_cb(void *arg);
-static void serial_read_cb(void *arg);
+static void serial_read_cb(uint8_t data);
 static void rtc_cb(void *arg);
 
 // =============================================================================
@@ -55,11 +53,8 @@ static void rtc_cb(void *arg);
 static mu_vm_time_t s_epoch;
 static volatile bool s_rtc_matched;
 static volatile bool s_button_pressed;
-static volatile bool s_rx_char_available;
-
-static uint8_t s_tx_buf[MAX_CHARS];
-static volatile int s_tx_count = 0;
-static volatile int s_tx_index = 0;
+static volatile bool s_rx_has_data;
+static volatile uint8_t s_rx_data;
 
 // =============================================================================
 // public code
@@ -74,47 +69,45 @@ void mv_vm_test_step(void) {
   // capture start up time...
   s_epoch = mu_vm_rtc_now();
 
-  test_sync_printf("\r\n================\r\nstarting mu_vm_test\r\n");
-  test_sync_printf("sync serial write\r\n");
-  test_async_printf("async serial write\r\n");
+  test_printf("\r\n================\r\nstarting mu_vm_test\r\n");
 
-  test_sync_printf("time before is ");
+  test_printf("time before is ");
   test_print_time(mu_vm_rtc_now());
-  test_sync_printf("\r\n");
-  test_sync_printf("looping for 2.5 seconds...");
+  test_printf("\r\n");
+  test_printf("looping for 2.5 seconds...");
   test_wait_ms(2500);
-  test_sync_printf("done.  time after is ");
+  test_printf("done.  time after is ");
   test_print_time(mu_vm_rtc_now());
-  test_sync_printf("\r\n");
+  test_printf("\r\n");
 
   s_rtc_matched = false;
   mu_vm_rtc_set_cb(rtc_cb, NULL);
   mu_vm_rtc_alarm_at(mu_vm_time_offset(mu_vm_rtc_now(),
                                            mu_vm_time_ms_to_duration(2500)));
-  test_sync_printf("waiting 2.5 seconds for RTC match...");
+  test_printf("waiting 2.5 seconds for RTC match...");
   while (!s_rtc_matched) {
 	  asm("nop");
     // buzz...
   }
-  test_sync_printf("done.  time is now ");
+  test_printf("done.  time is now ");
   test_print_time(mu_vm_rtc_now());
-  test_sync_printf("\r\n");
+  test_printf("\r\n");
 
-  test_sync_printf("flashing LED for 2.5 seconds...");
+  test_printf("flashing LED for 2.5 seconds...");
   for (int i = 0; i < 10; i++) {
     mu_vm_led_set(!mu_vm_led_get());
     test_wait_ms(250);
   }
   mu_vm_led_set(false);
-  test_sync_printf("done.  time is now ");
+  test_printf("done.  time is now ");
   test_print_time(mu_vm_rtc_now());
-  test_sync_printf("\r\n");
+  test_printf("\r\n");
 
-  test_sync_printf("waiting for button press (synchronous)...");
+  test_printf("waiting for button press (polled)...");
   while (!mu_vm_button_is_pressed()) {
     // buzz...
   }
-  test_sync_printf("received button press.\r\n");
+  test_printf("received button press.\r\n");
 
   // make sure button has stopped bouncing before moving to next test.
   do {
@@ -123,53 +116,32 @@ void mv_vm_test_step(void) {
 
   s_button_pressed = false;
   mu_vm_button_set_cb(button_press_cb, NULL);
-  test_sync_printf("waiting for button press (asynchronous)...");
+  test_printf("waiting for button press (interrupt-based)...");
   while (!s_button_pressed) {
     // buzz...
   }
-  test_sync_printf("received button press.\r\n");
+  test_printf("received button press.\r\n");
 
-  test_sync_printf("waiting for keyboard input (synchronous)...");
-  c = mu_vm_serial_read();
-  test_sync_printf("received '%c'\r\n", c);
-
-
-  test_sync_printf("waiting for keyboard input (asynchronous)...");
-  // set callback
-  s_rx_char_available = false;
-  mu_vm_serial_set_read_cb(serial_read_cb, NULL);
-  while (!s_rx_char_available) {
-	  asm("nop");
-  }
-  c = mu_vm_serial_read();
-  test_sync_printf("received '%c'\r\n", c);
+  test_printf("waiting for keyboard input...");
+  c = test_getc();
+  test_printf("received '%c'\r\n", c);
 
 #ifdef MU_VM_CAN_SLEEP
-  test_sync_printf("sleeping for 2.5 seconds...");
-  // Assure line gets printed before sleeping
-  while (!mu_vm_serial_can_write()) {
-	  asm("nop");
-	  // buzz...
-  }
+  test_printf("sleeping for 2.5 seconds...");
   mu_vm_sleep_until(mu_vm_time_offset(mu_vm_rtc_now(),
                                           mu_vm_time_ms_to_duration(2500)));
-  test_sync_printf("done.  time is now ");
+  test_printf("done.  time is now ");
   test_print_time(mu_vm_rtc_now());
-  test_sync_printf("\r\n");
+  test_printf("\r\n");
 
-  test_sync_printf("sleeping until button press...");
-  // Assure line gets printed before sleeping
-  while (!mu_vm_serial_can_write()) {
-	  asm("nop");
-	  // buzz...
-  }
+  test_printf("sleeping until button press...");
   mu_vm_sleep();
-  test_sync_printf("done.  time is now ");
+  test_printf("done.  time is now ");
   test_print_time(mu_vm_rtc_now());
-  test_sync_printf("\r\n");
+  test_printf("\r\n");
 #endif
 
-  test_sync_printf("end of mu_vm_test\r\n================\r\n");
+  test_printf("end of mu_vm_test\r\n================\r\n");
 }
 
 // =============================================================================
@@ -184,7 +156,7 @@ static void test_wait_ms(int ms) {
   }
 }
 
-static void test_sync_printf(const char *fmt, ...) {
+static void test_printf(const char *fmt, ...) {
   static uint8_t buf[MAX_CHARS];
   size_t n_chars;
 
@@ -196,7 +168,7 @@ static void test_sync_printf(const char *fmt, ...) {
   uint8_t *p = buf;
 
   while (n_chars > 0) {
-    while (!mu_vm_serial_can_write()) {
+    while (!mu_vm_serial_is_ready_to_write()) {
       asm("nop");
       // buzz...
     }
@@ -206,30 +178,14 @@ static void test_sync_printf(const char *fmt, ...) {
 
 }
 
-static void test_async_printf(const char *fmt, ...) {
-
-  va_list ap;
-  va_start(ap, fmt);
-  s_tx_count = vsnprintf((char *)s_tx_buf, MAX_CHARS, fmt, ap);
-  va_end(ap);
-
-  s_tx_index = 0;
-  if (s_tx_count > 0) {
-    // install callback to handle subsequent writes
-    mu_vm_serial_set_write_cb(serial_write_cb, NULL);
-    // write the first character to start things
-    s_tx_index += 1;
-    s_tx_count -= 1;
-    mu_vm_serial_write(s_tx_buf[0]);
-  }
-
-  // buzz until all chars written
-  while (s_tx_count > 0) {
-    asm("nop");
-  }
-
-  // de-install callbacks.
-  mu_vm_serial_set_write_cb(NULL, NULL);
+static uint8_t test_getc(void) {
+	s_rx_has_data = false;
+	mu_vm_serial_set_read_cb(serial_read_cb);
+	while (!s_rx_has_data) {
+		asm("nop");
+	}
+	s_rx_has_data = false;
+	return s_rx_data;
 }
 
 static void test_print_time(mu_vm_time_t t) {
@@ -237,9 +193,9 @@ static void test_print_time(mu_vm_time_t t) {
   int ms = mu_vm_time_duration_to_ms(uptime);
 #ifdef PORT_FLOAT
   PORT_FLOAT s = mu_vm_time_duration_to_s(uptime);
-  test_sync_printf("time = %d ms (%f s)", ms, s);
+  test_printf("time = %d ms (%f s)", ms, s);
 #else
-  test_sync_printf("time = %d ms", ms);
+  test_printf("time = %d ms", ms);
 #endif
 }
 
@@ -247,17 +203,9 @@ static void button_press_cb(void *arg) {
 	s_button_pressed = true;
 }
 
-static void serial_write_cb(void *arg) {
-  // arrive here when serial can send another char
-  if (s_tx_count > 0) {
-    mu_vm_serial_write(s_tx_buf[s_tx_index++]);
-    s_tx_count -= 1;
-  }
-  // When the write operation completes, this callback will be called again.
-}
-
-static void serial_read_cb(void *arg) {
-  s_rx_char_available = true;
+static void serial_read_cb(uint8_t data) {
+  s_rx_has_data = true;
+	s_rx_data = data;
 }
 
 static void rtc_cb(void *arg) {

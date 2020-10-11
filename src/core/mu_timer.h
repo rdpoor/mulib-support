@@ -22,72 +22,48 @@
  * SOFTWARE.
  */
 
-/**
- * @file mu_vm_serial.h
- *
- * Sketches for serial routines for virtual machine.
- */
-
-#ifndef _MU_VM_SERIAL_H_
-#define _MU_VM_SERIAL_H_
+#ifndef _MU_TIMER_H_
+#define _MU_TIMER_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C";
 #endif
 
 // =============================================================================
 // includes
 
+#include "mu_time.h"
+#include "mu_sched.h"
+#include "mu_task.h"
 #include <stdbool.h>
-#include <stdint.h>
 
 // =============================================================================
 // types and definitions
 
+typedef struct {
+  mu_task_t timer_task;
+  mu_task_t *target_task;
+  mu_sched_t *sched;
+  mu_time_dt interval;
+  bool does_repeat;
+  bool is_running;
+} mu_timer_t;
+
 // =============================================================================
 // declarations
 
-// ==========
-// SERIAL I/O
+mu_timer_t *mu_timer_init(mu_timer_t *timer,
+                          mu_sched_t *sched,
+                          mu_task_t *target_task);
 
-/**
- * @brief Write a byte to the serial port.
- *
- * If a callback is set, works in synchronous mode and returns immediately.
- *
- * If no callback is set, works in asynchronous mode: it blocks until all of the
- * data in cirq has been sent.
- *
- * @param cirq A ring buffer containing the data to be transmitted.
- */
-void mu_vm_serial_write(mu_cirq_t *cirq);
+mu_timer_t *mu_timer_start(mu_timer_t *timer, mu_time_dt interval, bool repeat);
 
-/**
- * @brief Register a callback to be called when the most recent all to
- * mu_vm_serial_write() has no more bytes to transmit.
- */
-void mu_vm_serial_register_write_cb(mu_vm_callback_fn fn, void *arg);
+mu_timer_t *mu_timer_stop(mu_timer_t *timer);
 
-/**
- * @brief Read serial data into a ring buffer.
- *
- * Works in synchronous mode if a callback is set.  The callback will be
- * triggered when one or more characters are received.
- *
- * Works in asynchronous mode if no callback is set.  It blocks until one or
- * more characters are received and stored in the ring buffer.
- *
- * @param cirq A ring buffer to receive the data.
- */
-void mu_vm_serial_read(mu_cirq_t *cirq);
-
-/**
- * @brief Register a callback to be called when a serial byte is received.
- */
-void mu_vm_serial_set_read_cb(mu_vm_callback_fn fn, void *arg);
+bool mu_timer_is_running(mu_timer_t *timer);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MU_VM_SERIAL_H_ */
+#endif // #ifndef _MU_TIMER_H_
