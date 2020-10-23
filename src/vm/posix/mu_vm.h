@@ -63,6 +63,7 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <time.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -78,25 +79,18 @@ extern "C" {
  * and mu_vm_time_s_to_duration().
  */
 // #define MU_VM_HAS_FLOAT
-// #define MU_VM_HAS_DOUBLE
-
-#if defined(MU_VM_HAS_FLOAT)
-#define MU_VM_FLOAT float
-#elif defined(MU_VM_HAS_DOUBLE)
+#define MU_VM_HAS_DOUBLE
 #define MU_VM_FLOAT double
-#endif
 
 /**
  * Define the data type that holds a time value and a duration value.  Using
  * 32 bit values is a good choice for many platforms, but you can change this
  * as needed.
  */
-typedef uint32_t mu_vm_time_t;
-typedef int32_t mu_vm_time_dt;
+typedef clock_t mu_vm_time_t;
+typedef clock_t mu_vm_time_dt;
 typedef int32_t mu_vm_time_ms_dt;
-#ifdef MU_VM_FLOAT
 typedef MU_VM_FLOAT mu_vm_time_s_dt;
-#endif
 
 /**
  * If your platform is able to sleep in order to conserver power, un-comment
@@ -142,10 +136,8 @@ bool mu_vm_time_follows(mu_vm_time_t a, mu_vm_time_t b);
 mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt);
 mu_vm_time_dt mu_vm_time_ms_to_duration(mu_vm_time_ms_dt ms);
 
-#ifdef MU_VM_FLOAT
 mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt);
 mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds);
-#endif
 
 // ==========
 // Real Time Clock
@@ -226,10 +218,8 @@ bool mu_vm_serial_is_ready_to_read(void);
  *
  * This should only be called if mu_vm_serial_is_ready_to_read() returns true.
  * Otherwise, it may return garbled data or repeat the previous byte.
- *
- * When a byte is completely read, the read callback will be triggered.
  */
-void mu_vm_serial_read(void);
+uint8_t mu_vm_serial_read(void);
 
 /**
  * @brief Is the serial subsystem busy reading?

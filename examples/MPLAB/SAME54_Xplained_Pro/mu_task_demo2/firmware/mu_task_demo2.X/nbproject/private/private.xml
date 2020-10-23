@@ -2,21 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/button_task.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/idle_task.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/kbd_task.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/led_task.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/main.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/config/same54_xplained_pro/peripheral/rtc/plib_rtc_timer.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/screen_update_task.h</file>
-            <file>file:/C:/Users/r/Projects/mulib/src/core/mu_time.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/config/same54_xplained_pro/initialization.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/config/same54_xplained_pro/peripheral/clock/plib_clock.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/mu_task_demo.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_vm.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/screen_update_task.c</file>
-            <file>file:/C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo2/firmware/src/screen_redraw_task.c</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

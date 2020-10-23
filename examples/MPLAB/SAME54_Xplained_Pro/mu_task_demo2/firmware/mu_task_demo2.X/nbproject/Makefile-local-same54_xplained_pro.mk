@@ -15,11 +15,11 @@
 # $ makeMP_CC="/opt/microchip/mplabc30/v3.30c/bin/pic30-gcc" ...  
 #
 SHELL=cmd.exe
-PATH_TO_IDE_BIN=C:/Program Files (x86)/Microchip/MPLABX/v5.35/mplab_platform/platform/../mplab_ide/modules/../../bin/
+PATH_TO_IDE_BIN=C:/Program Files (x86)/Microchip/MPLABX/v5.40/mplab_platform/platform/../mplab_ide/modules/../../bin/
 # Adding MPLAB X bin directory to path.
-PATH:=C:/Program Files (x86)/Microchip/MPLABX/v5.35/mplab_platform/platform/../mplab_ide/modules/../../bin/:$(PATH)
+PATH:=C:/Program Files (x86)/Microchip/MPLABX/v5.40/mplab_platform/platform/../mplab_ide/modules/../../bin/:$(PATH)
 # Path to java used to run MPLAB X when this makefile was created
-MP_JAVA_PATH="C:\Program Files (x86)\Microchip\MPLABX\v5.35\sys\java\jre1.8.0_181/bin/"
+MP_JAVA_PATH="C:\Program Files (x86)\Microchip\MPLABX\v5.40\sys\java\zulu8.36.0.1-ca-fx-jdk8.0.202-win_x64\jre/bin/"
 OS_CURRENT="$(shell uname -s)"
 MP_CC="C:\Program Files\Microchip\xc32\v2.40\bin\xc32-gcc.exe"
 MP_CPPC="C:\Program Files\Microchip\xc32\v2.40\bin\xc32-g++.exe"
@@ -27,7 +27,7 @@ MP_CPPC="C:\Program Files\Microchip\xc32\v2.40\bin\xc32-g++.exe"
 MP_AS="C:\Program Files\Microchip\xc32\v2.40\bin\xc32-as.exe"
 MP_LD="C:\Program Files\Microchip\xc32\v2.40\bin\xc32-ld.exe"
 MP_AR="C:\Program Files\Microchip\xc32\v2.40\bin\xc32-ar.exe"
-DEP_GEN=${MP_JAVA_PATH}java -jar "C:/Program Files (x86)/Microchip/MPLABX/v5.35/mplab_platform/platform/../mplab_ide/modules/../../bin/extractobjectdependencies.jar"
+DEP_GEN=${MP_JAVA_PATH}java -jar "C:/Program Files (x86)/Microchip/MPLABX/v5.40/mplab_platform/platform/../mplab_ide/modules/../../bin/extractobjectdependencies.jar"
 MP_CC_DIR="C:\Program Files\Microchip\xc32\v2.40\bin"
 MP_CPPC_DIR="C:\Program Files\Microchip\xc32\v2.40\bin"
 # MP_BC_DIR is not defined
@@ -35,5 +35,5 @@ MP_AS_DIR="C:\Program Files\Microchip\xc32\v2.40\bin"
 MP_LD_DIR="C:\Program Files\Microchip\xc32\v2.40\bin"
 MP_AR_DIR="C:\Program Files\Microchip\xc32\v2.40\bin"
 # MP_BC_DIR is not defined
-CMSIS_DIR="C:/Program Files (x86)/Microchip/MPLABX/v5.35/packs/arm/CMSIS/5.4.0"
-DFP_DIR="C:/Program Files (x86)/Microchip/MPLABX/v5.35/packs/Microchip/SAME54_DFP/3.2.56"
+CMSIS_DIR=C:/Program Files (x86)/Microchip/MPLABX/v5.40/packs/arm/CMSIS/5.4.0
+DFP_DIR=C:/Program Files (x86)/Microchip/MPLABX/v5.40/packs/Microchip/SAME54_DFP/3.2.56

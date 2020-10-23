@@ -38,9 +38,7 @@ extern "C" {
 // =============================================================================
 // declarations
 
-void mv_vm_test_init(void);
-
-void mv_vm_test_step(void);
+void mv_vm_test(void);
 
 #ifdef __cplusplus
 }
