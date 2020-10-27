@@ -33,6 +33,7 @@ extern "C" {
 // includes
 
 #include "mu_config.h"
+#include "mu_list.h"
 #include "mu_time.h"
 
 // =============================================================================
@@ -42,17 +43,22 @@ extern "C" {
  * A `mu_task` is a function that can be called later.  It comprises a function
  * pointer (`mu_task_fn`) and a context (`void *ctx`).  When called, the
  * function is passed the ctx argument and a `void *` argument.
+ *
+ * It also includes a link field and a time field, which are actively used by
+ * the scheduler.
  */
 
 // Ths signature of a mu_task function.
 typedef void *(*mu_task_fn)(void *ctx, void *arg);
 
 typedef struct _mu_task {
-  mu_task_fn fn;           // function to call
-  void *ctx;              // context to pass when called
+  mu_list_t link; // next (older) event in the schedule
+  mu_time_t time; // time at which this task fires
+  mu_task_fn fn;  // function to call
+  void *ctx;      // context to pass when called
 #if (MU_TASK_PROFILING)
   const char *name;        // user defined task name
-  unsigned int call_count; // # of time task is called
+  unsigned int call_count; // # of times task is called
   mu_time_dt runtime;      // accumulated time spent running the task
   mu_time_dt max_duration; // max time spend running the task
 #endif
@@ -63,23 +69,33 @@ mu_task_t *mu_task_init(mu_task_t *task,
                         void *ctx,
                         const char *name);
 
+mu_list_t mu_task_link(mu_task_t *task);
+
+mu_time_t mu_task_get_time(mu_task_t *task);
+
+void mu_task_set_time(mu_task_t *task, mu_time_t time);
+
+mu_task_fn mu_task_get_fn(mu_task_t *task);
+
+void *mu_task_get_context(mu_task_t *task);
+
 const char *mu_task_name(mu_task_t *task);
 
 void *mu_task_call(mu_task_t *task, void *arg);
 
 #if (MU_TASK_PROFILING)
 
-  unsigned int mu_task_call_count(mu_task_t *task);
+unsigned int mu_task_call_count(mu_task_t *task);
 
-  mu_time_ms_dt mu_task_runtime_ms(mu_task_t *task);
+mu_time_ms_dt mu_task_runtime_ms(mu_task_t *task);
 
-  mu_time_ms_dt mu_task_max_duration_ms(mu_task_t *task);
+mu_time_ms_dt mu_task_max_duration_ms(mu_task_t *task);
 
-  #ifdef MU_VM_FLOAT
-    mu_time_s_dt mu_task_runtime_s(mu_task_t *task);
+#ifdef MU_VM_FLOAT
+mu_time_s_dt mu_task_runtime_s(mu_task_t *task);
 
-    mu_time_s_dt mu_task_max_duration_s(mu_task_t *task);
-  #endif
+mu_time_s_dt mu_task_max_duration_s(mu_task_t *task);
+#endif
 
 #endif
 

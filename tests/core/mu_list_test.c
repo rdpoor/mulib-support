@@ -39,186 +39,130 @@
 //
 typedef struct {
   float value;
-  mu_list_t link;
+  mu_list_t link;  // link is not first slot in structure
   char id;
-} list_item_t;
+} element_t;
 
 // =============================================================================
 // private declarations
 
-static void initialize_items(void);
-static mu_list_t *rebuild_list(void);
+static element_t *rebuild_list(void);
 
 // =============================================================================
 // local storage
 
-static mu_list_t s_item_a, s_item_b, s_item_c, s_item_d;
-static list_item_t s_list_item;
+static element_t s_element_a, s_element_b, s_element_c, s_element_d;
 
 // =============================================================================
 // public code
 
 void mu_list_test() {
-  mu_list_t *item;
-  mu_list_t list_head;
+  mu_list_t list;
 
   // ==========
-  // test MU_LIST_REF and MU_LIST_CONTAINER
-  ASSERT(MU_LIST_REF(&s_list_item, link) == &(s_list_item.link));
-  ASSERT(MU_LIST_CONTAINER(&(s_list_item.link), list_item_t, link) == &s_list_item);
+  // MU_LIST_REF and MU_LIST_CONTAINER
+  ASSERT(MU_LIST_REF(&s_element_a, link) == &s_element_a.link);
+  ASSERT(MU_LIST_CONTAINER(&s_element_a.link, element_t, link) == &s_element_a);
 
   // ==========
-  // void mu_list_push(mu_list_t *ref, mu_list_t *item);
-  initialize_items();
-  list_head.next = NULL;
-
-  ASSERT(list_head.next == NULL);
-  // push onto empty list
-  mu_list_push(&list_head, &s_item_a);
-  ASSERT(list_head.next != NULL);
-  ASSERT(list_head.next == &s_item_a);
-  // push onto non-empty list
-  mu_list_push(&list_head, &s_item_b);
-  ASSERT(list_head.next == &s_item_b);
-  ASSERT(s_item_b.next == &s_item_a);
-  ASSERT(s_item_a.next == NULL);
-  // push onto non-empty list
-  mu_list_push(&list_head, &s_item_c);
-  ASSERT(list_head.next == &s_item_c);
-  ASSERT(s_item_c.next == &s_item_b);
-  ASSERT(s_item_b.next == &s_item_a);
-  ASSERT(s_item_a.next == NULL);
+  // rebuild_list()
+  mu_list_set_rest(&list, MU_LIST_REF(rebuild_list(), link));
+  ASSERT(mu_list_rest(&list) == MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_a, link)) == MU_LIST_REF(&s_element_b, link));
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_b, link)) == MU_LIST_REF(&s_element_c, link));
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_c, link)) == MU_LIST_END);
 
   // ==========
-  // mu_list_t *mu_list_pop(mu_list_t *ref);
-  list_head.next = rebuild_list();
-  item = mu_list_pop(&list_head);
-  ASSERT(item == &s_item_a);
-  ASSERT(item->next == NULL);  // assure item link is null
-  item = mu_list_pop(&list_head);
-  ASSERT(item == &s_item_b);
-  ASSERT(item->next == NULL);  // assure item link is null
-  item = mu_list_pop(&list_head);
-  ASSERT(item == &s_item_c);
-  ASSERT(item->next == NULL);  // assure item link is null
-  // pop from empty list
-  ASSERT(list_head.next == NULL);
-  item = mu_list_pop(&list_head);
-  ASSERT(item == NULL);
+  // mu_list_push()
+  rebuild_list();
+  mu_list_set_rest(&list, MU_LIST_END);
+  // mu_list_push() onto an empty list
+  ASSERT(mu_list_push(&list, MU_LIST_REF(&s_element_a, link)) == &list);
+  // verify that a was pushed onto list
+  ASSERT(mu_list_rest(&list) == MU_LIST_REF(&s_element_a, link));
+  // verify that a.rest was unlinked from its original list
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_a, link)) == MU_LIST_END);
+
+  // mu_list_push onto a non-empty list
+  ASSERT(mu_list_push(&list, MU_LIST_REF(&s_element_b, link)) == &list);
+  // verify that b was pushed onto list
+  ASSERT(mu_list_rest(&list) == MU_LIST_REF(&s_element_b, link));
+  // verify that b.next points to a
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_b, link)) == MU_LIST_REF(&s_element_a, link));
 
   // ==========
-  // void *mu_list_traverse(mu_list_t *ref, mu_list_traverse_fn fn, void *arg)
-  // tested implicitly by the following functions
+  // mu_list_pop()
+  rebuild_list();
+  // mu_list_pop() from an empty list
+  ASSERT(mu_list_pop(MU_LIST_REF(&s_element_d, link)) == MU_LIST_END);
+  // mu_list_pop() from a non-empty list
+  mu_list_set_rest(&list, MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_pop(&list) == MU_LIST_REF(&s_element_a, link));
+  // verify that a.rest was unlinked
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_a, link)) == MU_LIST_END);
+  // run down the remainder of the list
+  ASSERT(mu_list_pop(&list) == MU_LIST_REF(&s_element_b, link));
+  ASSERT(mu_list_pop(&list) == MU_LIST_REF(&s_element_c, link));
+  ASSERT(mu_list_pop(&list) == MU_LIST_END);
+  // mu_list_pop() on an empty list is allowed...
+  ASSERT(mu_list_pop(&list) == MU_LIST_END);
 
   // ==========
-  // int mu_list_length(mu_list_t *ref);
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_length(&list_head) == 3);
-  list_head.next = NULL;
-  ASSERT(mu_list_length(&list_head) == 0);
-  ASSERT(mu_list_length(NULL) == 0);
+  // mu_list_length()
+  rebuild_list();
+  mu_list_set_rest(&list, MU_LIST_END);
+  ASSERT(mu_list_length(&list) == 0);
+  mu_list_set_rest(&list, MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_length(&list) == 3);
 
-  // =========
-  // bool mu_list_contains(mu_list_t *ref, mu_list_t *item);
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_contains(&list_head, &s_item_a) == true);
-  ASSERT(mu_list_contains(&list_head, &s_item_b) == true);
-  ASSERT(mu_list_contains(&list_head, &s_item_c) == true);
-  ASSERT(mu_list_contains(&list_head, &s_item_d) == false);
-  // we could debate whether this should return true or false...
-  ASSERT(mu_list_contains(&list_head, NULL) == false);
-  list_head.next = NULL;
-  ASSERT(mu_list_contains(&list_head, &s_item_a) == false);
-  ASSERT(mu_list_contains(NULL, &s_item_a) == false);
+  // ==========
+  // mu_list_find()
+  rebuild_list();
+  mu_list_set_rest(&list, MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_find(&list, MU_LIST_REF(&s_element_a, link)) == MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_find(&list, MU_LIST_REF(&s_element_b, link)) == MU_LIST_REF(&s_element_b, link));
+  ASSERT(mu_list_find(&list, MU_LIST_REF(&s_element_c, link)) == MU_LIST_REF(&s_element_c, link));
+  ASSERT(mu_list_find(&list, MU_LIST_REF(&s_element_d, link)) == MU_LIST_END);
 
-  // =========
-  // mu_list_t *mu_list_delete(mu_list_t *ref, mu_list_t *item);
-  // delete first in list
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_delete(&list_head, &s_item_a) == &s_item_a);
-  ASSERT(list_head.next == &s_item_b);
-  ASSERT(s_item_a.next == NULL);
-  ASSERT(s_item_b.next == &s_item_c);
-  ASSERT(s_item_c.next == NULL);
+  // ==========
+  // mu_list_delete()
+  // delete first
+  rebuild_list();
+  mu_list_set_rest(&list, MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_delete(&list, MU_LIST_REF(&s_element_a, link)) == MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_a, link)) == MU_LIST_END);
+  ASSERT(mu_list_rest(&list) == MU_LIST_REF(&s_element_b, link));
 
-  // delete mid-head
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_delete(&list_head, &s_item_b) == &s_item_b);
-  ASSERT(list_head.next == &s_item_a);
-  ASSERT(s_item_a.next == &s_item_c);
-  ASSERT(s_item_b.next == NULL);
-  ASSERT(s_item_c.next == NULL);
+  // delete not first
+  rebuild_list();
+  mu_list_set_rest(&list, MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_delete(&list, MU_LIST_REF(&s_element_b, link)) == MU_LIST_REF(&s_element_b, link));
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_b, link)) == MU_LIST_END);
+  ASSERT(mu_list_rest(&list) == MU_LIST_REF(&s_element_a, link));
 
   // delete last
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_delete(&list_head, &s_item_c) == &s_item_c);
-  ASSERT(list_head.next == &s_item_a);
-  ASSERT(s_item_a.next == &s_item_b);
-  ASSERT(s_item_b.next == NULL);       // is now end of list
-  ASSERT(s_item_c.next == NULL);
-
-  // delete not-in-list
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_delete(&list_head, &s_item_d) == NULL);
-  ASSERT(list_head.next == &s_item_a);
-  ASSERT(s_item_a.next == &s_item_b);
-  ASSERT(s_item_b.next == &s_item_c);
-  ASSERT(s_item_c.next == NULL);
-
-  // delete null item
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_delete(&list_head, NULL) == NULL);
-
-  // delete from null list
-  list_head.next = NULL;
-  ASSERT(mu_list_delete(&list_head, &s_item_a) == NULL);
-
-  // delete null reference
-  ASSERT(mu_list_delete(NULL, &s_item_a) == NULL);
-
-  // ==========
-  // mu_list_t *mu_list_reverse(mu_list_t *ref)
-  list_head.next = rebuild_list();
-  ASSERT(mu_list_reverse(&list_head) == &list_head);
-  ASSERT(list_head.next == &s_item_c);
-  ASSERT(s_item_c.next == &s_item_b);
-  ASSERT(s_item_b.next == &s_item_a);
-  ASSERT(s_item_a.next == NULL);
-
-  // reverse singleton list
   rebuild_list();
-  list_head.next = &s_item_c;
-  ASSERT(mu_list_reverse(&list_head) == &list_head);
-  ASSERT(list_head.next == &s_item_c);
-  ASSERT(s_item_c.next == NULL);
+  mu_list_set_rest(&list, MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_delete(&list, MU_LIST_REF(&s_element_c, link)) == MU_LIST_REF(&s_element_c, link));
+  ASSERT(mu_list_rest(MU_LIST_REF(&s_element_c, link)) == MU_LIST_END);
+  ASSERT(mu_list_rest(&list) == MU_LIST_REF(&s_element_a, link));
 
-  // reverse null list
-  list_head.next = NULL;
-  ASSERT(mu_list_reverse(&list_head) == &list_head);
-  ASSERT(list_head.next == NULL);
-
-  // reverse null reference
-  ASSERT(mu_list_reverse(NULL) == NULL);
-
+  // delete not in list
+  rebuild_list();
+  mu_list_set_rest(&list, MU_LIST_REF(&s_element_a, link));
+  ASSERT(mu_list_delete(&list, MU_LIST_REF(&s_element_d, link)) == MU_LIST_END);
+  ASSERT(mu_list_rest(&list) == MU_LIST_REF(&s_element_a, link));
 }
-
 
 // =============================================================================
 // private code
 
-static void initialize_items(void) {
-  s_item_a.next = NULL;
-  s_item_b.next = NULL;
-  s_item_c.next = NULL;
-  s_item_d.next = NULL;
-}
+static element_t *rebuild_list(void) {
+  mu_list_set_rest(MU_LIST_REF(&s_element_a, link), MU_LIST_REF(&s_element_b, link));
+  mu_list_set_rest(MU_LIST_REF(&s_element_b, link), MU_LIST_REF(&s_element_c, link));
+  mu_list_set_rest(MU_LIST_REF(&s_element_c, link), MU_LIST_END);
+  // element_d is an empty list.
+  mu_list_set_rest(MU_LIST_REF(&s_element_d, link), MU_LIST_END);
 
-static mu_list_t *rebuild_list(void) {
-  s_item_a.next = &s_item_b;
-  s_item_b.next = &s_item_c;
-  s_item_c.next = NULL;
-  // item_d is intentionally omitted
-  s_item_d.next = NULL;
-
-  return &s_item_a;
+  return &s_element_a;
 }

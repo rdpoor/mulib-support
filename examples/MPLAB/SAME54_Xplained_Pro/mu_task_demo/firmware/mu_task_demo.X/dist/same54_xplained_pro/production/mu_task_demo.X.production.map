@@ -573,9 +573,9 @@ Discarded input sections
  .bss           0x00000000        0x0 build/same54_xplained_pro/production/_ext/265365281/mu_queue.o
  .text.mu_queue_init
                 0x00000000        0x8 build/same54_xplained_pro/production/_ext/265365281/mu_queue.o
- .text.mu_queue_head
+ .text.mu_queue_takr
                 0x00000000        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_queue.o
- .text.mu_queue_tail
+ .text.mu_queue_putr
                 0x00000000        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_queue.o
  .text.mu_queue_add
                 0x00000000       0x1c build/same54_xplained_pro/production/_ext/265365281/mu_queue.o
@@ -618,7 +618,7 @@ Discarded input sections
                 0x00000000        0xa build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .text.mu_sched_event_count
                 0x00000000        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
- .text.mu_sched_get_current_event
+ .text.mu_sched_get_current_task
                 0x00000000        0xc build/same54_xplained_pro/production/_ext/265365281/mu_sched.o
  .text.mu_sched_event_get_task
                 0x00000000        0x4 build/same54_xplained_pro/production/_ext/265365281/mu_sched.o

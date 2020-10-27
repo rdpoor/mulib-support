@@ -36,7 +36,6 @@
 // =============================================================================
 // private types and definitions
 
-#define EVENT_QUEUE_SIZE 4
 #define IRQ_QUEUE_SIZE 2
 
 // =============================================================================
@@ -56,11 +55,9 @@ static void *task_fn(void *ctx, void *arg);
 
 static mu_time_t s_now;
 
-static mu_sched_t s_sched;
-static mu_sched_event_t s_event_queue[EVENT_QUEUE_SIZE];
-
 static mu_spscq_item_t s_isr_queue_items[IRQ_QUEUE_SIZE];
 static mu_spscq_t s_isr_queue;
+static mu_sched_t s_sched;
 
 static mu_task_t s_task;
 static int s_task_call_count;
@@ -160,7 +157,7 @@ void mu_timer_test() {
 static void setup(void) {
   set_now(0);
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, IRQ_QUEUE_SIZE);
-  mu_sched_init(&s_sched, s_event_queue, EVENT_QUEUE_SIZE, &s_isr_queue);
+  mu_sched_init(&s_sched, &s_isr_queue);
   mu_sched_set_clock_source(&s_sched, get_now);
   mu_task_init(&s_task, task_fn, &s_task, "Timed Task");
   s_task_call_count = 0;

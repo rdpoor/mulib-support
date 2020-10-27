@@ -43,16 +43,20 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
+// To avoid the age-old debate as to whether you add to the head of the queue
+// or to the tail, we use the term 'putr' to refer to where you put a new item
+// and 'takr' to where you take an item from.  And it looks like this:
+//
 //  queue:
 // +-------+     +---------+     +---------+     +---------+
-// | head .|---->| item1 . |---->| item2 . |---->| item3 ^ |
+// | takr .|---->| item1 . |---->| item2 . |---->| item3 ^ |
 // +-------+     +---------+     +---------+  /  +---------+
-// | tail .|----------------------------------
+// | putr .|----------------------------------
 // +-------+
 
 typedef struct {
-  mu_list_t head;   // items are removed (popped) from the head
-  mu_list_t tail;   // items are added (pushed) at the tail
+  mu_list_t takr;   // items are removed (popped) from the takr
+  mu_list_t putr;   // items are added (pushed) at the putr
 } mu_queue_t;
 
 // =============================================================================
@@ -60,9 +64,9 @@ typedef struct {
 
 mu_queue_t *mu_queue_init(mu_queue_t *q);
 
-mu_list_t *mu_queue_head(mu_queue_t *q);
+mu_list_t *mu_queue_takr(mu_queue_t *q);
 
-mu_list_t *mu_queue_tail(mu_queue_t *q);
+mu_list_t *mu_queue_putr(mu_queue_t *q);
 
 mu_queue_t *mu_queue_add(mu_queue_t *q, mu_list_t *item);
 

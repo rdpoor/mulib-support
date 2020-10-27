@@ -46,6 +46,8 @@ mu_task_t *mu_task_init(mu_task_t *task,
                         mu_task_fn fn,
                         void *ctx,
                         const char *name) {
+  task->link.next = NULL;
+  task->time = 0;
   task->fn = fn;
   task->ctx = ctx;
 #if (MU_TASK_PROFILING)
@@ -55,6 +57,26 @@ mu_task_t *mu_task_init(mu_task_t *task,
   task->max_duration = 0;
 #endif
   return task;
+}
+
+mu_list_t mu_task_link(mu_task_t *task) {
+  return task->link;
+}
+
+mu_time_t mu_task_get_time(mu_task_t *task) {
+  return task->time;
+}
+
+void mu_task_set_time(mu_task_t *task, mu_time_t time) {
+  task->time = time;
+}
+
+mu_task_fn mu_task_get_fn(mu_task_t *task) {
+  return task->fn;
+}
+
+void *mu_task_get_context(mu_task_t *task) {
+  return task->ctx;
 }
 
 const char *mu_task_name(mu_task_t *task) {

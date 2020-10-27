@@ -45,46 +45,50 @@
 // public code
 
 mu_queue_t *mu_queue_init(mu_queue_t *q) {
-  q->head.next = NULL;
-  q->tail.next = NULL;
+  q->takr.next = NULL;
+  q->putr.next = NULL;
   return q;
 }
 
-mu_list_t *mu_queue_head(mu_queue_t *q) {
-  return q->head.next;
+mu_list_t *mu_queue_takr(mu_queue_t *q) {
+  return q->takr.next;
 }
 
-mu_list_t *mu_queue_tail(mu_queue_t *q) {
-  return q->tail.next;
+mu_list_t *mu_queue_putr(mu_queue_t *q) {
+  return q->putr.next;
 }
 
 mu_queue_t *mu_queue_add(mu_queue_t *q, mu_list_t *item) {
-  if (q->head.next == NULL) {
-    q->head.next = item;    // adding first item
+  item->next = NULL;
+  if (mu_list_is_empty(&q->takr)) {
+    // adding first element to the queue
+    q->takr.next = item;
+  } else {
+    // add item after putr
+    q->putr.next->next = item;
   }
-  mu_list_push(q->tail.next, item);
-  q->tail.next = item;      // update tail to point at last item
+  q->putr.next = item;
   return q;
 }
 
 mu_list_t *mu_queue_remove(mu_queue_t *q) {
-  mu_list_t *item = mu_list_pop(&q->head);
-  if (q->head.next == NULL) {
-    q->tail.next = NULL;       // removing last item;
+  mu_list_t *item = mu_list_pop(&q->takr);
+  if (mu_list_is_empty(&q->takr)) {
+    q->putr.next = NULL;       // removing last item;
   }
   return item;
 }
 
 bool mu_queue_is_empty(mu_queue_t *q) {
-  return q->head.next == NULL;   // can check head or tail
+  return mu_list_is_empty(&q->takr);
 }
 
 bool mu_queue_contains(mu_queue_t *q, mu_list_t *item) {
-  return mu_list_contains(&q->head, item);
+  return mu_list_contains(&q->takr, item);
 }
 
 int mu_queue_length(mu_queue_t *q) {
-  return mu_list_length(&q->head);
+  return mu_list_length(&q->takr);
 }
 
 // =============================================================================
