@@ -64,14 +64,14 @@ static void *idle_task_fn(void *ctx, void *arg) {
   // ctx is unused in idle task
   // scheduler is passed as the second argument.
   mu_sched_t *sched = (mu_sched_t *)arg;
-  mu_sched_event_t *next_event = mu_sched_get_next_event(sched);
+  mu_task_t *next_task = mu_sched_get_next_task(sched);
 
   if (is_ready_to_sleep()) {
     will_sleep();
-    if (next_event) {
-      // There is a future event: sleep until it arrives or skip sleeping if
+    if (next_task) {
+      // There is a future task: sleep until it arrives or skip sleeping if
       // the event is imminent.
-      mu_vm_sleep_until(next_event->time);
+      mu_vm_sleep_until(mu_task_get_time(next_task));
     } else {
       // no future events are scheduled -- only an interrupt will wake us
       mu_vm_sleep();

@@ -40,7 +40,6 @@
 
 #define MU_SLEEP_DEMO_VERSION "1.0.0"
 
-#define EVENT_QUEUE_CAPACITY 10
 #define ISR_Q_CAPACITY 8 // must be a power of two
 
 // =============================================================================
@@ -51,9 +50,6 @@
 
 // the scheduler state
 static mu_sched_t s_sched;
-
-// the backing store for scheduled events
-static mu_sched_event_t s_event_queue[EVENT_QUEUE_CAPACITY];
 
 // the queue to hold tasks queued from interrupt level, and its backing store
 static mu_spscq_t s_isr_queue;
@@ -84,7 +80,7 @@ void mu_sleep_demo_init() {
 
   // set up the isr queue and the scheduler
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, ISR_Q_CAPACITY);
-  mu_sched_init(&s_sched, s_event_queue, EVENT_QUEUE_CAPACITY, &s_isr_queue);
+  mu_sched_init(&s_sched, &s_isr_queue);
 
   // initialize tasks
   led_task_init(&s_led_task, &s_led_ctx);

@@ -214,7 +214,7 @@ void mu_vm_serial_set_read_cb(mu_vm_serial_read_cb cb);
 bool mu_vm_serial_is_ready_to_read(void);
 
 /**
- * @brief Initiate the reading of a byte from the serial subsystem.
+ * @brief Read a byte from the serial subsystem.
  *
  * This should only be called if mu_vm_serial_is_ready_to_read() returns true.
  * Otherwise, it may return garbled data or repeat the previous byte.
