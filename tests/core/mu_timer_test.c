@@ -57,7 +57,6 @@ static mu_time_t s_now;
 
 static mu_spscq_item_t s_isr_queue_items[IRQ_QUEUE_SIZE];
 static mu_spscq_t s_isr_queue;
-static mu_sched_t s_sched;
 
 static mu_task_t s_task;
 static int s_task_call_count;
@@ -70,7 +69,7 @@ static mu_timer_t s_timer;
 void mu_timer_test() {
   setup();
 
-  ASSERT(mu_timer_init(&s_timer, &s_sched, &s_task) == &s_timer);
+  ASSERT(mu_timer_init(&s_timer, &s_task) == &s_timer);
   ASSERT(mu_timer_is_running(&s_timer) == false);
 
   // start (from stopped mode) with repeat = false
@@ -79,13 +78,13 @@ void mu_timer_test() {
 
   // not triggered yet...
   set_now(5);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 0);
   ASSERT(mu_timer_is_running(&s_timer) == true);
 
   // trigger time has arrived
   set_now(10);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 1);
   ASSERT(mu_timer_is_running(&s_timer) == false);
 
@@ -95,25 +94,25 @@ void mu_timer_test() {
 
   // not triggered yet...
   set_now(15);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 1);
   ASSERT(mu_timer_is_running(&s_timer) == true);
 
   // trigger time has arrived
   set_now(20);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 2);
   ASSERT(mu_timer_is_running(&s_timer) == true);  // b/c repeat = true
 
   // not triggered yet...
   set_now(25);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 2);
   ASSERT(mu_timer_is_running(&s_timer) == true);
 
   // trigger time has arrived
   set_now(30);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 3);
   ASSERT(mu_timer_is_running(&s_timer) == true);  // b/c repeat = true
 
@@ -123,7 +122,7 @@ void mu_timer_test() {
 
   // make sure it doesn't trigger...
   set_now(40);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 3);
 
   // restarting timer...
@@ -131,7 +130,7 @@ void mu_timer_test() {
   ASSERT(mu_timer_is_running(&s_timer) == true);
 
   set_now(45);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 3);
 
   // restart at t = 45
@@ -140,12 +139,12 @@ void mu_timer_test() {
 
   // doesn't trigger at t=50
   set_now(50);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 3);
 
   // does trigger at t = 55
   set_now(55);
-  mu_sched_step(&s_sched);
+  mu_sched_step();
   ASSERT(s_task_call_count == 4);
   ASSERT(mu_timer_is_running(&s_timer) == false);  // b/c repeat = false
 }
@@ -157,8 +156,8 @@ void mu_timer_test() {
 static void setup(void) {
   set_now(0);
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, IRQ_QUEUE_SIZE);
-  mu_sched_init(&s_sched, &s_isr_queue);
-  mu_sched_set_clock_source(&s_sched, get_now);
+  mu_sched_init(&s_isr_queue);
+  mu_sched_set_clock_source(get_now);
   mu_task_init(&s_task, task_fn, &s_task, "Timed Task");
   s_task_call_count = 0;
 }
@@ -174,7 +173,6 @@ static void set_now(mu_time_t now) {
 // ctx is set to the task itself, arg is set to the scheduler
 static void *task_fn(void *ctx, void *arg) {
   ASSERT(ctx == &s_task);
-  ASSERT(arg == &s_sched);
   s_task_call_count += 1;
   return NULL;
 }
