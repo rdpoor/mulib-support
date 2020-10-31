@@ -63,6 +63,8 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include "mu_config.h"    // must come first!
+
 #include <time.h>
 #include <stdbool.h>
 #include <stdint.h>

@@ -65,8 +65,10 @@ typedef mu_time_t (*mu_clock_fn)(void);
 
 /**
  * \brief initialize the schedule module.  Not interrupt safe.
+ *
+ * TODO: Error return if isq_queue_capacity is not a power of 2.
  */
-void mu_sched_init(mu_spscq_t *isr_queue);
+ void mu_sched_init(mu_spscq_item_t *isr_queue_store, uint16_t isr_queue_capacity);
 
 /**
  * \brief  Remove all scheduled items from the schedule.  Not interrupt safe.

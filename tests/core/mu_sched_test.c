@@ -34,7 +34,7 @@
 // =============================================================================
 // private types and definitions
 
-#define IRQ_QUEUE_SIZE 2
+#define ISR_QUEUE_SIZE 2
 
 #define RESCHEDULE_DELTA 42
 
@@ -93,8 +93,7 @@ static void set_time(mu_time_t now);
 // local storage
 
 
-static mu_spscq_item_t s_isr_queue_items[IRQ_QUEUE_SIZE];
-static mu_spscq_t s_isr_queue;
+static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
 
 static mu_time_t s_now;
 
@@ -451,8 +450,7 @@ static void *idle_task_fn(void *ctx, void *arg) {
 
 static void setup(void) {
   // set up scheduler
-  mu_spscq_init(&s_isr_queue, s_isr_queue_items, IRQ_QUEUE_SIZE);
-  mu_sched_init(&s_isr_queue);
+  mu_sched_init(s_isr_queue_items, ISR_QUEUE_SIZE);
 
   // set up clock for unit testing
   set_time(0);

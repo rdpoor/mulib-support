@@ -6,6 +6,7 @@
 
 BUILD_DIR = ../build
 TEST_DRIVER_DIR = ../tests
+SOURCE_DIR = ../src
 CORE_SOURCE_DIR = ../src/core
 
 TEST_DRIVER_SOURCES := $(wildcard $(TEST_DRIVER_DIR)/*.c)
@@ -20,7 +21,7 @@ UNIT_TEST := $(BUILD_DIR)/mu_test
 
 CFLAGS = -Wall -g
 
-IFLAGS = -I $(TEST_DRIVER_DIR) -I $(CORE_SOURCE_DIR)
+IFLAGS = -I $(SOURCE_DIR) -I $(TEST_DRIVER_DIR) -I $(CORE_SOURCE_DIR)
 
 # compile tests/*.c into tests/*.o
 $(BUILD_DIR)/%.o : $(TEST_DRIVER_DIR)/%.c $(TEST_DRIVER_INCLUDES)
@@ -37,7 +38,7 @@ test : all
 	cd $(BUILD_DIR) && $(UNIT_TEST)
 
 clean :
-	@rm -f $(ALL_OBJECTS) $(UNIT_TEST)
+	rm -f $(ALL_OBJECTS) $(UNIT_TEST)
 
 core :
 	make -f make_core

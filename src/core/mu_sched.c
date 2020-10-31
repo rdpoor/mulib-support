@@ -39,7 +39,7 @@
 
 typedef struct {
   mu_list_t task_list;     // time ordered list of tasks (soonest first)
-  mu_spscq_t *isr_queue;   // interrupt-safe queue of tasks to be added
+  mu_spscq_t isr_queue;    // interrupt-safe queue of tasks to be added
   mu_clock_fn clock_fn;    // function to call to get the current time
   mu_task_t *idle_task;    // the idle task
   mu_task_t *current_task; // the task currently being processed
@@ -65,8 +65,8 @@ static mu_task_t s_default_idle_task;
 // =============================================================================
 // public code
 
-void mu_sched_init(mu_spscq_t *isr_queue) {
-  s_sched.isr_queue = isr_queue;
+void mu_sched_init(mu_spscq_item_t *isr_queue_store, uint16_t isr_queue_capacity) {
+  mu_spscq_init(&s_sched.isr_queue, isr_queue_store, isr_queue_capacity);
   s_sched.clock_fn = mu_time_now;
   s_sched.idle_task = &s_default_idle_task;
   mu_task_init(&s_default_idle_task, default_idle_fn, NULL, "Idle");
@@ -75,7 +75,7 @@ void mu_sched_init(mu_spscq_t *isr_queue) {
 }
 
 void mu_sched_reset(void) {
-  mu_spscq_reset(s_sched.isr_queue);
+  mu_spscq_reset(&s_sched.isr_queue);
   s_sched.current_task = NULL;
   s_sched.task_list.next = NULL;
 }
@@ -85,7 +85,7 @@ mu_sched_err_t mu_sched_step(void) {
   mu_time_t now = mu_sched_get_current_time();
 
   // first, transfer any tasks in the isr queue into the main queue
-  while (mu_spscq_get(s_sched.isr_queue, (void **)&task) !=
+  while (mu_spscq_get(&s_sched.isr_queue, (void **)&task) !=
          MU_CQUEUE_ERR_EMPTY) {
     mu_sched_err_t err = mu_sched_task_at(task, now);
     if (err != MU_SCHED_ERR_NONE) {
@@ -115,7 +115,7 @@ mu_sched_err_t mu_sched_step(void) {
 
 mu_list_t mu_sched_task_list(void) { return s_sched.task_list; }
 
-mu_spscq_t *mu_sched_isr_queue(void) { return s_sched.isr_queue; }
+mu_spscq_t *mu_sched_isr_queue(void) { return &s_sched.isr_queue; }
 
 mu_task_t *mu_sched_get_idle_task(void) { return s_sched.idle_task; }
 
@@ -184,7 +184,7 @@ mu_sched_err_t mu_sched_reschedule_now(void) {
 }
 
 mu_sched_err_t mu_sched_task_from_isr(mu_task_t *task) {
-  if (mu_spscq_put(s_sched.isr_queue, task) == MU_CQUEUE_ERR_FULL) {
+  if (mu_spscq_put(&s_sched.isr_queue, task) == MU_CQUEUE_ERR_FULL) {
     return MU_SCHED_ERR_FULL;
   } else {
     return MU_SCHED_ERR_NONE;

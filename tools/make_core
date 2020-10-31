@@ -3,23 +3,24 @@
 
 .PHONY: all clean
 
-SOURCE_DIR = ../src/core
+SOURCE_DIR = ../src
+CORE_SOURCE_DIR = ../src/core
 BUILD_DIR = ../build
-TEST_DIR = ../tests
+# TEST_DIR = ../tests
 
-SOURCES := $(wildcard $(SOURCE_DIR)/*.c)
-# headers that are part of the core but don't have corresponding .c file.
+SOURCES := $(wildcard $(CORE_SOURCE_DIR)/*.c)
+# headers that don't have corresponding .c file.
 EXTRA_INCLUDES :=              \
 	$(SOURCE_DIR)/mu_config.h    \
-	$(SOURCE_DIR)/mu_types.h
+	$(CORE_SOURCE_DIR)/mu_types.h
 
-OBJECTS := $(patsubst $(SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
+OBJECTS := $(patsubst $(CORE_SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
 
 CFLAGS = -Wall -g
 
-IFLAGS = -I $(TEST_DIR)
+IFLAGS = -I $(SOURCE_DIR) -I $(CORE_SOURCE_DIR)
 
-$(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.c $(SOURCE_DIR)/%.h $(EXTRA_INCLUDES)
+$(BUILD_DIR)/%.o : $(CORE_SOURCE_DIR)/%.c $(CORE_SOURCE_DIR)/%.h $(EXTRA_INCLUDES)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
 all : $(OBJECTS)
