@@ -40,7 +40,7 @@
  * to a new target system, you must implement the functions and types described
  * here.
  *
- * In addition, some compile-time macros defined in mu_config.h control the
+ * In addition, some compile-time macros defined in mu_vm_config.h control the
  * behavior of mu_vm.h:
  *
  * * `MU_VM_HAS_FLOAT`: If your system supports floating point operations,
@@ -64,7 +64,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_config.h"    // must come first!
+#include "mu_vm_config.h"    // must come first!
 
 #include <stdbool.h>
 #include <stdint.h>

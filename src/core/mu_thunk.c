@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_config.h"
+#include "mu_vm_config.h"
 #include "mu_thunk.h"
 #include "mu_time.h"
 #include <stddef.h>
@@ -46,42 +46,42 @@ mu_thunk_t *mu_thunk_init(mu_thunk_t *thunk,
                         mu_thunk_fn fn,
                         void *ctx,
                         const char *name) {
-  task->link.next = NULL;
-  task->time = 0;
-  task->fn = fn;
-  task->ctx = ctx;
+  thunk->link.next = NULL;
+  thunk->time = 0;
+  thunk->fn = fn;
+  thunk->ctx = ctx;
 #if (MU_THUNK_PROFILING)
-  task->name = name;
-  task->call_count = 0;
-  task->runtime = 0;
-  task->max_duration = 0;
+  thunk->name = name;
+  thunk->call_count = 0;
+  thunk->runtime = 0;
+  thunk->max_duration = 0;
 #endif
-  return task;
+  return thunk;
 }
 
 mu_list_t mu_thunk_link(mu_thunk_t *thunk) {
-  return task->link;
+  return thunk->link;
 }
 
 mu_time_t mu_thunk_get_time(mu_thunk_t *thunk) {
-  return task->time;
+  return thunk->time;
 }
 
 void mu_thunk_set_time(mu_thunk_t *thunk, mu_time_t time) {
-  task->time = time;
+  thunk->time = time;
 }
 
 mu_thunk_fn mu_thunk_get_fn(mu_thunk_t *thunk) {
-  return task->fn;
+  return thunk->fn;
 }
 
 void *mu_thunk_get_context(mu_thunk_t *thunk) {
-  return task->ctx;
+  return thunk->ctx;
 }
 
 const char *mu_thunk_name(mu_thunk_t *thunk) {
 #if (MU_THUNK_PROFILING)
-  return task->name;
+  return thunk->name;
 #else
   return "";
 #endif
@@ -92,12 +92,12 @@ void *mu_thunk_call(mu_thunk_t *thunk, void *arg) {
 #if (MU_THUNK_PROFILING)
   mu_time_t called_at = mu_time_now();
 #endif
-  void *result = task->fn(task->ctx, arg);
+  void *result = thunk->fn(thunk->ctx, arg);
 #if (MU_THUNK_PROFILING)
-  task->call_count += 1;
+  thunk->call_count += 1;
   mu_time_dt duration = mu_time_difference(mu_time_now(), called_at);
-  task->runtime += duration;
-  if (duration > task->max_duration) task->max_duration = duration;
+  thunk->runtime += duration;
+  if (duration > thunk->max_duration) thunk->max_duration = duration;
 #endif
   return result;
 }
@@ -105,24 +105,24 @@ void *mu_thunk_call(mu_thunk_t *thunk, void *arg) {
 #if (MU_THUNK_PROFILING)
 
 unsigned int mu_thunk_call_count(mu_thunk_t *thunk) {
-  return task->call_count;
+  return thunk->call_count;
 }
 
 mu_time_ms_dt mu_thunk_runtime_ms(mu_thunk_t *thunk) {
-  return mu_time_duration_to_ms(task->runtime);
+  return mu_time_duration_to_ms(thunk->runtime);
 }
 
 mu_time_ms_dt mu_thunk_max_duration_ms(mu_thunk_t *thunk) {
-  return mu_time_duration_to_ms(task->max_duration);
+  return mu_time_duration_to_ms(thunk->max_duration);
 }
 
 #ifdef MU_VM_FLOAT
 mu_time_s_dt mu_thunk_runtime_s(mu_thunk_t *thunk) {
-  return mu_time_duration_to_s(task->runtime);
+  return mu_time_duration_to_s(thunk->runtime);
 }
 
 mu_time_s_dt mu_thunk_max_duration_s(mu_thunk_t *thunk) {
-  return mu_time_duration_to_s(task->max_duration);
+  return mu_time_duration_to_s(thunk->max_duration);
 }
 #endif
 

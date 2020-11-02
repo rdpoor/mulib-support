@@ -32,7 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_config.h"
+#include "mu_vm_config.h"
 #include "mu_list.h"
 #include "mu_time.h"
 
