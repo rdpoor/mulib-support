@@ -47,9 +47,9 @@ static void LED_Off(void);
 // =============================================================================
 // public code
 
-mu_task_t *led_task_init(mu_task_t *led_task, led_ctx_t *led_ctx) {
+mu_thunk_t *led_task_init(mu_thunk_t *led_task, led_ctx_t *led_ctx) {
   led_ctx->state = LED_OFF;
-  mu_task_init(led_task, led_task_fn, led_ctx, "LED");
+  mu_thunk_init(led_task, led_task_fn, led_ctx, "LED");
   return led_task;
 }
 

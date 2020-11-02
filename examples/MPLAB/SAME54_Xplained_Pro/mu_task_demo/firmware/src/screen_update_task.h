@@ -40,13 +40,13 @@ extern "C" {
 #define SCREEN_UPDATE_INTERVAL_MS 2500
 
 typedef struct {
-  mu_task_t *screen_redraw_task;
+  mu_thunk_t *screen_redraw_task;
 } screen_update_ctx_t;
 
 // =============================================================================
 // declarations
 
-mu_task_t *screen_update_task_init(mu_task_t *screen_update_task, screen_update_ctx_t *screen_update_ctx, mu_task_t *screen_redraw_task);
+mu_thunk_t *screen_update_task_init(mu_thunk_t *screen_update_task, screen_update_ctx_t *screen_update_ctx, mu_thunk_t *screen_redraw_task);
 
 #ifdef __cplusplus
 }

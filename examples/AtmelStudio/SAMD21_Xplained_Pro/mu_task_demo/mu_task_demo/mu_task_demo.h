@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_TASK_DEMO_H_
-#define _MU_TASK_DEMO_H_
+#ifndef _MU_THUNK_DEMO_H_
+#define _MU_THUNK_DEMO_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,39 +38,39 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-#define MU_TASK_DEMO_VERSION "1.0.0"
+#define MU_THUNK_DEMO_VERSION "1.0.0"
 
 // =============================================================================
 // declarations
 
-void mu_task_demo_init(void);
+void mu_thunk_demo_init(void);
 
-void mu_task_demo_step(void);
+void mu_thunk_demo_step(void);
 
-void mu_task_demo_start_led_task(void);
+void mu_thunk_demo_start_led_task(void);
 
-void mu_task_demo_stop_led_task(void);
+void mu_thunk_demo_stop_led_task(void);
 
-void mu_task_demo_start_screen_trigger_task(void);
+void mu_thunk_demo_start_screen_trigger_task(void);
 
-void mu_task_demo_stop_screen_trigger_task(void);
+void mu_thunk_demo_stop_screen_trigger_task(void);
 
-void mu_task_demo_set_low_power_mode(bool low_power);
+void mu_thunk_demo_set_low_power_mode(bool low_power);
 
-bool mu_task_demo_is_low_power_mode(void);
+bool mu_thunk_demo_is_low_power_mode(void);
 
-mu_substr_t *mu_task_demo_get_screen_buffer(void);
+mu_substr_t *mu_thunk_demo_get_screen_buffer(void);
 
-mu_sched_t *mu_task_demo_get_scheduler(void);
+mu_sched_t *mu_thunk_demo_get_scheduler(void);
 
-mu_task_t *mu_task_demo_get_screen_redraw_task(void);
+mu_thunk_t *mu_thunk_demo_get_screen_redraw_task(void);
 
-size_t mu_task_demo_get_task_count(void);
+size_t mu_thunk_demo_get_task_count(void);
 
-mu_task_t *mu_task_demo_get_tasks(void);
+mu_thunk_t *mu_thunk_demo_get_tasks(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MU_TASK_DEMO_H_ */
+#endif /* #ifndef _MU_THUNK_DEMO_H_ */

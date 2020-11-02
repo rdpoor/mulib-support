@@ -43,7 +43,7 @@ extern "C" {
 // interrupt context, we need to access both the task and the scheduler.
 
 typedef struct {
-  mu_task_t *task;
+  mu_thunk_t *thunk;
   mu_sched_t *sched;
   uint8_t ch;              // one-character buffer for serial read
 } kbd_ctx_t;
@@ -51,7 +51,7 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_task_t *kbd_task_init(mu_task_t *kbd_task,
+mu_thunk_t *kbd_task_init(mu_thunk_t *kbd_task,
                          kbd_ctx_t *kbd_ctx,
                          mu_sched_t *sched);
 

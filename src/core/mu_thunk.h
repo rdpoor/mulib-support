@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_TASK_H_
-#define _MU_TASK_H_
+#ifndef _MU_THUNK_H_
+#define _MU_THUNK_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,61 +40,61 @@ extern "C" {
 // types and definitions
 
 /**
- * A `mu_task` is a function that can be called later.  It comprises a function
- * pointer (`mu_task_fn`) and a context (`void *ctx`).  When called, the
+ * A `mu_thunk` is a function that can be called later.  It comprises a function
+ * pointer (`mu_thunk_fn`) and a context (`void *ctx`).  When called, the
  * function is passed the ctx argument and a `void *` argument.
  *
  * It also includes a link field and a time field, which are actively used by
  * the scheduler.
  */
 
-// Ths signature of a mu_task function.
-typedef void *(*mu_task_fn)(void *ctx, void *arg);
+// Ths signature of a mu_thunk function.
+typedef void *(*mu_thunk_fn)(void *ctx, void *arg);
 
-typedef struct _mu_task {
+typedef struct _mu_thunk {
   mu_list_t link; // next (older) event in the schedule
   mu_time_t time; // time at which this task fires
-  mu_task_fn fn;  // function to call
+  mu_thunk_fn fn;  // function to call
   void *ctx;      // context to pass when called
-#if (MU_TASK_PROFILING)
+#if (MU_THUNK_PROFILING)
   const char *name;        // user defined task name
   unsigned int call_count; // # of times task is called
   mu_time_dt runtime;      // accumulated time spent running the task
   mu_time_dt max_duration; // max time spend running the task
 #endif
-} mu_task_t;
+} mu_thunk_t;
 
-mu_task_t *mu_task_init(mu_task_t *task,
-                        mu_task_fn fn,
+mu_thunk_t *mu_thunk_init(mu_thunk_t *thunk,
+                        mu_thunk_fn fn,
                         void *ctx,
                         const char *name);
 
-mu_list_t mu_task_link(mu_task_t *task);
+mu_list_t mu_thunk_link(mu_thunk_t *thunk);
 
-mu_time_t mu_task_get_time(mu_task_t *task);
+mu_time_t mu_thunk_get_time(mu_thunk_t *thunk);
 
-void mu_task_set_time(mu_task_t *task, mu_time_t time);
+void mu_thunk_set_time(mu_thunk_t *thunk, mu_time_t time);
 
-mu_task_fn mu_task_get_fn(mu_task_t *task);
+mu_thunk_fn mu_thunk_get_fn(mu_thunk_t *thunk);
 
-void *mu_task_get_context(mu_task_t *task);
+void *mu_thunk_get_context(mu_thunk_t *thunk);
 
-const char *mu_task_name(mu_task_t *task);
+const char *mu_thunk_name(mu_thunk_t *thunk);
 
-void *mu_task_call(mu_task_t *task, void *arg);
+void *mu_thunk_call(mu_thunk_t *thunk, void *arg);
 
-#if (MU_TASK_PROFILING)
+#if (MU_THUNK_PROFILING)
 
-unsigned int mu_task_call_count(mu_task_t *task);
+unsigned int mu_thunk_call_count(mu_thunk_t *thunk);
 
-mu_time_ms_dt mu_task_runtime_ms(mu_task_t *task);
+mu_time_ms_dt mu_thunk_runtime_ms(mu_thunk_t *thunk);
 
-mu_time_ms_dt mu_task_max_duration_ms(mu_task_t *task);
+mu_time_ms_dt mu_thunk_max_duration_ms(mu_thunk_t *thunk);
 
 #ifdef MU_VM_FLOAT
-mu_time_s_dt mu_task_runtime_s(mu_task_t *task);
+mu_time_s_dt mu_thunk_runtime_s(mu_thunk_t *thunk);
 
-mu_time_s_dt mu_task_max_duration_s(mu_task_t *task);
+mu_time_s_dt mu_thunk_max_duration_s(mu_thunk_t *thunk);
 #endif
 
 #endif
@@ -103,4 +103,4 @@ mu_time_s_dt mu_task_max_duration_s(mu_task_t *task);
 }
 #endif
 
-#endif // #ifndef _MU_TASK_H_
+#endif // #ifndef _MU_THUNK_H_

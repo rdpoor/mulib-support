@@ -28,7 +28,7 @@
 #include "kbd_task.h"
 #include "definitions.h"
 #include "mulib.h"
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -50,7 +50,7 @@ static void kbd_cb(uintptr_t context);
 // =============================================================================
 // public code
 
-mu_task_t *kbd_task_init(mu_task_t *kbd_task,
+mu_thunk_t *kbd_task_init(mu_thunk_t *kbd_task,
                          kbd_ctx_t *kbd_ctx,
                          mu_sched_t *sched) {
   // Register the kbd_cb function to be called upon an serial interrupt.
@@ -59,7 +59,7 @@ mu_task_t *kbd_task_init(mu_task_t *kbd_task,
 
   SERCOM2_USART_ReadCallbackRegister(kbd_cb, (uintptr_t)kbd_ctx);
   SERCOM2_USART_Read(&kbd_ctx->ch, 1); // start initial read
-  mu_task_init(kbd_task, kbd_task_fn, kbd_ctx, "Keyboard Task");
+  mu_thunk_init(kbd_task, kbd_task_fn, kbd_ctx, "Keyboard Task");
 
   return kbd_task;
 }
@@ -89,19 +89,19 @@ static void *kbd_task_fn(void *ctx, void *arg) {
   } else {
     switch (kbd_ctx->ch) {
     case 'b':
-      mu_task_demo_start_led_task();
+      mu_thunk_demo_start_led_task();
       break;
     case 'B':
-      mu_task_demo_stop_led_task();
+      mu_thunk_demo_stop_led_task();
       break;
     case 'd':
-      mu_task_demo_start_screen_update_task();
+      mu_thunk_demo_start_screen_update_task();
       break;
     case 'D':
-      mu_task_demo_stop_screen_update_task();
+      mu_thunk_demo_stop_screen_update_task();
       break;
     case 'p':
-      mu_task_demo_set_low_power_mode(true);
+      mu_thunk_demo_set_low_power_mode(true);
       break;
     }
   }
@@ -125,7 +125,7 @@ static void *kbd_task_fn(void *ctx, void *arg) {
 // character.
 static void kbd_cb(uintptr_t context) {
   kbd_ctx_t *kbd_ctx = (kbd_ctx_t *)context;
-  mu_task_t *task = kbd_ctx->task;
+  mu_thunk_t *thunk = kbd_ctx->task;
   mu_sched_t *sched = kbd_ctx->sched;
   mu_sched_task_from_isr(sched, task);
 }

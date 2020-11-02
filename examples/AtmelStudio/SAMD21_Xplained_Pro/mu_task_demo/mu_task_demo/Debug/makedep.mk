@@ -18,7 +18,7 @@
 
 ..\..\..\..\..\src\core\mu_substr.c
 
-..\..\..\..\..\src\core\mu_task.c
+..\..\..\..\..\src\core\mu_thunk.c
 
 ..\..\..\..\..\src\core\mu_time.c
 
@@ -90,7 +90,7 @@ idle_task.c
 
 kbd_task.c
 
-mu_task_demo.c
+mu_thunk_demo.c
 
 button_task.c
 

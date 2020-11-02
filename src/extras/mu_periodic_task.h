@@ -39,7 +39,7 @@ extern "C" {
 // types and definitions
 
 typedef struct {
-  mu_task_t *triggered_task;
+  mu_thunk_t *triggered_task;
   mu_sched_t *sched;
   mu_vm_time_ms_dt interval_ms;
 } mu_periodic_task_ctx;
@@ -47,18 +47,18 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_task_t *mu_periodic_task_init(mu_task_t *periodic_task,
+mu_thunk_t *mu_periodic_task_init(mu_thunk_t *periodic_task,
                                  mu_periodic_task_ctx *ctx,
-                                 mu_task_t *triggered_task,
+                                 mu_thunk_t *triggered_task,
                                  mu_sched_t *scheduler,
                                  mu_vm_time_ms_dt interval,
                                  const char *task_name);
 
 bool mu_periodic_task_is_active(void);
 
-void mu_periodic_task_start(mu_task_t *periodic_task);
+void mu_periodic_task_start(mu_thunk_t *periodic_task);
 
-void mu_periodic_task_stop(mu_task_t *periodic_task);
+void mu_periodic_task_stop(mu_thunk_t *periodic_task);
 
 #ifdef __cplusplus
 }

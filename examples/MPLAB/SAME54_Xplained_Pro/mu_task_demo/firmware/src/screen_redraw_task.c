@@ -27,7 +27,7 @@
 
 #include "screen_redraw_task.h"
 #include "mulib.h"
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include <definitions.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -42,8 +42,8 @@
 // local (forward) declarations
 
 static void *screen_redraw_task_fn(void *ctx, void *arg);
-static void print_task(mu_task_t *task, mu_sched_t *sched);
-static char get_task_state(mu_task_t *task, mu_sched_t *sched);
+static void print_task(mu_thunk_t *thunk, mu_sched_t *sched);
+static char get_task_state(mu_thunk_t *thunk, mu_sched_t *sched);
 
 // =============================================================================
 // local storage
@@ -51,16 +51,16 @@ static char get_task_state(mu_task_t *task, mu_sched_t *sched);
 // =============================================================================
 // public code
 
-mu_task_t *screen_redraw_task_init(mu_task_t *screen_redraw_task,
+mu_thunk_t *screen_redraw_task_init(mu_thunk_t *screen_redraw_task,
                                    screen_redraw_ctx_t *screen_redraw_ctx,
-                                   mu_task_t *tasks,
+                                   mu_thunk_t *thunks,
                                    size_t n_tasks) {
   screen_redraw_ctx->s1 = 0;
   screen_redraw_ctx->s2 = 0;
   screen_redraw_ctx->tasks = tasks;
   screen_redraw_ctx->n_tasks = n_tasks;
 
-  mu_task_init(screen_redraw_task,
+  mu_thunk_init(screen_redraw_task,
                screen_redraw_task_fn,
                screen_redraw_ctx,
                "Screen Redraw");
@@ -93,8 +93,8 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
     break;
 
     case 1:
-    printf("mu_task_demo %s: https://github.com/rdpoor/mulib\r\n\r\n",
-            MU_TASK_DEMO_VERSION);
+    printf("mu_thunk_demo %s: https://github.com/rdpoor/mulib\r\n\r\n",
+            MU_THUNK_DEMO_VERSION);
     screen_redraw_ctx->s1 += 1;
     break;
 
@@ -122,7 +122,7 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
     break;
 
     case 6:
-    if (mu_task_demo_is_low_power_mode()) {
+    if (mu_thunk_demo_is_low_power_mode()) {
       printf("Push user button to exit low-power mode.\r\n");
       done = true;
     } else {
@@ -154,16 +154,16 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
   return NULL;
 }
 
-static void print_task(mu_task_t *task, mu_sched_t *sched) {
+static void print_task(mu_thunk_t *thunk, mu_sched_t *sched) {
   printf("%14s %c %11u %11lu %11lu\r\n",
-         mu_task_name(task),
+         mu_thunk_name(task),
          get_task_state(task, sched),
-         mu_task_call_count(task),
+         mu_thunk_call_count(task),
          task->runtime,
          task->max_duration);
 }
 
-static char get_task_state(mu_task_t *task, mu_sched_t *sched) {
+static char get_task_state(mu_thunk_t *thunk, mu_sched_t *sched) {
   switch (mu_sched_get_task_status(sched, task)) {
   case MU_SCHED_TASK_STATUS_IDLE:
     return 'I';

@@ -28,7 +28,7 @@
 #include "idle_task.h"
 #include "definitions.h"
 #include "kbd_task.h"
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include "mulib.h"
 #include <stddef.h>
 
@@ -54,7 +54,7 @@ static void rtc_callback(RTC_TIMER32_INT_MASK intCause, uintptr_t context);
 // =============================================================================
 // public code
 
-mu_task_t *idle_task_init(mu_task_t *idle_task) {
+mu_thunk_t *idle_task_init(mu_thunk_t *idle_task) {
 
   // E54 XPlained Pro specific: put Ethernet interface into low-power state
   ETH_RESET_Clear();
@@ -67,7 +67,7 @@ mu_task_t *idle_task_init(mu_task_t *idle_task) {
   RTC_Timer32InterruptEnable(RTC_TIMER32_INT_MASK_CMP0);
 
   // Initialize the idle task
-  mu_task_init(idle_task, idle_task_fn, NULL, "Sleep/Idle");
+  mu_thunk_init(idle_task, idle_task_fn, NULL, "Sleep/Idle");
 
   return idle_task;
 }
@@ -111,7 +111,7 @@ static bool is_ready_to_sleep(void) {
 static void will_sleep(void) {
   // If you have any last-moment cleanup that needs to be done before the
   // processor goes to sleep, you would do it here.
-  if (mu_task_demo_is_low_power_mode()) {
+  if (mu_thunk_demo_is_low_power_mode()) {
     kbd_task_set_low_power_mode(true);
   }
 }
@@ -128,7 +128,7 @@ static void go_to_sleep(void) {
 static void did_wake(void) {
   // If you have anything that needs to be done when the processor wakes from
   // sleep, you would do it here.
-  if (mu_task_demo_is_low_power_mode()) {
+  if (mu_thunk_demo_is_low_power_mode()) {
     kbd_task_set_low_power_mode(false);
   }
   asm("nop");

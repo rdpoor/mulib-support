@@ -38,9 +38,9 @@ extern "C" {
 // types and definitions
 
 typedef struct {
-  mu_task_t *screen_redraw_task;
+  mu_thunk_t *screen_redraw_task;
   size_t n_tasks;
-  mu_task_t *tasks;
+  mu_thunk_t *thunks;
   mu_sched_t *sched;
   mu_substr_t *screen_buffer;
   uint8_t slice;
@@ -49,7 +49,7 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_task_t *screen_update_task_init(mu_task_t *screen_update_task,
+mu_thunk_t *screen_update_task_init(mu_thunk_t *screen_update_task,
                                    screen_update_ctx_t *screen_update_ctx);
 
 #ifdef __cplusplus

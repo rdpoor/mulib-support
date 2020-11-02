@@ -79,7 +79,7 @@ with c-style null-terminated strings.  Companion to mu_substr
 Companion to mu_strbuf, implements in-place string manipulation, including slicing,
 appending and searching.
 
-### `mu_task`
+### `mu_thunk`
 
 A simple implementation of deferred function calls, with a compile time option
 for profiling.  Used extensively by `mu_sched`.

@@ -49,7 +49,7 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_task_t *led_task_init(mu_task_t *led_task, led_ctx_t *led_ctx);
+mu_thunk_t *led_task_init(mu_thunk_t *led_task, led_ctx_t *led_ctx);
 
 #ifdef __cplusplus
 }

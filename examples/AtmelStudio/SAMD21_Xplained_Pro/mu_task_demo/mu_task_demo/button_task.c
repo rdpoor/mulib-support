@@ -28,7 +28,7 @@
 #include "button_task.h"
 #include "mulib.h"
 #include "mu_vm.h"
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -44,19 +44,19 @@ static void button_cb(void *arg);
 // =============================================================================
 // local storage
 
-static mu_task_t *s_button_task;
+static mu_thunk_t *s_button_task;
 static mu_sched_t *s_sched;
 
 // =============================================================================
 // public code
 
-mu_task_t *button_task_init(mu_task_t *button_task, button_ctx_t *button_ctx) {
+mu_thunk_t *button_task_init(mu_thunk_t *button_task, button_ctx_t *button_ctx) {
   // Register the button_cb function to be called upon button push.
   s_button_task = button_task;
-  s_sched = mu_task_demo_get_scheduler();
+  s_sched = mu_thunk_demo_get_scheduler();
   mu_vm_button_set_cb(button_cb, NULL);
 
-  mu_task_init(button_task, button_task_fn, NULL, "Button Pushed");
+  mu_thunk_init(button_task, button_task_fn, NULL, "Button Pushed");
   return button_task;
 }
 
@@ -66,7 +66,7 @@ mu_task_t *button_task_init(mu_task_t *button_task, button_ctx_t *button_ctx) {
 static void *button_task_fn(void *ctx, void *arg) {
   // button context (unused) is passed as first arg, scheduler as second.
   // both unused.
-  mu_task_demo_set_low_power_mode(false);
+  mu_thunk_demo_set_low_power_mode(false);
   return NULL;
 }
 

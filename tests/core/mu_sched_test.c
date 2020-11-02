@@ -26,7 +26,7 @@
  // includes
 
 #include "mu_sched.h"
-#include "mu_task.h"
+#include "mu_thunk.h"
 #include "mu_spscq.h"
 #include "mu_time.h"
 #include "mu_test_utils.h"
@@ -39,7 +39,7 @@
 #define RESCHEDULE_DELTA 42
 
 typedef struct {
-  mu_task_t task;
+  mu_thunk_t task;
   int call_count;
 } counting_task_t;
 
@@ -50,12 +50,12 @@ typedef enum {
 } reschedule_state_t;
 
 typedef struct {
-  mu_task_t task;
+  mu_thunk_t task;
   reschedule_state_t state;
 } reschedule_task_t;
 
 typedef struct {
-  mu_task_t task;
+  mu_thunk_t task;
 } idle_task_t;
 
 // =============================================================================
@@ -111,7 +111,7 @@ static idle_task_t s_idle_task;
 // public code
 
 void mu_sched_test() {
-  mu_task_t *task;
+  mu_thunk_t *thunk;
 
   setup();
 
@@ -136,8 +136,8 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 5);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_time(task) == 101);
-  ASSERT(mu_task_get_context(task) == &s_counting_task1);
+  ASSERT(mu_thunk_get_time(task) == 101);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task1);
 
   // mu_sched_step(mu_sched_t *sched)
   set_time(101);  // counting_task1 arrives...
@@ -152,8 +152,8 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 4);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_time(task) == 102);
-  ASSERT(mu_task_get_context(task) == &s_counting_task2);
+  ASSERT(mu_thunk_get_time(task) == 102);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task2);
 
   // mu_sched_step(mu_sched_t *sched)
   set_time(102);  // counting_task2 arrives...
@@ -168,8 +168,8 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 3);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_time(task) == 103);
-  ASSERT(mu_task_get_context(task) == &s_counting_task3);
+  ASSERT(mu_thunk_get_time(task) == 103);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task3);
 
   // mu_sched_step(mu_sched_t *sched)
   set_time(103);  // counting_task3 arrives...
@@ -184,8 +184,8 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 2);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_time(task) == 104);
-  ASSERT(mu_task_get_context(task) == &s_counting_task4);
+  ASSERT(mu_thunk_get_time(task) == 104);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task4);
 
   // mu_sched_step(mu_sched_t *sched)
   set_time(104);  // counting_task4 arrives...
@@ -200,8 +200,8 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 1);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_time(task) == 105);
-  ASSERT(mu_task_get_context(task) == &s_counting_task5);
+  ASSERT(mu_thunk_get_time(task) == 105);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task5);
 
   // mu_sched_step(mu_sched_t *sched)
   set_time(105);  // counting_task5 arrives...
@@ -230,7 +230,7 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 4);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_counting_task2);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task2);
 
   setup();
 
@@ -239,7 +239,7 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 4);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_counting_task1);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task1);
 
   setup();
 
@@ -248,7 +248,7 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 4);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_counting_task1);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task1);
 
   setup();
 
@@ -257,34 +257,34 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 5);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_counting_task2);
-  ASSERT(mu_task_get_time(task) == 102);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task2);
+  ASSERT(mu_thunk_get_time(task) == 102);
 
   // reschedule last task to precede last
   ASSERT(mu_sched_task_at(&s_counting_task5.task, 100) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_count() == 5);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_counting_task5);
-  ASSERT(mu_task_get_time(task) == 100);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task5);
+  ASSERT(mu_thunk_get_time(task) == 100);
 
-  // mu_sched_err_t mu_sched_task_now(mu_sched_t *sched, mu_task_t *task);
+  // mu_sched_err_t mu_sched_task_now(mu_sched_t *sched, mu_thunk_t *thunk);
   setup();
   set_time(100);
   ASSERT(mu_sched_task_now(&s_counting_task2.task) == MU_SCHED_ERR_NONE);
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_counting_task2);
-  ASSERT(mu_task_get_time(task) == 100);
+  ASSERT(mu_thunk_get_context(task) == &s_counting_task2);
+  ASSERT(mu_thunk_get_time(task) == 100);
 
-  // mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_task_t *task, mu_time_t in);
+  // mu_sched_err_t mu_sched_task_in(mu_sched_t *sched, mu_thunk_t *thunk, mu_time_t in);
   setup();
   set_time(100);
   ASSERT(mu_sched_task_in(&s_counting_task2.task, 10) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_count() == 5);
-  ASSERT(mu_task_get_time(&s_counting_task2.task) == 110);
+  ASSERT(mu_thunk_get_time(&s_counting_task2.task) == 110);
 
-  // mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task);
+  // mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_thunk_t *thunk);
   setup();
 
   set_time(100);
@@ -336,16 +336,16 @@ void mu_sched_test() {
   // s_reschedule_task1 should have been rescheduled "now"
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_reschedule_task1);
-  ASSERT(mu_task_get_time(task) == 100);
+  ASSERT(mu_thunk_get_context(task) == &s_reschedule_task1);
+  ASSERT(mu_thunk_get_time(task) == 100);
 
   set_reschedule_state(&s_reschedule_task1, RESCHEDULE_IN);
   ASSERT(mu_sched_step() == MU_SCHED_ERR_NONE);
   // s_reschedule_task1 should have been rescheduled 10 ticks from now
   task = mu_sched_get_next_task();
   ASSERT(task != NULL);
-  ASSERT(mu_task_get_context(task) == &s_reschedule_task1);
-  ASSERT(mu_task_get_time(task) == 110);
+  ASSERT(mu_thunk_get_context(task) == &s_reschedule_task1);
+  ASSERT(mu_thunk_get_time(task) == 110);
 
   set_reschedule_state(&s_reschedule_task1, DONT_RESCHEDULE);
   set_time(110);
@@ -354,7 +354,7 @@ void mu_sched_test() {
   task = mu_sched_get_next_task();
   ASSERT(task == NULL);
 
-  // mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched, mu_task_t *task);
+  // mu_sched_task_status_t mu_sched_get_task_status(mu_sched_t *sched, mu_thunk_t *thunk);
   setup();
   set_time(100);
   ASSERT(mu_sched_get_task_status(&s_counting_task1.task) == MU_SCHED_TASK_STATUS_SCHEDULED);
@@ -372,7 +372,7 @@ void mu_sched_test() {
 // Counting Task
 
 static counting_task_t *counting_task_init(counting_task_t *counting_task, char *name) {
-  mu_task_init(&counting_task->task, counting_task_fn, counting_task, name);
+  mu_thunk_init(&counting_task->task, counting_task_fn, counting_task, name);
   reset_call_count(counting_task);
   return counting_task;
 }
@@ -402,7 +402,7 @@ static void reset_call_count(counting_task_t *counting_task) {
 // Reschedule Task
 
 static reschedule_task_t *reschedule_task_init(reschedule_task_t *reschedule_task, char *name) {
-  mu_task_init(&reschedule_task->task, reschedule_task_fn, reschedule_task, name);
+  mu_thunk_init(&reschedule_task->task, reschedule_task_fn, reschedule_task, name);
   reschedule_task->state = RESCHEDULE_NOW;
   return reschedule_task;
 }
@@ -432,7 +432,7 @@ static void set_reschedule_state(reschedule_task_t *task, reschedule_state_t sta
 }
 
 static idle_task_t *idle_task_init(idle_task_t *idle_task, char *name) {
-  mu_task_init(&idle_task->task, idle_task_fn, idle_task, name);
+  mu_thunk_init(&idle_task->task, idle_task_fn, idle_task, name);
   return idle_task;
 }
 

@@ -28,7 +28,7 @@
 #include "kbd_task.h"
 #include "definitions.h"
 #include "mulib.h"
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -49,16 +49,16 @@ static void kbd_cb(void *context);
 // =============================================================================
 // public code
 
-mu_task_t *kbd_task_init(mu_task_t *kbd_task, kbd_ctx_t *kbd_ctx) {
+mu_thunk_t *kbd_task_init(mu_thunk_t *kbd_task, kbd_ctx_t *kbd_ctx) {
   // The keyboard callback function takes one user-supplied argument.  But in
   // the callback, we need a reference to both the scheduler and to the task,
   // so we store them both in the kbd_ctx structure and pass that as an argument
   // to mu_vm_serial_set_read_cb()
   kbd_ctx->task = kbd_task;
-  kbd_ctx->sched = mu_task_demo_get_scheduler();
+  kbd_ctx->sched = mu_thunk_demo_get_scheduler();
 
   // initialize the kbd_task object
-  mu_task_init(kbd_task, kbd_task_fn, kbd_ctx, "Keyboard Task");
+  mu_thunk_init(kbd_task, kbd_task_fn, kbd_ctx, "Keyboard Task");
 
   // establish keyboard read interrupt callback.
   mu_vm_serial_set_read_cb(kbd_cb, kbd_ctx);
@@ -92,19 +92,19 @@ static void *kbd_task_fn(void *ctx, void *arg) {
   uint8_t ch = mu_vm_serial_read();
   switch (ch) {
   case 'b':
-    mu_task_demo_start_led_task();
+    mu_thunk_demo_start_led_task();
     break;
   case 'B':
-    mu_task_demo_stop_led_task();
+    mu_thunk_demo_stop_led_task();
     break;
   case 'd':
-    mu_task_demo_start_screen_trigger_task();
+    mu_thunk_demo_start_screen_trigger_task();
     break;
   case 'D':
-    mu_task_demo_stop_screen_trigger_task();
+    mu_thunk_demo_stop_screen_trigger_task();
     break;
   case 'p':
-    mu_task_demo_set_low_power_mode(true);
+    mu_thunk_demo_set_low_power_mode(true);
     break;
   }
   return NULL;
@@ -115,7 +115,7 @@ static void *kbd_task_fn(void *ctx, void *arg) {
 // interrupt level.
 static void kbd_cb(void *context) {
   kbd_ctx_t *kbd_ctx = (kbd_ctx_t *)context;
-  mu_task_t *task = kbd_ctx->task;
+  mu_thunk_t *thunk = kbd_ctx->task;
   mu_sched_t *sched = kbd_ctx->sched;
   mu_sched_task_from_isr(sched, task);
 }

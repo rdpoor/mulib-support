@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=mu_task_demo2.X
+PROJECTNAME=mu_thunk_demo2.X
 
 # Active Configuration
 DEFAULTCONF=same54_xplained_pro

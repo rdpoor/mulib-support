@@ -136,7 +136,7 @@
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_spscq.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_strbuf.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_substr.c</itemPath>
-          <itemPath>C:/Users/r/Projects/mulib/src/core/mu_task.c</itemPath>
+          <itemPath>C:/Users/r/Projects/mulib/src/core/mu_thunk.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_time.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_version.c</itemPath>
         </logicalFolder>
@@ -199,22 +199,22 @@
           <itemPath>../src/config/same54_xplained_pro/libc_syscalls.c</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/button_task.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/button_task.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/idle_task.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/idle_task.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/kbd_task.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/kbd_task.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/led_task.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/led_task.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/mu_vm.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/mu_vm.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/screen_redraw_task.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/screen_redraw_task.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/screen_update_task.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/screen_update_task.h</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/mu_task_demo.c</itemPath>
-      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_task_demo/firmware/src/mu_task_demo.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/button_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/button_task.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/idle_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/idle_task.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/kbd_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/kbd_task.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/led_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/led_task.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/mu_vm.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/mu_vm.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/screen_redraw_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/screen_redraw_task.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/screen_update_task.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/screen_update_task.h</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/mu_thunk_demo.c</itemPath>
+      <itemPath>C:/Users/r/Projects/mulib/examples/MPLAB/SAME54_Xplained_Pro/mu_thunk_demo/firmware/src/mu_thunk_demo.h</itemPath>
       <itemPath>../src/main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"

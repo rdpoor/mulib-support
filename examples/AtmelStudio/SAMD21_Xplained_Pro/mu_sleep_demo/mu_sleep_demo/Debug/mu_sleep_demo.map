@@ -693,47 +693,47 @@ Discarded input sections
  .debug_frame   0x00000000      0x204 mulib/core/mu_substr.o
  .ARM.attributes
                 0x00000000       0x32 mulib/core/mu_substr.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .group         0x00000000        0x8 mulib/core/mu_task.o
- .text          0x00000000        0x0 mulib/core/mu_task.o
- .data          0x00000000        0x0 mulib/core/mu_task.o
- .bss           0x00000000        0x0 mulib/core/mu_task.o
- .text.mu_task_link
-                0x00000000        0x4 mulib/core/mu_task.o
- .text.mu_task_get_fn
-                0x00000000        0x4 mulib/core/mu_task.o
- .text.mu_task_get_context
-                0x00000000        0x4 mulib/core/mu_task.o
- .text.mu_task_name
-                0x00000000        0x4 mulib/core/mu_task.o
- .text.mu_task_call_count
-                0x00000000        0x4 mulib/core/mu_task.o
- .text.mu_task_runtime_ms
-                0x00000000       0x10 mulib/core/mu_task.o
- .text.mu_task_max_duration_ms
-                0x00000000       0x10 mulib/core/mu_task.o
- .debug_macro   0x00000000      0x89e mulib/core/mu_task.o
- .debug_macro   0x00000000       0x16 mulib/core/mu_task.o
- .debug_macro   0x00000000       0x22 mulib/core/mu_task.o
- .debug_macro   0x00000000      0x16d mulib/core/mu_task.o
- .debug_macro   0x00000000       0x16 mulib/core/mu_task.o
- .debug_macro   0x00000000       0x22 mulib/core/mu_task.o
- .debug_macro   0x00000000       0x87 mulib/core/mu_task.o
- .debug_macro   0x00000000       0x51 mulib/core/mu_task.o
- .debug_macro   0x00000000       0xef mulib/core/mu_task.o
- .debug_macro   0x00000000       0x6a mulib/core/mu_task.o
- .debug_macro   0x00000000      0x1df mulib/core/mu_task.o
- .debug_macro   0x00000000       0x17 mulib/core/mu_task.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .group         0x00000000        0x8 mulib/core/mu_thunk.o
+ .text          0x00000000        0x0 mulib/core/mu_thunk.o
+ .data          0x00000000        0x0 mulib/core/mu_thunk.o
+ .bss           0x00000000        0x0 mulib/core/mu_thunk.o
+ .text.mu_thunk_link
+                0x00000000        0x4 mulib/core/mu_thunk.o
+ .text.mu_thunk_get_fn
+                0x00000000        0x4 mulib/core/mu_thunk.o
+ .text.mu_thunk_get_context
+                0x00000000        0x4 mulib/core/mu_thunk.o
+ .text.mu_thunk_name
+                0x00000000        0x4 mulib/core/mu_thunk.o
+ .text.mu_thunk_call_count
+                0x00000000        0x4 mulib/core/mu_thunk.o
+ .text.mu_thunk_runtime_ms
+                0x00000000       0x10 mulib/core/mu_thunk.o
+ .text.mu_thunk_max_duration_ms
+                0x00000000       0x10 mulib/core/mu_thunk.o
+ .debug_macro   0x00000000      0x89e mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x16 mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x22 mulib/core/mu_thunk.o
+ .debug_macro   0x00000000      0x16d mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x16 mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x22 mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x87 mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x51 mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0xef mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x6a mulib/core/mu_thunk.o
+ .debug_macro   0x00000000      0x1df mulib/core/mu_thunk.o
+ .debug_macro   0x00000000       0x17 mulib/core/mu_thunk.o
  .group         0x00000000        0x8 mulib/core/mu_time.o
  .group         0x00000000        0x8 mulib/core/mu_time.o
  .group         0x00000000        0x8 mulib/core/mu_time.o
@@ -8709,7 +8709,7 @@ LOAD mulib/core/mu_sched.o
 LOAD mulib/core/mu_spscq.o
 LOAD mulib/core/mu_strbuf.o
 LOAD mulib/core/mu_substr.o
-LOAD mulib/core/mu_task.o
+LOAD mulib/core/mu_thunk.o
 LOAD mulib/core/mu_time.o
 LOAD mulib/core/mu_vect.o
 LOAD mulib/core/mu_version.o
@@ -8840,18 +8840,18 @@ LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/arm/arm-gnu-toolchain/bin
  .text.mu_spscq_get
                 0x00000400       0x2a mulib/core/mu_spscq.o
                 0x00000400                mu_spscq_get
- .text.mu_task_init
-                0x0000042a       0x16 mulib/core/mu_task.o
-                0x0000042a                mu_task_init
- .text.mu_task_get_time
-                0x00000440        0x4 mulib/core/mu_task.o
-                0x00000440                mu_task_get_time
- .text.mu_task_set_time
-                0x00000444        0x4 mulib/core/mu_task.o
-                0x00000444                mu_task_set_time
- .text.mu_task_call
-                0x00000448       0x40 mulib/core/mu_task.o
-                0x00000448                mu_task_call
+ .text.mu_thunk_init
+                0x0000042a       0x16 mulib/core/mu_thunk.o
+                0x0000042a                mu_thunk_init
+ .text.mu_thunk_get_time
+                0x00000440        0x4 mulib/core/mu_thunk.o
+                0x00000440                mu_thunk_get_time
+ .text.mu_thunk_set_time
+                0x00000444        0x4 mulib/core/mu_thunk.o
+                0x00000444                mu_thunk_set_time
+ .text.mu_thunk_call
+                0x00000448       0x40 mulib/core/mu_thunk.o
+                0x00000448                mu_thunk_call
  .text.mu_time_offset
                 0x00000488        0xc mulib/core/mu_time.o
                 0x00000488                mu_time_offset
@@ -9458,7 +9458,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .ARM.attributes
                 0x000000ae       0x32 mulib/core/mu_spscq.o
  .ARM.attributes
-                0x000000e0       0x32 mulib/core/mu_task.o
+                0x000000e0       0x32 mulib/core/mu_thunk.o
  .ARM.attributes
                 0x00000112       0x32 mulib/core/mu_time.o
  .ARM.attributes
@@ -9583,7 +9583,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
                                  0x5a (size before relaxing)
  .comment       0x00000059       0x5a mulib/core/mu_sched.o
  .comment       0x00000059       0x5a mulib/core/mu_spscq.o
- .comment       0x00000059       0x5a mulib/core/mu_task.o
+ .comment       0x00000059       0x5a mulib/core/mu_thunk.o
  .comment       0x00000059       0x5a mulib/core/mu_time.o
  .comment       0x00000059       0x5a mu_vm.o
  .comment       0x00000059       0x5a atmel_start.o
@@ -9616,7 +9616,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_info    0x00000000      0x4d4 mulib/core/mu_list.o
  .debug_info    0x000004d4     0x17c5 mulib/core/mu_sched.o
  .debug_info    0x00001c99      0x319 mulib/core/mu_spscq.o
- .debug_info    0x00001fb2      0x49a mulib/core/mu_task.o
+ .debug_info    0x00001fb2      0x49a mulib/core/mu_thunk.o
  .debug_info    0x0000244c      0x39b mulib/core/mu_time.o
  .debug_info    0x000027e7     0x5664 mu_vm.o
  .debug_info    0x00007e4b      0x4bf atmel_start.o
@@ -9649,7 +9649,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_abbrev  0x00000000      0x1d8 mulib/core/mu_list.o
  .debug_abbrev  0x000001d8      0x336 mulib/core/mu_sched.o
  .debug_abbrev  0x0000050e      0x15f mulib/core/mu_spscq.o
- .debug_abbrev  0x0000066d      0x16e mulib/core/mu_task.o
+ .debug_abbrev  0x0000066d      0x16e mulib/core/mu_thunk.o
  .debug_abbrev  0x000007db       0xcd mulib/core/mu_time.o
  .debug_abbrev  0x000008a8      0x59e mu_vm.o
  .debug_abbrev  0x00000e46       0xe3 atmel_start.o
@@ -9682,7 +9682,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_loc     0x00000000      0x4ba mulib/core/mu_list.o
  .debug_loc     0x000004ba      0x95f mulib/core/mu_sched.o
  .debug_loc     0x00000e19      0x1df mulib/core/mu_spscq.o
- .debug_loc     0x00000ff8      0x23a mulib/core/mu_task.o
+ .debug_loc     0x00000ff8      0x23a mulib/core/mu_thunk.o
  .debug_loc     0x00001232      0x2ad mulib/core/mu_time.o
  .debug_loc     0x000014df      0x920 mu_vm.o
  .debug_loc     0x00001dff       0x20 atmel_start.o
@@ -9718,7 +9718,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_aranges
                 0x00000168       0x58 mulib/core/mu_spscq.o
  .debug_aranges
-                0x000001c0       0x70 mulib/core/mu_task.o
+                0x000001c0       0x70 mulib/core/mu_thunk.o
  .debug_aranges
                 0x00000230       0x60 mulib/core/mu_time.o
  .debug_aranges
@@ -9778,7 +9778,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_ranges  0x00000000       0x78 mulib/core/mu_list.o
  .debug_ranges  0x00000078       0xe8 mulib/core/mu_sched.o
  .debug_ranges  0x00000160       0x48 mulib/core/mu_spscq.o
- .debug_ranges  0x000001a8       0x60 mulib/core/mu_task.o
+ .debug_ranges  0x000001a8       0x60 mulib/core/mu_thunk.o
  .debug_ranges  0x00000208       0x50 mulib/core/mu_time.o
  .debug_ranges  0x00000258      0x148 mu_vm.o
  .debug_ranges  0x000003a0       0x10 atmel_start.o
@@ -9814,7 +9814,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_macro   0x000001cf       0x16 mulib/core/mu_sched.o
  .debug_macro   0x000001e5       0x17 mulib/core/mu_sched.o
  .debug_macro   0x000001fc       0x85 mulib/core/mu_spscq.o
- .debug_macro   0x00000281       0xae mulib/core/mu_task.o
+ .debug_macro   0x00000281       0xae mulib/core/mu_thunk.o
  .debug_macro   0x0000032f       0x7f mulib/core/mu_time.o
  .debug_macro   0x000003ae      0x644 mu_vm.o
  .debug_macro   0x000009f2       0x3f mu_vm.o
@@ -9972,7 +9972,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_line    0x00000000      0x214 mulib/core/mu_list.o
  .debug_line    0x00000214      0x562 mulib/core/mu_sched.o
  .debug_line    0x00000776      0x313 mulib/core/mu_spscq.o
- .debug_line    0x00000a89      0x374 mulib/core/mu_task.o
+ .debug_line    0x00000a89      0x374 mulib/core/mu_thunk.o
  .debug_line    0x00000dfd      0x303 mulib/core/mu_time.o
  .debug_line    0x00001100      0xef6 mu_vm.o
  .debug_line    0x00001ff6      0xad2 atmel_start.o
@@ -10008,7 +10008,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
                                0x6b2d (size before relaxing)
  .debug_str     0x00006905       0xb1 mulib/core/mu_spscq.o
                                0x3877 (size before relaxing)
- .debug_str     0x000069b6       0xff mulib/core/mu_task.o
+ .debug_str     0x000069b6       0xff mulib/core/mu_thunk.o
                                0x3a5e (size before relaxing)
  .debug_str     0x00006ab5       0xe8 mulib/core/mu_time.o
                                0x35ed (size before relaxing)
@@ -10069,7 +10069,7 @@ OUTPUT(mu_sleep_demo.elf elf32-littlearm)
  .debug_frame   0x00000000      0x130 mulib/core/mu_list.o
  .debug_frame   0x00000130      0x23c mulib/core/mu_sched.o
  .debug_frame   0x0000036c       0xa4 mulib/core/mu_spscq.o
- .debug_frame   0x00000410       0xe8 mulib/core/mu_task.o
+ .debug_frame   0x00000410       0xe8 mulib/core/mu_thunk.o
  .debug_frame   0x000004f8       0xe0 mulib/core/mu_time.o
  .debug_frame   0x000005d8      0x268 mu_vm.o
  .debug_frame   0x00000840       0x28 atmel_start.o

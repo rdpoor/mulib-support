@@ -40,16 +40,16 @@ extern "C" {
 typedef struct {
   int s1;             // major state (steps through lines to display)
   int s2;             // minor state (steps through tasks to display)
-  mu_task_t *tasks;
+  mu_thunk_t *thunks;
   size_t n_tasks;
 } screen_redraw_ctx_t;
 
 // =============================================================================
 // declarations
 
-mu_task_t *screen_redraw_task_init(mu_task_t *screen_redraw_task,
+mu_thunk_t *screen_redraw_task_init(mu_thunk_t *screen_redraw_task,
                                    screen_redraw_ctx_t *screen_redraw_ctx,
-                                   mu_task_t *tasks,
+                                   mu_thunk_t *thunks,
                                    size_t n_tasks);
 
 #ifdef __cplusplus

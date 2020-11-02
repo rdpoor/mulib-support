@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include "button_task.h"
 #include "idle_task.h"
 #include "kbd_task.h"
@@ -74,7 +74,7 @@ static mu_spscq_item_t s_isr_queue_items[ISR_Q_CAPACITY];
 // point of this demo is to continually display the state of each task, so
 // an array makes it easy to iterate over all tasks.
 
-static mu_task_t s_tasks[TASK_COUNT];
+static mu_thunk_t s_tasks[TASK_COUNT];
 
 static led_ctx_t s_led_ctx;
 static button_ctx_t s_button_ctx;
@@ -92,13 +92,13 @@ static bool s_is_low_power_mode;
 // =============================================================================
 // public code
 
-void mu_task_demo_init() {
+void mu_thunk_demo_init() {
   // initialize the port-specific interface
   mu_vm_init();
 
   printf("\r\n# ===========\n");
-  printf("# mu_task_demo %s: see https://github.com/rdpoor/mulib\r\n",
-         MU_TASK_DEMO_VERSION);
+  printf("# mu_thunk_demo %s: see https://github.com/rdpoor/mulib\r\n",
+         MU_THUNK_DEMO_VERSION);
 
   // set up the isr queue and the scheduler
   mu_spscq_init(&s_isr_queue, s_isr_queue_items, ISR_Q_CAPACITY);
@@ -124,63 +124,63 @@ void mu_task_demo_init() {
   mu_sched_set_idle_task(&s_sched, &s_tasks[IDLE_TASK_IDX]);
 
   // start the LED and Screen Trigger tasks
-  mu_task_demo_start_led_task();
-  mu_task_demo_start_screen_trigger_task();
+  mu_thunk_demo_start_led_task();
+  mu_thunk_demo_start_screen_trigger_task();
 
-  mu_task_demo_set_low_power_mode(false);  // start in full power mode
+  mu_thunk_demo_set_low_power_mode(false);  // start in full power mode
 
   // initialize the screen buffer
   mu_strbuf_init(&s_screen_str, (mu_strbuf_data_t *)s_screen_buf, SCREEN_BUFFER_SIZE);
   mu_substr_init(&s_screen_buffer, &s_screen_str);
 }
 
-void mu_task_demo_step() {
+void mu_thunk_demo_step() {
   // called repeatedly from main(): run the scheduler
   mu_sched_step(&s_sched);
 }
 
-void mu_task_demo_start_led_task(void) {
-  mu_task_demo_stop_led_task();  // stop if already running
+void mu_thunk_demo_start_led_task(void) {
+  mu_thunk_demo_stop_led_task();  // stop if already running
   mu_sched_task_now(&s_sched, &s_tasks[LED_TASK_IDX]);
 }
 
-void mu_task_demo_stop_led_task(void) {
+void mu_thunk_demo_stop_led_task(void) {
   mu_sched_remove_task(&s_sched, &s_tasks[LED_TASK_IDX]);
 }
 
-void mu_task_demo_start_screen_trigger_task(void) {
+void mu_thunk_demo_start_screen_trigger_task(void) {
   mu_periodic_task_start(&s_tasks[SCREEN_TRIGGER_TASK_IDX]);
 }
 
-void mu_task_demo_stop_screen_trigger_task(void) {
+void mu_thunk_demo_stop_screen_trigger_task(void) {
   mu_periodic_task_stop(&s_tasks[SCREEN_TRIGGER_TASK_IDX]);
 }
 
-void mu_task_demo_set_low_power_mode(bool low_power) {
+void mu_thunk_demo_set_low_power_mode(bool low_power) {
   s_is_low_power_mode = low_power;
-  mu_task_demo_start_screen_trigger_task(); // force immediate redraw
+  mu_thunk_demo_start_screen_trigger_task(); // force immediate redraw
 }
 
-bool mu_task_demo_is_low_power_mode(void) {
+bool mu_thunk_demo_is_low_power_mode(void) {
   return s_is_low_power_mode;
 }
 
-mu_substr_t *mu_task_demo_get_screen_buffer(void) {
+mu_substr_t *mu_thunk_demo_get_screen_buffer(void) {
   return &s_screen_buffer;
 }
 
-mu_sched_t *mu_task_demo_get_scheduler(void) {
+mu_sched_t *mu_thunk_demo_get_scheduler(void) {
   return &s_sched;
 }
 
-mu_task_t *mu_task_demo_get_screen_redraw_task(void) {
+mu_thunk_t *mu_thunk_demo_get_screen_redraw_task(void) {
   return &s_tasks[SCREEN_REDRAW_TASK_IDX];
 }
 
-size_t mu_task_demo_get_task_count(void) {
+size_t mu_thunk_demo_get_task_count(void) {
   return TASK_COUNT;
 }
 
-mu_task_t *mu_task_demo_get_tasks(void) {
+mu_thunk_t *mu_thunk_demo_get_tasks(void) {
   return s_tasks;
 }

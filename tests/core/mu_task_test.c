@@ -26,7 +26,7 @@
 // includes
 
 #include "mu_time.h"
-#include "mu_task.h"
+#include "mu_thunk.h"
 #include "mu_test_utils.h"
 #include <string.h>
 
@@ -50,22 +50,22 @@ void *task_fn2(void *self, void *arg) {
 // =============================================================================
 // public code
 
-void mu_task_test() {
-  mu_task_t t1;
-  mu_task_t t2;
+void mu_thunk_test() {
+  mu_thunk_t t1;
+  mu_thunk_t t2;
 
-  ASSERT(mu_task_init(&t1, task_fn1, &t1, "Task1") == &t1);
-#if (MU_TASK_PROFILING)
-  ASSERT(strcmp(mu_task_name(&t1), "Task1") == 0);
+  ASSERT(mu_thunk_init(&t1, task_fn1, &t1, "Task1") == &t1);
+#if (MU_THUNK_PROFILING)
+  ASSERT(strcmp(mu_thunk_name(&t1), "Task1") == 0);
 #endif
-  ASSERT(mu_task_init(&t2, task_fn2, NULL, "Task2") == &t2);
+  ASSERT(mu_thunk_init(&t2, task_fn2, NULL, "Task2") == &t2);
 
-  ASSERT(mu_task_call(&t1, &t2) == &t1);  // task_fn1 returns self (&t1)
-  ASSERT(mu_task_call(&t2, &t1) == &t1);  // task_fn2 return arg (&t1)
+  ASSERT(mu_thunk_call(&t1, &t2) == &t1);  // task_fn1 returns self (&t1)
+  ASSERT(mu_thunk_call(&t2, &t1) == &t1);  // task_fn2 return arg (&t1)
 
-#if (MU_TASK_PROFILING)
+#if (MU_THUNK_PROFILING)
   ASSERT((&t1) == 1);
-  ASSERT(mu_task_call_count(&t2) == 1);
+  ASSERT(mu_thunk_call_count(&t2) == 1);
 #endif
 
 }

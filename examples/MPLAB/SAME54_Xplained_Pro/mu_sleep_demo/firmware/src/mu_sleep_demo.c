@@ -59,15 +59,15 @@ static mu_spscq_t s_isr_queue;
 static mu_spscq_item_t s_isr_queue_items[ISR_Q_CAPACITY];
 
 // the LED task
-static mu_task_t s_led_task;
+static mu_thunk_t s_led_task;
 static led_ctx_t s_led_ctx;
 
 // the Button task
-static mu_task_t s_button_task;
+static mu_thunk_t s_button_task;
 static button_ctx_t s_button_ctx;
 
 // the Idle task.
-static mu_task_t s_idle_task;
+static mu_thunk_t s_idle_task;
 // ... no context required
 
 // =============================================================================

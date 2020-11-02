@@ -454,13 +454,13 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_substr.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_task.c">
+    <Compile Include="..\..\..\..\..\src\core\mu_thunk.c">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_task.c</Link>
+      <Link>mulib\core\mu_thunk.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\src\core\mu_task.h">
+    <Compile Include="..\..\..\..\..\src\core\mu_thunk.h">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_task.h</Link>
+      <Link>mulib\core\mu_thunk.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\..\src\core\mu_time.c">
       <SubType>compile</SubType>

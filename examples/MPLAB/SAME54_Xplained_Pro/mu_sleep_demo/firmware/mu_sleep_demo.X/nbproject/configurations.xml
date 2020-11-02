@@ -136,7 +136,7 @@
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_spscq.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_strbuf.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_substr.c</itemPath>
-          <itemPath>C:/Users/r/Projects/mulib/src/core/mu_task.c</itemPath>
+          <itemPath>C:/Users/r/Projects/mulib/src/core/mu_thunk.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_time.c</itemPath>
           <itemPath>C:/Users/r/Projects/mulib/src/core/mu_version.c</itemPath>
         </logicalFolder>

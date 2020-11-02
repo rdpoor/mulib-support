@@ -26,7 +26,6 @@
 // includes
 
 #include "mu_list.h"
-#include "mu_types.h"
 #include <stdbool.h>
 #include <stddef.h>
 

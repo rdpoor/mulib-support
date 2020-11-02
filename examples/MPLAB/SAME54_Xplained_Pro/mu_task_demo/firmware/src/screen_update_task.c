@@ -44,12 +44,12 @@ static void *screen_update_task_fn(void *ctx, void *arg);
 // =============================================================================
 // public code
 
-mu_task_t *screen_update_task_init(mu_task_t *screen_update_task, screen_update_ctx_t *screen_update_ctx, mu_task_t *screen_redraw_task) {
+mu_thunk_t *screen_update_task_init(mu_thunk_t *screen_update_task, screen_update_ctx_t *screen_update_ctx, mu_thunk_t *screen_redraw_task) {
   // capture a pointer to the screen redraw task, needed in screen_update_task_fn
   screen_update_ctx->screen_redraw_task = screen_redraw_task;
 
   // initialize the screen update task
-  mu_task_init(screen_update_task, screen_update_task_fn, screen_update_ctx, "Screen Update");
+  mu_thunk_init(screen_update_task, screen_update_task_fn, screen_update_ctx, "Screen Update");
   return screen_update_task;
 }
 

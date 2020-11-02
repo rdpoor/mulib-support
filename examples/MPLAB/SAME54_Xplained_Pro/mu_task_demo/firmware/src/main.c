@@ -23,7 +23,7 @@
 // *****************************************************************************
 
 #include "definitions.h" // SYS function prototypes
-#include "mu_task_demo.h"   // mu_task_demo prototypes
+#include "mu_thunk_demo.h"   // mu_thunk_demo prototypes
 #include <stdbool.h>     // Defines true
 #include <stddef.h>      // Defines NULL
 #include <stdlib.h>      // Defines EXIT_FAILURE
@@ -36,11 +36,11 @@
 
 int main(void) {
   SYS_Initialize(NULL); // initialize MPLAB Harmony modules
-  mu_task_demo_init();     // initialize mu_task_demo application
+  mu_thunk_demo_init();     // initialize mu_thunk_demo application
 
   while (true) {
     SYS_Tasks();      // update MPLAB Harmony module state machines
-    mu_task_demo_step(); // update mu_task_demo application state
+    mu_thunk_demo_step(); // update mu_thunk_demo application state
   }
 
   /* Execution should not come here during normal operation */

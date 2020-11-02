@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <executable name="dist/same54_xplained_pro/debug/mu_task_demo2.X.debug.elf">
+  <executable name="dist/same54_xplained_pro/debug/mu_thunk_demo2.X.debug.elf">
   </executable>
 </project>

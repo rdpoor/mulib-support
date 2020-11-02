@@ -43,13 +43,13 @@ static void button_cb(void);
 // =============================================================================
 // local storage
 
-static mu_task_t *s_button_task;
+static mu_thunk_t *s_button_task;
 static mu_sched_t *s_sched;
 
 // =============================================================================
 // public code
 
-mu_task_t *button_task_init(mu_task_t *button_task,
+mu_thunk_t *button_task_init(mu_thunk_t *button_task,
                             button_ctx_t *button_ctx,
                             mu_sched_t *sched) {
   // Register the button_cb function to be called upon an EIC interrupt on
@@ -59,7 +59,7 @@ mu_task_t *button_task_init(mu_task_t *button_task,
   s_sched = sched;
   ext_irq_register(PIN_PA15, button_cb);
 
-  mu_task_init(button_task, button_task_fn, NULL, "Button Interrupt");
+  mu_thunk_init(button_task, button_task_fn, NULL, "Button Interrupt");
   return button_task;
 }
 

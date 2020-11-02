@@ -44,10 +44,10 @@ static void *led_task_fn(void *self, void *arg);
 // =============================================================================
 // public code
 
-mu_task_t *led_task_init(mu_task_t *led_task, led_ctx_t *led_ctx) {
+mu_thunk_t *led_task_init(mu_thunk_t *led_task, led_ctx_t *led_ctx) {
   mu_vm_led_set(false);
   led_ctx->state = LED_OFF;
-  mu_task_init(led_task, led_task_fn, led_ctx, "LED Task");
+  mu_thunk_init(led_task, led_task_fn, led_ctx, "LED Task");
   return led_task;
 }
 

@@ -30,7 +30,7 @@
 #include <atmel_start.h>
 #include "mu_vm.h"
 #include <stddef.h>
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 
 // =============================================================================
 // local types and definitions
@@ -49,9 +49,9 @@ static void did_wake(void);
 // =============================================================================
 // public code
 
-mu_task_t *idle_task_init(mu_task_t *idle_task, mu_sched_t *sched) {
+mu_thunk_t *idle_task_init(mu_thunk_t *idle_task, mu_sched_t *sched) {
   // Initialize the idle task and install as scheduler's idle task
-  mu_task_init(idle_task, idle_task_fn, NULL, "Sleeping Idle");
+  mu_thunk_init(idle_task, idle_task_fn, NULL, "Sleeping Idle");
   mu_sched_set_idle_task(sched, idle_task);
 
   return idle_task;
@@ -64,14 +64,14 @@ static void *idle_task_fn(void *ctx, void *arg) {
   // ctx is unused in idle task
   // scheduler is passed as the second argument.
   mu_sched_t *sched = (mu_sched_t *)arg;
-  mu_task_t *next_task = mu_sched_get_next_task(sched);
+  mu_thunk_t *next_task = mu_sched_get_next_task(sched);
 
   if (is_ready_to_sleep()) {
     will_sleep();
     if (next_task) {
       // There is a future task: sleep until it arrives or skip sleeping if
       // the event is imminent.
-      mu_vm_sleep_until(mu_task_get_time(next_task));
+      mu_vm_sleep_until(mu_thunk_get_time(next_task));
     } else {
       // no future events are scheduled -- only an interrupt will wake us
       mu_vm_sleep();
@@ -87,7 +87,7 @@ static bool is_ready_to_sleep(void) {
   // and return false to inhibit going to sleep.
 
   // In this case, only allow sleep if in low power mode.
-  return mu_task_demo_is_low_power_mode();
+  return mu_thunk_demo_is_low_power_mode();
 }
 
 static void will_sleep(void) {

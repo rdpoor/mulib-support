@@ -26,7 +26,7 @@
 // includes
 
 #include "screen_update_task.h"
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include "mulib.h"
 #include <stddef.h>
 
@@ -41,8 +41,8 @@
 
 static void *screen_update_task_fn(void *ctx, void *arg);
 static void repaint_screen(screen_update_ctx_t *ctx, uint8_t slice);
-static void repaint_task(screen_update_ctx_t *ctx, mu_task_t *task);
-static char get_task_state(mu_task_t *task, mu_sched_t *sched);
+static void repaint_task(screen_update_ctx_t *ctx, mu_thunk_t *thunk);
+static char get_task_state(mu_thunk_t *thunk, mu_sched_t *sched);
 
 // =============================================================================
 // local storage
@@ -50,18 +50,18 @@ static char get_task_state(mu_task_t *task, mu_sched_t *sched);
 // =============================================================================
 // public code
 
-mu_task_t *screen_update_task_init(mu_task_t *screen_update_task,
+mu_thunk_t *screen_update_task_init(mu_thunk_t *screen_update_task,
                                    screen_update_ctx_t *screen_update_ctx) {
 
-  screen_update_ctx->screen_redraw_task = mu_task_demo_get_screen_redraw_task();
-  screen_update_ctx->n_tasks = mu_task_demo_get_task_count();
-  screen_update_ctx->tasks = mu_task_demo_get_tasks();
-  screen_update_ctx->sched = mu_task_demo_get_scheduler();
-  screen_update_ctx->screen_buffer = mu_task_demo_get_screen_buffer();
+  screen_update_ctx->screen_redraw_task = mu_thunk_demo_get_screen_redraw_task();
+  screen_update_ctx->n_tasks = mu_thunk_demo_get_task_count();
+  screen_update_ctx->tasks = mu_thunk_demo_get_tasks();
+  screen_update_ctx->sched = mu_thunk_demo_get_scheduler();
+  screen_update_ctx->screen_buffer = mu_thunk_demo_get_screen_buffer();
   screen_update_ctx->slice = 0;
 
   // initialize the screen update task
-  mu_task_init(screen_update_task,
+  mu_thunk_init(screen_update_task,
                screen_update_task_fn,
                screen_update_ctx,
                "Screen Update");
@@ -98,7 +98,7 @@ static void repaint_screen(screen_update_ctx_t *ctx, uint8_t slice) {
     mu_substr_clear(ctx->screen_buffer);
     mu_substr_puts(ctx->screen_buffer,
                    CLEAR_SCREEN
-                   "mu_task_demo2 " MU_TASK_DEMO_VERSION
+                   "mu_thunk_demo2 " MU_THUNK_DEMO_VERSION
                    ": https://github.com/rdpoor/mulib\r\n\r\n"
                    "          Name Stat  # Calls     Runtime     Max Dur\r\n"
                    "+-------------+-+-----------+-----------+-----------+\r\n");
@@ -111,7 +111,7 @@ static void repaint_screen(screen_update_ctx_t *ctx, uint8_t slice) {
                    "\r\nStatus: A=Active, I=Idle, R=Runnable, S=Scheduled\r\n");
 
   } else if (slice == ctx->n_tasks + 2) {
-    if (mu_task_demo_is_low_power_mode()) {
+    if (mu_thunk_demo_is_low_power_mode()) {
       mu_substr_puts(ctx->screen_buffer,
                      "Push user button to exit low-power mode.\r\n");
     } else {
@@ -127,17 +127,17 @@ static void repaint_screen(screen_update_ctx_t *ctx, uint8_t slice) {
   }
 }
 
-static void repaint_task(screen_update_ctx_t *ctx, mu_task_t *task) {
+static void repaint_task(screen_update_ctx_t *ctx, mu_thunk_t *thunk) {
   mu_substr_printf(ctx->screen_buffer,
                    "%14s %c %11u %11lu %11lu\r\n",
-                   mu_task_name(task),
+                   mu_thunk_name(task),
                    get_task_state(task, ctx->sched),
-                   mu_task_call_count(task),
+                   mu_thunk_call_count(task),
                    task->runtime,
                    task->max_duration);
 }
 
-static char get_task_state(mu_task_t *task, mu_sched_t *sched) {
+static char get_task_state(mu_thunk_t *thunk, mu_sched_t *sched) {
   switch (mu_sched_get_task_status(sched, task)) {
   case MU_SCHED_TASK_STATUS_IDLE:
     return 'I';

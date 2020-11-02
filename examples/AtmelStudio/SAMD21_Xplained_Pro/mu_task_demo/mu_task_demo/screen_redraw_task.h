@@ -41,13 +41,13 @@ extern "C" {
 typedef struct {
   bool in_progress;
   mu_sched_t *sched;
-  mu_task_t *task;
+  mu_thunk_t *thunk;
 } screen_redraw_ctx_t;
 
 // =============================================================================
 // declarations
 
-mu_task_t *screen_redraw_task_init(mu_task_t *screen_redraw_task,
+mu_thunk_t *screen_redraw_task_init(mu_thunk_t *screen_redraw_task,
                                    screen_redraw_ctx_t *screen_redraw_ctx);
 
 #ifdef __cplusplus

@@ -39,7 +39,7 @@
  *
  * \acme_license_stop
  *
- * Project: mu_task_demo
+ * Project: mu_thunk_demo
  * Target:  ATSAMD21J18A 
  *
  **/

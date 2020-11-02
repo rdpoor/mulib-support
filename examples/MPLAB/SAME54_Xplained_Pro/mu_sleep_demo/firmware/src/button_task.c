@@ -46,7 +46,7 @@ static void button_cb(uintptr_t context);
 // =============================================================================
 // public code
 
-mu_task_t *button_task_init(mu_task_t *button_task,
+mu_thunk_t *button_task_init(mu_thunk_t *button_task,
                             button_ctx_t *button_ctx,
                             mu_sched_t *sched) {
   // Register the button_cb function to be called upon an EIC interrupt on
@@ -57,7 +57,7 @@ mu_task_t *button_task_init(mu_task_t *button_task,
   EIC_CallbackRegister(EIC_PIN_15 , button_cb, (uintptr_t)button_ctx);
   EIC_InterruptEnable(EIC_PIN_15);
 
-  mu_task_init(button_task, button_task_fn, NULL, "Button Interrupt");
+  mu_thunk_init(button_task, button_task_fn, NULL, "Button Interrupt");
   return button_task;
 }
 
@@ -78,7 +78,7 @@ static void *button_task_fn(void *ctx, void *arg) {
 // From interrupt level, schedule the button task upon leaving interrupt level.
 static void button_cb(uintptr_t context) {
   button_ctx_t *button_ctx = (button_ctx_t *)context;
-  mu_task_t *task = button_ctx->task;
+  mu_thunk_t *thunk = button_ctx->task;
   mu_sched_t *sched = button_ctx->sched;
   mu_sched_task_from_isr(sched, task);
 }

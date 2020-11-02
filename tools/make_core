@@ -9,10 +9,6 @@ BUILD_DIR = ../build
 # TEST_DIR = ../tests
 
 SOURCES := $(wildcard $(CORE_SOURCE_DIR)/*.c)
-# headers that don't have corresponding .c file.
-EXTRA_INCLUDES :=              \
-	$(SOURCE_DIR)/mu_config.h    \
-	$(CORE_SOURCE_DIR)/mu_types.h
 
 OBJECTS := $(patsubst $(CORE_SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
 

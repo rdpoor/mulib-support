@@ -27,7 +27,7 @@
 
 #include "screen_redraw_task.h"
 #include "mulib.h"
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -46,13 +46,13 @@ static void serial_write_cb(void *arg);
 // =============================================================================
 // public code
 
-mu_task_t *screen_redraw_task_init(mu_task_t *screen_redraw_task,
+mu_thunk_t *screen_redraw_task_init(mu_thunk_t *screen_redraw_task,
                                    screen_redraw_ctx_t *screen_redraw_ctx) {
   screen_redraw_ctx->in_progress = false;
-  screen_redraw_ctx->sched = mu_task_demo_get_scheduler();
+  screen_redraw_ctx->sched = mu_thunk_demo_get_scheduler();
   screen_redraw_ctx->task = screen_redraw_task;
 
-  mu_task_init(screen_redraw_task,
+  mu_thunk_init(screen_redraw_task,
                screen_redraw_task_fn,
                screen_redraw_ctx,
                "Screen Redraw");
@@ -72,7 +72,7 @@ static void *screen_redraw_task_fn(void *ctx, void *arg) {
   // screen_redraw_context is passed as the first argument, scheduler is second
   screen_redraw_ctx_t *screen_redraw_ctx = (screen_redraw_ctx_t *)ctx;
 
-  mu_substr_t *screen_buffer = mu_task_demo_get_screen_buffer();
+  mu_substr_t *screen_buffer = mu_thunk_demo_get_screen_buffer();
 
   if (mu_substr_length(screen_buffer) > 0) {
     if (!screen_redraw_ctx->in_progress) {

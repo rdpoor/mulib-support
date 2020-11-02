@@ -43,14 +43,14 @@ extern "C" {
 // interrupt context, we need to access both the task and the scheduler.
 
 typedef struct {
-  mu_task_t *task;
+  mu_thunk_t *thunk;
   mu_sched_t *sched;
 } button_ctx_t;
 
 // =============================================================================
 // declarations
 
-mu_task_t *button_task_init(mu_task_t *button_task, button_ctx_t *button_ctx);
+mu_thunk_t *button_task_init(mu_thunk_t *button_task, button_ctx_t *button_ctx);
 
 #ifdef __cplusplus
 }

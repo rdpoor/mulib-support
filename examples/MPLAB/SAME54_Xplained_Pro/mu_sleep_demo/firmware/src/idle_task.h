@@ -40,7 +40,7 @@ extern "C" {
 // =============================================================================
 // declarations
 
-mu_task_t *idle_task_init(mu_task_t *idle_task, mu_sched_t *sched);
+mu_thunk_t *idle_task_init(mu_thunk_t *idle_task, mu_sched_t *sched);
 
 #ifdef __cplusplus
 }

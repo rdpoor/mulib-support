@@ -68,7 +68,7 @@ C_SRCS +=  \
 ../../../../../../src/core/mu_spscq.c \
 ../../../../../../src/core/mu_strbuf.c \
 ../../../../../../src/core/mu_substr.c \
-../../../../../../src/core/mu_task.c \
+../../../../../../src/core/mu_thunk.c \
 ../../../../../../src/core/mu_time.c \
 ../../../../../../src/core/mu_vect.c \
 ../../../../../../src/core/mu_version.c \
@@ -104,7 +104,7 @@ C_SRCS +=  \
 ../hpl/sysctrl/hpl_sysctrl.c \
 ../idle_task.c \
 ../kbd_task.c \
-../mu_task_demo.c \
+../mu_thunk_demo.c \
 ../button_task.c \
 ../led_task.c \
 ../main.c \
@@ -128,7 +128,7 @@ mulib/core/mu_sched.o \
 mulib/core/mu_spscq.o \
 mulib/core/mu_strbuf.o \
 mulib/core/mu_substr.o \
-mulib/core/mu_task.o \
+mulib/core/mu_thunk.o \
 mulib/core/mu_time.o \
 mulib/core/mu_vect.o \
 mulib/core/mu_version.o \
@@ -164,7 +164,7 @@ hpl/sercom/hpl_sercom.o \
 hpl/sysctrl/hpl_sysctrl.o \
 idle_task.o \
 kbd_task.o \
-mu_task_demo.o \
+mu_thunk_demo.o \
 button_task.o \
 led_task.o \
 main.o \
@@ -181,7 +181,7 @@ mulib/core/mu_sched.o \
 mulib/core/mu_spscq.o \
 mulib/core/mu_strbuf.o \
 mulib/core/mu_substr.o \
-mulib/core/mu_task.o \
+mulib/core/mu_thunk.o \
 mulib/core/mu_time.o \
 mulib/core/mu_vect.o \
 mulib/core/mu_version.o \
@@ -217,7 +217,7 @@ hpl/sercom/hpl_sercom.o \
 hpl/sysctrl/hpl_sysctrl.o \
 idle_task.o \
 kbd_task.o \
-mu_task_demo.o \
+mu_thunk_demo.o \
 button_task.o \
 led_task.o \
 main.o \
@@ -234,7 +234,7 @@ mulib/core/mu_sched.d \
 mulib/core/mu_spscq.d \
 mulib/core/mu_strbuf.d \
 mulib/core/mu_substr.d \
-mulib/core/mu_task.d \
+mulib/core/mu_thunk.d \
 mulib/core/mu_time.d \
 mulib/core/mu_vect.d \
 mulib/core/mu_version.d \
@@ -270,7 +270,7 @@ hpl/sercom/hpl_sercom.d \
 hpl/sysctrl/hpl_sysctrl.d \
 idle_task.d \
 kbd_task.d \
-mu_task_demo.d \
+mu_thunk_demo.d \
 button_task.d \
 led_task.d \
 main.d \
@@ -287,7 +287,7 @@ mulib/core/mu_sched.d \
 mulib/core/mu_spscq.d \
 mulib/core/mu_strbuf.d \
 mulib/core/mu_substr.d \
-mulib/core/mu_task.d \
+mulib/core/mu_thunk.d \
 mulib/core/mu_time.d \
 mulib/core/mu_vect.d \
 mulib/core/mu_version.d \
@@ -323,7 +323,7 @@ hpl/sercom/hpl_sercom.d \
 hpl/sysctrl/hpl_sysctrl.d \
 idle_task.d \
 kbd_task.d \
-mu_task_demo.d \
+mu_thunk_demo.d \
 button_task.d \
 led_task.d \
 main.d \
@@ -331,9 +331,9 @@ printf_support.d \
 screen_redraw_task.d \
 screen_update_task.d
 
-OUTPUT_FILE_PATH +=mu_task_demo.elf
+OUTPUT_FILE_PATH +=mu_thunk_demo.elf
 
-OUTPUT_FILE_PATH_AS_ARGS +=mu_task_demo.elf
+OUTPUT_FILE_PATH_AS_ARGS +=mu_thunk_demo.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -403,7 +403,7 @@ mulib/core/mu_substr.o: ../../../../../../src/core/mu_substr.c
 	@echo Finished building: $<
 	
 
-mulib/core/mu_task.o: ../../../../../../src/core/mu_task.c
+mulib/core/mu_thunk.o: ../../../../../../src/core/mu_thunk.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 6.3.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../../../../../../src" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sercom" -I"../hpl/sysctrl" -I"../hri" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../.."  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
@@ -655,7 +655,7 @@ hpl/sysctrl/hpl_sysctrl.o: ../hpl/sysctrl/hpl_sysctrl.c
 	@echo Finished building: $<
 	
 
-./mu_task_demo.o: .././mu_task_demo.c
+./mu_thunk_demo.o: .././mu_thunk_demo.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 6.3.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAMD21J18A__ -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\arm\cmsis\5.4.0\CMSIS\Core\Include" -I"../../../../../../src" -I"../Config" -I".." -I"../examples" -I"../hal/include" -I"../hal/utils/include" -I"../hpl/core" -I"../hpl/dmac" -I"../hpl/eic" -I"../hpl/gclk" -I"../hpl/pm" -I"../hpl/port" -I"../hpl/rtc" -I"../hpl/sercom" -I"../hpl/sysctrl" -I"../hri" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\SAMD21_DFP\1.3.395\samd21a\include" -I"../../.."  -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m0plus -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
@@ -730,14 +730,14 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: ARM/GNU Linker : 6.3.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -mthumb -Wl,-Map="mu_task_demo.map" --specs=nano.specs -Wl,--start-group -lm  -Wl,--end-group -L"..\\Device_Startup"  -Wl,--gc-sections -mcpu=cortex-m0plus -Tsamd21j18a_flash.ld  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -mthumb -Wl,-Map="mu_thunk_demo.map" --specs=nano.specs -Wl,--start-group -lm  -Wl,--end-group -L"..\\Device_Startup"  -Wl,--gc-sections -mcpu=cortex-m0plus -Tsamd21j18a_flash.ld  
 	@echo Finished building target: $@
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O binary "mu_task_demo.elf" "mu_task_demo.bin"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "mu_task_demo.elf" "mu_task_demo.hex"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -j .eeprom --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0 --no-change-warnings -O binary "mu_task_demo.elf" "mu_task_demo.eep" || exit 0
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objdump.exe" -h -S "mu_task_demo.elf" > "mu_task_demo.lss"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "mu_task_demo.elf" "mu_task_demo.srec"
-	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-size.exe" "mu_task_demo.elf"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O binary "mu_thunk_demo.elf" "mu_thunk_demo.bin"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "mu_thunk_demo.elf" "mu_thunk_demo.hex"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -j .eeprom --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0 --no-change-warnings -O binary "mu_thunk_demo.elf" "mu_thunk_demo.eep" || exit 0
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objdump.exe" -h -S "mu_thunk_demo.elf" > "mu_thunk_demo.lss"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature  "mu_thunk_demo.elf" "mu_thunk_demo.srec"
+	"C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-size.exe" "mu_thunk_demo.elf"
 	
 	
 
@@ -749,5 +749,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "mu_task_demo.elf" "mu_task_demo.a" "mu_task_demo.hex" "mu_task_demo.bin" "mu_task_demo.lss" "mu_task_demo.eep" "mu_task_demo.map" "mu_task_demo.srec"
+	rm -rf "mu_thunk_demo.elf" "mu_thunk_demo.a" "mu_thunk_demo.hex" "mu_thunk_demo.bin" "mu_thunk_demo.lss" "mu_thunk_demo.eep" "mu_thunk_demo.map" "mu_thunk_demo.srec"
 	

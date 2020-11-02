@@ -34,10 +34,10 @@
 // local (forward) declarations
 
 static void delete_at(mu_pstore_t *pstore, size_t index);
-static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, mu_compare_fn cmp);
-static void heapsort(mu_pstore_t *pstore, mu_compare_fn cmp);
-static void heapify(mu_pstore_item_t *items, size_t count, mu_compare_fn cmp);
-static void sift_down(mu_pstore_item_t *items, mu_compare_fn cmp, int start, int end);
+static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, mu_pstore_compare_fn cmp);
+static void heapsort(mu_pstore_t *pstore, mu_pstore_compare_fn cmp);
+static void heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp);
+static void sift_down(mu_pstore_item_t *items, mu_pstore_compare_fn cmp, int start, int end);
 static void swap(mu_pstore_item_t *items, int a, int b);
 
 // =============================================================================
@@ -172,7 +172,12 @@ mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item) {
   }
 }
 
-mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore, mu_pstore_item_t item, mu_compare_fn cmp) {
+mu_pstore_err_t mu_pstore_filter(mu_pstore_t *pstore, mu_pstore_filter_fn match) {
+  // TODO: NOT YET IMPLEMENTED
+  return MU_PSTORE_ERR_NONE;
+}
+
+mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore, mu_pstore_item_t item, mu_pstore_compare_fn cmp) {
   if (mu_pstore_count(pstore) == 0) {
     return mu_pstore_push(pstore, item);
   } else {
@@ -181,7 +186,7 @@ mu_pstore_err_t mu_pstore_insert_sorted(mu_pstore_t *pstore, mu_pstore_item_t it
   }
 }
 
-mu_pstore_err_t mu_pstore_sort(mu_pstore_t *pstore, mu_compare_fn cmp) {
+mu_pstore_err_t mu_pstore_sort(mu_pstore_t *pstore, mu_pstore_compare_fn cmp) {
   if (mu_pstore_count(pstore) > 1) {
     heapsort(pstore, cmp);
   }
@@ -205,7 +210,7 @@ static void delete_at(mu_pstore_t *pstore, size_t index) {
 // Find "leftmost" insertion point, as described in
 // http://rosettacode.org/wiki/Binary_search
 
-static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, mu_compare_fn cmp) {
+static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, mu_pstore_compare_fn cmp) {
   mu_pstore_item_t *items = mu_pstore_items(pstore);
   int low = 0;
   int high = mu_pstore_count(pstore) - 1;
@@ -220,7 +225,7 @@ static size_t find_insertion_index(mu_pstore_t *pstore, mu_pstore_item_t item, m
   return low;
 }
 
-static void heapsort(mu_pstore_t *pstore, mu_compare_fn cmp) {
+static void heapsort(mu_pstore_t *pstore, mu_pstore_compare_fn cmp) {
   mu_pstore_item_t *items = mu_pstore_items(pstore);
   size_t count = mu_pstore_count(pstore);
 
@@ -234,7 +239,7 @@ static void heapsort(mu_pstore_t *pstore, mu_compare_fn cmp) {
   }
 }
 
-static void heapify(mu_pstore_item_t *items, size_t count, mu_compare_fn cmp) {
+static void heapify(mu_pstore_item_t *items, size_t count, mu_pstore_compare_fn cmp) {
   int start = (count - 2) / 2; // index of last parent node
 
   while (start >= 0) {
@@ -243,7 +248,7 @@ static void heapify(mu_pstore_item_t *items, size_t count, mu_compare_fn cmp) {
   }
 }
 
-static void sift_down(mu_pstore_item_t *items, mu_compare_fn cmp, int start, int end) {
+static void sift_down(mu_pstore_item_t *items, mu_pstore_compare_fn cmp, int start, int end) {
   int root = start;
   while (root * 2 + 1 <= end) {
     // root has at least one child...

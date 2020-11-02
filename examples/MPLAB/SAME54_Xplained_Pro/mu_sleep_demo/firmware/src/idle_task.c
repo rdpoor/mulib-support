@@ -52,7 +52,7 @@ static void rtc_callback(RTC_TIMER32_INT_MASK intCause, uintptr_t context);
 // =============================================================================
 // public code
 
-mu_task_t *idle_task_init(mu_task_t *idle_task, mu_sched_t *sched) {
+mu_thunk_t *idle_task_init(mu_thunk_t *idle_task, mu_sched_t *sched) {
 
   // put Ethernet interface into low-power state
   ETH_RESET_Clear();
@@ -65,7 +65,7 @@ mu_task_t *idle_task_init(mu_task_t *idle_task, mu_sched_t *sched) {
   RTC_Timer32InterruptEnable(RTC_TIMER32_INT_MASK_CMP0);
 
   // Initialize the idle task and install as scheduler's idle task
-  mu_task_init(idle_task, idle_task_fn, NULL, "Sleeping Idle");
+  mu_thunk_init(idle_task, idle_task_fn, NULL, "Sleeping Idle");
   mu_sched_set_idle_task(sched, idle_task);
 
   return idle_task;

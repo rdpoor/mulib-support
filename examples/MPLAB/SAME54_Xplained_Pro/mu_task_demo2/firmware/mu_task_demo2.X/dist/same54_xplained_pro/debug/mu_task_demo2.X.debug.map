@@ -17,7 +17,7 @@ c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../.
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-printf.o)
                               (printf)
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-puts.o)
-                              build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o (puts)
+                              build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o (puts)
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-strlen.o)
                               build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o (strlen)
 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-vsnprintf.o)
@@ -172,7 +172,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.__sflush_r            0x28a8          0x110         272   
 .text                       0x29b8          0x110         272  App's exec code 
 .rodata._ctype_             0x2ac8          0x101         257   
-.text.mu_task_demo_init     0x2bcc          0x100         256   
+.text.mu_thunk_demo_init     0x2bcc          0x100         256   
 .text.screen_update_tas     0x2ccc           0xf4         244   
 .text._printf_common        0x2dc0           0xec         236   
 .text.SERCOM2_USART_Int     0x2eac           0xe8         232   
@@ -237,7 +237,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.button_task_init      0x4738           0x3c          60   
 .text._fwalk_reent          0x4774           0x3c          60   
 .text.write                 0x47b0           0x3c          60   
-.text.mu_task_call          0x47ec           0x38          56   
+.text.mu_thunk_call          0x47ec           0x38          56   
 .text.__swrite              0x4824           0x38          56   
 .text.mu_sched_init         0x485c           0x34          52   
 .text.mu_substr_puts        0x4890           0x34          52   
@@ -306,7 +306,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.RTC_Timer32Counte     0x51c0           0x18          24   
 .text.SUPC_SelectVoltag     0x51d8           0x18          24   
 .text.button_cb             0x51f0           0x18          24   
-.text.mu_task_demo_star     0x5208           0x18          24   
+.text.mu_thunk_demo_star     0x5208           0x18          24   
 .text.button_cb_trampol     0x5220           0x18          24   
 .text.tx_cb_trampoline      0x5238           0x18          24   
 .text.rtc_cb_trampoline     0x5250           0x18          24   
@@ -314,7 +314,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.mu_vm_serial_writ     0x5280           0x18          24   
 .text.mu_sched_get_next     0x5298           0x16          22   
 .text.mu_sched_task_now     0x52ae           0x16          22   
-.text.mu_task_init          0x52c4           0x16          22   
+.text.mu_thunk_init          0x52c4           0x16          22   
 .text.mu_periodic_task_     0x52da           0x16          22   
 .text.memcpy                0x52f0           0x16          22   
 .text.mu_sched_reset        0x5306           0x14          20   
@@ -322,7 +322,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.PM_Initialize         0x5330           0x14          20   
 .text.RTC_Timer32Compar     0x5344           0x14          20   
 .text.SUPC_Initialize       0x5358           0x14          20   
-.text.mu_task_demo_stop     0x536c           0x14          20   
+.text.mu_thunk_demo_stop     0x536c           0x14          20   
 .text.mu_vm_sleep           0x5380           0x14          20   
 .text.mu_sched_task_fro     0x5394           0x12          18   
 .text.main                  0x53a6           0x12          18   
@@ -333,10 +333,10 @@ section                    address  length [bytes]      (dec)  Description
 .text.BSP_Initialize        0x5410           0x10          16   
 .text.EIC_InterruptEnab     0x5420           0x10          16   
 .rodata                     0x5430           0x30          48  Read-only const 
-.text.mu_task_demo_step     0x5460           0x10          16   
-.text.mu_task_demo_star     0x5470           0x10          16   
-.text.mu_task_demo_stop     0x5480           0x10          16   
-.text.mu_task_demo_set_     0x5490           0x10          16   
+.text.mu_thunk_demo_step     0x5460           0x10          16   
+.text.mu_thunk_demo_star     0x5470           0x10          16   
+.text.mu_thunk_demo_stop     0x5480           0x10          16   
+.text.mu_thunk_demo_set_     0x5490           0x10          16   
 .text.puts                  0x54a0           0x10          16   
 .text                       0x54b0           0x10          16  App's exec code 
 .text.memset                0x54c0           0x10          16   
@@ -354,7 +354,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.kbd_cb                0x5560            0xc          12   
 .rodata                     0x556c            0xc          12  Read-only const 
 .text.serial_write_cb       0x5578            0xc          12   
-.text.mu_task_demo_is_l     0x5584            0xc          12   
+.text.mu_thunk_demo_is_l     0x5584            0xc          12   
 .text._cleanup_r            0x5590            0xc          12   
 .rodata.p05.7204            0x559c            0xc          12   
 .text.fstat                 0x55a8            0xc          12   
@@ -369,18 +369,18 @@ section                    address  length [bytes]      (dec)  Description
 .text.mu_time_precedes      0x55fc            0x8           8   
 .text.mu_time_ms_to_dur     0x5604            0x8           8   
 .text.mu_time_now           0x560c            0x8           8   
-.text.mu_task_demo_get_     0x5614            0x8           8   
-.text.mu_task_demo_get_     0x561c            0x8           8   
-.text.mu_task_demo_get_     0x5624            0x8           8   
-.text.mu_task_demo_get_     0x562c            0x8           8   
+.text.mu_thunk_demo_get_     0x5614            0x8           8   
+.text.mu_thunk_demo_get_     0x561c            0x8           8   
+.text.mu_thunk_demo_get_     0x5624            0x8           8   
+.text.mu_thunk_demo_get_     0x562c            0x8           8   
 .text.mu_vm_rtc_now         0x5634            0x8           8   
 .text.__sclose              0x563c            0x8           8   
 .text.close                 0x5644            0x8           8   
 .text.mu_strbuf_init        0x564c            0x6           6   
 .text.RTC_Timer32Freque     0x5652            0x6           6   
 .text.mu_vm_time_preced     0x5658            0x6           6   
-.text.mu_task_name          0x565e            0x4           4   
-.text.mu_task_call_coun     0x5662            0x4           4   
+.text.mu_thunk_name          0x565e            0x4           4   
+.text.mu_thunk_call_coun     0x5662            0x4           4   
 .text.PORT_GroupOutputE     0x5666            0x4           4   
 .text.Dummy_Handler         0x566a            0x4           4   
 .text.NonMaskableInt_Ha     0x566e            0x4           4   
@@ -389,7 +389,7 @@ section                    address  length [bytes]      (dec)  Description
 .text.MemoryManagement_     0x567a            0x4           4   
 .text.BusFault_Handler      0x567e            0x4           4   
 .text.UsageFault_Handle     0x5682            0x4           4   
-.text.mu_task_demo_get_     0x5686            0x4           4   
+.text.mu_thunk_demo_get_     0x5686            0x4           4   
 .text.mu_vm_time_offset     0x568a            0x4           4   
 .text.mu_vm_time_differ     0x568e            0x4           4   
 .rodata._global_impure_     0x5694            0x4           4   
@@ -736,13 +736,13 @@ Discarded input sections
                 0x00000000       0x60 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
  .text.mu_substr_to_cstr
                 0x00000000       0x2a build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
- .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
- .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
- .text.mu_task_runtime_ms
-                0x00000000        0xa build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
- .text.mu_task_max_duration_ms
-                0x00000000        0xa build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+ .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+ .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+ .text.mu_thunk_runtime_ms
+                0x00000000        0xa build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+ .text.mu_thunk_max_duration_ms
+                0x00000000        0xa build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
@@ -979,9 +979,9 @@ Discarded input sections
  .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
  .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
  .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
- .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
- .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+ .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+ .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .text          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .data          0x00000000        0x0 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .bss           0x00000000        0x0 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
@@ -1336,7 +1336,7 @@ LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_sched.o
 LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
 LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
 LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
-LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
 LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
 LOAD build/same54_xplained_pro/debug/_ext/265365281/mu_version.o
 LOAD build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
@@ -1364,7 +1364,7 @@ LOAD build/same54_xplained_pro/debug/_ext/135519299/kbd_task.o
 LOAD build/same54_xplained_pro/debug/_ext/135519299/led_task.o
 LOAD build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
 LOAD build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
-LOAD build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+LOAD build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 LOAD build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
 LOAD build/same54_xplained_pro/debug/_ext/1360937237/main.o
                 0x00000001                __MPLAB_BUILD = 0x1
@@ -1486,7 +1486,7 @@ LOAD c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/v7
                 0x20000100                . = ALIGN (0x4)
                 0x20000100                _end = .
                 0x2003ffff                _ram_end_ = ((ORIGIN (ram) + LENGTH (ram)) - 0x1)
-OUTPUT(dist/same54_xplained_pro/debug/mu_task_demo2.X.debug.elf elf32-littlearm)
+OUTPUT(dist/same54_xplained_pro/debug/mu_thunk_demo2.X.debug.elf elf32-littlearm)
 LOAD stack
 LOAD data_init
 
@@ -1505,7 +1505,7 @@ LOAD data_init
  .ARM.attributes
                 0x00000101       0x39 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
  .ARM.attributes
-                0x0000013a       0x39 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+                0x0000013a       0x39 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .ARM.attributes
                 0x00000173       0x39 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .ARM.attributes
@@ -1555,7 +1555,7 @@ LOAD data_init
  .ARM.attributes
                 0x00000692       0x39 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
  .ARM.attributes
-                0x000006cb       0x39 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x000006cb       0x39 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .ARM.attributes
                 0x00000704       0x39 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .ARM.attributes
@@ -1702,7 +1702,7 @@ LOAD data_init
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/465512950/bsp.o
@@ -1727,7 +1727,7 @@ LOAD data_init
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .comment       0x0000003c       0x3d build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .comment       0x0000003c       0x3d c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
@@ -1795,7 +1795,7 @@ LOAD data_init
  .debug_info    0x0000221c      0x62c build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .debug_info    0x00002848     0x114d build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .debug_info    0x00003995     0x1ce4 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .debug_info    0x00005679      0x6e0 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .debug_info    0x00005679      0x6e0 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_info    0x00005d59      0x6f3 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_info    0x0000644c     0x1457 build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .debug_info    0x000078a3     0x1104 build/same54_xplained_pro/debug/_ext/465512950/bsp.o
@@ -1820,7 +1820,7 @@ LOAD data_init
  .debug_info    0x0001bfc2     0x13a6 build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .debug_info    0x0001d368     0x156a build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .debug_info    0x0001e8d2     0x1785 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .debug_info    0x00020057     0x1d88 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .debug_info    0x00020057     0x1d88 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_info    0x00021ddf     0x2877 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_info    0x00024656      0xeeb build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_info    0x00025541      0x2a2 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
@@ -1895,7 +1895,7 @@ LOAD data_init
  .debug_abbrev  0x00000473      0x140 build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .debug_abbrev  0x000005b3      0x20a build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .debug_abbrev  0x000007bd      0x3cd build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .debug_abbrev  0x00000b8a      0x137 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .debug_abbrev  0x00000b8a      0x137 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_abbrev  0x00000cc1       0xbf build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_abbrev  0x00000d80      0x243 build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .debug_abbrev  0x00000fc3      0x1a3 build/same54_xplained_pro/debug/_ext/465512950/bsp.o
@@ -1920,7 +1920,7 @@ LOAD data_init
  .debug_abbrev  0x000031e7      0x218 build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .debug_abbrev  0x000033ff      0x271 build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .debug_abbrev  0x00003670      0x29d build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .debug_abbrev  0x0000390d      0x28a build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .debug_abbrev  0x0000390d      0x28a build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_abbrev  0x00003b97      0x480 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_abbrev  0x00004017      0x1d0 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_abbrev  0x000041e7       0x2a c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
@@ -1995,7 +1995,7 @@ LOAD data_init
  .debug_loc     0x00000e45      0x1d5 build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .debug_loc     0x0000101a      0x1eb build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .debug_loc     0x00001205      0xbc9 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .debug_loc     0x00001dce      0x1c8 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .debug_loc     0x00001dce      0x1c8 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_loc     0x00001f96      0x2a2 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_loc     0x00002238      0x283 build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .debug_loc     0x000024bb       0x9a build/same54_xplained_pro/debug/_ext/18086165/plib_eic.o
@@ -2014,7 +2014,7 @@ LOAD data_init
  .debug_loc     0x0000374e      0x165 build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .debug_loc     0x000038b3      0x1b4 build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .debug_loc     0x00003a67      0x30f build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .debug_loc     0x00003d76      0x12d build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .debug_loc     0x00003d76      0x12d build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_loc     0x00003ea3      0x5e6 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_loc     0x00004489       0x20 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_loc     0x000044a9       0x74 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-init.o)
@@ -2072,7 +2072,7 @@ LOAD data_init
  .debug_aranges
                 0x000001a0       0xc0 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
  .debug_aranges
-                0x00000260       0x48 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+                0x00000260       0x48 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_aranges
                 0x000002a8       0x60 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_aranges
@@ -2122,7 +2122,7 @@ LOAD data_init
  .debug_aranges
                 0x00000888       0x28 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
  .debug_aranges
-                0x000008b0       0x80 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x000008b0       0x80 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_aranges
                 0x00000930      0x100 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_aranges
@@ -2265,7 +2265,7 @@ LOAD data_init
  .debug_ranges  0x00000110       0x48 build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .debug_ranges  0x00000158       0x48 build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .debug_ranges  0x000001a0       0xc8 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .debug_ranges  0x00000268       0x38 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .debug_ranges  0x00000268       0x38 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_ranges  0x000002a0       0x50 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_ranges  0x000002f0       0x28 build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .debug_ranges  0x00000318       0x10 build/same54_xplained_pro/debug/_ext/465512950/bsp.o
@@ -2290,7 +2290,7 @@ LOAD data_init
  .debug_ranges  0x000006d8       0x18 build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .debug_ranges  0x000006f0       0x38 build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .debug_ranges  0x00000728       0x30 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .debug_ranges  0x00000758       0x70 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .debug_ranges  0x00000758       0x70 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_ranges  0x000007c8      0x110 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_ranges  0x000008d8       0x10 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_ranges  0x000008e8       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
@@ -2356,7 +2356,7 @@ LOAD data_init
  .debug_line    0x0000044b      0x198 build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .debug_line    0x000005e3      0x1e4 build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .debug_line    0x000007c7      0x3d0 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .debug_line    0x00000b97      0x184 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .debug_line    0x00000b97      0x184 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_line    0x00000d1b      0x1a0 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_line    0x00000ebb      0x242 build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .debug_line    0x000010fd      0x20b build/same54_xplained_pro/debug/_ext/465512950/bsp.o
@@ -2381,7 +2381,7 @@ LOAD data_init
  .debug_line    0x00003fb4      0x229 build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .debug_line    0x000041dd      0x28b build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .debug_line    0x00004468      0x296 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .debug_line    0x000046fe      0x3b4 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .debug_line    0x000046fe      0x3b4 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_line    0x00004ab2      0x5f3 build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_line    0x000050a5      0x201 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_line    0x000052a6       0xd8 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
@@ -2456,7 +2456,7 @@ LOAD data_init
  .debug_str     0x000000c6        0x0 build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .debug_str     0x000000c6       0x17 build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .debug_str     0x000000dd       0x4c build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .debug_str     0x00000129       0x3b build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .debug_str     0x00000129       0x3b build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_str     0x00000164       0x90 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_str     0x000001f4       0x99 build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .debug_str     0x0000028d        0xe build/same54_xplained_pro/debug/_ext/465512950/bsp.o
@@ -2481,7 +2481,7 @@ LOAD data_init
  .debug_str     0x00000a4f       0x57 build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .debug_str     0x00000aa6       0xca build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .debug_str     0x00000b70      0x170 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .debug_str     0x00000ce0      0x15f build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .debug_str     0x00000ce0      0x15f build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_str     0x00000e3f      0x1cb build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_str     0x0000100a       0x41 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_str     0x0000104b        0x0 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
@@ -2549,7 +2549,7 @@ LOAD data_init
  .debug_frame   0x00000258       0x9c build/same54_xplained_pro/debug/_ext/265365281/mu_spscq.o
  .debug_frame   0x000002f4       0xa4 build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
  .debug_frame   0x00000398      0x218 build/same54_xplained_pro/debug/_ext/265365281/mu_substr.o
- .debug_frame   0x000005b0       0x98 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
+ .debug_frame   0x000005b0       0x98 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
  .debug_frame   0x00000648       0xe0 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
  .debug_frame   0x00000728       0x78 build/same54_xplained_pro/debug/_ext/1678609765/mu_periodic_task.o
  .debug_frame   0x000007a0       0x20 build/same54_xplained_pro/debug/_ext/465512950/bsp.o
@@ -2574,7 +2574,7 @@ LOAD data_init
  .debug_frame   0x00001028       0x48 build/same54_xplained_pro/debug/_ext/135519299/led_task.o
  .debug_frame   0x00001070       0x68 build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
  .debug_frame   0x000010d8       0x58 build/same54_xplained_pro/debug/_ext/135519299/screen_update_task.o
- .debug_frame   0x00001130      0x124 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .debug_frame   0x00001130      0x124 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
  .debug_frame   0x00001254      0x26c build/same54_xplained_pro/debug/_ext/1265253093/mu_vm.o
  .debug_frame   0x000014c0       0x28 build/same54_xplained_pro/debug/_ext/1360937237/main.o
  .debug_frame   0x000014e8       0x2c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(data_init.o)
@@ -2646,7 +2646,7 @@ LOAD data_init
 .bss.s_screen_buf%1
                 0x20000100      0x400
  .bss.s_screen_buf
-                0x20000100      0x400 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000100      0x400 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .data.__global_locale%2
                 0x20000500      0x16c
@@ -2655,7 +2655,7 @@ LOAD data_init
                 0x20000500                __global_locale
 
 .bss.s_tasks%3  0x2000066c       0xa8
- .bss.s_tasks   0x2000066c       0xa8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .bss.s_tasks   0x2000066c       0xa8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .data.impure_data%4
                 0x20000714       0x60
@@ -2665,15 +2665,15 @@ LOAD data_init
 .bss.s_event_queue%5
                 0x20000774       0x50
  .bss.s_event_queue
-                0x20000774       0x50 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000774       0x50 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_isr_queue_items%6
                 0x200007c4       0x20
  .bss.s_isr_queue_items
-                0x200007c4       0x20 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x200007c4       0x20 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_sched%7  0x200007e4       0x20
- .bss.s_sched   0x200007e4       0x20 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .bss.s_sched   0x200007e4       0x20 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss%8          0x20000804       0x1c
  .bss           0x20000804       0x1c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/v7e-m/fpv4-sp/hard/crtbegin.o
@@ -2686,42 +2686,42 @@ LOAD data_init
 .bss.s_screen_update_ctx%10
                 0x20000838       0x18
  .bss.s_screen_update_ctx
-                0x20000838       0x18 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000838       0x18 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_isr_queue%11
                 0x20000850        0xc
  .bss.s_isr_queue
-                0x20000850        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000850        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_periodic_screen_trigger_ctx%12
                 0x2000085c        0xc
  .bss.s_periodic_screen_trigger_ctx
-                0x2000085c        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x2000085c        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_screen_buffer%13
                 0x20000868        0xc
  .bss.s_screen_buffer
-                0x20000868        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000868        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_screen_redraw_ctx%14
                 0x20000874        0xc
  .bss.s_screen_redraw_ctx
-                0x20000874        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000874        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_button_ctx%15
                 0x20000880        0x8
  .bss.s_button_ctx
-                0x20000880        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000880        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_kbd_ctx%16
                 0x20000888        0x8
  .bss.s_kbd_ctx
-                0x20000888        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000888        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_screen_str%17
                 0x20000890        0x8
  .bss.s_screen_str
-                0x20000890        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x20000890        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_button_task%18
                 0x20000898        0x4
@@ -2803,12 +2803,12 @@ LOAD data_init
 .bss.s_led_ctx%34
                 0x200008d8        0x1
  .bss.s_led_ctx
-                0x200008d8        0x1 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x200008d8        0x1 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_is_low_power_mode%35
                 0x200008d9        0x1
  .bss.s_is_low_power_mode
-                0x200008d9        0x1 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+                0x200008d9        0x1 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .bss.s_rx_data%36
                 0x200008da        0x1
@@ -2925,11 +2925,11 @@ LOAD data_init
                 0x00002ac8      0x101 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-ctype_.o)
                 0x00002ac8                _ctype_
 
-.text.mu_task_demo_init%52
+.text.mu_thunk_demo_init%52
                 0x00002bcc      0x100
- .text.mu_task_demo_init
-                0x00002bcc      0x100 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00002bcc                mu_task_demo_init
+ .text.mu_thunk_demo_init
+                0x00002bcc      0x100 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00002bcc                mu_thunk_demo_init
 
 .text.screen_update_task_fn%53
                 0x00002ccc       0xf4
@@ -3094,7 +3094,7 @@ LOAD data_init
                 0x00003ea8                mu_sched_get_task_status
 
 .rodata%82      0x00003f10       0x64
- .rodata        0x00003f10       0x64 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
+ .rodata        0x00003f10       0x64 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
 
 .text.kbd_task_fn%83
                 0x00003f74       0x62
@@ -3258,11 +3258,11 @@ LOAD data_init
  .text.write    0x000047b0       0x3c c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libpic32c.a(write.o)
                 0x000047b0                write
 
-.text.mu_task_call%112
+.text.mu_thunk_call%112
                 0x000047ec       0x38
- .text.mu_task_call
-                0x000047ec       0x38 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
-                0x000047ec                mu_task_call
+ .text.mu_thunk_call
+                0x000047ec       0x38 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+                0x000047ec                mu_thunk_call
 
 .text.__swrite%113
                 0x00004824       0x38
@@ -3651,11 +3651,11 @@ LOAD data_init
  .text.button_cb
                 0x000051f0       0x18 build/same54_xplained_pro/debug/_ext/135519299/button_task.o
 
-.text.mu_task_demo_start_led_task%181
+.text.mu_thunk_demo_start_led_task%181
                 0x00005208       0x18
- .text.mu_task_demo_start_led_task
-                0x00005208       0x18 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005208                mu_task_demo_start_led_task
+ .text.mu_thunk_demo_start_led_task
+                0x00005208       0x18 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005208                mu_thunk_demo_start_led_task
 
 .text.button_cb_trampoline%182
                 0x00005220       0x18
@@ -3696,11 +3696,11 @@ LOAD data_init
                 0x000052ae       0x16 build/same54_xplained_pro/debug/_ext/265365281/mu_sched.o
                 0x000052ae                mu_sched_task_now
 
-.text.mu_task_init%189
+.text.mu_thunk_init%189
                 0x000052c4       0x16
- .text.mu_task_init
-                0x000052c4       0x16 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
-                0x000052c4                mu_task_init
+ .text.mu_thunk_init
+                0x000052c4       0x16 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+                0x000052c4                mu_thunk_init
 
 .text.mu_periodic_task_start%190
                 0x000052da       0x16
@@ -3743,11 +3743,11 @@ LOAD data_init
                 0x00005358       0x14 build/same54_xplained_pro/debug/_ext/561100223/plib_supc.o
                 0x00005358                SUPC_Initialize
 
-.text.mu_task_demo_stop_led_task%197
+.text.mu_thunk_demo_stop_led_task%197
                 0x0000536c       0x14
- .text.mu_task_demo_stop_led_task
-                0x0000536c       0x14 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x0000536c                mu_task_demo_stop_led_task
+ .text.mu_thunk_demo_stop_led_task
+                0x0000536c       0x14 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x0000536c                mu_thunk_demo_stop_led_task
 
 .text.mu_vm_sleep%198
                 0x00005380       0x14
@@ -3803,29 +3803,29 @@ LOAD data_init
  .rodata        0x00005440       0x10 build/same54_xplained_pro/debug/_ext/135519299/kbd_task.o
  .rodata        0x00005450       0x10 build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
 
-.text.mu_task_demo_step%211
+.text.mu_thunk_demo_step%211
                 0x00005460       0x10
- .text.mu_task_demo_step
-                0x00005460       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005460                mu_task_demo_step
+ .text.mu_thunk_demo_step
+                0x00005460       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005460                mu_thunk_demo_step
 
-.text.mu_task_demo_start_screen_trigger_task%212
+.text.mu_thunk_demo_start_screen_trigger_task%212
                 0x00005470       0x10
- .text.mu_task_demo_start_screen_trigger_task
-                0x00005470       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005470                mu_task_demo_start_screen_trigger_task
+ .text.mu_thunk_demo_start_screen_trigger_task
+                0x00005470       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005470                mu_thunk_demo_start_screen_trigger_task
 
-.text.mu_task_demo_stop_screen_trigger_task%213
+.text.mu_thunk_demo_stop_screen_trigger_task%213
                 0x00005480       0x10
- .text.mu_task_demo_stop_screen_trigger_task
-                0x00005480       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005480                mu_task_demo_stop_screen_trigger_task
+ .text.mu_thunk_demo_stop_screen_trigger_task
+                0x00005480       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005480                mu_thunk_demo_stop_screen_trigger_task
 
-.text.mu_task_demo_set_low_power_mode%214
+.text.mu_thunk_demo_set_low_power_mode%214
                 0x00005490       0x10
- .text.mu_task_demo_set_low_power_mode
-                0x00005490       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005490                mu_task_demo_set_low_power_mode
+ .text.mu_thunk_demo_set_low_power_mode
+                0x00005490       0x10 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005490                mu_thunk_demo_set_low_power_mode
 
 .text.puts%215  0x000054a0       0x10
  .text.puts     0x000054a0       0x10 c:/program files/microchip/xc32/v2.40/bin/bin/../../lib/gcc/pic32c/6.2.1/../../../../pic32c/lib/v7e-m/fpv4-sp/hard\libg_nano.a(lib_a-puts.o)
@@ -3913,11 +3913,11 @@ LOAD data_init
  .text.serial_write_cb
                 0x00005578        0xc build/same54_xplained_pro/debug/_ext/135519299/screen_redraw_task.o
 
-.text.mu_task_demo_is_low_power_mode%232
+.text.mu_thunk_demo_is_low_power_mode%232
                 0x00005584        0xc
- .text.mu_task_demo_is_low_power_mode
-                0x00005584        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005584                mu_task_demo_is_low_power_mode
+ .text.mu_thunk_demo_is_low_power_mode
+                0x00005584        0xc build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005584                mu_thunk_demo_is_low_power_mode
 
 .text._cleanup_r%233
                 0x00005590        0xc
@@ -4001,29 +4001,29 @@ LOAD data_init
                 0x0000560c        0x8 build/same54_xplained_pro/debug/_ext/265365281/mu_time.o
                 0x0000560c                mu_time_now
 
-.text.mu_task_demo_get_screen_buffer%248
+.text.mu_thunk_demo_get_screen_buffer%248
                 0x00005614        0x8
- .text.mu_task_demo_get_screen_buffer
-                0x00005614        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005614                mu_task_demo_get_screen_buffer
+ .text.mu_thunk_demo_get_screen_buffer
+                0x00005614        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005614                mu_thunk_demo_get_screen_buffer
 
-.text.mu_task_demo_get_scheduler%249
+.text.mu_thunk_demo_get_scheduler%249
                 0x0000561c        0x8
- .text.mu_task_demo_get_scheduler
-                0x0000561c        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x0000561c                mu_task_demo_get_scheduler
+ .text.mu_thunk_demo_get_scheduler
+                0x0000561c        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x0000561c                mu_thunk_demo_get_scheduler
 
-.text.mu_task_demo_get_screen_redraw_task%250
+.text.mu_thunk_demo_get_screen_redraw_task%250
                 0x00005624        0x8
- .text.mu_task_demo_get_screen_redraw_task
-                0x00005624        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005624                mu_task_demo_get_screen_redraw_task
+ .text.mu_thunk_demo_get_screen_redraw_task
+                0x00005624        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005624                mu_thunk_demo_get_screen_redraw_task
 
-.text.mu_task_demo_get_tasks%251
+.text.mu_thunk_demo_get_tasks%251
                 0x0000562c        0x8
- .text.mu_task_demo_get_tasks
-                0x0000562c        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x0000562c                mu_task_demo_get_tasks
+ .text.mu_thunk_demo_get_tasks
+                0x0000562c        0x8 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x0000562c                mu_thunk_demo_get_tasks
 
 .text.mu_vm_rtc_now%252
                 0x00005634        0x8
@@ -4072,17 +4072,17 @@ LOAD data_init
                 0x0000313c        0x4 build/same54_xplained_pro/debug/_ext/265365281/mu_strbuf.o
                 0x0000313c                mu_strbuf_capacity
 
-.text.mu_task_name%260
+.text.mu_thunk_name%260
                 0x0000565e        0x4
- .text.mu_task_name
-                0x0000565e        0x4 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
-                0x0000565e                mu_task_name
+ .text.mu_thunk_name
+                0x0000565e        0x4 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+                0x0000565e                mu_thunk_name
 
-.text.mu_task_call_count%261
+.text.mu_thunk_call_count%261
                 0x00005662        0x4
- .text.mu_task_call_count
-                0x00005662        0x4 build/same54_xplained_pro/debug/_ext/265365281/mu_task.o
-                0x00005662                mu_task_call_count
+ .text.mu_thunk_call_count
+                0x00005662        0x4 build/same54_xplained_pro/debug/_ext/265365281/mu_thunk.o
+                0x00005662                mu_thunk_call_count
 
 .text.PORT_GroupOutputEnable%262
                 0x00005666        0x4
@@ -4263,11 +4263,11 @@ LOAD data_init
                 0x00005682        0x4 build/same54_xplained_pro/debug/_ext/602300742/exceptions.o
                 0x00005682                UsageFault_Handler
 
-.text.mu_task_demo_get_task_count%270
+.text.mu_thunk_demo_get_task_count%270
                 0x00005686        0x4
- .text.mu_task_demo_get_task_count
-                0x00005686        0x4 build/same54_xplained_pro/debug/_ext/135519299/mu_task_demo.o
-                0x00005686                mu_task_demo_get_task_count
+ .text.mu_thunk_demo_get_task_count
+                0x00005686        0x4 build/same54_xplained_pro/debug/_ext/135519299/mu_thunk_demo.o
+                0x00005686                mu_thunk_demo_get_task_count
 
 .text.mu_vm_time_offset%271
                 0x0000568a        0x4

@@ -37,7 +37,7 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-// #define MU_TASK_PROFILING
+// #define MU_THUNK_PROFILING
 // #define MU_VM_CAN_SLEEP
 
 /**
@@ -55,10 +55,10 @@ typedef int32_t mu_vm_time_ms_dt;
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.
 
-#ifdef MU_TASK_PROFILING
-#define MU_TASK_PROFILING (1)
+#ifdef MU_THUNK_PROFILING
+#define MU_THUNK_PROFILING (1)
 #else
-#define MU_TASK_PROFILING (0)
+#define MU_THUNK_PROFILING (0)
 #endif
 
 #ifdef MU_VM_CAN_SLEEP

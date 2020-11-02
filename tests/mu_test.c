@@ -45,7 +45,7 @@ int mu_spscq_test();
 int mu_strbuf_test();
 int mu_strref_test();
 int mu_substr_test();
-int mu_task_test();
+int mu_thunk_test();
 int mu_time_test();
 int mu_timer_test();
 int mu_vect_test();
@@ -70,7 +70,7 @@ int main() {
   mu_strbuf_test();
   mu_strref_test();
   mu_substr_test();
-  mu_task_test();
+  mu_thunk_test();
   mu_time_test();
   mu_timer_test();
   mu_vect_test();

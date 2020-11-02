@@ -23,16 +23,16 @@
  */
 
 #include <atmel_start.h>
-#include "mu_task_demo.h"
+#include "mu_thunk_demo.h"
 
 int main(void)
 {
   /* Initializes MCU, drivers and middleware */
   atmel_start_init();
-  mu_task_demo_init();
+  mu_thunk_demo_init();
 
   /* Replace with your application code */
   while (1) {
-    mu_task_demo_step();
+    mu_thunk_demo_step();
   }
 }

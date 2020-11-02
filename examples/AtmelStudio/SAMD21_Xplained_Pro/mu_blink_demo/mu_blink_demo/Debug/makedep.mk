@@ -20,7 +20,7 @@
 
 ..\..\..\..\..\src\core\mu_substr.c
 
-..\..\..\..\..\src\core\mu_task.c
+..\..\..\..\..\src\core\mu_thunk.c
 
 ..\..\..\..\..\src\core\mu_time.c
 

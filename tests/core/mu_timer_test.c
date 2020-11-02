@@ -27,7 +27,7 @@
 
 #include "mu_sched.h"
 #include "mu_spscq.h"
-#include "mu_task.h"
+#include "mu_thunk.h"
 #include "mu_time.h"
 #include "mu_timer.h"
 
@@ -57,7 +57,7 @@ static mu_time_t s_now;
 
 static mu_spscq_item_t s_isr_queue_store[IRQ_QUEUE_SIZE];
 
-static mu_task_t s_task;
+static mu_thunk_t s_task;
 static int s_task_call_count;
 
 static mu_timer_t s_timer;
@@ -156,7 +156,7 @@ static void setup(void) {
   set_now(0);
   mu_sched_init(s_isr_queue_store, IRQ_QUEUE_SIZE);
   mu_sched_set_clock_source(get_now);
-  mu_task_init(&s_task, task_fn, &s_task, "Timed Task");
+  mu_thunk_init(&s_task, task_fn, &s_task, "Timed Task");
   s_task_call_count = 0;
 }
 

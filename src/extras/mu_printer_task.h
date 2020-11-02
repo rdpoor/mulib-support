@@ -40,8 +40,8 @@ extern "C" {
 // types and definitions
 
 typedef struct {
-  mu_task_t printer_task;
-  mu_task_t *on_completion;
+  mu_thunk_t printer_task;
+  mu_thunk_t *on_completion;
   uint8_t const *data;
   size_t data_len;
 } mu_printer_task_ctx;
@@ -50,10 +50,10 @@ typedef struct {
 // declarations
 
 /**
- * @brief Start a mu_task that prints a string to the mu_vm_serial port.
+ * @brief Start a mu_thunk that prints a string to the mu_vm_serial port.
  */
 mu_printer_task_ctx *mu_printer_task_init(mu_printer_task_ctx *ctx,
-                                          mu_task_t *on_completion,
+                                          mu_thunk_t *on_completion,
                                           mu_sched_t *scheduler);
 
 mu_printer_task_ctx *mu_printer_task_print(mu_printer_task_ctx *ctx,
