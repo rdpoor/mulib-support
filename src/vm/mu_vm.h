@@ -36,11 +36,12 @@
  * * [Optional] The ability to sleep (i.e. run in a power-reduced mode) until
  *   an asynchronous event wakes it.
  *
- * This file, port.h, defines the interface to those resources.  To port mulib
+ * This file, mu_vm.h.h, defines the interface to those resources. To port mulib
  * to a new target system, you must implement the functions and types described
  * here.
  *
- * In addition, some compile-time macros control the behavior of port.h:
+ * In addition, some compile-time macros defined in mu_config.h control the
+ * behavior of mu_vm.h:
  *
  * * `MU_VM_HAS_FLOAT`: If your system supports floating point operations,
  *   define this to be true.  Note that including floating point operations may
@@ -65,40 +66,11 @@ extern "C" {
 
 #include "mu_config.h"    // must come first!
 
-#include <time.h>
 #include <stdbool.h>
 #include <stdint.h>
 
 // =============================================================================
 // types and definitions
-
-/**
- * If your port supports floating point operations, choose one of the following
- * either by uncommenting one of the following lines, or by setting the symbol
- * in the compiler.
- *
- * IF floating point is enabled, you must implement mu_vm_time_duration_to_s()
- * and mu_vm_time_s_to_duration().
- */
-// #define MU_VM_HAS_FLOAT
-#define MU_VM_HAS_DOUBLE
-#define MU_VM_FLOAT double
-
-/**
- * Define the data type that holds a time value and a duration value.  Using
- * 32 bit values is a good choice for many platforms, but you can change this
- * as needed.
- */
-typedef clock_t mu_vm_time_t;
-typedef clock_t mu_vm_time_dt;
-typedef int32_t mu_vm_time_ms_dt;
-typedef MU_VM_FLOAT mu_vm_time_s_dt;
-
-/**
- * If your platform is able to sleep in order to conserver power, un-comment
- * MU_VM_CAN_SLEEP.
- */
-#define MU_VM_CAN_SLEEP
 
 /**
  * @brief Signature for a generic callback function.
@@ -138,8 +110,10 @@ bool mu_vm_time_follows(mu_vm_time_t a, mu_vm_time_t b);
 mu_vm_time_ms_dt mu_vm_time_duration_to_ms(mu_vm_time_dt dt);
 mu_vm_time_dt mu_vm_time_ms_to_duration(mu_vm_time_ms_dt ms);
 
+#if (MU_VM_HAS_FLOAT)
 mu_vm_time_s_dt mu_vm_time_duration_to_s(mu_vm_time_dt dt);
 mu_vm_time_dt mu_vm_time_s_to_duration(mu_vm_time_s_dt seconds);
+#endif
 
 // ==========
 // Real Time Clock
@@ -234,7 +208,7 @@ bool mu_vm_serial_read_is_in_progress(void);
 // ==========
 // SLEEP
 
-#ifdef MU_VM_CAN_SLEEP
+#if (MU_VM_CAN_SLEEP)
 
 /**
  * @brief Return true unless one or more of the vm resources are busy.

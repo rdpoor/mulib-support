@@ -29,6 +29,7 @@
 #include "mu_test_utils.h"
 #include <unistd.h>
 
+#include <stdio.h>
 // =============================================================================
 // private types and definitions
 
@@ -64,9 +65,11 @@ void mu_time_test() {
   ASSERT(mu_time_follows(t2, t1) == true);
 
   dt1 = mu_time_difference(t2, t1);
+  printf("t1=%ld, t2=%ld, dm1=%ld, dt1=%ld, ms=%ld\n", t1, t2, dm1, dt1,
+         mu_time_ms_to_duration(dt1));
   ASSERT(mu_time_duration_to_ms(dt1) == 1000);
 
-#ifdef MU_VM_FLOAT
+#if (MU_VM_HAS_FLOAT)
   mu_time_s_dt ds1;
 
   t1 = mu_time_now();   // an arbitrary time

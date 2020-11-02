@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_CONFIG_H_
-#define _MU_CONFIG_H_
+#ifndef _MU_VM_CONFIG_H_
+#define _MU_VM_CONFIG_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,14 +32,55 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <stdint.h>
+
 // =============================================================================
 // types and definitions
 
 // #define MU_TASK_PROFILING
+// #define MU_VM_CAN_SLEEP
 
-#ifndef MU_TASK_PROFILING
-/* 1 => add profiling code to mu_task, 0 => don't profile */
+/**
+ * If your port supports floating point operations, choose one of the following
+ * either by uncommenting one of the following lines, or by setting the symbol
+ * in the compiler.
+ */
+// #define MU_VM_FLOAT float
+#define MU_VM_FLOAT double
+
+typedef uint32_t mu_vm_time_t;
+typedef int32_t mu_vm_time_dt;
+typedef int32_t mu_vm_time_ms_dt;
+
+// =============================================================================
+// Everything below this line is deduced from the settings above this line.
+
+#ifdef MU_TASK_PROFILING
 #define MU_TASK_PROFILING (1)
+#else
+#define MU_TASK_PROFILING (0)
+#endif
+
+#ifdef MU_VM_CAN_SLEEP
+#define MU_VM_CAN_SLEEP (1)
+#else
+#define MU_VM_CAN_SLEEP (0)
+#endif
+
+#ifdef MU_VM_FLOAT
+  #define MU_VM_HAS_FLOAT (1)
+#else
+  #define MU_VM_HAS_FLOAT (0)
+#endif
+
+#if defined(MU_VM_FLOAT) && ((MU_VM_FLOAT == float) || (MU_VM_FLOAT == double))
+  typedef MU_VM_FLOAT mu_vm_float_t;
+#else
+  #error MU_VM_FLOAT must be either float or double
+#endif
+
+#if (MU_VM_HAS_FLOAT == 1)
+typedef mu_vm_float_t mu_vm_time_s_dt;
 #endif
 
 // =============================================================================
@@ -49,4 +90,4 @@ extern "C" {
 }
 #endif
 
-#endif /* #ifndef _MU_CONFIG_H_ */
+#endif /* #ifndef _MU_VM_CONFIG_H_ */

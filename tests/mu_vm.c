@@ -49,6 +49,7 @@ void mu_vm_init() {
 }
 
 mu_vm_time_t mu_vm_time_offset(mu_vm_time_t t, mu_vm_time_dt dt) {
+  printf("mu_vm_time_offset(%ld, %ld) => %ld\r\n", t, dt, t + dt);
   return t + dt;
 }
 

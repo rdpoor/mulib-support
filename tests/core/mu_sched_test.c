@@ -110,11 +110,6 @@ static idle_task_t s_idle_task;
 // =============================================================================
 // public code
 
-// mu_sched_test depends upon profiling functions.
-#if (!MU_TASK_PROFILING)
-#error mu_sched_test requires MU_TASK_PROFILING to be defined
-#endif
-
 void mu_sched_test() {
   mu_task_t *task;
 

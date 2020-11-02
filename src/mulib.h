@@ -32,7 +32,8 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "core/mu_config.h"
+#include "mu_config.h"               // must come first!
+
 #include "core/mu_list.h"
 #include "core/mu_log.h"
 #include "core/mu_pstore.h"
@@ -47,12 +48,11 @@ extern "C" {
 #include "core/mu_types.h"
 #include "core/mu_vect.h"
 #include "core/mu_version.h"
-
 #include "extras/mu_periodic_task.h"
+#include "mu_vm.h"
 
 // =============================================================================
 // types and definitions
-
 
 // =============================================================================
 // declarations
