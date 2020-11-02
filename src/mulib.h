@@ -32,7 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_config.h"               // must come first!
+#include "vm/mu_vm_config.h"               // must come first!
 
 #include "core/mu_list.h"
 #include "core/mu_log.h"
@@ -49,7 +49,7 @@ extern "C" {
 #include "core/mu_vect.h"
 #include "core/mu_version.h"
 #include "extras/mu_periodic_task.h"
-#include "mu_vm.h"
+#include "vm/mu_vm.h"
 
 // =============================================================================
 // types and definitions
