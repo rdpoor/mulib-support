@@ -25,6 +25,8 @@
 // =============================================================================
 // includes
 
+#include "mu_config.h"    // must come first
+
 #include "mu_sched.h"
 #include "mu_list.h"
 #include "mu_spscq.h"

@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_VM_CONFIG_H_
-#define _MU_VM_CONFIG_H_
+#ifndef _MU_CONFIG_H_
+#define _MU_CONFIG_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,6 +37,7 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
+// #define MU_LOG_ENABLED
 // #define MU_THUNK_PROFILING
 // #define MU_VM_CAN_SLEEP
 
@@ -90,4 +91,4 @@ typedef mu_vm_float_t mu_vm_time_s_dt;
 }
 #endif
 
-#endif /* #ifndef _MU_VM_CONFIG_H_ */
+#endif /* #ifndef _MU_CONFIG_H_ */

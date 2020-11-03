@@ -25,7 +25,9 @@
 // =============================================================================
 // includes
 
-#include "mulib.h"
+#include "mu_config.h"    // must come first
+
+#include "mu_time.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -47,7 +49,7 @@ mu_thunk_t *mu_periodic_task_init(mu_thunk_t *periodic_task,
                                  mu_periodic_task_ctx *ctx,
                                  mu_thunk_t *triggered_task,
                                  mu_sched_t *scheduler,
-                                 mu_vm_time_ms_dt interval_ms,
+                                 mu_time_ms_dt interval_ms,
                                  const char *task_name) {
   ctx->triggered_task = triggered_task;
   ctx->sched = scheduler;

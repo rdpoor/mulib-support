@@ -32,7 +32,10 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mulib.h"
+#include "mu_config.h"    // must come first
+
+#include "mu_periodic_task.h"
+#include "mu_time.h"
 #include <stdbool.h>
 
 // =============================================================================
@@ -41,7 +44,7 @@ extern "C" {
 typedef struct {
   mu_thunk_t *triggered_task;
   mu_sched_t *sched;
-  mu_vm_time_ms_dt interval_ms;
+  mu_time_ms_dt interval_ms;
 } mu_periodic_task_ctx;
 
 // =============================================================================
@@ -51,7 +54,7 @@ mu_thunk_t *mu_periodic_task_init(mu_thunk_t *periodic_task,
                                  mu_periodic_task_ctx *ctx,
                                  mu_thunk_t *triggered_task,
                                  mu_sched_t *scheduler,
-                                 mu_vm_time_ms_dt interval,
+                                 mu_time_ms_dt interval,
                                  const char *task_name);
 
 bool mu_periodic_task_is_active(void);

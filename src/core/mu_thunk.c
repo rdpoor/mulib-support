@@ -25,7 +25,8 @@
 // =============================================================================
 // includes
 
-#include "mu_vm_config.h"
+#include "mu_config.h"    // must come first
+
 #include "mu_thunk.h"
 #include "mu_time.h"
 #include <stddef.h>

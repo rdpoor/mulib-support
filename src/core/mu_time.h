@@ -32,6 +32,8 @@ extern "C";
 // =============================================================================
 // includes
 
+#include "mu_config.h"    // must come first
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "mu_vm.h"

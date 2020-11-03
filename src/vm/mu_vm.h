@@ -64,7 +64,7 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_vm_config.h"    // must come first!
+#include "mu_config.h"    // must come first!
 
 #include <stdbool.h>
 #include <stdint.h>

@@ -32,6 +32,8 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include "mu_config.h"
+
 // =============================================================================
 // types and definitions
 
@@ -135,9 +137,7 @@ typedef enum {
 // no logging code is generated.  To enable logging, uncomment the next line or
 // add -DMU_LOG_ENABLED to your compiler switches.
 
-#define MU_LOG_ENABLED
-
-#ifdef MU_LOG_ENABLED
+#if (MU_LOG_ENABLED)
   #define MU_LOG_INIT() mu_log_init()
   #define MU_LOG_SUBSCRIBE(a, b) mu_log_subscribe(a, b)
   #define MU_LOG_UNSUBSCRIBE(a) mu_log_unsubscribe(a)
