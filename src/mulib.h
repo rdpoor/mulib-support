@@ -50,7 +50,6 @@ extern "C" {
 #include "core/mu_timer.h"
 #include "core/mu_vect.h"
 #include "core/mu_version.h"
-#include "extras/mu_periodic_task.h"
 #include "vm/mu_vm.h"
 
 // =============================================================================
