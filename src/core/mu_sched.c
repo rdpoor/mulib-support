@@ -35,6 +35,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h> // memmove
+#include <utils_assert.h>
 
 // =============================================================================
 // local types and definitions
@@ -102,7 +103,7 @@ mu_sched_err_t mu_sched_step(void) {
       // time to run the thunk: pop from queue, make current, run it...
       s_sched.current_task =
           MU_LIST_CONTAINER(mu_list_pop(&s_sched.task_list), mu_thunk_t, link);
-
+      ASSERT(thunk == s_sched.current_task);
       mu_thunk_call(s_sched.current_task, NULL);
       // set current thunk to null to signify "not running thunk"
       s_sched.current_task = NULL;
@@ -155,34 +156,25 @@ mu_thunk_t *mu_sched_remove_task(mu_thunk_t *thunk) {
 }
 
 mu_sched_err_t mu_sched_task_now(mu_thunk_t *thunk) {
-  mu_sched_remove_task(thunk);
   return sched_task_at(thunk, mu_sched_get_current_time());
 }
 
 mu_sched_err_t mu_sched_task_at(mu_thunk_t *thunk, mu_time_t at) {
-  mu_sched_remove_task(thunk);
   return sched_task_at(thunk, at);
 }
 
 mu_sched_err_t mu_sched_task_in(mu_thunk_t *thunk, mu_time_dt in) {
-  mu_sched_remove_task(thunk);
   return sched_task_at(thunk, mu_time_offset(mu_sched_get_current_time(), in));
-}
-
-mu_sched_err_t mu_sched_reschedule_in(mu_time_dt in) {
-  mu_thunk_t *thunk = mu_sched_get_current_task();
-  if (!thunk) {
-    return MU_SCHED_ERR_NOT_FOUND;
-  }
-  return sched_task_at(thunk, mu_time_offset(mu_thunk_get_time(thunk), in));
 }
 
 mu_sched_err_t mu_sched_reschedule_now(void) {
   mu_thunk_t *thunk = mu_sched_get_current_task();
-  if (!thunk) {
-    return MU_SCHED_ERR_NOT_FOUND;
-  }
   return mu_sched_task_now(thunk);
+}
+
+mu_sched_err_t mu_sched_reschedule_in(mu_time_dt in) {
+  mu_thunk_t *thunk = mu_sched_get_current_task();
+  return sched_task_at(thunk, mu_time_offset(mu_thunk_get_time(thunk), in));
 }
 
 mu_sched_err_t mu_sched_task_from_isr(mu_thunk_t *thunk) {
@@ -223,6 +215,12 @@ static void *default_idle_fn(void *self, void *arg) {
 }
 
 static mu_sched_err_t sched_task_at(mu_thunk_t *thunk, mu_time_t time) {
+  if (!thunk) {
+    return MU_SCHED_ERR_NOT_FOUND;
+  }
+  // TODO: decide if there are any cases where it's NOT necessary to check
+  // that thunk is already scheduled.  Until then, play it safe...
+  mu_sched_remove_task(thunk);
   mu_thunk_set_time(thunk, time);
   mu_list_traverse(&s_sched.task_list, sched_task_at_aux, (void *)thunk);
   return MU_SCHED_ERR_NONE;

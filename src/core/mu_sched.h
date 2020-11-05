@@ -201,6 +201,18 @@ mu_sched_err_t mu_sched_task_at(mu_thunk_t *thunk, mu_time_t at);
 mu_sched_err_t mu_sched_task_in(mu_thunk_t *thunk, mu_time_dt in);
 
 /**
+ * @brief Reschedule the current task to run as soon as possible.
+ *
+ * Note: If there are other runnable tasks, the task will be scheduled after
+ * they have run: they get a chance to run first.
+ *
+ * @param sched The scheduler object.
+ * @return MU_SCHED_ERR_NOT_FOUND if there is no current task, MU_SCHED_ERR_NONE
+ * otherwise.
+ */
+mu_sched_err_t mu_sched_reschedule_now(void);
+
+/**
  * @brief Reschedule the current task after the given interval.
  *
  * Note that to avoid drift, this increments the task's time rather than
@@ -212,18 +224,6 @@ mu_sched_err_t mu_sched_task_in(mu_thunk_t *thunk, mu_time_dt in);
  * otherwise.
  */
 mu_sched_err_t mu_sched_reschedule_in(mu_time_dt in);
-
-/**
- * @brief Reschedule the current task to run as soon as possible.
- *
- * Note: If there are other runnable tasks, the task will be scheduled after
- * they have run: they get a chance to run first.
- *
- * @param sched The scheduler object.
- * @return MU_SCHED_ERR_NOT_FOUND if there is no current task, MU_SCHED_ERR_NONE
- * otherwise.
- */
-mu_sched_err_t mu_sched_reschedule_now(void);
 
 /**
  * @brief Schedule a task from interrupt level.
