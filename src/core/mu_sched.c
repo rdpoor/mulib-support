@@ -35,7 +35,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h> // memmove
-#include <utils_assert.h>
 
 // =============================================================================
 // local types and definitions
