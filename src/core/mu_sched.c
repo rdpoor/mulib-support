@@ -98,7 +98,7 @@ mu_sched_err_t mu_sched_step(void) {
       // time to run the thunk: pop from queue, make current, run it...
       s_sched.current_task =
           MU_LIST_CONTAINER(mu_list_pop(&s_sched.task_list), mu_thunk_t, link);
-      ASSERT(thunk == s_sched.current_task);
+      // ASSERT(thunk == s_sched.current_task);
       mu_thunk_call(s_sched.current_task, NULL);
       // set current thunk to null to signify "not running thunk"
       s_sched.current_task = NULL;
