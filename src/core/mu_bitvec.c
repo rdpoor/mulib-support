@@ -25,7 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_bitvec.h"
+#include "mulib.h"
 #include <stdlib.h>
 #include <stddef.h>
 

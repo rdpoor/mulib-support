@@ -25,16 +25,12 @@
 // =============================================================================
 // includes
 
-#include "mu_config.h"    // must come first
+#include "mulib.h"    // must come first
 
-#include "mu_sched.h"
-#include "mu_list.h"
-#include "mu_spscq.h"
-#include "mu_thunk.h"
-#include "mu_time.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h> // memmove
+#include <assert.h>
 
 // =============================================================================
 // local types and definitions

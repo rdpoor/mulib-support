@@ -25,10 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_config.h"    // must come first
-
-#include "mu_thunk.h"
-#include "mu_time.h"
+#include "mulib.h"
 #include <stddef.h>
 
 // =============================================================================
@@ -117,7 +114,7 @@ mu_time_ms_dt mu_thunk_max_duration_ms(mu_thunk_t *thunk) {
   return mu_time_duration_to_ms(thunk->max_duration);
 }
 
-#ifdef MU_VM_FLOAT
+#ifdef MU_FLOAT
 mu_time_s_dt mu_thunk_runtime_s(mu_thunk_t *thunk) {
   return mu_time_duration_to_s(thunk->runtime);
 }

@@ -25,8 +25,7 @@
 // =============================================================================
 // includes
 
-#include "mu_strbuf.h"
-#include "mu_substr.h"
+#include "mulib.h"
 #include <string.h>
 #include <stdbool.h>
 #include <stddef.h>

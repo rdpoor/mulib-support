@@ -26,11 +26,10 @@
 // =============================================================================
 // includes
 
-#include "mu_log.h"
+#include "mulib.h"
 
 #ifdef MU_LOG_ENABLED // rest of file...
 
-#include "mu_vect.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>

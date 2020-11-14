@@ -32,10 +32,7 @@ extern "C";
 // =============================================================================
 // includes
 
-#include "mu_config.h"    // must come first
-
-#include "mu_time.h"
-#include "mu_sched.h"
+#include "mu_config.h"
 #include "mu_thunk.h"
 #include <stdbool.h>
 

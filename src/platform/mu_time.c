@@ -25,7 +25,9 @@
 // =============================================================================
 // includes
 
+
 #include "mulib.h"
+#include "definitions.h"
 
 // =============================================================================
 // private types and definitions
@@ -33,58 +35,83 @@
 // =============================================================================
 // private declarations
 
-static void *timer_fn(void *ctx, void *arg);
+static int quo_rounded(int x, int y);
 
 // =============================================================================
 // local storage
 
+#ifdef MU_FLOAT
+MU_FLOAT s_rtc_period;
+#endif
+
 // =============================================================================
 // public code
 
-mu_timer_t *mu_timer_init(mu_timer_t *timer,
-                          mu_thunk_t *target_task) {
-  mu_thunk_init(&timer->timer_task, timer_fn, timer, "TimerTask");
-  timer->target_task = target_task;
-  timer->is_running = false;
-  return timer;
+void mu_time_init(void) {
+  RTC_Timer32Start();
+#ifdef MU_FLOAT
+  s_rtc_period = 1.0 / (MU_FLOAT)RTC_FREQUENCY;
+#endif
 }
 
-mu_timer_t *mu_timer_start(mu_timer_t *timer, mu_time_dt interval, bool repeat) {
-  mu_timer_stop(timer);
-  timer->interval = interval;
-  timer->does_repeat = repeat;
-  timer->is_running = true;
-  mu_sched_task_in(&timer->timer_task, interval);
-  return timer;
+mu_time_t mu_time_now(void) {
+  return RTC_Timer32CounterGet();
 }
 
-mu_timer_t *mu_timer_stop(mu_timer_t *timer) {
-  if (timer->is_running) {
-    mu_sched_remove_task(&timer->timer_task);
-  }
-  timer->is_running = false;
-  return timer;
+mu_time_t mu_time_offset(mu_time_t t, mu_time_dt dt) {
+  return t + dt;
 }
 
-bool mu_timer_is_running(mu_timer_t *timer) {
-  return timer->is_running;
+mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
+  return t1 - t2;
 }
+
+bool mu_time_precedes(mu_time_t t1, mu_time_t t2) {
+  volatile mu_time_dt dt = mu_time_difference(t1, t2);
+  return dt < 0;
+}
+
+bool mu_time_equals(mu_time_t t1, mu_time_t t2) {
+  return t1 == t2;
+}
+
+bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
+  mu_time_dt dt = mu_time_difference(t2, t1);
+  return dt < 0;
+}
+
+mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms) {
+  return quo_rounded(ms * RTC_FREQUENCY, 1000);
+}
+
+mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt) {
+  return quo_rounded(dt * 1000, RTC_FREQUENCY);
+}
+
+#ifdef MU_FLOAT
+
+MU_FLOAT mu_time_duration_to_s(mu_time_dt dt) {
+  return dt * s_rtc_period;
+}
+
+mu_time_dt mu_time_s_to_duration(MU_FLOAT seconds) {
+  return seconds / s_rtc_period;
+}
+
+#endif
 
 // =============================================================================
-// static (local) code
+// local (static) code
 
-static void *timer_fn(void *ctx, void *arg) {
-  mu_timer_t *timer = (mu_timer_t *)ctx;
-  if (!timer->is_running) {
-    // timer was previously stopped: don't trigger target_task
-    return NULL;
-  } else if (timer->does_repeat) {
-    // repeat is enabled: schedule next time
-    mu_sched_reschedule_in(timer->interval);
-  } else {
-    // repeat is disabled: stop now
-    timer->is_running = false;
-  }
-  // trigger the target task.  By convention, sched is user argument.
-  return mu_thunk_call(timer->target_task, NULL);
+// See https://stackoverflow.com/a/18067292/558639
+//
+static int quo_rounded(int x, int y) {
+  // What does it all mean?
+  //   (x < 0) is false (zero) if x is non-negative
+  //   (y < 0) is false (zero) if x is non-negative
+  //   (x < 0) ^ (y < 0) is true if x and y have opposite signs
+  //   x/y would be the quotient, but it is truncated towards zero.  To round:
+  //   (x + y/2)/y is the rounded quotient when x and y have the same sign
+  //   (x - y/2)/y is the rounded quotient when x and y have opposite signs
+  return ((x < 0) ^ (y < 0)) ? ((x - y/2)/y) : ((x + y/2)/y);
 }

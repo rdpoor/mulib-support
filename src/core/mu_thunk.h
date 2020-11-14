@@ -32,10 +32,8 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_config.h"    // must come first
-
 #include "mu_list.h"
-#include "mu_time.h"
+#include "platform/mu_time.h"
 
 // =============================================================================
 // types and definitions
@@ -92,7 +90,7 @@ mu_time_ms_dt mu_thunk_runtime_ms(mu_thunk_t *thunk);
 
 mu_time_ms_dt mu_thunk_max_duration_ms(mu_thunk_t *thunk);
 
-#ifdef MU_VM_FLOAT
+#ifdef MU_FLOAT
 mu_time_s_dt mu_thunk_runtime_s(mu_thunk_t *thunk);
 
 mu_time_s_dt mu_thunk_max_duration_s(mu_thunk_t *thunk);
