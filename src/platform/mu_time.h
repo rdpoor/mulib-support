@@ -39,10 +39,6 @@ extern "C";
 // =============================================================================
 // types and definitions
 
-#define RTC_FREQUENCY 32768
-
-#define MU_TIME_MS_TO_DURATION(ms) ((ms) * RTC_FREQUENCY)
-
 // =============================================================================
 // declarations
 
