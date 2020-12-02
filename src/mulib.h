@@ -32,7 +32,6 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_config.h"               // must come first!
 
 #include "core/mu_bitvec.h"
 #include "core/mu_cirq.h"
