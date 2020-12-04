@@ -32,6 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
+//#include "platform/mu_config.h"               // must come first!
 #include "mu_config.h"               // must come first!
 
 #include "core/mu_bitvec.h"
@@ -49,7 +50,8 @@ extern "C" {
 #include "core/mu_timer.h"
 #include "core/mu_vect.h"
 #include "core/mu_version.h"
-#include "platform/mu_time.h"
+//#include "platform/mu_time.h"
+#include "mu_time.h"
 
 // =============================================================================
 // types and definitions

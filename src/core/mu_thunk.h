@@ -33,7 +33,7 @@ extern "C" {
 // includes
 
 #include "mu_list.h"
-#include "platform/mu_time.h"
+#include "mu_time.h"
 
 // =============================================================================
 // types and definitions

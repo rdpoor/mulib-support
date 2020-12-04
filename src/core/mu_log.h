@@ -32,7 +32,6 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_log.h"
 
 // =============================================================================
 // types and definitions
@@ -136,6 +135,9 @@ typedef enum {
 // Unless MU_LOG_ENABLED is defined at compile time, all logging is disabled and
 // no logging code is generated.  To enable logging, uncomment the next line or
 // add -DMU_LOG_ENABLED to your compiler switches.
+
+//#define MU_LOG_ENABLED 1
+
 
 #if (MU_LOG_ENABLED)
   #define MU_LOG_INIT() mu_log_init()

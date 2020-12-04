@@ -10,3 +10,6 @@ html
 build/
 *.d
 *.o
+
+#osx
+.DS_Store
