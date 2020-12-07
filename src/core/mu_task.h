@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,28 +34,25 @@ extern "C" {
 
 #include "mu_config.h"
 #include "mu_list.h"
+#include "mu_thunk.h"
 #include "mu_time.h"
 
 // =============================================================================
 // types and definitions
 
 /**
- * A `mu_task` is a function that can be called later.  It comprises a function
- * pointer (`mu_task_fn`) and a context (`void *ctx`).  When called, the
- * function is passed the ctx argument and a `void *` argument.
- *
- * It also includes a link field and a time field, which are actively used by
- * the scheduler.
+ * A `mu_task` is a function that can be scheduled and be called later.  It
+ * comprises a mu_thunk and a link field and a time field, the latter two of
+ * which are used by the scheduler.
  */
 
 // Ths signature of a mu_task function.
-typedef void *(*mu_task_fn)(void *ctx, void *arg);
+typedef mu_thunk_fn mu_task_fn;
 
 typedef struct _mu_task {
-  mu_list_t link; // next (older) event in the schedule
-  mu_time_t time; // time at which this task fires
-  mu_task_fn fn;  // function to call
-  void *ctx;      // context to pass when called
+  mu_list_t link;   // next (older) event in the schedule
+  mu_time_t time;   // time at which this task fires
+  mu_thunk_t thunk; // the underlying thunk
 #if (MU_TASK_PROFILING)
   const char *name;        // user defined task name
   unsigned int call_count; // # of times task is called
@@ -75,9 +72,11 @@ mu_time_t mu_task_get_time(mu_task_t *task);
 
 void mu_task_set_time(mu_task_t *task, mu_time_t time);
 
+mu_thunk_t *mu_test_get_thunk(mu_task_t *task);
+
 mu_task_fn mu_task_get_fn(mu_task_t *task);
 
-void *mu_task_get_context(mu_task_t *task);
+void *mu_task_get_ctx(mu_task_t *task);
 
 const char *mu_task_name(mu_task_t *task);
 
