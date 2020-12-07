@@ -49,7 +49,7 @@ mu_task_t *mu_task_init(mu_task_t *task,
                         const char *name) {
   task->link.next = NULL;
   task->time = 0;
-  mu_thunk_init(task->thunk, fn, ctx);
+  mu_thunk_init(&task->thunk, fn, ctx);
 #if (MU_TASK_PROFILING)
   task->name = name;
   task->call_count = 0;
@@ -76,11 +76,11 @@ mu_thunk_t *mu_test_get_thunk(mu_task_t *task) {
 }
 
 mu_task_fn mu_task_get_fn(mu_task_t *task) {
-  return mu_thunk_get_fn(task->thunk);
+  return mu_thunk_get_fn(&task->thunk);
 }
 
 void *mu_task_get_ctx(mu_task_t *task) {
-  return mu_thunk_get_ctx(task->thunk);
+  return mu_thunk_get_ctx(&task->thunk);
 }
 
 const char *mu_task_name(mu_task_t *task) {
@@ -96,7 +96,7 @@ void *mu_task_call(mu_task_t *task, void *arg) {
 #if (MU_TASK_PROFILING)
   mu_time_t called_at = mu_time_now();
 #endif
-  void *result = mu_thunk_call(task->thunk);
+  void *result = mu_thunk_call(&task->thunk, arg);
 #if (MU_TASK_PROFILING)
   task->call_count += 1;
   mu_time_dt duration = mu_time_difference(mu_time_now(), called_at);
