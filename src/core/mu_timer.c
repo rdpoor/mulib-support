@@ -74,6 +74,7 @@ bool mu_timer_is_running(mu_timer_t *timer) {
 // static (local) code
 
 static void *timer_fn(void *ctx, void *arg) {
+  (void)(arg);
   mu_timer_t *timer = (mu_timer_t *)ctx;
   if (!timer->is_running) {
     // timer was previously stopped: don't trigger target_task

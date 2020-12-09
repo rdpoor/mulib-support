@@ -205,6 +205,8 @@ mu_sched_task_status_t mu_sched_get_task_status(mu_thunk_t *thunk) {
 // local (static) code
 
 static void *default_idle_fn(void *self, void *arg) {
+  (void)(self);
+  (void)(arg);
   // the default idle thunk doesn't do much...
   return self;
 }

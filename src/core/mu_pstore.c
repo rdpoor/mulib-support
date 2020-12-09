@@ -89,7 +89,7 @@ bool mu_pstore_contains(mu_pstore_t *pstore, mu_pstore_item_t item) {
 }
 
 int mu_pstore_index_of(mu_pstore_t *pstore, mu_pstore_item_t item) {
-  for (int i=0; i<pstore->count; i++) {
+  for (size_t i=0; i<pstore->count; i++) {
     if (pstore->items[i] == item) {
       return i;
     }
@@ -167,12 +167,14 @@ mu_pstore_item_t mu_pstore_delete(mu_pstore_t *pstore, mu_pstore_item_t item) {
   if (index == -1) {
     return NULL;
   } else {
-    delete_at(pstore, index);
+    delete_at(pstore, (size_t)index);
     return item;
   }
 }
 
 mu_pstore_err_t mu_pstore_filter(mu_pstore_t *pstore, mu_pstore_filter_fn match) {
+  (void)(pstore);
+  (void)(match);
   // TODO: NOT YET IMPLEMENTED
   return MU_PSTORE_ERR_NONE;
 }

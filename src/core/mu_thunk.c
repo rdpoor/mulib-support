@@ -53,6 +53,8 @@ mu_thunk_t *mu_thunk_init(mu_thunk_t *thunk,
   thunk->call_count = 0;
   thunk->runtime = 0;
   thunk->max_duration = 0;
+#else
+  (void)(name);
 #endif
   return thunk;
 }
@@ -81,6 +83,7 @@ const char *mu_thunk_name(mu_thunk_t *thunk) {
 #if (MU_THUNK_PROFILING)
   return thunk->name;
 #else
+  (void)(thunk);
   return "";
 #endif
 }

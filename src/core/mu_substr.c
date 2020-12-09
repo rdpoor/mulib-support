@@ -125,7 +125,7 @@ mu_substr_err_t mu_substr_put(mu_substr_t *s, size_t index, mu_strbuf_data_t d) 
 
 mu_substr_err_t mu_substr_slice_str(mu_substr_t *s, int start, int end) {
   size_t capacity = mu_strbuf_capacity(mu_substr_str(s));
-  int s1, e1;
+  size_t s1, e1;
 
   if (start >= 0) {
     s1 = start;
@@ -138,9 +138,9 @@ mu_substr_err_t mu_substr_slice_str(mu_substr_t *s, int start, int end) {
     e1 = capacity + end;
   }
 
-  if ((s1 < 0) || (s1 > capacity)) {
+  if (s1 > capacity) {
     return MU_SUBSTR_ERR_INDEX;
-  } else if ((e1 < 0) || (e1 > capacity)) {
+  } else if (e1 > capacity) {
     return MU_SUBSTR_ERR_INDEX;
   } else if (e1 < s1) {
     return MU_SUBSTR_ERR_INDEX;
