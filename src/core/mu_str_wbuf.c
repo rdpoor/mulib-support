@@ -25,48 +25,34 @@
 // =============================================================================
 // includes
 
-#include "mu_template.h"
+#include "mu_str_wbuf.h"
+#include "mulib.h"
+#include <stddef.h>
+#include <string.h>
 
 // =============================================================================
 // local types and definitions
 
-#define MU_TEMPLATE_DEBUG (0)
-
-typedef enum {
-  MU_TEMPLATE_STATE_0,
-} mu_template_state_t;
-
 // =============================================================================
 // local (forward) declarations
-
-mu_template_state_t get_state(mu_template_t *template);
-mu_template_t *set_state(mu_template_t *template, mu_template_state_t state);
 
 // =============================================================================
 // local storage
 
-static mu_template_t s_template;
-
 // =============================================================================
 // public code
 
-mu_template_t *mu_template_init() {
-  return template_reset(&s_template);
+mu_str_wbuf_t *mu_str_wbuf_init(mu_str_wbuf_t *wbuf,
+                                uint8_t *store,
+                                size_t capacity) {
+  wbuf->store = store;
+  wbuf->capacity = capacity;
+  return wbuf;
 }
+
+uint8_t *mu_str_wbuf_store(mu_str_wbuf_t *wbuf) { return wbuf->store; }
+
+size_t mu_str_wbuf_capacity(mu_str_wbuf_t *wbuf) { return wbuf->capacity; }
 
 // =============================================================================
 // local (static) code
-
-static mu_template_t *template_reset(template_t *template) {
-  template_set_state(MU_TEMPLATE_STATE_0);
-  return template;
-}
-
-mu_template_state_t get_state(mu_template_t *template) {
-  return template->state;
-}
-
-mu_template_t *set_state(mu_template_t *template, mu_template_state_t state) {
-  template->state = state;
-  return template;
-}

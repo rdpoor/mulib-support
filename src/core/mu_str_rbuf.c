@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,48 +22,46 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_THUNK_H_
-#define _MU_THUNK_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================================
 // includes
 
-#include "mu_time.h"
+#include "mu_str_rbuf.h"
+#include "mulib.h"
+#include <stddef.h>
+#include <string.h>
 
 // =============================================================================
-// types and definitions
-
-/**
- * A `mu_thunk` is a function that can be called later.  It comprises a function
- * pointer (`mu_thunk_fn`) and a context (`void *ctx`).  When called, the
- * function is passed the ctx argument and a caller-supplied `void *` argument.
- */
-
-// The signature of a mu_thunk function.
-typedef void *(*mu_thunk_fn)(void *ctx, void *arg);
-
-typedef struct _mu_thunk {
-  mu_thunk_fn fn; // function to call
-  void *ctx;      // context to pass when called
-} mu_thunk_t;
+// local types and definitions
 
 // =============================================================================
-// Declarations
+// local (forward) declarations
 
-mu_thunk_t *mu_thunk_init(mu_thunk_t *thunk, mu_thunk_fn fn, void *ctx);
+// =============================================================================
+// local storage
 
-mu_thunk_fn mu_thunk_get_fn(mu_thunk_t *thunk);
+// =============================================================================
+// public code
 
-void *mu_thunk_get_ctx(mu_thunk_t *thunk);
-
-void *mu_thunk_call(mu_thunk_t *thunk, void *arg);
-
-#ifdef __cplusplus
+mu_str_rbuf_t *mu_str_rbuf_init(mu_str_rbuf_t *rbuf,
+                                const uint8_t const *store,
+                                size_t capacity) {
+  rbuf->store = store;
+  rbuf->capacity = capacity;
+  return rbuf;
 }
-#endif
 
-#endif // #ifndef _MU_THUNK_H_
+mu_str_rbuf_t *mu_str_rbuf_init_from_cstr(mu_str_rbuf_t *rbuf,
+                                          const uint8_t const *cstr) {
+  rbuf->store = cstr;
+  rbuf->capacity = strlen(cstr);
+  return rbuf;
+}
+
+const uint8_t const *mu_str_rbuf_store(mu_str_rbuf_t *rbuf) {
+  return rbuf->store;
+}
+
+size_t mu_str_rbuf_capacity(mu_str_rbuf_t *rbuf) { return rbuf->capacity; }
+
+// =============================================================================
+// local (static) code

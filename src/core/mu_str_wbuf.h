@@ -22,27 +22,40 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+#ifndef _MU_STR_WBUF_H_
+#define _MU_STR_WBUF_H_
 
-#include "../src/template.h"
-#include "test_utilities.h"
-
-// =============================================================================
-// private types and definitions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// private declarations
+// Includes
+
+#include <stdbool.h>
+#include <stddef.h>
 
 // =============================================================================
-// local storage
+// Types and definitions
+
+typedef struct {
+  uint8_t *store;
+  size_t capacity;
+} mu_str_wbuf_t;
 
 // =============================================================================
-// public code
+// Declarations
 
-void template_test() {
+mu_str_wbuf_t *mu_str_wbuf_init(mu_str_wbuf_t *wbuf,
+                                uint8_t *store,
+                                size_t capacity);
 
+uint8_t *mu_str_wbuf_store(mu_str_wbuf_t *wbuf);
+
+size_t mu_str_wbuf_capacity(mu_str_wbuf_t *wbuf);
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _MU_STR_WBUF_H_ */

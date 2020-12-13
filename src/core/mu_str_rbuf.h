@@ -22,46 +22,43 @@
  * SOFTWARE.
  */
 
-#ifndef MU_TEMPLATE_H_
-#define MU_TEMPLATE_H_
+#ifndef _MU_STR_RBUF_H_
+#define _MU_STR_RBUF_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // =============================================================================
-// includes
+// Includes
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 // =============================================================================
-// types and definitions
-
-typedef enum {
-  MU_TEMPLATE_ERR_NONE,
-} mu_template_err_t;
+// Types and definitions
 
 typedef struct {
-  mu_template_state_t state;
-} mu_template_t;
-
+  const uint8_t const *store;
+  size_t capacity;
+} mu_str_rbuf_t;
 
 // =============================================================================
-// declarations
+// Declarations
 
-/**
- * \brief initialize the template module.
- */
-mu_template_t *mu_template_init(mu_template_t *template);
+mu_str_rbuf_t *mu_str_rbuf_init(mu_str_rbuf_t *rbuf,
+                                const uint8_t const *store,
+                                size_t capacity);
 
-/**
- * \brief  Reset the template.
- */
-mu_template_t *mu_template_reset(mu_template_t *template);
+mu_str_rbuf_t *mu_str_rbuf_init_from_cstr(mu_str_rbuf_t *rbuf,
+                                          const uint8_t const *cstr);
+
+const uint8_t const *mu_str_rbuf_store(mu_str_rbuf_t *rbuf);
+
+size_t mu_str_rbuf_capacity(mu_str_rbuf_t *rbuf);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef MU_TEMPLATE_H_ */
+#endif /* #ifndef _MU_STR_RBUF_H_ */

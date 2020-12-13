@@ -45,6 +45,7 @@ extern "C" {
 #include "core/mu_strbuf.h"
 #include "core/mu_strref.h"
 #include "core/mu_substr.h"
+#include "core/mu_task.h"
 #include "core/mu_thunk.h"
 #include "core/mu_timer.h"
 #include "core/mu_vect.h"

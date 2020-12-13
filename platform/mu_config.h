@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_THUNK_H_
-#define _MU_THUNK_H_
+//#error "Replace mu_config.h with your platform-specific file"
+
+//#if 0  // entire file
+
+#ifndef _MU_CONFIG_H_
+#define _MU_CONFIG_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,38 +36,55 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_time.h"
+#include <stdint.h>
+#include <utils_assert.h>
 
 // =============================================================================
 // types and definitions
 
+#define MU_LOG_ENABLED 1
+#define MU_THUNK_PROFILING 1
+// #define MU_CAN_SLEEP
+
 /**
- * A `mu_thunk` is a function that can be called later.  It comprises a function
- * pointer (`mu_thunk_fn`) and a context (`void *ctx`).  When called, the
- * function is passed the ctx argument and a caller-supplied `void *` argument.
+ * If your port supports floating point operations, choose one of the following
+ * either by uncommenting one of the following lines, or by setting the symbol
+ * in the compiler.
  */
+// #define MU_FLOAT float
+#define MU_FLOAT double
 
-// The signature of a mu_thunk function.
-typedef void *(*mu_thunk_fn)(void *ctx, void *arg);
-
-typedef struct _mu_thunk {
-  mu_thunk_fn fn; // function to call
-  void *ctx;      // context to pass when called
-} mu_thunk_t;
+typedef uint32_t mu_time_t;
+typedef int32_t mu_time_dt;
+typedef int32_t mu_time_ms_dt;
 
 // =============================================================================
-// Declarations
+// Everything below this line is deduced from the settings above this line.
 
-mu_thunk_t *mu_thunk_init(mu_thunk_t *thunk, mu_thunk_fn fn, void *ctx);
+#ifndef ASSERT
+//#define ASSERT(expr) do {} while(0)
+#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+#endif
 
-mu_thunk_fn mu_thunk_get_fn(mu_thunk_t *thunk);
+#ifdef MU_FLOAT
+  #define MU_HAS_FLOAT (1)
+#else
+  #define MU_HAS_FLOAT (0)
+#endif
 
-void *mu_thunk_get_ctx(mu_thunk_t *thunk);
+#if defined(MU_FLOAT) && ((MU_FLOAT == float) || (MU_FLOAT == double))
+  typedef MU_FLOAT mu_float_t;
+#else
+  #error MU_FLOAT must be either float or double
+#endif
 
-void *mu_thunk_call(mu_thunk_t *thunk, void *arg);
+// =============================================================================
+// declarations
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef _MU_THUNK_H_
+#endif /* #ifndef _MU_CONFIG_H_ */
+
+//#endif // #if 0
