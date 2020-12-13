@@ -93,13 +93,13 @@ mu_str_ref_t *mu_str_ref_slice(mu_str_ref_t *dst,
 
   mu_str_ref_copy(dst, src);
 
-  if (start > 0) {
+  if (start >= 0) {
     s1 = start;
   } else {
     s1 = len + start;
   }
 
-  if (end > 0) {
+  if (end >= 0) {
     e1 = end;
   } else {
     e1 = len + end;
@@ -116,9 +116,9 @@ mu_str_ref_t *mu_str_ref_slice(mu_str_ref_t *dst,
     s1 = e1;
   }
 
-  // convert relative s1, e1 to absolute get_i, put_i
+  // s1, e1 refer the start and end of the slice, relative to get_i:
+  dst->put_i = dst->get_i + e1;
   dst->get_i += s1;
-  dst->put_i += e1;
 
   return dst;
 }
