@@ -32,7 +32,9 @@ extern "C" {
 // =============================================================================
 // Includes
 
-#include <stddef.h>
+#include "mu_str_rbuf.h"
+#include "mu_str_wbuf.h"
+#include <stdint.h>
 #include <stdbool.h>
 
 // =============================================================================
@@ -100,7 +102,7 @@ mu_str_ref_t *mu_str_ref_write_reset(mu_str_ref_t *ref);
  * @param src The ref to be copied from.
  * @return dst
  */
-mu_str_ref_t *mu_str_ref_copy(mu_str_ref_t *dst, const mu_str_ref_t const *src);
+mu_str_ref_t *mu_str_ref_copy(mu_str_ref_t *dst, const mu_str_ref_t * const src);
 
 /**
  * @brief Take a slice of an existing ref.
@@ -127,7 +129,7 @@ mu_str_ref_t *mu_str_ref_copy(mu_str_ref_t *dst, const mu_str_ref_t const *src);
  * @return dst
  */
  mu_str_ref_t *mu_str_ref_slice(mu_str_ref_t *dst,
-                                const mu_str_ref_t const *src,
+                                const mu_str_ref_t * const src,
                                 int start,
                                 int end);
 
@@ -140,7 +142,7 @@ mu_str_ref_t *mu_str_ref_copy(mu_str_ref_t *dst, const mu_str_ref_t const *src);
  * @param ref A ref object.
  * @return The number of bytes that are available for reading.
  */
-size_t mu_str_ref_readabale_count(mu_str_ref_t *ref);
+size_t mu_str_ref_readable_count(const mu_str_ref_t * const ref);
 
 /**
  * @brief Get the number of bytes that can be written.
@@ -151,7 +153,7 @@ size_t mu_str_ref_readabale_count(mu_str_ref_t *ref);
  * @param ref A ref object.
  * @return The number of bytes that are available for writing.
  */
-size_t mu_str_ref_writeable_count(mu_str_ref_t *ref);
+size_t mu_str_ref_writeable_count(const mu_str_ref_t * const ref);
 
 /**
  * @brief Read one byte from a readonly buffer.
@@ -189,7 +191,7 @@ bool mu_str_ref_write_byte(mu_str_ref_t *ref, uint8_t byte);
  * @param src Reference to a readable buffer.
  * @return The number of bytes copied.
  */
-size_t mu_str_ref_append(mu_str_ref_t *dst, const mu_str_ref const *src);
+size_t mu_str_ref_append(mu_str_ref_t *dst, const mu_str_ref_t * const src);
 
 /**
  * @brief Print into a buffer.
@@ -215,7 +217,7 @@ size_t mu_str_ref_printf(mu_str_ref_t *dst, const char *fmt, ...);
  * @laram buflen The length of the C string buffer.
  * @return The actual number of bytes copied, NOT including null termination.
  */
-size_t mu_str_ref_to_cstr(const mu_str_ref_t const *src,
+size_t mu_str_ref_to_cstr(const mu_str_ref_t * const src,
                             uint8_t *buf, size_t buflen);
 
 #ifdef __cplusplus

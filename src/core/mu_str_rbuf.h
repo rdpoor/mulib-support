@@ -32,14 +32,14 @@ extern "C" {
 // =============================================================================
 // Includes
 
-#include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 // =============================================================================
 // Types and definitions
 
 typedef struct {
-  const uint8_t const *store;
+  const uint8_t * store;   // backing store
   size_t capacity;
 } mu_str_rbuf_t;
 
@@ -47,15 +47,15 @@ typedef struct {
 // Declarations
 
 mu_str_rbuf_t *mu_str_rbuf_init(mu_str_rbuf_t *rbuf,
-                                const uint8_t const *store,
+                                const uint8_t *const store,
                                 size_t capacity);
 
 mu_str_rbuf_t *mu_str_rbuf_init_from_cstr(mu_str_rbuf_t *rbuf,
-                                          const uint8_t const *cstr);
+                                          const uint8_t *const cstr);
 
-const uint8_t const *mu_str_rbuf_store(mu_str_rbuf_t *rbuf);
+const uint8_t *const mu_str_rbuf_store(const mu_str_rbuf_t *const rbuf);
 
-size_t mu_str_rbuf_capacity(mu_str_rbuf_t *rbuf);
+size_t mu_str_rbuf_capacity(const mu_str_rbuf_t *const rbuf);
 
 #ifdef __cplusplus
 }

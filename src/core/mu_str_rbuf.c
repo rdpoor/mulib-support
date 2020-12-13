@@ -43,7 +43,7 @@
 // public code
 
 mu_str_rbuf_t *mu_str_rbuf_init(mu_str_rbuf_t *rbuf,
-                                const uint8_t const *store,
+                                const uint8_t *const store,
                                 size_t capacity) {
   rbuf->store = store;
   rbuf->capacity = capacity;
@@ -51,17 +51,19 @@ mu_str_rbuf_t *mu_str_rbuf_init(mu_str_rbuf_t *rbuf,
 }
 
 mu_str_rbuf_t *mu_str_rbuf_init_from_cstr(mu_str_rbuf_t *rbuf,
-                                          const uint8_t const *cstr) {
+                                          const uint8_t *const cstr) {
   rbuf->store = cstr;
-  rbuf->capacity = strlen(cstr);
+  rbuf->capacity = strlen((const char *)cstr);
   return rbuf;
 }
 
-const uint8_t const *mu_str_rbuf_store(mu_str_rbuf_t *rbuf) {
+const uint8_t *const mu_str_rbuf_store(const mu_str_rbuf_t *const rbuf) {
   return rbuf->store;
 }
 
-size_t mu_str_rbuf_capacity(mu_str_rbuf_t *rbuf) { return rbuf->capacity; }
+size_t mu_str_rbuf_capacity(const mu_str_rbuf_t *const rbuf) {
+  return rbuf->capacity;
+}
 
 // =============================================================================
 // local (static) code

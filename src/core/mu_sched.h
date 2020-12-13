@@ -37,7 +37,7 @@ extern "C" {
 
 #include "mu_config.h"
 #include "mu_spscq.h"
-#include "mu_thunk.h"
+#include "mu_task.h"
 //#include "platform/mu_time.h"
 #include "mu_time.h"
 #include <stdbool.h>
@@ -102,17 +102,17 @@ mu_spscq_t *mu_sched_isr_queue(void);
 /**
  * @brief Return the default idle task (which does nothing but return).
  */
-mu_thunk_t *mu_sched_get_default_idle_task(void);
+mu_task_t *mu_sched_get_default_idle_task(void);
 
 /**
  * @brief Return the idle task.
  */
-mu_thunk_t *mu_sched_get_idle_task(void);
+mu_task_t *mu_sched_get_idle_task(void);
 
 /**
  * @brief Set the task to be invoked when there are no tasks to run.
  */
-void mu_sched_set_idle_task(mu_thunk_t *thunk);
+void mu_sched_set_idle_task(mu_task_t *task);
 
 /**
  * @brief Return the current clock souce.
@@ -145,12 +145,12 @@ bool mu_sched_is_empty(void);
 /**
  * @brief Return the task currently being run, or NULL if none.
  */
-mu_thunk_t *mu_sched_get_current_task(void);
+mu_task_t *mu_sched_get_current_task(void);
 
 /**
  * @brief Return the next task to be run or NULL if thre are none to run.
  */
-mu_thunk_t *mu_sched_get_next_task(void);
+mu_task_t *mu_sched_get_next_task(void);
 
 /**
  * @brief Remove a scheduled task.
@@ -159,7 +159,7 @@ mu_thunk_t *mu_sched_get_next_task(void);
  * @param task The task to be removed.
  * @return The task that was removed, or NULL if it was not scheduled.
  */
-mu_thunk_t *mu_sched_remove_task(mu_thunk_t *thunk);
+mu_task_t *mu_sched_remove_task(mu_task_t *task);
 
 /**
  * @brief Schedule (or reschedule) a task to be run as soon as possible.
@@ -174,7 +174,7 @@ mu_thunk_t *mu_sched_remove_task(mu_thunk_t *thunk);
  * @param task The task to be scheduled.
  * @return MU_SCHED_ERR_NONE.  (Other error returns may be added in the future.)
  */
-mu_sched_err_t mu_sched_task_now(mu_thunk_t *thunk);
+mu_sched_err_t mu_sched_task_now(mu_task_t *task);
 
 /**
  * @brief Schedule a task to be run at a particular time.
@@ -187,7 +187,7 @@ mu_sched_err_t mu_sched_task_now(mu_thunk_t *thunk);
  * @param at The time at which to run the task.
  * @return MU_SCHED_ERR_NONE.  (Other error returns may be added in the future.)
  */
-mu_sched_err_t mu_sched_task_at(mu_thunk_t *thunk, mu_time_t at);
+mu_sched_err_t mu_sched_task_at(mu_task_t *task, mu_time_t at);
 
 /**
  * @brief Schedule a task to be run after a given interval.
@@ -200,7 +200,7 @@ mu_sched_err_t mu_sched_task_at(mu_thunk_t *thunk, mu_time_t at);
  * @param in The interval after which to run the task.
  * @return MU_SCHED_ERR_NONE.  (Other error returns may be added in the future.)
  */
-mu_sched_err_t mu_sched_task_in(mu_thunk_t *thunk, mu_time_dt in);
+mu_sched_err_t mu_sched_task_in(mu_task_t *task, mu_time_dt in);
 
 /**
  * @brief Reschedule the current task to run as soon as possible.
@@ -237,7 +237,7 @@ mu_sched_err_t mu_sched_reschedule_in(mu_time_dt in);
  * @param task The task to be scheduled.
  * @return MU_SCHED_ERR_NONE.  (Other error returns may be added in the future.)
  */
-mu_sched_err_t mu_sched_task_from_isr(mu_thunk_t *thunk);
+mu_sched_err_t mu_sched_task_from_isr(mu_task_t *task);
 
 /**
  * @brief Return the status of a task.
@@ -252,7 +252,7 @@ mu_sched_err_t mu_sched_task_from_isr(mu_thunk_t *thunk);
  * @param task The task being queried.
  * @return task status.
  */
-mu_sched_task_status_t mu_sched_get_task_status(mu_thunk_t *thunk);
+mu_sched_task_status_t mu_sched_get_task_status(mu_task_t *task);
 
 #ifdef __cplusplus
 }

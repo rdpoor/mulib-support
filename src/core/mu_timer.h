@@ -40,8 +40,8 @@ extern "C";
 // types and definitions
 
 typedef struct {
-  mu_thunk_t timer_task;
-  mu_thunk_t *target_task;
+  mu_task_t timer_task;
+  mu_task_t *target_task;
   mu_time_dt interval;
   bool does_repeat;
   bool is_running;
@@ -50,8 +50,7 @@ typedef struct {
 // =============================================================================
 // declarations
 
-mu_timer_t *mu_timer_init(mu_timer_t *timer,
-                          mu_thunk_t *target_task);
+mu_timer_t *mu_timer_init(mu_timer_t *timer, mu_task_t *target_task);
 
 mu_timer_t *mu_timer_start(mu_timer_t *timer, mu_time_dt interval, bool repeat);
 

@@ -26,10 +26,12 @@
 // includes
 
 #include "mu_str_ref.h"
-#include "mu_str_rref.h"
-#include "mu_str_wref.h"
+#include "mu_str_rbuf.h"
+#include "mu_str_wbuf.h"
 #include "mulib.h"
+#include <stdarg.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 
 // =============================================================================
@@ -37,6 +39,16 @@
 
 // =============================================================================
 // local (forward) declarations
+
+/**
+ * @brief return a pointer to the next byte for reading.
+ */
+static const uint8_t *const read_ptr(const mu_str_ref_t *const src);
+
+/**
+ * @brief return a pointer to the next byte for writing.
+ */
+static uint8_t *write_ptr(const mu_str_ref_t *const dst);
 
 // =============================================================================
 // local storage
@@ -49,14 +61,15 @@ mu_str_ref_t *mu_str_ref_init_for_read(mu_str_ref_t *ref, mu_str_rbuf_t *rbuf) {
   return mu_str_ref_read_reset(ref);
 }
 
-mu_str_ref_t *mu_str_ref_init_for_write(mu_str_ref_t *ref, mu_str_wbuf_t *wbuf) {
+mu_str_ref_t *mu_str_ref_init_for_write(mu_str_ref_t *ref,
+                                        mu_str_wbuf_t *wbuf) {
   ref->wbuf = wbuf;
-  return mu_str_ref_write_reset();
+  return mu_str_ref_write_reset(ref);
 }
 
 mu_str_ref_t *mu_str_ref_read_reset(mu_str_ref_t *ref) {
   ref->get_i = 0;
-  ref->put_i = mu_str_rbuf_capacity(rbuf);
+  ref->put_i = mu_str_rbuf_capacity(ref->rbuf);
   return ref;
 }
 
@@ -66,15 +79,16 @@ mu_str_ref_t *mu_str_ref_write_reset(mu_str_ref_t *ref) {
   return ref;
 }
 
-mu_str_ref_t *mu_str_ref_copy(mu_str_ref_t *dst, const mu_str_ref_t const *src) {
+mu_str_ref_t *mu_str_ref_copy(mu_str_ref_t *dst,
+                              const mu_str_ref_t *const src) {
   return (mu_str_ref_t *)memcpy(dst, src, sizeof(mu_str_ref_t));
 }
 
- mu_str_ref_t *mu_str_ref_slice(mu_str_ref_t *dst,
-                                const mu_str_ref_t const *src,
-                                int start,
-                                int end) {
-  size_t len = mu_str_readable_count(src);
+mu_str_ref_t *mu_str_ref_slice(mu_str_ref_t *dst,
+                               const mu_str_ref_t *const src,
+                               int start,
+                               int end) {
+  size_t len = mu_str_ref_readable_count(src);
   size_t s1, e1;
 
   mu_str_ref_copy(dst, src);
@@ -109,19 +123,20 @@ mu_str_ref_t *mu_str_ref_copy(mu_str_ref_t *dst, const mu_str_ref_t const *src) 
   return dst;
 }
 
-size_t mu_str_ref_readabale_count(mu_str_ref_t *ref) {
+size_t mu_str_ref_readable_count(const mu_str_ref_t *const ref) {
   return ref->put_i - ref->get_i;
 }
 
-size_t mu_str_ref_writeable_count(mu_str_ref_t *ref) {
+size_t mu_str_ref_writeable_count(const mu_str_ref_t *const ref) {
   return mu_str_wbuf_capacity(ref->wbuf) - ref->put_i;
 }
 
 bool mu_str_ref_read_byte(mu_str_ref_t *ref, uint8_t *byte) {
-  if (mu_str_ref_readabale_count(ref) == 0) {
+  if (mu_str_ref_readable_count(ref) == 0) {
     return false;
   }
-  *byte = ref->rbuf->store[ref->get_i++];
+  *byte = *read_ptr(ref);
+  ref->get_i += 1;
   return true;
 }
 
@@ -129,31 +144,31 @@ bool mu_str_ref_write_byte(mu_str_ref_t *ref, uint8_t byte) {
   if (mu_str_ref_writeable_count(ref) == 0) {
     return false;
   }
-  ref->wbuf->store[ref->put_i++] = byte;
+  *write_ptr(ref) = byte;
+  ref->put_i += 1;
   return true;
 }
 
-size_t mu_str_ref_append(mu_str_ref_t *dst, const mu_str_ref const *src) {
-  // optimize later...
-  uint8_t byte;
-  size_t count = 0;
-  while (mu_str_buf_read_byte(src, &byte)) {
-    if (!mu_str_ref_write_byte(dst, buf)) {
-      break;
-    }
-    count += 1;
+size_t mu_str_ref_append(mu_str_ref_t *dst, const mu_str_ref_t *const src) {
+  size_t count = mu_str_ref_readable_count(src);
+  size_t writeable = mu_str_ref_writeable_count(dst);
+
+  if (count > writeable) {
+    count = writeable;
   }
+  memcpy(write_ptr(dst), read_ptr(src), count);
+  dst->put_i += count;
   return count;
 }
 
 size_t mu_str_ref_printf(mu_str_ref_t *dst, const char *fmt, ...) {
   size_t writeable = mu_str_ref_writeable_count(dst);
+  size_t written = 0;
 
   if (writeable > 0) {
-    size_t written;
     va_list ap;
     va_start(ap, fmt);
-    written = vsnprintf(&dst->wbuf->store[dst->put_i], writeable, fmt, ap);
+    written = vsnprintf((char *)write_ptr(dst), writeable, fmt, ap);
     va_end(ap);
     // Note: written is the number of bytes that *would* have been written if
     // there was enough room, NOT the number of bytes actually written.
@@ -162,20 +177,28 @@ size_t mu_str_ref_printf(mu_str_ref_t *dst, const char *fmt, ...) {
     }
     dst->put_i += written;
   }
-  return dst;
+  return written;
 }
 
-size_t mu_str_ref_to_cstr(const mu_str_ref_t const *src,
-                          uint8_t *buf, size_t buflen) {
-  size_t copied = mu_str_ref_readabale_count(src);
+size_t
+mu_str_ref_to_cstr(const mu_str_ref_t *const src, uint8_t *buf, size_t buflen) {
+  size_t copied = mu_str_ref_readable_count(src);
   if (copied > buflen - 1) {
-    copied = buflen - 1;      // always leave room for null termination
+    copied = buflen - 1; // always leave room for null termination
   }
-  memcpy(buf, &src->rbuf->store[src->get_i], copied);
-  buf[copied] = '\0';         // null terminate
+  memcpy(buf, read_ptr(src), copied);
+  buf[copied] = '\0'; // null terminate
 
-  return copied-1;     // return # of bytes copied, not including null
+  return copied - 1; // return # of bytes copied, not including null
 }
 
 // =============================================================================
 // local (static) code
+
+static const uint8_t *const read_ptr(const mu_str_ref_t *const src) {
+  return &src->rbuf->store[src->get_i];
+}
+
+static uint8_t *write_ptr(const mu_str_ref_t *const dst) {
+  return &dst->wbuf->store[dst->put_i];
+}

@@ -41,15 +41,15 @@ static void *timer_fn(void *ctx, void *arg);
 // =============================================================================
 // public code
 
-mu_timer_t *mu_timer_init(mu_timer_t *timer,
-                          mu_thunk_t *target_task) {
-  mu_thunk_init(&timer->timer_task, timer_fn, timer, "TimerTask");
+mu_timer_t *mu_timer_init(mu_timer_t *timer, mu_task_t *target_task) {
+  mu_task_init(&timer->timer_task, timer_fn, timer, "TimerTask");
   timer->target_task = target_task;
   timer->is_running = false;
   return timer;
 }
 
-mu_timer_t *mu_timer_start(mu_timer_t *timer, mu_time_dt interval, bool repeat) {
+mu_timer_t *
+mu_timer_start(mu_timer_t *timer, mu_time_dt interval, bool repeat) {
   mu_timer_stop(timer);
   timer->interval = interval;
   timer->does_repeat = repeat;
@@ -66,9 +66,7 @@ mu_timer_t *mu_timer_stop(mu_timer_t *timer) {
   return timer;
 }
 
-bool mu_timer_is_running(mu_timer_t *timer) {
-  return timer->is_running;
-}
+bool mu_timer_is_running(mu_timer_t *timer) { return timer->is_running; }
 
 // =============================================================================
 // static (local) code
@@ -87,5 +85,5 @@ static void *timer_fn(void *ctx, void *arg) {
     timer->is_running = false;
   }
   // trigger the target task.  By convention, sched is user argument.
-  return mu_thunk_call(timer->target_task, NULL);
+  return mu_task_call(timer->target_task, NULL);
 }
