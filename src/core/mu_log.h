@@ -179,7 +179,7 @@ typedef enum {
 /**
  * @brief: prototype for uLog subscribers.
  */
-typedef void (*mu_log_function_t)(mu_log_level_t severity, char *msg);
+typedef void (*mu_log_function_t)(mu_log_level_t severity, const char *msg);
 
 // =============================================================================
 // declarations
