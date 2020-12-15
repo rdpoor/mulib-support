@@ -50,6 +50,12 @@ static const uint8_t *const read_ptr(const mu_str_ref_t *const src);
  */
 static uint8_t *write_ptr(const mu_str_ref_t *const dst);
 
+/**
+ * @brief Copy up to count bytes from src to the end of dst.  Returns number of
+ * bytes actually copied.
+ */
+static uint8_t append(mu_str_ref_t *dst, const uint8_t *const src, int count);
+
 // =============================================================================
 // local storage
 
@@ -150,15 +156,11 @@ bool mu_str_ref_write_byte(mu_str_ref_t *ref, uint8_t byte) {
 }
 
 size_t mu_str_ref_append(mu_str_ref_t *dst, const mu_str_ref_t *const src) {
-  size_t count = mu_str_ref_readable_count(src);
-  size_t writeable = mu_str_ref_writeable_count(dst);
+  return append(dst, read_ptr(src), mu_str_ref_readable_count(src));
+}
 
-  if (count > writeable) {
-    count = writeable;
-  }
-  memcpy(write_ptr(dst), read_ptr(src), count);
-  dst->put_i += count;
-  return count;
+size_t mu_str_ref_append_cstr(mu_str_ref_t *dst, const char * const cstr) {
+  return append(dst, (const uint8_t *const)cstr, strlen(cstr));
 }
 
 size_t mu_str_ref_printf(mu_str_ref_t *dst, const char *fmt, ...) {
@@ -201,4 +203,15 @@ static const uint8_t *const read_ptr(const mu_str_ref_t *const src) {
 
 static uint8_t *write_ptr(const mu_str_ref_t *const dst) {
   return &dst->wbuf->store[dst->put_i];
+}
+
+static uint8_t append(mu_str_ref_t *dst, const uint8_t *const src, int count) {
+  size_t writeable = mu_str_ref_writeable_count(dst);
+
+  if (count > writeable) {
+    count = writeable;
+  }
+  memcpy(write_ptr(dst), src, count);
+  dst->put_i += count;
+  return count;
 }

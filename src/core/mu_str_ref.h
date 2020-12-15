@@ -194,6 +194,18 @@ bool mu_str_ref_write_byte(mu_str_ref_t *ref, uint8_t byte);
 size_t mu_str_ref_append(mu_str_ref_t *dst, const mu_str_ref_t * const src);
 
 /**
+ * @brief Append a null-terminated C string.
+ *
+ * Note: This copies as many bytes from cstr as will fit in dst, returning the
+ * actual number of bytes copied.  dst->put_i is modified.
+ *
+ * @param dst Reference to a writeable buffer
+ * @param cstr Pointer to a null-terminated C string.
+ * @return The number of bytes copied.
+ */
+size_t mu_str_ref_append_cstr(mu_str_ref_t *dst, const char * const cstr);
+
+/**
  * @brief Print into a buffer.
  *
  * Note: this function performs printf() as you would expect, but will not

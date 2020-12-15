@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021 Klatu Networks, Inc
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,48 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_TIMER_H_
-#define _MU_TIMER_H_
+#ifndef _PARSE_RFC_1123_H_
+#define _PARSE_RFC_1123_H_
 
 #ifdef __cplusplus
-extern "C";
+extern "C" {
 #endif
 
 // =============================================================================
-// includes
+// Includes
 
-#include "mu_config.h"
-#include "mu_task.h"
-#include <stdbool.h>
+#include <time.h>  // for struct tm
 
 // =============================================================================
-// types and definitions
-
-typedef struct {
-  mu_task_t timer_task;
-  mu_task_t *target_task;
-  mu_time_dt interval;
-  bool does_repeat;
-  bool is_running;
-} mu_timer_t;
+// Types and definitions
 
 // =============================================================================
-// declarations
+// Declarations
 
-mu_timer_t *mu_timer_init(mu_timer_t *timer, mu_task_t *target_task);
+/**
+ * @brief Parse a date in RFC 1123 format and store the restults in a struct tm.
+ *
+ * Note: an RFC 1123 date has the following form:
+ *
+ *    Tue, 18 Jun 2019 16:06:21 GMT
+ *
+ * This parser is strict:
+ * - Exactly one space appears between tokens
+ * - Day and Month fields are Capitalized, GMT is UPPER CASE.
+ *
+ * On success, returns a pointer to the first character following "GMT" and the
+ * struct tm is filled in.  On any error, returns NULL and struct tm is cleared.
+ *
+ * @param s Pointer to string to be parsed
+ * @param tm time structure to be filled in
+ * @return Pointer to character following "GMT" on success, NULL otherwise.
+ */
+char *mu_rfc_1123_str_to_tm(const char *s, struct tm *tm)
 
-mu_timer_t *mu_timer_start(mu_timer_t *timer, mu_time_dt interval, bool repeat);
-
-mu_timer_t *mu_timer_stop(mu_timer_t *timer);
-
-bool mu_timer_is_running(mu_timer_t *timer);
+char *mu_rfc_1123_tm_to_str(const struct tm *tm, char *s, int maxlen)
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef _MU_TIMER_H_
+#endif /* #ifndef _PARSE_RFC_1123_H_ */
