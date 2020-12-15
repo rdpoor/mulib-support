@@ -69,6 +69,8 @@ const char *mu_rfc_1123_str_to_tm(const char *s, struct tm *tm) {
   if (!(s = parse_tokens(s, &tm->tm_mon, s_months, 3))) return NULL;
   if (!(s = skip_literal(s, " "))) return NULL;
   if (!(s = parse_int(s, &tm->tm_year, 4))) return NULL;
+  // want year - 1900
+  tm->tm_year -= 1900;
   if (!(s = skip_literal(s, " "))) return NULL;
   if (!(s = parse_int(s, &tm->tm_hour, 2))) return NULL;
   if (!(s = skip_literal(s, ":"))) return NULL;
@@ -86,7 +88,7 @@ char *mu_rfc_1123_tm_to_str(const struct tm *tm, char *s, int maxlen) {
            &s_days[tm->tm_wday * 3],
            tm->tm_mday,
            &s_months[tm->tm_mon * 3],
-           tm->tm_year,
+           tm->tm_year + 1900,
            tm->tm_hour,
            tm->tm_min,
            tm->tm_sec);
