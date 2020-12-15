@@ -37,6 +37,8 @@ extern "C" {
 // =============================================================================
 // Types and definitions
 
+#define MU_RFC_1123_MAX_LEN 30  // includes null terminator
+
 // =============================================================================
 // Declarations
 
@@ -58,9 +60,9 @@ extern "C" {
  * @param tm time structure to be filled in
  * @return Pointer to character following "GMT" on success, NULL otherwise.
  */
-char *mu_rfc_1123_str_to_tm(const char *s, struct tm *tm)
+const char *mu_rfc_1123_str_to_tm(const char *s, struct tm *tm);
 
-char *mu_rfc_1123_tm_to_str(const struct tm *tm, char *s, int maxlen)
+char *mu_rfc_1123_tm_to_str(const struct tm *tm, char *s, int maxlen);
 
 #ifdef __cplusplus
 }
