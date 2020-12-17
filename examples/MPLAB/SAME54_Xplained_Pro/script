@@ -1,2 +1,0 @@
-mv ./mu_sleep_demo/firmware/mu_sleep_demo.X/build/same54_xplained_pro/production/_ext/1017879673/mulib_slinky.o ./mu_sleep_demo/firmware/mu_sleep_demo.X/build/same54_xplained_pro/production/_ext/1017879673/mu_sleep_demo.o
-mv ./mu_sleep_demo/firmware/mu_sleep_demo.X/build/same54_xplained_pro/production/_ext/1017879673/mulib_slinky.o.d ./mu_sleep_demo/firmware/mu_sleep_demo.X/build/same54_xplained_pro/production/_ext/1017879673/mu_sleep_demo.o.d
