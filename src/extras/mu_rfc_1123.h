@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021 Klatu Networks, Inc
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,51 +22,50 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// includes
+#ifndef _PARSE_RFC_1123_H_
+#define _PARSE_RFC_1123_H_
 
-#include "mu_template.h"
-
-// =============================================================================
-// local types and definitions
-
-#define MU_TEMPLATE_DEBUG (0)
-
-typedef enum {
-  MU_TEMPLATE_STATE_0,
-} mu_template_state_t;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// local (forward) declarations
+// Includes
 
-mu_template_state_t get_state(mu_template_t *template);
-mu_template_t *set_state(mu_template_t *template, mu_template_state_t state);
-
-// =============================================================================
-// local storage
-
-static mu_template_t s_template;
+#include <time.h>  // for struct tm
 
 // =============================================================================
-// public code
+// Types and definitions
 
-mu_template_t *mu_template_init() {
-  return template_reset(&s_template);
+#define MU_RFC_1123_MAX_LEN 30  // includes null terminator
+
+// =============================================================================
+// Declarations
+
+/**
+ * @brief Parse a date in RFC 1123 format and store the restults in a struct tm.
+ *
+ * Note: an RFC 1123 date has the following form:
+ *
+ *    Tue, 18 Jun 2019 16:06:21 GMT
+ *
+ * This parser is strict:
+ * - Exactly one space appears between tokens
+ * - Day and Month fields are Capitalized, GMT is UPPER CASE.
+ *
+ * On success, returns a pointer to the first character following "GMT" and the
+ * struct tm is filled in.  On any error, returns NULL and struct tm is cleared.
+ *
+ * @param s Pointer to string to be parsed
+ * @param tm time structure to be filled in
+ * @return Pointer to character following "GMT" on success, NULL otherwise.
+ */
+const char *mu_rfc_1123_str_to_tm(const char *s, struct tm *tm);
+
+char *mu_rfc_1123_tm_to_str(const struct tm *tm, char *s, int maxlen);
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// local (static) code
-
-static mu_template_t *template_reset(template_t *template) {
-  template_set_state(MU_TEMPLATE_STATE_0);
-  return template;
-}
-
-mu_template_state_t get_state(mu_template_t *template) {
-  return template->state;
-}
-
-mu_template_t *set_state(mu_template_t *template, mu_template_state_t state) {
-  template->state = state;
-  return template;
-}
+#endif /* #ifndef _PARSE_RFC_1123_H_ */

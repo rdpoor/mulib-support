@@ -22,8 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef MU_TEMPLATE_H_
-#define MU_TEMPLATE_H_
+//#error "Replace mu_config.h with your platform-specific file"
+
+//#if 0  // entire file
+
+#ifndef _MU_CONFIG_H_
+#define _MU_CONFIG_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,35 +37,54 @@ extern "C" {
 // includes
 
 #include <stdint.h>
-#include <stdbool.h>
+#include <utils_assert.h>
 
 // =============================================================================
 // types and definitions
 
-typedef enum {
-  MU_TEMPLATE_ERR_NONE,
-} mu_template_err_t;
+#define MU_LOG_ENABLED 1
+#define MU_THUNK_PROFILING 1
+// #define MU_CAN_SLEEP
 
-typedef struct {
-  mu_template_state_t state;
-} mu_template_t;
+/**
+ * If your port supports floating point operations, choose one of the following
+ * either by uncommenting one of the following lines, or by setting the symbol
+ * in the compiler.
+ */
+// #define MU_FLOAT float
+#define MU_FLOAT double
 
+typedef uint32_t mu_time_t;
+typedef int32_t mu_time_dt;
+typedef int32_t mu_time_ms_dt;
+
+// =============================================================================
+// Everything below this line is deduced from the settings above this line.
+
+#ifndef ASSERT
+//#define ASSERT(expr) do {} while(0)
+#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+#endif
+
+#ifdef MU_FLOAT
+  #define MU_HAS_FLOAT (1)
+#else
+  #define MU_HAS_FLOAT (0)
+#endif
+
+#if defined(MU_FLOAT) && ((MU_FLOAT == float) || (MU_FLOAT == double))
+  typedef MU_FLOAT mu_float_t;
+#else
+  #error MU_FLOAT must be either float or double
+#endif
 
 // =============================================================================
 // declarations
-
-/**
- * \brief initialize the template module.
- */
-mu_template_t *mu_template_init(mu_template_t *template);
-
-/**
- * \brief  Reset the template.
- */
-mu_template_t *mu_template_reset(mu_template_t *template);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef MU_TEMPLATE_H_ */
+#endif /* #ifndef _MU_CONFIG_H_ */
+
+//#endif // #if 0
