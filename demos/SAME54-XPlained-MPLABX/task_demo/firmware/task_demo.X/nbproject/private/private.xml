@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/src/main.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/src/task_demo.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/src/screen_update_task.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/mulib/source/mu_sched.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/src/screen_redraw_task.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/mulib/source/mu_task.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/src/config/same54_xplained_pro/peripheral/rtc/plib_rtc_timer.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/src/config/same54_xplained_pro/exceptions.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/mulib/source/mu_time.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/task_demo/firmware/mulib/source/port_time.c</file>
+        </group>
+    </open-files>
+</project-private>

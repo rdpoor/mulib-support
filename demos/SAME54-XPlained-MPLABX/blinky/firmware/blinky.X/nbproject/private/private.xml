@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/blinky/firmware/src/blinky.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/blinky/firmware/src/main.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/blinky/firmware/src/config/same54_xplained_pro/initialization.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/blinky/firmware/mullib/source/mu_sched.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/blinky/firmware/mullib/include/mu_sched.h</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/blinky/firmware/mullib/source/port_time.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/SAME54-XPlained-MPLABX/blinky/firmware/mullib/source/mu_spscq.c</file>
+        </group>
+    </open-files>
+</project-private>
