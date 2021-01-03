@@ -22,36 +22,11 @@
  * SOFTWARE.
  */
 
-#ifndef _MULIB_H_
-#define _MULIB_H_
+ // =============================================================================
+ // includes
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// =============================================================================
-// includes
-
-#include "../platform/mu_config.h" // must come first!
-#include "mu_time.h"
-
-#include "core/mu_bitvec.h"
-#include "core/mu_cirq.h"
-#include "core/mu_list.h"
-#include "core/mu_log.h"
-#include "core/mu_pstore.h"
-#include "core/mu_queue.h"
-#include "core/mu_sched.h"
-#include "core/mu_spscq.h"
-#include "core/mu_str.h"
-#include "core/mu_strbuf.h"
-#include "core/mu_task.h"
-#include "core/mu_thunk.h"
-#include "core/mu_timer.h"
-#include "core/mu_vect.h"
-#include "core/mu_version.h"
-
-#include "extras/mu_rfc_1123.h"
+#include <stdio.h>
+#include "mu_test_utils.h"
 
 // =============================================================================
 // types and definitions
@@ -59,8 +34,58 @@ extern "C" {
 // =============================================================================
 // declarations
 
-#ifdef __cplusplus
-}
-#endif
+int mu_bitvec_test();
+int mu_cirq_test();
+int mu_list_test();
+int mu_log_test();
+int mu_pstore_test();
+int mu_queue_test();
+int mu_sched_test();
+int mu_spscq_test();
+int mu_str_ref_test();
+int mu_strbuf_test();
+int mu_strref_test();
+int mu_substr_test();
+int mu_task_test();
+int mu_time_test();
+int mu_timer_test();
+int mu_vect_test();
+int mu_version_test();
 
-#endif /* #ifndef _MULIB_H_ */
+// =============================================================================
+// public code
+
+int main() {
+
+  mu_test_init();
+  printf("\r\nstarting mu_test...");
+
+  mu_bitvec_test();
+  mu_cirq_test();
+  mu_list_test();
+  mu_log_test();
+  mu_pstore_test();
+  mu_queue_test();
+  mu_sched_test();
+  mu_spscq_test();
+  mu_str_ref_test();
+  mu_strbuf_test();
+  mu_strref_test();
+  mu_substr_test();
+  mu_task_test();
+  mu_time_test();
+  mu_timer_test();
+  mu_vect_test();
+  mu_version_test();
+
+  printf("ending mu_test: %d error%s out of %d test%s\r\n",
+         mu_test_error_count(),
+         mu_test_error_count() == 1 ? "" : "s",
+         mu_test_count(),
+         mu_test_count() == 1 ? "" : "s");
+
+  return mu_test_error_count();  // return error code 0 on success
+}
+
+// =============================================================================
+// private code

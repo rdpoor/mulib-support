@@ -1,0 +1,38 @@
+# As part of the unit testing process, this makefile compiles all of the sources
+# in src/core/* and writes the .o object files into build/.
+
+.PHONY: all clean
+
+SOURCE_DIR = ../test/mulib
+CORE_SOURCE_DIR = ../test/mulib/core
+BUILD_DIR = ../build
+PLATFORM_BUILD_DIR = ../build/platform
+PLATFORM_SOURCE_DIR = ../test/platform
+# TEST_DIR = ../tests
+
+
+#SOURCES := $(wildcard $(CORE_SOURCE_DIR)/*.c)
+SOURCES := $(wildcard $(CORE_SOURCE_DIR)/*.c)
+PLATFORM_SOURCES := $(wildcard $(PLATFORM_SOURCE_DIR)/*.c)
+
+
+OBJECTS := $(patsubst $(CORE_SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SOURCES))
+PLATFORM_OBJECTS := $(patsubst $(PLATFORM_SOURCE_DIR)/%.c, $(PLATFORM_BUILD_DIR)/%.o, $(PLATFORM_SOURCES))
+
+$(info    OBJECTS is $(OBJECTS))
+$(info    PLATFORM_OBJECTS is $(PLATFORM_OBJECTS))
+
+CFLAGS = -Wall -g -DMU_LOG_ENABLED
+
+IFLAGS = -I $(SOURCE_DIR) -I $(CORE_SOURCE_DIR) -I $(PLATFORM_SOURCE_DIR)
+
+$(BUILD_DIR)/%.o : $(CORE_SOURCE_DIR)/%.c $(CORE_SOURCE_DIR)/%.h $(EXTRA_INCLUDES)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
+
+$(PLATFORM_BUILD_DIR)/%.o : $(PLATFORM_SOURCE_DIR)/%.c $(PLATFORM_SOURCE_DIR)/%.h $(EXTRA_INCLUDES)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
+
+all : $(OBJECTS) $(PLATFORM_OBJECTS)
+
+clean :
+	rm $(OBJECTS)

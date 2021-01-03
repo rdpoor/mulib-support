@@ -22,45 +22,47 @@
  * SOFTWARE.
  */
 
-#ifndef _MULIB_H_
-#define _MULIB_H_
+#ifndef _MU_TEST_UTILS_H_
+#define _MU_TEST_UTILS_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// =============================================================================
-// includes
+ // =============================================================================
+ // includes
 
-#include "../platform/mu_config.h" // must come first!
-#include "mu_time.h"
-
-#include "core/mu_bitvec.h"
-#include "core/mu_cirq.h"
-#include "core/mu_list.h"
-#include "core/mu_log.h"
-#include "core/mu_pstore.h"
-#include "core/mu_queue.h"
-#include "core/mu_sched.h"
-#include "core/mu_spscq.h"
-#include "core/mu_str.h"
-#include "core/mu_strbuf.h"
-#include "core/mu_task.h"
-#include "core/mu_thunk.h"
-#include "core/mu_timer.h"
-#include "core/mu_vect.h"
-#include "core/mu_version.h"
-
-#include "extras/mu_rfc_1123.h"
+#include <stdbool.h>
+//#include "../mulib/src/platform/mu_config.h"
+#include "mulib.h"
 
 // =============================================================================
 // types and definitions
 
+#ifndef ASSERT
+define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+#endif
+
 // =============================================================================
 // declarations
+
+void mu_test_init(void);
+int mu_test_count(void);
+int mu_test_error_count(void);
+
+void mu_test_assert(const bool condition,
+                    const char *const expr,
+                    const char *const file,
+                    const int line);
+
+// =============================================================================
+// local storage
+
+// =============================================================================
+// public code
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MULIB_H_ */
+#endif // _MU_TEST_UTILS_H_

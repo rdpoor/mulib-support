@@ -22,8 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _MULIB_H_
-#define _MULIB_H_
+//#error "Replace mu_config.h with your platform-specific file"
+
+//#if 0  // entire file
+
+#ifndef _MU_CONFIG_H_
+#define _MU_CONFIG_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,29 +36,52 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "../platform/mu_config.h" // must come first!
-#include "mu_time.h"
-
-#include "core/mu_bitvec.h"
-#include "core/mu_cirq.h"
-#include "core/mu_list.h"
-#include "core/mu_log.h"
-#include "core/mu_pstore.h"
-#include "core/mu_queue.h"
-#include "core/mu_sched.h"
-#include "core/mu_spscq.h"
-#include "core/mu_str.h"
-#include "core/mu_strbuf.h"
-#include "core/mu_task.h"
-#include "core/mu_thunk.h"
-#include "core/mu_timer.h"
-#include "core/mu_vect.h"
-#include "core/mu_version.h"
-
-#include "extras/mu_rfc_1123.h"
+#include <stdint.h>
 
 // =============================================================================
 // types and definitions
+
+ #define MU_LOG_ENABLED 1
+// #define MU_TASK_PROFILING
+// #define MU_CAN_SLEEP
+
+/**
+ * If your port supports floating point operations, choose one of the following
+ * either by uncommenting one of the following lines, or by setting the symbol
+ * in the compiler.
+ */
+// #define MU_FLOAT float
+#define MU_FLOAT double
+
+typedef uint32_t mu_time_t;
+typedef int32_t mu_time_dt;
+typedef int32_t mu_time_ms_dt;
+
+// =============================================================================
+// Everything below this line is deduced from the settings above this line.
+
+#ifndef ASSERT
+//#define ASSERT(expr) do {} while(0)
+#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+#endif
+
+#ifdef MU_TASK_PROFILING
+#define MU_TASK_PROFILING (1)
+#else
+#define MU_TASK_PROFILING (0)
+#endif
+
+#ifdef MU_FLOAT
+  #define MU_HAS_FLOAT (1)
+#else
+  #define MU_HAS_FLOAT (0)
+#endif
+
+#if defined(MU_FLOAT) && ((MU_FLOAT == float) || (MU_FLOAT == double))
+  typedef MU_FLOAT mu_float_t;
+#else
+  #error MU_FLOAT must be either float or double
+#endif
 
 // =============================================================================
 // declarations
@@ -63,4 +90,6 @@ extern "C" {
 }
 #endif
 
-#endif /* #ifndef _MULIB_H_ */
+#endif /* #ifndef _MU_CONFIG_H_ */
+
+//#endif // #if 0

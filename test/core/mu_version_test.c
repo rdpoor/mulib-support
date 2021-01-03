@@ -22,45 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef _MULIB_H_
-#define _MULIB_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================================
 // includes
 
-#include "../platform/mu_config.h" // must come first!
-#include "mu_time.h"
-
-#include "core/mu_bitvec.h"
-#include "core/mu_cirq.h"
-#include "core/mu_list.h"
-#include "core/mu_log.h"
-#include "core/mu_pstore.h"
-#include "core/mu_queue.h"
-#include "core/mu_sched.h"
-#include "core/mu_spscq.h"
-#include "core/mu_str.h"
-#include "core/mu_strbuf.h"
-#include "core/mu_task.h"
-#include "core/mu_thunk.h"
-#include "core/mu_timer.h"
-#include "core/mu_vect.h"
-#include "core/mu_version.h"
-
-#include "extras/mu_rfc_1123.h"
+#include "mu_version.h"
+#include "mu_test_utils.h"
+#include <stddef.h>
 
 // =============================================================================
-// types and definitions
+// private types and definitions
 
 // =============================================================================
-// declarations
+// private declarations
 
-#ifdef __cplusplus
+// =============================================================================
+// local storage
+
+// =============================================================================
+// public code
+
+void mu_version_test() {
+  ASSERT(mu_version() != NULL);
 }
-#endif
 
-#endif /* #ifndef _MULIB_H_ */
+// =============================================================================
+// private code
