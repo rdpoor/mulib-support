@@ -1,15 +1,2 @@
-# boneyard and playpen
-boneyard/
-
-# Doxygen
-Doxyfile*
-doxygen_sqlite3.db
-html
-
-# executable artifacts
-build/
-*.d
-*.o
-
-#osx
-.DS_Store
+mulib/
+mulib-test/build/
