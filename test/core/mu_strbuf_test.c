@@ -90,7 +90,7 @@ void mu_strbuf_test() {
   ASSERT(mu_strbuf_capacity(s) == strlen(s1));
   ASSERT(mu_strbuf_data(s) == s1);
 
-//  ASSERT(mu_strbuf_to_cstr(s, s2, ELEMENT_COUNT) == s);
+  ASSERT(mu_strbuf_to_cstr(s, s2, ELEMENT_COUNT) == s);
   ASSERT(strncmp(s1, s2, ELEMENT_COUNT-1) == 0);
   ASSERT(strcmp(s2, "the quick") == 0);
 }

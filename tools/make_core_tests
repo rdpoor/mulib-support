@@ -1,5 +1,5 @@
 # As part of the unit testing process, this makefile compiles all of the sources
-# in tests/core and writes the .o object files into build/.
+# in test/core and writes the .o object files into build/.
 
 .PHONY: all clean
 
