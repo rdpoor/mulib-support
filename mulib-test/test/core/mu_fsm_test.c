@@ -93,8 +93,12 @@ void mu_fsm_test() {
   task_a_t *self = &s_task_a;
 
   reset();
-  mu_fsm_init(
-      &self->fsm, s_task_a_state_fns, s_task_a_state_names, TASK_A_STATE_MAX);
+  mu_fsm_init(&self->fsm,
+              s_task_a_state_fns,
+              s_task_a_state_names,
+              TASK_A_STATE_INIT,
+              TASK_A_STATE_MAX);
+  ASSERT(mu_fsm_get_state(&self->fsm) == TASK_A_STATE_INIT);
   task_a_notify(self, NULL);
   ASSERT(s_init_call_count == 1);
   ASSERT(s_a_call_count == 10);
@@ -129,7 +133,7 @@ static void task_a_notify(void *receiver, void *sender) {
 static void task_a_state_init(void *receiver, void *sender) {
   task_a_t *self = (task_a_t *)receiver;
   s_init_call_count += 1;
-  mu_fsm_advance(&self->fsm, TASK_A_STATE_A);
+  mu_fsm_set_state(&self->fsm, TASK_A_STATE_A);
   mu_fsm_dispatch(&self->fsm, receiver, sender);
 }
 
@@ -137,9 +141,9 @@ static void task_a_state_a(void *receiver, void *sender) {
   task_a_t *self = (task_a_t *)receiver;
   s_a_call_count += 1;
   if (s_a_call_count < 10) {
-    mu_fsm_advance(&self->fsm, TASK_A_STATE_A);
+    mu_fsm_set_state(&self->fsm, TASK_A_STATE_A);
   } else {
-    mu_fsm_advance(&self->fsm, TASK_A_STATE_SUCCESS);
+    mu_fsm_set_state(&self->fsm, TASK_A_STATE_SUCCESS);
   }
   mu_fsm_dispatch(&self->fsm, receiver, sender);
 }
