@@ -36,6 +36,7 @@
 
 int mu_bitvec_test();
 int mu_cirq_test();
+int mu_dlist_test();
 int mu_fsm_test();
 int mu_list_test();
 int mu_log_test();
@@ -61,6 +62,7 @@ int main() {
 
   mu_bitvec_test();
   mu_cirq_test();
+  mu_dlist_test();
   mu_fsm_test();
   mu_list_test();
   mu_log_test();
