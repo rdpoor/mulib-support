@@ -72,8 +72,6 @@ void mu_queue_test() {
   ASSERT(mu_queue_init(q) == q);
   ASSERT(mu_queue_is_empty(q) == true);
   ASSERT(mu_queue_length(q) == 0);
-  ASSERT(mu_list_is_empty(mu_queue_takr(q)) == true);
-  ASSERT(mu_list_is_empty(mu_queue_putr(q)) == true);
   ASSERT(mu_queue_remove(q) == NULL);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
@@ -83,21 +81,14 @@ void mu_queue_test() {
   ASSERT(mu_queue_add(q, MU_LIST_REF(&s_item1, link)) == q);
   ASSERT(mu_queue_is_empty(q) == false);
   ASSERT(mu_queue_length(q) == 1);
-  ASSERT(mu_queue_takr(q) == MU_LIST_REF(&s_item1, link));
-  ASSERT(mu_queue_putr(q) == MU_LIST_REF(&s_item1, link));
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == true);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
-  // MU_LIST_CONTAINER is unit tested in mu_list_test.c, but demonstrated here:
-  ASSERT(MU_LIST_CONTAINER(mu_queue_takr(q), queue_item_t, link) == &s_item1);
-  ASSERT(MU_LIST_CONTAINER(mu_queue_putr(q), queue_item_t, link) == &s_item1);
 
   // empty the queue and check
   ASSERT(mu_queue_remove(q) == MU_LIST_REF(&s_item1, link));
   ASSERT(mu_queue_is_empty(q) == true);
   ASSERT(mu_queue_length(q) == 0);
-  ASSERT(mu_queue_takr(q) == NULL);
-  ASSERT(mu_queue_putr(q) == NULL);
   ASSERT(mu_queue_remove(q) == NULL);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
@@ -109,8 +100,6 @@ void mu_queue_test() {
 
   ASSERT(mu_queue_is_empty(q) == false);
   ASSERT(mu_queue_length(q) == 2);
-  ASSERT(mu_queue_takr(q) == MU_LIST_REF(&s_item1, link));
-  ASSERT(mu_queue_putr(q) == MU_LIST_REF(&s_item2, link));
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == true);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == true);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
@@ -119,8 +108,6 @@ void mu_queue_test() {
   ASSERT(mu_queue_remove(q) == MU_LIST_REF(&s_item1, link));
   ASSERT(mu_queue_is_empty(q) == false);
   ASSERT(mu_queue_length(q) == 1);
-  ASSERT(mu_queue_takr(q) == MU_LIST_REF(&s_item2, link));
-  ASSERT(mu_queue_putr(q) == MU_LIST_REF(&s_item2, link));
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == true);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item3, link)) == false);
@@ -129,8 +116,6 @@ void mu_queue_test() {
   ASSERT(mu_queue_remove(q) == MU_LIST_REF(&s_item2, link));
   ASSERT(mu_queue_is_empty(q) == true);
   ASSERT(mu_queue_length(q) == 0);
-  ASSERT(mu_queue_takr(q) == NULL);
-  ASSERT(mu_queue_putr(q) == NULL);
   ASSERT(mu_queue_remove(q) == NULL);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item1, link)) == false);
   ASSERT(mu_queue_contains(q, MU_LIST_REF(&s_item2, link)) == false);
