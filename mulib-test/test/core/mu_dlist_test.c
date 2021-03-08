@@ -41,7 +41,7 @@ typedef struct {
   float value;
   mu_dlist_t list;  // list is not first slot in structure
   char id;
-} element_t;
+} test_item_t;
 
 // =============================================================================
 // private declarations
@@ -51,375 +51,256 @@ typedef struct {
  */
 static void reset(void);
 
-/**
- * @brief Return a reference to the list associated with the given element.
- */
-static mu_dlist_t *detl(element_t *element);
-
-/**
- * @brief Return a reference to the element associated with the given list.
- */
-static element_t *defl(mu_dlist_t *list);
-
 // =============================================================================
 // local storage
 
-static mu_dlist_t s_list;
+static mu_dlist_t s_head;
 
-static element_t s_element_a, s_element_b, s_element_c, s_element_d;
+static mu_dlist_t s_element_a, s_element_b, s_element_c, s_element_d;
 
 // =============================================================================
 // public code
 
 void mu_dlist_test() {
+  test_item_t item_a;
 
   // ==========
   // MU_DLIST_REF and MU_DLIST_CONTAINER
-  reset();
-  ASSERT(detl(&s_element_a) == &s_element_a.list);
-  ASSERT(defl(&s_element_a.list) == &s_element_a);
+  ASSERT(MU_DLIST_REF(&item_a, list) == &item_a.list);
+  ASSERT(MU_DLIST_CONTAINER(&item_a.list, test_item_t, list) == &item_a);
 
   // ==========
   // reset();
   reset();
-  ASSERT(s_list.next == &s_list);
-  ASSERT(s_list.prev == &s_list);
+  ASSERT(s_head.next == &s_head);
+  ASSERT(s_head.prev == &s_head);
 
-  ASSERT(s_element_a.list.next == NULL);
-  ASSERT(s_element_a.list.prev == NULL);
-  ASSERT(s_element_a.value = 1.0);
-  ASSERT(s_element_a.id = 'a');
+  ASSERT(s_element_a.next == &s_element_a);
+  ASSERT(s_element_a.prev == &s_element_a);
 
-  ASSERT(s_element_b.list.next == NULL);
-  ASSERT(s_element_b.list.prev == NULL);
-  ASSERT(s_element_b.value = 2.0);
-  ASSERT(s_element_b.id = 'b');
+  ASSERT(s_element_b.next == &s_element_b);
+  ASSERT(s_element_b.prev == &s_element_b);
 
-  ASSERT(s_element_c.list.next == NULL);
-  ASSERT(s_element_c.list.prev == NULL);
-  ASSERT(s_element_c.value = 3.0);
-  ASSERT(s_element_c.id = 'c');
+  ASSERT(s_element_c.next == &s_element_c);
+  ASSERT(s_element_c.prev == &s_element_c);
 
-  ASSERT(s_element_d.list.next == NULL);
-  ASSERT(s_element_d.list.prev == NULL);
-  ASSERT(s_element_d.value = 4.0);
-  ASSERT(s_element_d.id = 'd');
+  ASSERT(s_element_d.next == &s_element_d);
+  ASSERT(s_element_d.prev == &s_element_d);
 
-  // ==========
-  // operations on an empty list
+  // ======================================
+  // operations on individual list elements
+
   reset();
-  ASSERT(mu_dlist_is_empty(&s_list) == true);
-  ASSERT(mu_dlist_length(&s_list) == 0);
-  ASSERT(mu_dlist_contains(&s_list, detl(&s_element_a)) == false);
-  ASSERT(mu_dlist_first(&s_list) == NULL);
-  ASSERT(mu_dlist_last(&s_list) == NULL);
+  // mu_dlist_t *mu_dlist_init(mu_dlist_t *e);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_a);
 
-  // ==========
-  // mu_dlist_push()
-
-  // mu_dlist_push() on empty list
+  // bool mu_dlist_is_empty(mu_dlist_t *e);
   reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 1);
-  ASSERT(mu_dlist_contains(&s_list, detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == &s_list);
-
-
-  // mu_dlist_push() on non-empty list
-  reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
-  // list = [b, a]
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 2);
-  ASSERT(mu_dlist_contains(&s_list, detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_contains(&s_list, detl(&s_element_b)) == true);
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_b));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_b)) == true);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_b)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_b)) == detl(&s_element_a));
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == detl(&s_element_b));
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == &s_list);
-
-  // ==========
-  // mu_dlist_lpush()
-
-  // mu_dlist_lpush() on empty list
-  reset();
-  ASSERT(mu_dlist_lpush(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 1);
-  ASSERT(mu_dlist_contains(&s_list, detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == &s_list);
-
-  // mu_dlist_lpush() on non-empty list
-  reset();
-  ASSERT(mu_dlist_lpush(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_lpush(&s_list, detl(&s_element_b)) == &s_list);
+  ASSERT(mu_dlist_is_empty(&s_element_a) == true);
+  mu_dlist_insert_next(&s_element_a, &s_element_b);
   // list = [a, b]
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 2);
-  ASSERT(mu_dlist_contains(&s_list, detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_contains(&s_list, detl(&s_element_b)) == true);
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_b));
+  ASSERT(mu_dlist_is_empty(&s_element_a) == false);
 
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_b)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == detl(&s_element_b));
-  ASSERT(mu_dlist_prev_element(detl(&s_element_b)) == detl(&s_element_a));
-  ASSERT(mu_dlist_next_element(detl(&s_element_b)) == &s_list);
-
-  // ==========
-  // mu_dlist_pop()
-
-  // mu_dlist_pop() on empty list
+  // mu_dlist_t *mu_dlist_next(mu_dlist_t *e);
   reset();
-  ASSERT(mu_dlist_pop(&s_list) == NULL);
+  mu_dlist_insert_next(&s_element_a, &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_a);
 
-  // mu_dlist_pop() on singleton list
+  // mu_dlist_t *mu_dlist_prev(mu_dlist_t *e);
   reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  // list = [a]
-  ASSERT(mu_dlist_pop(&s_list) == detl(&s_element_a));
-  // list = []
-  ASSERT(mu_dlist_is_empty(&s_list) == true);
-  ASSERT(mu_dlist_length(&s_list) == 0);
-  ASSERT(mu_dlist_first(&s_list) == NULL);
-  ASSERT(mu_dlist_last(&s_list) == NULL);
+  mu_dlist_insert_next(&s_element_a, &s_element_b);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_a);
 
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == false);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == NULL);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == NULL);
-
-
+  // mu_dlist_t *mu_dlist_insert_next(mu_dlist_t *list, mu_dlist_t *e);
   reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
+  ASSERT(mu_dlist_insert_next(&s_element_a, &s_element_b) == &s_element_b);
+  ASSERT(mu_dlist_insert_next(&s_element_b, &s_element_c) == &s_element_c);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_c);
+  ASSERT(mu_dlist_next(&s_element_c) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_c);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_c) == &s_element_b);
+
+  // mu_dlist_t *mu_dlist_insert_prev(mu_dlist_t *list, mu_dlist_t *e);
+  reset();
+  ASSERT(mu_dlist_insert_prev(&s_element_a, &s_element_d) == &s_element_d);
+  ASSERT(mu_dlist_insert_prev(&s_element_d, &s_element_c) == &s_element_c);
+  ASSERT(mu_dlist_insert_prev(&s_element_c, &s_element_b) == &s_element_b);
+  // [a, b, c, d]
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_c);
+  ASSERT(mu_dlist_next(&s_element_c) == &s_element_d);
+  ASSERT(mu_dlist_next(&s_element_d) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_d);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_c) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_element_d) == &s_element_c);
+
+  // bool mu_dlist_is_linked(mu_dlist_t *e);
+  reset();
+  ASSERT(mu_dlist_is_linked(&s_element_a) == false);
+  mu_dlist_insert_next(&s_element_a, &s_element_b);
+  ASSERT(mu_dlist_is_linked(&s_element_a) == true);
+
+  // mu_dlist_t *mu_dlist_unlink(mu_dlist_t *e);
+  ASSERT(mu_dlist_unlink(&s_element_b) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_a); // a is now empty
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_b); // b is now unlinked
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_b);
+
+  ASSERT(mu_dlist_unlink(&s_element_b) == NULL); // b is already unlinked
+
+  // ======================================
+  // operations on a list head
+
+  // mu_dlist_t *mu_dlist_first(mu_dlist_t *head);
+  reset();
+  ASSERT(mu_dlist_first(&s_head) == NULL);
+  mu_dlist_push(&s_head, &s_element_a);
+  ASSERT(mu_dlist_first(&s_head) == &s_element_a);
+
+  // mu_dlist_t *mu_dlist_last(mu_dlist_t *head);
+  reset();
+  ASSERT(mu_dlist_last(&s_head) == NULL);
+  mu_dlist_push_prev(&s_head, &s_element_a);
+  ASSERT(mu_dlist_last(&s_head) == &s_element_a);
+
+  // size_t mu_dlist_length(mu_dlist_t *head);
+  reset();
+  ASSERT(mu_dlist_length(&s_head) == 0);
+  mu_dlist_push(&s_head, &s_element_a);
+  ASSERT(mu_dlist_length(&s_head) == 1);
+
+  // mu_dlist_t *mu_dlist_find(mu_dlist_t *head, mu_dlist_t *e);
+  reset();
+  ASSERT(mu_dlist_find(&s_head, &s_element_a) == NULL);
+  mu_dlist_push(&s_head, &s_element_a);
+  ASSERT(mu_dlist_find(&s_head, &s_element_a) == &s_element_a);
+
+  // mu_dlist_t *mu_dlist_find_prev(mu_dlist_t *head, mu_dlist_t *e);
+  reset();
+  ASSERT(mu_dlist_find_prev(&s_head, &s_element_a) == NULL);
+  mu_dlist_push(&s_head, &s_element_a);
+  ASSERT(mu_dlist_find_prev(&s_head, &s_element_a) == &s_element_a);
+
+  // mu_dlist_t *mu_dlist_push(mu_dlist_t *head, mu_dlist_t *e);
+  reset();
+  ASSERT(mu_dlist_push(&s_head, &s_element_a) == &s_head);
+  ASSERT(mu_dlist_push(&s_head, &s_element_b) == &s_head);
   // list = [b, a]
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_b));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
+  ASSERT(mu_dlist_next(&s_head) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_head);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_head);
 
-  ASSERT(mu_dlist_pop(&s_list) == detl(&s_element_b));
+  // mu_dlist_t *mu_dlist_push_prev(mu_dlist_t *head, mu_dlist_t *e);
+  reset();
+  ASSERT(mu_dlist_push_prev(&s_head, &s_element_a) == &s_head);
+  ASSERT(mu_dlist_push_prev(&s_head, &s_element_b) == &s_head);
+  // list = [a, b]
+  ASSERT(mu_dlist_next(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_head);
+  ASSERT(mu_dlist_prev(&s_head) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_head);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_a);
+
+  // mu_dlist_t *mu_dlist_pop(mu_dlist_t *head);
+  reset();
+  mu_dlist_push(&s_head, &s_element_a);
+  mu_dlist_push(&s_head, &s_element_b);
+
+  // pop([b, a]) => [a]
+  ASSERT(mu_dlist_pop(&s_head) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_head);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_head);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_b);
+
   // list = [a]
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 1);
-  ASSERT(mu_dlist_pop(&s_list) == detl(&s_element_a));
+  ASSERT(mu_dlist_pop(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_head) == &s_head);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_head) == &s_head);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_b);
+
   // list = []
-  ASSERT(mu_dlist_first(&s_list) == NULL);
-  ASSERT(mu_dlist_last(&s_list) == NULL);
-  ASSERT(mu_dlist_is_empty(&s_list) == true);
-  ASSERT(mu_dlist_length(&s_list) == 0);
+  ASSERT(mu_dlist_pop(&s_head) == NULL);
 
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == false);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == NULL);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == NULL);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_b)) == false);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_b)) == NULL);
-  ASSERT(mu_dlist_next_element(detl(&s_element_b)) == NULL);
-
-  // ==========
-  // mu_dlist_lpop()
-
-  // mu_dlist_lpop() on empty list
+  // mu_dlist_t *mu_dlist_pop_prev(mu_dlist_t *head);
   reset();
-  ASSERT(mu_dlist_lpop(&s_list) == NULL);
+  mu_dlist_push(&s_head, &s_element_a);
+  mu_dlist_push(&s_head, &s_element_b);
 
-  // mu_dlist_pop() on singleton list
-  reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_lpop(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_is_empty(&s_list) == true);
-  ASSERT(mu_dlist_length(&s_list) == 0);
+  // pop_prev([b, a]) => [b]
+  ASSERT(mu_dlist_pop_prev(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_head) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_head);
+  ASSERT(mu_dlist_prev(&s_head) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_head);
 
-  reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
-  // list = [b, a]
-  ASSERT(mu_dlist_lpop(&s_list) == detl(&s_element_a));
   // list = [b]
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 1);
-  ASSERT(mu_dlist_lpop(&s_list) == detl(&s_element_b));
+  ASSERT(mu_dlist_pop_prev(&s_head) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_head) == &s_head);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_head) == &s_head);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_b);
+
   // list = []
-  ASSERT(mu_dlist_is_empty(&s_list) == true);
-  ASSERT(mu_dlist_length(&s_list) == 0);
+  ASSERT(mu_dlist_pop_prev(&s_head) == NULL);
 
-  // ==========
-  // mu_dlist_length() - already tested
 
-  // ==========
-  // mu_dlist_find()
+
+  // void *mu_dlist_traverse(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
+  // tested implicitly via mu_dlist_find()
+
+  // void *mu_dlist_traverse_prev(mu_dlist_t *head, mu_dlist_traverse_fn fn, void *arg);
+  // tested implicitly via mu_dlist_find_prev()
+
+  // mu_dlist_t *mu_dlist_reverse(mu_dlist_t *head);
   reset();
 
-  // mu_dlist_find() on empty list
-  ASSERT(mu_dlist_find(&s_list, detl(&s_element_a)) == NULL);
+  // on empty list.
+  ASSERT(mu_dlist_reverse(&s_head) == &s_head);
+  ASSERT(mu_dlist_next(&s_head) == &s_head);
+  ASSERT(mu_dlist_prev(&s_head) == &s_head);
 
-  // mu_dlist_find() on first and second elements of non-empty list
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
-  // list = [b, a]
-  ASSERT(mu_dlist_find(&s_list, detl(&s_element_a)) == detl(&s_element_a));
-  ASSERT(mu_dlist_find(&s_list, detl(&s_element_b)) == detl(&s_element_b));
-  ASSERT(mu_dlist_find(&s_list, detl(&s_element_c)) == NULL);
 
-  // ==========
-  // mu_dlist_lfind()
   reset();
+  mu_dlist_push(&s_head, &s_element_a);
+  // on singleton list [a]
+  ASSERT(mu_dlist_reverse(&s_head) == &s_head);
+  ASSERT(mu_dlist_next(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_head);
+  ASSERT(mu_dlist_prev(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_head);
 
-  // mu_dlist_lfind() on empty list
-  ASSERT(mu_dlist_find(&s_list, detl(&s_element_a)) == NULL);
-
-  // mu_dlist_find() on first and second elements of non-empty list
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
-  // list = [b, a]
-  ASSERT(mu_dlist_lfind(&s_list, detl(&s_element_a)) == detl(&s_element_a));
-  ASSERT(mu_dlist_lfind(&s_list, detl(&s_element_b)) == detl(&s_element_b));
-  ASSERT(mu_dlist_lfind(&s_list, detl(&s_element_c)) == NULL);
-
-  // ==========
-  // mu_dlist_reverse()
-
-  // mu_dlist_reverse() an empty list
   reset();
-  ASSERT(mu_dlist_reverse(&s_list) == &s_list);
-  ASSERT(mu_dlist_is_empty(&s_list) == true);
-  ASSERT(mu_dlist_length(&s_list) == 0);
-
-  // mu_dlist_reverse() a singleton list
-  reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  // list is [a]
-  ASSERT(mu_dlist_reverse(&s_list) == &s_list);
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 1);
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-
-  // mu_dlist_reverse() a multi-element list
-  reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_c)) == &s_list);
-  // list is [c, b, a]
-  ASSERT(mu_dlist_reverse(&s_list) == &s_list);
-  // list is [a, b, c]
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 3);
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_c));
-
-  // =========
-  // mu_dlist_traverse() is intrinsically tested by other functions
-
-  // ==========
-  // mu_dlist_is_linked(), mu_dlist_unlink(), mu_dlist_next_element(), mu_dlist_previous_element()
-
-  // mu_dlist_unlink() on singleton element
-  reset();
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == false);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  // list = [a]
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 1);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == &s_list);
-
-  ASSERT(mu_dlist_unlink_element(detl(&s_element_a)) == detl(&s_element_a));
-  // list = []
-  ASSERT(mu_dlist_first(&s_list) == NULL);
-  ASSERT(mu_dlist_last(&s_list) == NULL);
-  ASSERT(mu_dlist_is_empty(&s_list) == true);
-  ASSERT(mu_dlist_length(&s_list) == 0);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == false);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == NULL);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == NULL);
-
-  // mu_dlist_unlink() on last element
-  reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
-  // list = [b, a]
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_b));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 2);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_b)) == true);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_b)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_b)) == detl(&s_element_a));
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == detl(&s_element_b));
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == &s_list);
-
-  ASSERT(mu_dlist_unlink_element(detl(&s_element_a)) == detl(&s_element_a));
-  // list is [b]
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_b));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_b));
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 1);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_b)) == true);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == false);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_b)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_b)) == &s_list);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == NULL);
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == NULL);
-
-  // mu_dlist_unlink() on middle element
-  reset();
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_a)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_b)) == &s_list);
-  ASSERT(mu_dlist_push(&s_list, detl(&s_element_c)) == &s_list);
-  // list is now [c, b, a]
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_c));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 3);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_c)) == true);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_b)) == true);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_c)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_c)) == detl(&s_element_b));
-  ASSERT(mu_dlist_prev_element(detl(&s_element_b)) == detl(&s_element_c));
-  ASSERT(mu_dlist_next_element(detl(&s_element_b)) == detl(&s_element_a));
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == detl(&s_element_b));
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == &s_list);
-
-  ASSERT(mu_dlist_unlink_element(detl(&s_element_b)) == detl(&s_element_b));
-  // list is now [c, a]
-  ASSERT(mu_dlist_first(&s_list) == detl(&s_element_c));
-  ASSERT(mu_dlist_last(&s_list) == detl(&s_element_a));
-  ASSERT(mu_dlist_is_empty(&s_list) == false);
-  ASSERT(mu_dlist_length(&s_list) == 2);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_c)) == true);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_b)) == false);
-  ASSERT(mu_dlist_element_is_linked(detl(&s_element_a)) == true);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_c)) == &s_list);
-  ASSERT(mu_dlist_next_element(detl(&s_element_c)) == detl(&s_element_a));
-  ASSERT(mu_dlist_prev_element(detl(&s_element_b)) == NULL);
-  ASSERT(mu_dlist_next_element(detl(&s_element_b)) == NULL);
-  ASSERT(mu_dlist_prev_element(detl(&s_element_a)) == detl(&s_element_c));
-  ASSERT(mu_dlist_next_element(detl(&s_element_a)) == &s_list);
+  mu_dlist_push(&s_head, &s_element_a);
+  mu_dlist_push(&s_head, &s_element_b);
+  // reverse([b, a]) => [a, b]
+  ASSERT(mu_dlist_reverse(&s_head) == &s_head);
+  ASSERT(mu_dlist_next(&s_head) == &s_element_a);
+  ASSERT(mu_dlist_next(&s_element_a) == &s_element_b);
+  ASSERT(mu_dlist_next(&s_element_b) == &s_head);
+  ASSERT(mu_dlist_prev(&s_head) == &s_element_b);
+  ASSERT(mu_dlist_prev(&s_element_a) == &s_head);
+  ASSERT(mu_dlist_prev(&s_element_b) == &s_element_a);
 }
 
 // =============================================================================
@@ -429,23 +310,9 @@ void mu_dlist_test() {
  * @brief Reset all static storage for this test.
  */
 static void reset(void) {
-  mu_dlist_init(&s_list);
-  s_element_a = (element_t){.value = 1.0, .list.next = NULL, .id = 'a'};
-  s_element_b = (element_t){.value = 2.0, .list.next = NULL, .id = 'b'};
-  s_element_c = (element_t){.value = 3.0, .list.next = NULL, .id = 'c'};
-  s_element_d = (element_t){.value = 4.0, .list.next = NULL, .id = 'd'};
-}
-
-/**
- * @brief Return a reference to the list associated with the given element.
- */
-static mu_dlist_t *detl(element_t *element) {
-  return MU_DLIST_REF(element, list);
-}
-
-/**
- * @brief Return a reference to the element associated with the given list.
- */
-static element_t *defl(mu_dlist_t *list) {
-  return MU_DLIST_CONTAINER(list, element_t, list);
+  mu_dlist_init(&s_head);
+  mu_dlist_init(&s_element_a);
+  mu_dlist_init(&s_element_b);
+  mu_dlist_init(&s_element_c);
+  mu_dlist_init(&s_element_d);
 }

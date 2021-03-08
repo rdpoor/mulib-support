@@ -31,8 +31,6 @@
 // =============================================================================
 // private types and definitions
 
-#define IRQ_QUEUE_SIZE 2
-
 // =============================================================================
 // private declarations
 
@@ -49,8 +47,6 @@ static void task_fn(void *ctx, void *arg);
 // local storage
 
 static mu_time_t s_now;
-
-static mu_spscq_item_t s_isr_queue_store[IRQ_QUEUE_SIZE];
 
 static mu_task_t s_task;
 static int s_task_call_count;
@@ -158,7 +154,7 @@ void mu_timer_test() {
 
 static void setup(void) {
   set_now(0);
-  mu_sched_init(s_isr_queue_store, IRQ_QUEUE_SIZE);
+  mu_sched_init();
   mu_sched_set_clock_source(get_now);
   mu_task_init(&s_task, task_fn, &s_task, "Timed Task");
   s_task_call_count = 0;

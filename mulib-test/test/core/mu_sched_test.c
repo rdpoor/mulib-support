@@ -31,10 +31,6 @@
 // =============================================================================
 // private types and definitions
 
-#define ISR_QUEUE_SIZE 2
-
-#define RESCHEDULE_DELTA 42
-
 typedef struct {
   mu_task_t task;
   int call_count;
@@ -88,9 +84,6 @@ static void set_time(mu_time_t now);
 
 // =============================================================================
 // local storage
-
-
-static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
 
 static mu_time_t s_now;
 
@@ -285,16 +278,13 @@ void mu_sched_test() {
   setup();
 
   set_time(100);
-  ASSERT(mu_spscq_count(mu_sched_isr_queue()) == 0);
   ASSERT(mu_sched_task_from_isr(&s_counting_task2.task) == MU_SCHED_ERR_NONE);
-  ASSERT(mu_spscq_count(mu_sched_isr_queue()) == 1);
   ASSERT(mu_sched_step() == MU_SCHED_ERR_NONE);
   // verify that calling step():
   // - sets the task's time to the scheduler's current time
   // - called the task
   // - removed it from the isr queue
   ASSERT(get_call_count(&s_counting_task2) == 1);
-  ASSERT(mu_spscq_count(mu_sched_isr_queue()) == 0);
   ASSERT(mu_sched_task_count() == 4);
 
   // scheduling tasks at same time: tasks are processed in FIFO order
@@ -302,8 +292,8 @@ void mu_sched_test() {
   mu_sched_reset();
 
   ASSERT(mu_sched_task_at(&s_counting_task3.task, 110) == MU_SCHED_ERR_NONE);
-  ASSERT(mu_sched_task_at(&s_counting_task2.task, 110) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_task_at(&s_counting_task1.task, 110) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_task_at(&s_counting_task2.task, 110) == MU_SCHED_ERR_NONE);
 
   set_time(110);
 
@@ -313,8 +303,8 @@ void mu_sched_test() {
   ASSERT(get_call_count(&s_counting_task3) == 1);
 
   ASSERT(mu_sched_step() == MU_SCHED_ERR_NONE);
-  ASSERT(get_call_count(&s_counting_task1) == 0);
-  ASSERT(get_call_count(&s_counting_task2) == 1);
+  ASSERT(get_call_count(&s_counting_task1) == 1);
+  ASSERT(get_call_count(&s_counting_task2) == 0);
   ASSERT(get_call_count(&s_counting_task3) == 1);
 
   ASSERT(mu_sched_step() == MU_SCHED_ERR_NONE);
@@ -440,7 +430,7 @@ static void idle_task_fn(void *ctx, void *arg) {
 
 static void setup(void) {
   // set up scheduler
-  mu_sched_init(s_isr_queue_items, ISR_QUEUE_SIZE);
+  mu_sched_init();
 
   // set up clock for unit testing
   set_time(0);
