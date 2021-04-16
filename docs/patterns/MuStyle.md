@@ -37,18 +37,10 @@ repeating ad infinitum.
 #define ON_TIME_MS 10   // the LED on time (in milliseconds)
 #define OFF_TIME_MS 490 // the LED off time
 
-// The scheduler needs an Interrupt Service Routine queue, and it must be a
-// power of 2 elements long.  In this app, we won't be processing interrupt
-// requests, but for many applications, a queue length of 8 is sufficient.
-#define ISR_QUEUE_SIZE 8
-
-// Allocate the Interrupt Service Routine queue.
-static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
-
 void main(void) {
   bsp_init();       // whatever your system need to initialize from a cold start
   mu_time_init();   // initialize the timer functions
-  mu_sched_init(s_isr_queue_items, ISR_QUEUE_SIZE);  // set up the scheduler
+  mu_sched_init();  // set up the scheduler
 
   // initialize and queue the blinky_one task
   mu_sched_task_now(blinky_one_init(ON_TIME_MS, OFF_TIME_MS));
@@ -153,7 +145,7 @@ mu_task_t *blinky_one_init(uint16_t on_time_ms, off_time_ms) {
   // Make sure the LED is initially off
   bsp_set_led(LED_A, false);
 
-  //
+  // Return a pointer to the task so the caller can schedule it.
   return &s_blinky_one_ctx.task;
 }
 
@@ -176,8 +168,7 @@ static void blinky_one_fn(void *ctx) {
 }
 ```
 
-If you enjoy writing dense code, this is an equivalent version of
-`blinky_one_fn()`:
+If you prefer dense code, this is an equivalent version of `blinky_one_fn()`:
 
 ```
 static void blinky_one_fn(void *ctx) {
@@ -185,11 +176,9 @@ static void blinky_one_fn(void *ctx) {
   blinky_one_ctx_t *self = (blinky_one_ctx_t *)ctx;
 
   // Toggle the internal state and make the LED match the internal state
-  self->led_is_on = !self->led_is_on;
-  bsp_set_led(LED_A, self->led_is_on);
+  bsp_set_led(LED_A, (self->led_is_on = !self->led_is_on));
 
-  // Reschedule the currently running task in the specified amount of time.  In
-  // this case, the currently running task is the blinky_one task itself.
+  // Reschedule the currently running task in the specified amount of time.
   mu_reschedule_in(self->led_is_on ? self->on_time : self->off_time);
 }
 ```
@@ -198,8 +187,10 @@ static void blinky_one_fn(void *ctx) {
 
 What if you wanted something like blinky_one, but for three LEDs that each have
 their own blink pattern?  The solution is nearly identical to blinky_one, but
-rather than hiding the context as a static variable inside blinky_one.c, you
-let the user allocate a context for each LED.  Like this...
+rather than hiding the context structure inside blinky_one.c, we expose it in
+the blinky_two.h header file so the user can allocate a context for each LED.  
+
+Like this...
 
 ## file: main.c
 
@@ -208,10 +199,6 @@ let the user allocate a context for each LED.  Like this...
 #include "bsp.h"         // your Board Support Package
 #include "blinky_two.h"  // declarations for the blinky_two task
 
-#define ISR_QUEUE_SIZE 8
-
-static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
-
 static blinky_two_ctx_t led_a;
 static blinky_two_ctx_t led_b;
 static blinky_two_ctx_t led_c;
@@ -219,7 +206,6 @@ static blinky_two_ctx_t led_c;
 void main(void) {
   bsp_init();
   mu_time_init();
-  mu_sched_init(s_isr_queue_items, ISR_QUEUE_SIZE);
 
   mu_sched_task_now(blinky_two_init(&led_a, 10, 490, LED_A, "LED A Task"));
   mu_sched_task_now(blinky_two_init(&led_b, 10, 590, LED_B, "LED B Task"));
@@ -262,7 +248,7 @@ typedef struct {
   mu_time_dt on_time;
   mu_time_dt off_time;
   bool led_is_on;
-  led_id_t led_id;
+  led_id_t led_id;      // field added to indicate which LED.
 } blinky_two_ctx_t;
 
 // =============================================================================
@@ -374,14 +360,12 @@ in Morse code.  The `morse_char_task` introduces two new concepts:
 #include "morse_char_task.h"  // declarations for the morse_char_task
 #include <stddef.h>           // defines NULL
 
-#define ISR_QUEUE_SIZE 8
-static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
 static morse_char_task_ctx_t s_morse_char_task_ctx;
 
 void main(void) {
   bsp_init();       // whatever your system need to initialize from a cold start
   mu_time_init();   // initialize the timer functions
-  mu_sched_init(s_isr_queue_items, ISR_QUEUE_SIZE);  // set up the scheduler
+  mu_sched_init();  // set up the scheduler
 
   // initialize and queue the morse_char_task to blink the letter "A"
   mu_sched_task_now(morse_char_task_init(&s_morse_char_task_ctx,
@@ -424,10 +408,10 @@ extern "C" {
 
 // Define the context for a morse_char_task.
 typedef struct {
-  mu_task_t task;
-  char *s;
-  led_id_t led_id,
-  mu_task_t *on_completion;
+  mu_task_t task;            // the task object
+  char *s;                   // the character being printed
+  led_id_t led_id,           // the ID of the LED doing the blinking
+  mu_task_t *on_completion;  // a task to call upon completion
 } morse_char_task_ctx_t;
 
 // =============================================================================
@@ -654,14 +638,12 @@ This example assumes you already have morse_char_task.c and morse_char_task.h.
 #include "morse_task.h"       // declarations for the morse_task
 #include <stddef.h>           // defines NULL
 
-#define ISR_QUEUE_SIZE 8
-static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
 static morse_task_ctx_t s_morse_task_ctx;
 
 void main(void) {
   bsp_init();       // whatever your system need to initialize from a cold start
   mu_time_init();   // initialize the timer functions
-  mu_sched_init(s_isr_queue_items, ISR_QUEUE_SIZE);  // set up the scheduler
+  mu_sched_init();  // set up the scheduler
 
   // initialize and queue the morse_task to blink the phrase "Hello, World!"
   mu_sched_task_now(morse_task_init(&s_morse_task_ctx,
@@ -697,9 +679,9 @@ extern "C" {
 // Define the context for a morse_task.
 typedef struct {
   mu_task_t task;
-  morse_char_task_ctx_t morse_char_ctx; // morse-task has a morse_char_task
-  char *s;
-  mu_task_t *on_completion;
+  morse_char_task_ctx_t morse_char_ctx; // morse_task has a morse_char_task
+  char *s;                              // The string to render as morse.
+  mu_task_t *on_completion;             // The task to invoke on completion.
 } morse_task_ctx_t;
 
 // =============================================================================
