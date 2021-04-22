@@ -1,0 +1,11 @@
+mu_time.c:12:6:mu_time_init	4	static
+mu_time.c:21:11:mu_time_now	8	static
+mu_time.c:34:11:mu_time_offset	16	static
+mu_time.c:47:12:mu_time_difference	16	static
+mu_time.c:61:6:mu_time_precedes	16	static
+mu_time.c:72:6:mu_time_equals	16	static
+mu_time.c:86:6:mu_time_follows	16	static
+mu_time.c:96:15:mu_time_duration_to_ms	16	static
+mu_time.c:106:12:mu_time_ms_to_duration	16	static
+mu_time.c:117:10:mu_time_duration_to_s	16	static
+mu_time.c:127:12:mu_time_s_to_duration	16	static
