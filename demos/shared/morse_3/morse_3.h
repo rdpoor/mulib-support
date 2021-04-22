@@ -22,65 +22,28 @@
  * SOFTWARE.
  */
 
+#ifndef _MORSE_3_H_
+#define _MORSE_3_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // Includes
 
-#include "morse_2.h"
-
-#include "mu_platform.h"  // must precede #include mulib.h
-#include "mulib.h"
-#include "morse_char.h"
-#include <stdio.h>
+// =============================================================================
+// Types and definitions
 
 // =============================================================================
-// Local types and definitions
+// Declarations
 
-#define VERSION "1.0"
+void morse_3_init(void);
 
-typedef struct {
-  mu_task_t task;
-  char ascii;
-} ctx_t;
+void morse_3_step(void);
 
-// =============================================================================
-// Local (forward) declarations
-
-static void task_fn(void *ctx, void *arg);
-
-// =============================================================================
-// Local storage
-
-static ctx_t s_ctx;
-
-// =============================================================================
-// Public code
-
-void morse_2_init(void) {
-  mulib_init();
-
-  printf("\r\nmorse_2 v%s\n", VERSION);
-
-  // initialize the mu_task to associate task_fn with s_ctx
-  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");
-
-  // Initialize s_ctx
-  s_ctx.ascii = 'A';
-
-  mu_sched_task_now(&s_ctx.task);
+#ifdef __cplusplus
 }
+#endif
 
-void morse_2_step(void) {
-  mu_sched_step();
-}
-
-// =============================================================================
-// Local (private) code
-
-static void task_fn(void *ctx, void *arg) {
-  // Recast the void * argument to a blink_basic_ctx_t * argument.
-  ctx_t *self = (ctx_t *)ctx;
-  (void)arg;  // unused
-
-  // Schedule sub-task to blink the ascii and upon completion, call this task.
-  mu_sched_task_now(morse_char_init(self->ascii, &self->task));
-}
+#endif // _MORSE_3_H_

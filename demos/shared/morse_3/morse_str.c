@@ -25,7 +25,7 @@
 // =============================================================================
 // Includes
 
-#include "morse_2.h"
+#include "morse_str.h"
 
 #include "mu_platform.h"  // must precede #include mulib.h
 #include "mulib.h"
@@ -35,11 +35,10 @@
 // =============================================================================
 // Local types and definitions
 
-#define VERSION "1.0"
-
 typedef struct {
   mu_task_t task;
-  char ascii;
+  const char *str;
+  mu_task_t *on_completion;
 } ctx_t;
 
 // =============================================================================
@@ -55,32 +54,39 @@ static ctx_t s_ctx;
 // =============================================================================
 // Public code
 
-void morse_2_init(void) {
-  mulib_init();
+mu_task_t *morse_str_init(const char *str, mu_task_t *on_completion) {
+  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse Str");
 
-  printf("\r\nmorse_2 v%s\n", VERSION);
+  // Initialize s_morse_2_ctx
+  s_ctx.str = str;
+  s_ctx.on_completion = on_completion;
 
-  // initialize the mu_task to associate task_fn with s_ctx
-  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");
+  // Return the task object, ready to be passed to the scheduler
+  return &s_ctx.task;
 
-  // Initialize s_ctx
-  s_ctx.ascii = 'A';
-
-  mu_sched_task_now(&s_ctx.task);
-}
-
-void morse_2_step(void) {
-  mu_sched_step();
 }
 
 // =============================================================================
 // Local (private) code
 
 static void task_fn(void *ctx, void *arg) {
-  // Recast the void * argument to a blink_basic_ctx_t * argument.
+  // Recast the void * argument to a ctx_t * argument.
   ctx_t *self = (ctx_t *)ctx;
   (void)arg;  // unused
 
-  // Schedule sub-task to blink the ascii and upon completion, call this task.
-  mu_sched_task_now(morse_char_init(self->ascii, &self->task));
+  // Fetch the next character in the string
+  char ch = *self->str++;
+
+  if (ch != '\0') {
+    // Schedule sub-task to blink the ascii as morse code, and upon completion,
+    // call this task again.
+    mu_sched_task_now(morse_char_init(ch, &self->task));
+
+  } else {
+    // Completed the string.   Call the on_completion task (if provided) after
+    // a one second delay.
+    if (self->on_completion != NULL) {
+      mu_sched_task_in(self->on_completion, MU_TIME_MS_TO_DURATION(1000));
+    }
+  }
 }

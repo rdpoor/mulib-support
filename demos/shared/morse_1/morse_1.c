@@ -41,34 +41,25 @@
 #define ON_TIME_MS 10
 #define OFF_TIME_MS (1000 - ON_TIME_MS)
 
-// Define the context for a morse_1 task.  When morse_1_fn is called, this
-// context is passed in as an argument and gives morse_1_fn all of the
+// Define the context for a morse_1 task.  When task_fn is called, this
+// context is passed in as an argument and gives task_fn all of the
 // information it needs to run the task.
 typedef struct {
   mu_task_t task;
   mu_duration_t on_time;
   mu_duration_t off_time;
   bool led_is_on;
-} morse_1_ctx_t;
+} ctx_t;
 
 // =============================================================================
 // Local (forward) declarations
 
-/**
- * @brief Initialize a morse_task to turn an LED on and off periodically.
- *
- * @param on_time_ms How long the LED is on, in milliseconds.
- * @param off_time_ms How long the LED is off, in milliseconds.
- * @return An initialized mu_task, ready to be scheduled.
- */
-static mu_task_t *morse_1_task_init(uint16_t on_time_ms, uint16_t off_time_ms);
-
-static void morse_1_fn(void *ctx, void *arg);
+static void task_fn(void *ctx, void *arg);
 
 // =============================================================================
 // Local storage
 
-static morse_1_ctx_t s_morse_1_ctx;
+static ctx_t s_ctx;
 
 // =============================================================================
 // Public code
@@ -78,8 +69,20 @@ void morse_1_init(void) {
 
   printf("\r\nmorse_1 v%s\n", VERSION);
 
-  mu_task_t *morse_task = morse_1_task_init(ON_TIME_MS, OFF_TIME_MS);
-  mu_sched_task_now(morse_task);
+    // initialize the mu_task to associate blink_basic_fn with s_blink_basic_ctx
+  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 1");
+
+  // Initialize s_ctx
+  s_ctx.on_time = mu_time_ms_to_duration(ON_TIME_MS);
+  s_ctx.off_time = mu_time_ms_to_duration(OFF_TIME_MS);
+  s_ctx.led_is_on = false;
+
+  // Make sure the LED is initially off
+  mu_stddemo_led_set(false);
+
+  // Make the first call to the scheduler.  The task_fn will reschedule upon
+  // completion.
+  mu_sched_task_now(&s_ctx.task);
 }
 
 void morse_1_step(void) {
@@ -89,26 +92,9 @@ void morse_1_step(void) {
 // =============================================================================
 // Local (private) code
 
-mu_task_t *morse_1_task_init(uint16_t on_time_ms, uint16_t off_time_ms) {
-
-  // initialize the mu_task to associate blink_basic_fn with s_blink_basic_ctx
-  mu_task_init(&s_morse_1_ctx.task, morse_1_fn, &s_morse_1_ctx, "Morse 1");
-
-  // Initialize s_morse_1_ctx
-  s_morse_1_ctx.on_time = mu_time_ms_to_duration(on_time_ms);
-  s_morse_1_ctx.off_time = mu_time_ms_to_duration(off_time_ms);
-  s_morse_1_ctx.led_is_on = false;
-
-  // Make sure the LED is initially off
-  mu_stddemo_led_set(false);
-
-  // Return the task object, ready to be passed to the scheduler
-  return &s_morse_1_ctx.task;
-}
-
-static void morse_1_fn(void *ctx, void *arg) {
+static void task_fn(void *ctx, void *arg) {
   // Recast the void * argument to a blink_basic_ctx_t * argument.
-  morse_1_ctx_t *self = (morse_1_ctx_t *)ctx;
+  ctx_t *self = (ctx_t *)ctx;
   (void)arg;  // unused
 
   // Toggle the internal state and make the LED match the internal state

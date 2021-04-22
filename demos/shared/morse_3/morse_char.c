@@ -160,7 +160,7 @@ mu_task_t *morse_char_init(char ascii, mu_task_t *on_completion) {
 // Local (private) code
 
 static void task_fn(void *ctx, void *arg) {
-  // Recast the void * argument to a ctx_t * argument.
+  // Recast the void * argument to a morse_char_task_ctx_t * argument.
   ctx_t *self = (ctx_t *)ctx;
   (void)arg;  // unused
 
