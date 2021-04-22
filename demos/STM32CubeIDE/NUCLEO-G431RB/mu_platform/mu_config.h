@@ -65,12 +65,12 @@ extern "C" {
 #define MU_FLOAT double
 
 /**
- * Define mu_time_t, mu_time_dt, mu_time_ms_dt as required by your platform-
+ * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
  * specific mu_time.h
  */
 typedef uint32_t mu_time_t;
-typedef int32_t mu_time_dt;
-typedef int32_t mu_time_ms_dt;
+typedef int32_t mu_duration_t;
+typedef int32_t mu_duration_ms_t;
 
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.

@@ -1,6 +1,0 @@
-mu_stddemo.c:55:6:mu_stddemo_init	16	static
-mu_stddemo.c:67:6:mu_stddemo_led_set	16	static
-mu_stddemo.c:77:6:mu_stddemo_button_is_pressed	8	static
-mu_stddemo.c:84:6:mu_stddemo_sleep	16	static
-mu_stddemo.c:97:6:mu_stddemo_sleep_until	16	static
-mu_stddemo.c:112:6:HAL_GPIO_EXTI_Callback	24	static

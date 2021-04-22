@@ -98,9 +98,9 @@ Real-time functions are core to mulib, so you'll need to define a representation
 
 **`mu_time_t`** must be a data type capable of holding time since the processor rebooted, and typically run for a least one day before rolling over.  This is just a guidline, though: your application may have different needs.
 
-**`mu_time_dt`** must be a data type capable of holding the difference between two `mu_time_t` objects.
+**`mu_duration_t`** must be a data type capable of holding the difference between two `mu_time_t` objects.
 
-**`mu_time_ms_dt`** must be a data type capable of holding a time difference in milliseconds.
+**`mu_duration_ms_t`** must be a data type capable of holding a time difference in milliseconds.
 
 Note that these type definitions do not need to be integers.  For example, in an 8-bit processor, you might choose to implement mu_time_t as follows:
 

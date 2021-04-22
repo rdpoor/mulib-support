@@ -31,7 +31,7 @@ mu_time_t mu_time_now() {
  * @param dt a duration object
  * @return t1 offset by dt
  */
-mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt) {
+mu_time_t mu_time_offset(mu_time_t t1, mu_duration_t dt) {
   return t1 + dt;
 }
 
@@ -44,7 +44,7 @@ mu_time_t mu_time_offset(mu_time_t t1, mu_time_dt dt) {
  * @param t2 A time object
  * @return (t1-t2) as a duration object
  */
-mu_time_dt mu_time_difference(mu_time_t t1, mu_time_t t2) {
+mu_duration_t mu_time_difference(mu_time_t t1, mu_time_t t2) {
   return t1 - t2;
 }
 
@@ -93,7 +93,7 @@ bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
  * @param dt A duration object
  * @return The duration in seconds
  */
-mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt) {
+mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt) {
   return (dt * 1000) / RTC_FREQUENCY;
 }
 
@@ -103,7 +103,7 @@ mu_time_ms_dt mu_time_duration_to_ms(mu_time_dt dt) {
  * @param ms The duration in milliseconds
  * @return A duration object
  */
-mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms) {
+mu_duration_t mu_time_ms_to_duration(mu_duration_ms_t ms) {
   return (ms * RTC_FREQUENCY) / 1000;
 }
 
@@ -114,7 +114,7 @@ mu_time_dt mu_time_ms_to_duration(mu_time_ms_dt ms) {
  * @param dt A duration object
  * @return The duration in seconds
  */
-MU_FLOAT mu_time_duration_to_s(mu_time_dt dt) {
+MU_FLOAT mu_time_duration_to_s(mu_duration_t dt) {
   return dt / (MU_FLOAT)(RTC_FREQUENCY);
 }
 
@@ -124,7 +124,7 @@ MU_FLOAT mu_time_duration_to_s(mu_time_dt dt) {
  * @param s The duration in seconds
  * @return A duration object
  */
-mu_time_dt mu_time_s_to_duration(MU_FLOAT s) {
+mu_duration_t mu_time_s_to_duration(MU_FLOAT s) {
   return s * RTC_FREQUENCY;
 }
 

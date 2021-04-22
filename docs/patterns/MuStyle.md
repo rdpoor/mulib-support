@@ -113,8 +113,8 @@ mu_task_t *blinky_one_init(uint16_t on_time_ms, uint16_t off_time_ms);
 // information it needs to run the task.
 typedef struct {
   mu_task_t task;
-  mu_time_dt on_time;
-  mu_time_dt off_time;
+  mu_duration_t on_time;
+  mu_duration_t off_time;
   bool led_is_on;
 } blinky_one_ctx_t;
 
@@ -245,8 +245,8 @@ extern "C" {
 
 typedef struct {
   mu_task_t task;
-  mu_time_dt on_time;
-  mu_time_dt off_time;
+  mu_duration_t on_time;
+  mu_duration_t off_time;
   bool led_is_on;
   led_id_t led_id;      // field added to indicate which LED.
 } blinky_two_ctx_t;

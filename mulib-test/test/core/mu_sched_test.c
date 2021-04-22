@@ -312,7 +312,7 @@ void mu_sched_test() {
   ASSERT(get_call_count(&s_counting_task2) == 1);
   ASSERT(get_call_count(&s_counting_task3) == 1);
 
-  // mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_time_dt in);
+  // mu_sched_err_t mu_sched_reschedule_in(mu_sched_t *sched, mu_duration_t in);
   setup();
   mu_sched_reset();
 

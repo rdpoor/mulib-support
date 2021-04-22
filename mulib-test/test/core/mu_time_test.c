@@ -46,8 +46,8 @@ void mu_time_test() {
   mu_time_t t1;
   mu_time_t t2;
 
-  mu_time_dt dt1;
-  mu_time_ms_dt dm1;
+  mu_duration_t dt1;
+  mu_duration_ms_t dm1;
 
   t1 = mu_time_now();   // an arbitrary time
   dm1 = mu_time_ms_to_duration(1000);

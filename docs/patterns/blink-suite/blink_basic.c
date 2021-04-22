@@ -38,8 +38,8 @@
 // information it needs to run the task.
 typedef struct {
   mu_task_t task;
-  mu_time_dur_t on_time;
-  mu_time_dur_t off_time;
+  mu_duration_t on_time;
+  mu_duration_t off_time;
   bool led_is_on;
 } blink_basic_ctx_t;
 
