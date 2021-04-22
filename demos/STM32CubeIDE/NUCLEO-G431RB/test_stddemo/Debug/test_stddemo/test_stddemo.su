@@ -1,0 +1,5 @@
+test_stddemo.c:39:6:test_stddemo_init	8	static
+test_stddemo.c:57:6:test_stddemo_step	16	static
+test_stddemo.c:69:13:button_cb	16	static
+test_stddemo.c:75:13:set_led	16	static
+test_stddemo.c:80:13:get_led	4	static

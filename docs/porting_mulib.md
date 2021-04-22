@@ -5,15 +5,15 @@ This document takes you through the steps required to extend mulib to run on the
 
 ## TL;DR
 
-1. Incorporate mulib and mulib-platform into your IDE project
-2. Modify mulib-platform/mu_config.h for your platform
-3. Modify mulib-platform/mu_time.h for your platform
+1. Incorporate mulib and mu_platform into your IDE project
+2. Modify mu_platform/mu_config.h for your platform
+3. Modify mu_platform/mu_time.h for your platform
 4. Build and run your project on your platform.
 
 ## Details
 
 A typical mulib-based project will incorporate the `mulib` repository
-in its entirety within the IDE project itself.  In addition, you will create a directory named `mulib-platform` that will contain the code that interfaces mulib to your platform.  As an example, your project may look something like this:
+in its entirety within the IDE project itself.  In addition, you will create a directory named `mu_platform` that will contain the code that interfaces mulib to your platform.  As an example, your project may look something like this:
 
 
 ```
@@ -22,43 +22,38 @@ my_project/
     core/
     extras/
     mulib.h
-  mulib-platform/  // your platform-specific interface
+  mu_platform/     // your platform-specific interface
+    mu_platform.h  // wrapper for other .h files here
     mu_config.h    // platform-specific definitions used by mulib
+    mu_stddemo.h   // definition of a "standard demo platform"
+    mu_stddemo.c   // implementation of a "standard demo platform"
     mu_time.c      // platform-specific time implementation
     mu_time.h      // platform-specific time declarations
   src/
 ```
 
-## Step 1: Incorporate mulib and mulib-platform into yoru IDE project
+## Step 1: Incorporate mulib and mu_platform into your IDE project
 
 The details of creating an IDE project vary from IDE to IDE, so this section is abstract out of necessity.  But the basic idea is as follows:
 
 1. Use your IDE to create my-project.
 2. % cd my-project; git clone https://github.com/rdpoor/mulib
-3. % mkdir mulib-platform; cp mulib/platform/* mulib-platform
+3. % cd somwehere; git clone https://github.com/rdpoor/mulib-support
+3. % cp -rp mulib-support/mu_platform my-project
 
-Note that in some IDEs, it may be preferable to keep the mulib and mulib-platform directories outside of the my_project directory.  Your mileage may vary.
+Note that in some IDEs, it may be preferable to keep the mulib and mu_platform directories outside of the my_project directory.  Your mileage may vary.
 
-## Step 2: Modify mulib-platform/mu_config.c for your platform
+## Step 2: Modify platform specific files for your platform
 
-If you followed the directions above, you will find a generic version of mu_config.h in your mulib-platform directory.  Here's what you need to change:
+### mu_config.h
 
-### Housekeeping
+#### Housekeeping
 
-Near the top of the file, comment out (or delete) the line containing:
+Near the top of the mu_config.h, comment out (or delete) the line containing:
 
     #error "Replace mu_config.h with your platform-specific file"
 
-Near the top of the file, comment out (or delete) the line containing:
-
-    #if 0
-
-At the bottom of the file, comment out or delete the line containing:
-
-    #endif // #if 0
-
-
-### Interrupt management
+#### Interrupt management
 
 Replace the two lines that read:
 
@@ -71,7 +66,7 @@ with definitions that disable and enable global interrupts on your platform.  Fo
     #define MU_DISABLE_INTERRUPTS() _disable_irq
     #define MU_ENABLE_INTERRUPTS() _enable_irq
 
-### General switches
+#### General switches
 
 If you want to enable logging in your system, un-comment the line that reads:
 
@@ -85,14 +80,14 @@ Note: `MU_CAN_SLEEP` is not used in the current version and will be deprecated.
 
     // #define MU_CAN_SLEEP
 
-### Floating point support
+#### Floating point support
 
 If your platform has native support for floating point operations, or if your application favors including floating-point libraries, you might choose to let `mulib` use floating point functions for some of its operations.  To do so, uncomment one of the two lines that read:
 
     // #define MU_FLOAT float
     // #define MU_FLOAT double
 
-### Supporting time functions
+#### Supporting time functions
 
 Real-time functions are core to mulib, so you'll need to define a representation of time appropriate for your platform.  Generally speaking, there are two factors to consider when choosing a representation for time:
 
@@ -118,13 +113,26 @@ Note that these type definitions do not need to be integers.  For example, in an
 
 See the section on `mu_time.h` to see how you actually use these definitions.
 
-## Step 3: Modify mulib-platform/mu_time.c for your platform
+### mu_time.c
 
-The file `mulib-platform/mu_time.h` provides the declarations and documentation for the functions that you must provide in `mulib-platform/mu_time.c`.
+The file `mu_platform/mu_time.h` provides the declarations and documentation for the functions that you must provide in `mu_platform/mu_time.c`.
 
 A simple strategy is to copy all the function declarations from mu_time.h into mu_time.c and then convert those declarations into functions as appropriate for your platform.
 
 The most complex platform-specific function you'll need to write is probably `mu_time_now()`, whose contract is to return the value of your real-time clock.
+
+### mu_stddemo.c
+
+Every embedded systems demo requires a few things to be useful:
+
+* An LED that can be turned on or off.
+* A button that can generate asynchronous interrupts.
+* A means to printf() to a terminal.
+* (Less critical) A means to put the processor into low power mode until a certain time or interrupt wakes it.
+
+The file mu_stddemo.c is where you implement these functions.  
+
+Note: in the future, mu_stddemo.c will be optional, controlled through compile-time switches in mu_config.h.  for now, it's mandatory.
 
 ## Step 4: Build and run your project on your platform.
 
