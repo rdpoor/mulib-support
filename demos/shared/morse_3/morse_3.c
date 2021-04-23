@@ -37,7 +37,7 @@
 
 #define VERSION "1.0"
 
-#define MESSAGE "Hello, mulib!"
+#define MESSAGE "Hello mulib"
 
 typedef struct {
   mu_task_t task;

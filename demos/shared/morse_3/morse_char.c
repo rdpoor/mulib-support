@@ -39,8 +39,8 @@
 #define MORSE_SHORT_MARK (1 * MORSE_CHAR_QUANTUM)
 #define MORSE_LONG_MARK (3 * MORSE_CHAR_QUANTUM)
 #define MORSE_INTRA_CHAR_GAP (1 * MORSE_CHAR_QUANTUM)
-#define MORSE_INTER_CHAR_GAP (3 * MORSE_CHAR_QUANTUM)
-#define MORSE_INTER_WORD_GAP (7 * MORSE_CHAR_QUANTUM)
+#define MORSE_INTER_CHAR_GAP (5 * MORSE_CHAR_QUANTUM)
+#define MORSE_INTER_WORD_GAP (11 * MORSE_CHAR_QUANTUM)
 
 #define UNKNOWN_CH ". . - - . ." // aka '?'
 
@@ -49,7 +49,7 @@ typedef struct {
   mu_task_t task;            // the task object
   const char *s;             // the character being printed
   mu_task_t *on_completion;  // a task to call upon completion
-} ctx_t;
+} morse_char_ctx_t;
 
 // =============================================================================
 // Local (forward) declarations
@@ -72,7 +72,7 @@ static char upcase(char ch);
 // =============================================================================
 // Local storage
 
-static ctx_t s_ctx;
+static morse_char_ctx_t s_ctx;
 
 // Translate ASCII characters into a string of dots and dashes.  Use UNKNOWN_CH
 // when there is no Morse code equivalent.
@@ -161,7 +161,7 @@ mu_task_t *morse_char_init(char ascii, mu_task_t *on_completion) {
 
 static void task_fn(void *ctx, void *arg) {
   // Recast the void * argument to a morse_char_task_ctx_t * argument.
-  ctx_t *self = (ctx_t *)ctx;
+  morse_char_ctx_t *self = (morse_char_ctx_t *)ctx;
   (void)arg;  // unused
 
   switch(*self->s++) {
