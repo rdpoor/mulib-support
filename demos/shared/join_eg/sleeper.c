@@ -65,7 +65,7 @@ static void task_fn(void *ctx, void *arg) {
   (void)arg;  // unused
 
   mu_stddemo_led_set(true);  // turn on LED when any sleeper wakes
-  printf("Sleeper %s waking at %ld\n", self->name, mu_time_now());
+  printf("Sleeper %s waking at %ld tics\n", self->name, mu_time_now());
   if (self->on_completion != NULL) {
     mu_sched_task_now(self->on_completion);
   }

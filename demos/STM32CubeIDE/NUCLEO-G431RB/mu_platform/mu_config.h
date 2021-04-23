@@ -86,6 +86,7 @@ typedef int32_t mu_duration_ms_t;
 #endif
 
 #ifdef MU_TASK_PROFILING
+#undef MU_TASK_PROFILING
 #define MU_TASK_PROFILING (1)
 #else
 #define MU_TASK_PROFILING (0)

@@ -79,8 +79,6 @@ static joiner_ctx_t s_joiner;
 void join_eg_init(void) {
   mulib_init();
 
-  s_random_seed = mu_time_now();
-
   printf("\r\njoin_eg v%s, seed = %ld\n", VERSION, s_random_seed);
 
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Join Eg");
@@ -131,6 +129,7 @@ static void start_sleeper(sleeper_ctx_t *sleeper,
                           const char *name,
                           mu_duration_ms_t delay_ms) {
   mu_task_t *task = sleeper_init(sleeper, name, joiner_add_task(&s_joiner));
-  printf("Sleeper %s sleeping for %ld mSec\n", name, delay_ms);
-  mu_sched_task_in(task, delay_ms);
+  mu_duration_t delay = MU_TIME_MS_TO_DURATION(delay_ms);
+  printf("Sleeper %s sleeping for %ld tics\n", name, delay);
+  mu_sched_task_in(task, delay);
 }
