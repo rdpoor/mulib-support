@@ -30,6 +30,7 @@
 #include "mu_platform.h"  // must precede #include mulib.h
 #include "mulib.h"
 #include <stdio.h>
+#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
@@ -67,7 +68,19 @@ static void task_fn(void *ctx, void *arg) {
   mu_stddemo_led_set(true);  // turn on LED when any sleeper wakes
   printf("Sleeper %s waking at %ld tics\n", self->name, mu_time_now());
   if (self->on_completion != NULL) {
-    mu_sched_task_now(self->on_completion);
+    // Subtle bug: It two Sleepers wake up at the same time (or nearly at the
+    // same time), the first call to mu_sched_task_now(joiner) will schedule a
+    // call the the Joiner.  But before the Joiner task runs, the second call
+    // to mu_sched_task_now(joiner) will remove it from the schedule, so misses
+    // a call, its reference count never get to zero and the process hangs.
+    //
+    // So don't do this:
+    //
+    // mu_sched_task_now(self->on_completion);
+    //
+    // The fix is to circumvent the scheduler, and have the Sleeper task invoke
+    // the Joiner task directly, like this:
+    mu_task_call(self->on_completion, NULL);
   }
 
 }
