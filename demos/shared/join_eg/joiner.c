@@ -29,6 +29,7 @@
 
 #include "mu_platform.h"  // must precede #include mulib.h
 #include "mulib.h"
+#include <stdio.h>
 
 // =============================================================================
 // Local types and definitions
@@ -69,7 +70,8 @@ static void task_fn(void *ctx, void *arg) {
   self->pending_count -= 1;
 
   if (self->pending_count == 0) {
-	printf("All joined tasks have completed.\n\n");
+    mu_stddemo_led_set(false);  // turn off LED when all sleepers complete
+  	printf("All joined tasks have completed.\n\n");
     // all joined tasks have completed -- invoke the on_completion task
     if (self->on_completion != NULL) {
       mu_sched_task_now(self->on_completion);

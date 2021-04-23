@@ -38,8 +38,8 @@
 
 #define VERSION "1.0"
 
-#define MIN_MS 500
-#define MAX_MS 3000
+#define MIN_MS 350
+#define MAX_MS 3500
 
 // NOTE: we don't strictly need the typedef here -- we could use the mu_task_t
 // object directly -- but convention argues for putting it inside a ctx struct.
