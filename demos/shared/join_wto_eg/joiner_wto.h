@@ -52,7 +52,7 @@ mu_task_t *joiner_wto_init(joiner_wto_ctx_t *ctx, mu_task_t *on_completion);
 
 mu_task_t *joiner_wto_add_task(joiner_wto_ctx_t *ctx);
 
-void joiner_wto_set_timeout(joiner_wto_ctx_t *ctx, mu_duration_ms_t timeout);
+void joiner_wto_set_timeout_at(joiner_wto_ctx_t *ctx, mu_time_t at);
 
 #ifdef __cplusplus
 }
