@@ -38,9 +38,9 @@
 
 #define VERSION "1.0"
 
-#define MIN_DUR MU_TIME_MS_TO_DURATION(350)
-#define MAX_DUR MU_TIME_MS_TO_DURATION(3500)
-#define TIMEOUT_DUR MU_TIME_MS_TO_DURATION(2500)
+#define MIN_MS 350
+#define MAX_MS 3500
+#define TIMEOUT_MS 2500
 
 // NOTE: we don't strictly need the typedef here -- we could use the mu_task_t
 // object directly -- but convention argues for putting it inside a ctx struct.
@@ -58,14 +58,14 @@ static void start_sleeper(sleeper_ctx_t *sleeper,
                           const char *name,
                           mu_time_t wake_at);
 
-static mu_duration_t random_delay(mu_duration_t min, mu_duration_t max);
+static uint32_t random_range(uint32_t min, uint32_t max);
 
-static mu_duration_t random();
+static uint32_t random();
 
 // =============================================================================
 // Local storage
 
-static mu_duration_ms_t s_random_seed = 123456789;
+static uint32_t s_random_seed = ((uint32_t)123456789);
 
 static join_wto_eg_ctx_t s_join_wto_eg_ctx;
 static sleeper_ctx_t s_sleeper_a;
@@ -98,7 +98,7 @@ static void task_fn(void *ctx, void *arg) {
   join_wto_eg_ctx_t *self = (join_wto_eg_ctx_t *)ctx;
   (void)arg;  // unused
   mu_time_t now = mu_time_now();
-  mu_time_t timeout_at;
+  mu_time_t at;
 
   // initialize the joiner object.  Upon completion (when all tasks have
   // joined), call this task again to restart the process.
@@ -108,21 +108,18 @@ static void task_fn(void *ctx, void *arg) {
   // sleeper tasks have completed, the joiner task will call its on_completion
   // task (which is this task), and the process will repeat.
   printf("-----\n");
-  start_sleeper(&s_sleeper_a,
-                "Sleeper A",
-                mu_time_offset(now, random_delay(MIN_DUR, MAX_DUR)));
-  start_sleeper(&s_sleeper_b,
-                "Sleeper B",
-                mu_time_offset(now, random_delay(MIN_DUR, MAX_DUR)));
-  start_sleeper(&s_sleeper_c,
-                "Sleeper C",
-                mu_time_offset(now, random_delay(MIN_DUR, MAX_DUR)));
+  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  start_sleeper(&s_sleeper_a, "Sleeper A", at);
+  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  start_sleeper(&s_sleeper_b, "Sleeper B", at);
+  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  start_sleeper(&s_sleeper_c, "Sleeper C", at);
 
   // Instruct the joiner to timeout after 2500 mSec, whether or not the
   // sleeper tasks have completed.
-  timeout_at = mu_time_offset(now, TIMEOUT_DUR);
-  joiner_wto_set_timeout_at(&s_joiner_wto, timeout_at);
-  printf("Joiner set to time out at %ld\n", timeout_at);
+  at = mu_time_offset(now, mu_time_ms_to_duration(TIMEOUT_MS));
+  joiner_wto_set_timeout_at(&s_joiner_wto, at);
+  printf("Joiner set to time out at %ld\n", at);
 }
 
 static void start_sleeper(sleeper_ctx_t *sleeper,
@@ -133,16 +130,15 @@ static void start_sleeper(sleeper_ctx_t *sleeper,
   mu_sched_task_at(task, wake_at);
 }
 
-#define RAND_A 1103515245
-#define RAND_C 12345
+#define RAND_A ((uint32_t)1103515245)
+#define RAND_C ((uint32_t)12345)
 
-static mu_duration_t random_delay(mu_duration_t min, mu_duration_t max) {
-  mu_duration_t r = random();
+static uint32_t random_range(uint32_t min, uint32_t max) {
+  uint32_t r = random();
   return min + (r % (max - min));
 }
 
-
-static mu_duration_t random() {
+static uint32_t random() {
   s_random_seed = (uint32_t)((RAND_A * s_random_seed + RAND_C) & 0x7fffffff);
   return s_random_seed;
 }
