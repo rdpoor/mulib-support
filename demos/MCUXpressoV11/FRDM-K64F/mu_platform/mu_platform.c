@@ -22,63 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_STDDEMO_H_
-#define _MU_STDDEMO_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================================
 // Includes
 
-#include <stdbool.h>
-#include "mu_platform/mu_time.h"
+#include "mu_platform.h"     // must come first
+#include "mu_time.h"
+#include "mu_stddemo.h"
 
 // =============================================================================
-// Types and definitions
-
-/**
- * @brief Signature for a button callback.
- *
- * This is a user-supplied function that gets called at interrupt level when the
- * button chagnes state.
- *
- * @param button_state True if the button is pressed at the time of interrupt.
- */
-typedef void (*mu_stddemo_button_cb)(bool button_state);
+// Private types and definitions
 
 // =============================================================================
-// Functon declarations (public)
+// Private (forward) declarations
 
-/**
- * @brief Initialize the mu_stddemo_support system.
- *
- * @param button_cb Function to call from interrupt level when the user button
- * is pressed.  Set to NULL to inhibit callbacks.
- */
-void mu_stddemo_init(mu_stddemo_button_cb button _cb);
+// =============================================================================
+// Local storage
 
-/**
- * @brief Print a formatted message to standard output (usually a serial port).
- */
-#define mu_stddemo_printf(fmt, ...) printf(fmt, ##__VA_ARGS__)
+// =============================================================================
+// Public code
 
-/**
- * @brief Set the demo LED on or off.
- */
-void mu_stddemo_led_set(bool on);
-
-/**
- * @brief Return true if the demo button is currently pressed.
- *
- * Note that the state of the button can change between the time the button
- * callback is triggered and the button state is read.
- */
-bool mu_stddemo_button_is_pressed(void);
-
-#ifdef __cplusplus
+void mu_platform_init(void) {
+  mu_time_init();
 }
-#endif
 
-#endif // _MU_STDDEMO_H_
+// =============================================================================
+// Local (static) code

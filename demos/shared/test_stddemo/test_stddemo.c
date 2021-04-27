@@ -29,30 +29,36 @@ static bool get_led(void);
 // =============================================================================
 // Local storage
 
-static bool s_button_was_pressed;
+volatile static bool s_button_was_pressed;
 static bool s_led_state;
 
 // =============================================================================
 // Public code
 
 void test_stddemo_init(void) {
+  mu_time_t until;
+
   mu_stddemo_init(button_cb);
 
-  printf("\n\rmulib test_stddemo v%s.\n", VERSION);
+  mu_stddemo_printf("\n\rmulib test_stddemo v%s.\n", VERSION);
   s_button_was_pressed = false;
   s_led_state = false;
 
   set_led(true);
-  printf("LED should be on for 5 seconds:\n");
-  mu_stddemo_sleep_until(
-      mu_time_offset(mu_time_now(), MU_TIME_MS_TO_DURATION(5000)));
+  mu_stddemo_printf("LED should be on for 5 seconds:\n");
+  until = mu_time_offset(mu_time_now(), MU_TIME_MS_TO_DURATION(5000));
+  while (mu_time_precedes(mu_time_now(), until)) {
+	  // buzz...
+  }
 
   set_led(false);
-  printf("LED should be off for 5 seconds:\n");
-  mu_stddemo_sleep_until(
-      mu_time_offset(mu_time_now(), MU_TIME_MS_TO_DURATION(5000)));
+  mu_stddemo_printf("LED should be off for 5 seconds:\n");
+  until = mu_time_offset(mu_time_now(), MU_TIME_MS_TO_DURATION(5000));
+  while (mu_time_precedes(mu_time_now(), until)) {
+	  // buzz...
+  }
 
-  printf("Press button to toggle LED:\n");
+  mu_stddemo_printf("Press button to toggle LED:\n");
 }
 
 void test_stddemo_step(void) {
@@ -60,7 +66,7 @@ void test_stddemo_step(void) {
     s_button_was_pressed = false;
     bool led_state = !get_led();
     set_led(led_state);
-    printf("LED is %s\n", led_state ? "on" : "off");
+    mu_stddemo_printf("LED is %s\n", led_state ? "on" : "off");
   }
 }
 

@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,63 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_STDDEMO_H_
-#define _MU_STDDEMO_H_
+#ifndef _MU_PLATFORM_H_
+#define _MU_PLATFORM_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // =============================================================================
-// Includes
+// includes
 
-#include <stdbool.h>
-#include "mu_platform/mu_time.h"
-
-// =============================================================================
-// Types and definitions
-
-/**
- * @brief Signature for a button callback.
- *
- * This is a user-supplied function that gets called at interrupt level when the
- * button chagnes state.
- *
- * @param button_state True if the button is pressed at the time of interrupt.
- */
-typedef void (*mu_stddemo_button_cb)(bool button_state);
+#include "mu_config.h"
+#include "mu_time.h"
+#include "mu_stddemo.h"
 
 // =============================================================================
-// Functon declarations (public)
+// types and definitions
 
-/**
- * @brief Initialize the mu_stddemo_support system.
- *
- * @param button_cb Function to call from interrupt level when the user button
- * is pressed.  Set to NULL to inhibit callbacks.
- */
-void mu_stddemo_init(mu_stddemo_button_cb button _cb);
+void mu_platform_init(void);
 
-/**
- * @brief Print a formatted message to standard output (usually a serial port).
- */
-#define mu_stddemo_printf(fmt, ...) printf(fmt, ##__VA_ARGS__)
-
-/**
- * @brief Set the demo LED on or off.
- */
-void mu_stddemo_led_set(bool on);
-
-/**
- * @brief Return true if the demo button is currently pressed.
- *
- * Note that the state of the button can change between the time the button
- * callback is triggered and the button state is read.
- */
-bool mu_stddemo_button_is_pressed(void);
+// =============================================================================
+// declarations
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _MU_STDDEMO_H_
+#endif /* #ifndef _MU_PLATFORM_H_ */

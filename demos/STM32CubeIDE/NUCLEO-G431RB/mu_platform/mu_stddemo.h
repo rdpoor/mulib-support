@@ -77,18 +77,6 @@ void mu_stddemo_led_set(bool on);
  */
 bool mu_stddemo_button_is_pressed(void);
 
-/**
- * @brief Put the processor into low power mode until an interrupt wakes it.
- */
-void mu_stddemo_sleep(void);
-
-/**
- * @brief Put the processor into low power mode until the Real Time Clock matches `at`
- * or until an interrupt occurs, whichever comes first.
- */
-void mu_stddemo_sleep_until(mu_time_t at);
-
-
 #ifdef __cplusplus
 }
 #endif
