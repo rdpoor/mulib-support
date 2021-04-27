@@ -32,6 +32,7 @@
 #include "joiner.h"
 #include "sleeper.h"
 #include <stdio.h>
+#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
@@ -41,9 +42,6 @@
 #define MIN_MS 350
 #define MAX_MS 3500
 
-// NOTE: we don't strictly need the typedef here -- we could use the mu_task_t
-// object directly -- but convention argues for putting it inside a ctx struct.
-// Besides, we may want to add additional state to the context at some point.
 typedef struct {
   mu_task_t task;
 } ctx_t;
@@ -55,17 +53,14 @@ static void task_fn(void *ctx, void *arg);
 
 static void start_sleeper(sleeper_ctx_t *sleeper,
                           const char *name,
-                          mu_duration_ms_t delay_ms);
+                          mu_time_t wake_at);
 
-static mu_duration_ms_t random_delay(mu_duration_ms_t min,
-                                     mu_duration_ms_t max);
-
-static mu_duration_ms_t random();
+static uint32_t random_range(uint32_t min, uint32_t max);
 
 // =============================================================================
 // Local storage
 
-static mu_duration_ms_t s_random_seed = 123456789;
+static uint32_t s_random_seed = 123456789;
 
 static ctx_t s_ctx;
 static sleeper_ctx_t s_sleeper_a;
@@ -78,11 +73,11 @@ static joiner_ctx_t s_joiner;
 
 void join_eg_init(void) {
   mulib_init();
+  mu_stddemo_init(NULL);
 
-  printf("\r\njoin_eg v%s, seed = %ld\n", VERSION, s_random_seed);
+  mu_stddemo_printf("\r\njoin_eg v%s, seed = %ld\n", VERSION, s_random_seed);
 
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Join Eg");
-
   mu_sched_task_now(&s_ctx.task);
 }
 
@@ -97,6 +92,8 @@ static void task_fn(void *ctx, void *arg) {
   // Recast the void * argument to a ctx_t * argument.
   ctx_t *self = (ctx_t *)ctx;
   (void)arg;  // unused
+  mu_time_t now = mu_time_now();
+  mu_time_t at;
 
   // initialize the joiner object.  Upon completion (when all tasks have
   // joined), call this task again to restart the process.
@@ -105,31 +102,29 @@ static void task_fn(void *ctx, void *arg) {
   // completing, each sleeper object will notify the joiner.  After all three
   // sleeper tasks have completed, the joiner task will call its on_completion
   // task (which is this task), and the process will repeatt.
-  start_sleeper(&s_sleeper_a, "A", random_delay(MIN_MS, MAX_MS));
-  start_sleeper(&s_sleeper_b, "B", random_delay(MIN_MS, MAX_MS));
-  start_sleeper(&s_sleeper_c, "C", random_delay(MIN_MS, MAX_MS));
+  mu_stddemo_printf("-----\n");
+  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  start_sleeper(&s_sleeper_a, "Sleeper A", at);
+  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  start_sleeper(&s_sleeper_b, "Sleeper B", at);
+  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  start_sleeper(&s_sleeper_c, "Sleeper C", at);
+
+  ctx->sleepers_are_iniitalied = true;
+}
+
+static void start_sleeper(sleeper_ctx_t *sleeper,
+                          const char *name,
+                          mu_time_t wake_at) {
+  mu_task_t *task = sleeper_init(sleeper, name, joiner_add_task(&s_joiner));
+  mu_stddemo_printf("%s sleeping until %ld tics\n", name, wake_at);
+  mu_sched_task_at(task, wake_at);
 }
 
 #define RAND_A 1103515245
 #define RAND_C 12345
 
-static mu_duration_ms_t random_delay(mu_duration_ms_t min,
-                                     mu_duration_ms_t max) {
-  mu_duration_ms_t r = random();
-  return min + (r % (max - min));
-}
-
-
-static mu_duration_ms_t random() {
+static uint32_t random_range(uint32_t min, uint32_t max) {
   s_random_seed = (uint32_t)((RAND_A * s_random_seed + RAND_C) & 0x7fffffff);
-  return s_random_seed;
-}
-
-static void start_sleeper(sleeper_ctx_t *sleeper,
-                          const char *name,
-                          mu_duration_ms_t delay_ms) {
-  mu_task_t *task = sleeper_init(sleeper, name, joiner_add_task(&s_joiner));
-  mu_duration_t delay = MU_TIME_MS_TO_DURATION(delay_ms);
-  printf("Sleeper %s sleeping for %ld tics\n", name, delay);
-  mu_sched_task_in(task, delay);
+  return min + (s_random_seed % (max - min));
 }

@@ -31,6 +31,7 @@
 #include "mulib.h"
 #include "morse_char.h"
 #include <stdio.h>
+#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
@@ -57,8 +58,9 @@ static ctx_t s_ctx;
 
 void morse_2_init(void) {
   mulib_init();
+  mu_stddemo_init(NULL);
 
-  printf("\r\nmorse_2 v%s\n", VERSION);
+  mu_stddemo_printf("\r\nmorse_2 v%s\n", VERSION);
 
   // initialize the mu_task to associate task_fn with s_ctx
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");

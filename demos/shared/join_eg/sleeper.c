@@ -50,12 +50,16 @@ mu_task_t *sleeper_init(sleeper_ctx_t *ctx,
                         const char *name,
                         mu_task_t *on_completion) {
   // initialize the mu_task to associate task_fn with the sleeper_ctx
-  mu_task_init(&ctx->task, task_fn, ctx, "Sleeper");
+  mu_task_init(&ctx->task, task_fn, ctx, name);
   ctx->name = name;
   ctx->on_completion = on_completion;
 
   return &ctx->task;
 }
+
+mu_task_t *sleeper_task(sleeper_ctx_t *ctx) { return &ctx->task; }
+
+const char *sleeper_name(sleeper_ctx_t *ctx) { return ctx->name; }
 
 // =============================================================================
 // Local (private) code
@@ -66,7 +70,7 @@ static void task_fn(void *ctx, void *arg) {
   (void)arg;  // unused
 
   mu_stddemo_led_set(true);  // turn on LED when any sleeper wakes
-  printf("Sleeper %s waking at %ld tics\n", self->name, mu_time_now());
+  mu_stddemo_printf("%s waking at %ld tics\n", self->name, mu_time_now());
   if (self->on_completion != NULL) {
     // Subtle bug: It two Sleepers wake up at the same time (or nearly at the
     // same time), the first call to mu_sched_task_now(joiner) will schedule a

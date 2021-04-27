@@ -32,6 +32,7 @@
 #include "joiner_wto.h"
 #include "sleeper.h"
 #include <stdio.h>
+#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
@@ -42,11 +43,9 @@
 #define MAX_MS 3500
 #define TIMEOUT_MS 2500
 
-// NOTE: we don't strictly need the typedef here -- we could use the mu_task_t
-// object directly -- but convention argues for putting it inside a ctx struct.
-// Besides, we may want to add additional state to the context at some point.
 typedef struct {
   mu_task_t task;
+  bool sleepers_are_iniitalied;
 } join_wto_eg_ctx_t;
 
 // =============================================================================
@@ -78,11 +77,13 @@ static joiner_wto_ctx_t s_joiner_wto;
 
 void join_wto_eg_init(void) {
   mulib_init();
+  mu_stddemo_init(NULL);
 
-  printf("\r\njoin_wto_eg v%s, seed = %ld\n", VERSION, s_random_seed);
+  mu_stddemo_printf("\r\njoin_wto_eg v%s, seed = %ld\n", VERSION, s_random_seed);
 
+
+  s_join_wto_eg_ctx.sleepers_are_iniitalied = false;
   mu_task_init(&s_join_wto_eg_ctx.task, task_fn, &s_join_wto_eg_ctx, "Join Wto Eg");
-
   mu_sched_task_now(&s_join_wto_eg_ctx.task);
 }
 
@@ -100,6 +101,16 @@ static void task_fn(void *ctx, void *arg) {
   mu_time_t now = mu_time_now();
   mu_time_t at;
 
+  if (self->sleepers_are_iniitalied) {
+    // If the timeout triggered before all the sleeper tasks ran, then one or
+    // more of the sleeper tasks are still in the schedule queue.  Be sure to
+    // remove them from the scheduler, since calling mu_task_init() on a
+    // scheduled task will destroy the scheduler queue.
+    mu_sched_remove_task(sleeper_task(&s_sleeper_a));
+    mu_sched_remove_task(sleeper_task(&s_sleeper_b));
+    mu_sched_remove_task(sleeper_task(&s_sleeper_c));
+  }
+
   // initialize the joiner object.  Upon completion (when all tasks have
   // joined), call this task again to restart the process.
   joiner_wto_init(&s_joiner_wto, &self->task);
@@ -107,7 +118,7 @@ static void task_fn(void *ctx, void *arg) {
   // completing, each sleeper object will notify the joiner.  After all three
   // sleeper tasks have completed, the joiner task will call its on_completion
   // task (which is this task), and the process will repeat.
-  printf("-----\n");
+  mu_stddemo_printf("-----\n");
   at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_a, "Sleeper A", at);
   at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
@@ -115,18 +126,20 @@ static void task_fn(void *ctx, void *arg) {
   at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_c, "Sleeper C", at);
 
+  self->sleepers_are_iniitalied = true;
+
   // Instruct the joiner to timeout after 2500 mSec, whether or not the
   // sleeper tasks have completed.
   at = mu_time_offset(now, mu_time_ms_to_duration(TIMEOUT_MS));
   joiner_wto_set_timeout_at(&s_joiner_wto, at);
-  printf("Joiner set to time out at %ld\n", at);
+  mu_stddemo_printf("Joiner set to time out at %ld\n", at);
 }
 
 static void start_sleeper(sleeper_ctx_t *sleeper,
                           const char *name,
                           mu_time_t wake_at) {
   mu_task_t *task = sleeper_init(sleeper, name, joiner_wto_add_task(&s_joiner_wto));
-  printf("%s sleeping until %ld tics\n", name, wake_at);
+  mu_stddemo_printf("%s sleeping until %ld tics\n", name, wake_at);
   mu_sched_task_at(task, wake_at);
 }
 
@@ -134,11 +147,6 @@ static void start_sleeper(sleeper_ctx_t *sleeper,
 #define RAND_C ((uint32_t)12345)
 
 static uint32_t random_range(uint32_t min, uint32_t max) {
-  uint32_t r = random();
-  return min + (r % (max - min));
-}
-
-static uint32_t random() {
   s_random_seed = (uint32_t)((RAND_A * s_random_seed + RAND_C) & 0x7fffffff);
-  return s_random_seed;
+  return min + (s_random_seed % (max - min));
 }

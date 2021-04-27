@@ -39,6 +39,10 @@
 
 static void task_fn(void *ctx, void *arg);
 
+static void timeout_task_fn(void *ctx, void *arg);
+
+static void endgame(joiner_wto_ctx_t *self, void *arg, const char *cause);
+
 // =============================================================================
 // Local storage
 
@@ -56,9 +60,6 @@ mu_task_t *joiner_init(joiner_ctx_t *ctx, mu_task_t *on_completion) {
 
 mu_task_t *joiner_add_task(joiner_ctx_t *ctx) {
   ctx->pending_count += 1;
-  // printf("%s started join, count = %d\n",
-  //        mu_task_name(mu_sched_get_current_task()),
-  //        ctx->pending_count);
   return &ctx->task;
 }
 
@@ -66,17 +67,16 @@ mu_task_t *joiner_add_task(joiner_ctx_t *ctx) {
 // Local (private) code
 
 static void task_fn(void *ctx, void *arg) {
-  // Recast the void * argument to a joiner_ctx_t * argument.
   joiner_ctx_t *self = (joiner_ctx_t *)ctx;
   (void)arg;  // unused
 
   self->pending_count -= 1;
 
-  printf("Task completed, pending count = %d\n", self->pending_count);
+  mu_stddemo_printf("Task completed, pending count = %d\n", self->pending_count);
 
   if (self->pending_count == 0) {
     mu_stddemo_led_set(false);  // turn off LED when all sleepers complete
-  	printf("All tasks have joined at %ld tics.\n\n", mu_time_now());
+  	mu_stddemo_printf("All tasks have joined at %ld tics.\n\n", mu_time_now());
     // all joined tasks have completed -- invoke the on_completion task
     if (self->on_completion != NULL) {
       mu_sched_task_now(self->on_completion);

@@ -63,11 +63,6 @@ mu_task_t *joiner_wto_add_task(joiner_wto_ctx_t *ctx) {
   return &ctx->task;
 }
 
-void joiner_wto_set_timeout_at(joiner_wto_ctx_t *ctx, mu_time_t at) {
-  mu_task_init(&ctx->timeout_task, timeout_task_fn, ctx, "Joiner Timeout");
-  mu_sched_task_at(&ctx->timeout_task, at);
-}
-
 // =============================================================================
 // Local (private) code
 
@@ -98,7 +93,7 @@ static void endgame(joiner_wto_ctx_t *self, void *arg, const char *cause) {
   mu_time_t now = mu_time_now();
 
   mu_stddemo_led_set(false);  // turn off LED upon completion
-  printf("Join %s at %ld\n", cause, now);
+  mu_stddemo_printf("Joiner %s at %ld\n", cause, now);
   mu_sched_task_now(self->on_completion);
 
 }

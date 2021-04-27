@@ -40,7 +40,6 @@ extern "C" {
 
 typedef struct {
   mu_task_t task;
-  mu_duration_ms_t delay_ms;
   const char *name;
   mu_task_t *on_completion;
 } sleeper_ctx_t;
@@ -51,6 +50,10 @@ typedef struct {
 mu_task_t *sleeper_init(sleeper_ctx_t *ctx,
                         const char *name,
                         mu_task_t *on_completion);
+
+mu_task_t *sleeper_task(sleeper_ctx_t *ctx);
+
+const char *sleeper_name(sleeper_ctx_t *ctx);
 
 #ifdef __cplusplus
 }
