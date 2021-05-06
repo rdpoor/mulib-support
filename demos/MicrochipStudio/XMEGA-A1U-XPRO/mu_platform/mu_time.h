@@ -39,9 +39,7 @@ extern "C";
 // =============================================================================
 // types and definitions
 
-#ifndef RTC_FREQUENCY
-  #error "Provide a platform-specific definition for RTC_FREQUENCY"
-#endif
+#ifndef RTC_FREQUENCY 1024
 
 #define MU_TIME_MS_TO_DURATION(ms) (((ms) * 1000) / RTC_FREQUENCY)
 
@@ -59,7 +57,12 @@ void mu_time_init(void);
  *
  * @return A value representing the current time.
  */
-mu_time_t mu_time_now();
+mu_time_t mu_time_now(void);
+
+/**
+ * @brief Called from interrupt level approximately once every millisecond
+ */
+void mu_time_on_rtc_tick(void);
 
 /**
  * @brief Add a time and a duration.

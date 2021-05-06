@@ -4,12 +4,14 @@
 #include "mu_platform/mu_config.h"     // must come first
 #include "mu_platform/mu_time.h"       // included from mulib/src/platform/
 
+static volatile mu_time_t s_rtc_ticks;
+
 /**
  * @brief Initialize the time system.  Must be called before any other time
  * functions are called.
  */
 void mu_time_init(void) {
-  #error "Provide a platform-specific implementation for mu_time_init()"
+  s_rtc_ticks = 0;
 }
 
 /**
@@ -18,7 +20,14 @@ void mu_time_init(void) {
  * @return A value representing the current time.
  */
 mu_time_t mu_time_now() {
-  #error "Provide a platform-specific implementation for mu_time_now()"
+  return s_rtc_ticks;
+}
+
+/**
+ * @brief Called from interrupt level RTC_FREQUENCY times per second.
+ */
+void mu_time_on_rtc_tick(void) {
+  s_rtc_ticks += 1;
 }
 
 /**
@@ -31,7 +40,7 @@ mu_time_t mu_time_now() {
  * @return t1 offset by dt
  */
 mu_time_t mu_time_offset(mu_time_t t1, mu_duration_t dt) {
-  #error "Provide a platform-specific implementation for mu_time_offset()"
+  return t1 + dt;
 }
 
 /**
@@ -44,7 +53,7 @@ mu_time_t mu_time_offset(mu_time_t t1, mu_duration_t dt) {
  * @return (t1-t2) as a duration object
  */
 mu_duration_t mu_time_difference(mu_time_t t1, mu_time_t t2) {
-  #error "Provide a platform-specific implementation for mu_time_difference()"
+  return t1 - t2;
 }
 
 /**
@@ -58,7 +67,7 @@ mu_duration_t mu_time_difference(mu_time_t t1, mu_time_t t2) {
  * @return true if t1 is strictly before t2, false otherwise.
  */
 bool mu_time_precedes(mu_time_t t1, mu_time_t t2) {
-  #error "Provide a platform-specific implementation for mu_time_precedes()"
+  return t1 < t2;
 }
 
 /**
@@ -69,7 +78,7 @@ bool mu_time_precedes(mu_time_t t1, mu_time_t t2) {
  * @return true if t1 equals t2, false otherwise.
  */
 bool mu_time_equals(mu_time_t t1, mu_time_t t2) {
-  #error "Provide a platform-specific implementation for mu_time_equals()"
+  return t1 == t2;
 }
 
 /**
@@ -83,7 +92,7 @@ bool mu_time_equals(mu_time_t t1, mu_time_t t2) {
  * @return true if t1 is strictly after t2, false otherwise.
  */
 bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
-  #error "Provide a platform-specific implementation for mu_time_follows()"
+  return t1 > t2;
 }
 
 /**
@@ -93,7 +102,7 @@ bool mu_time_follows(mu_time_t t1, mu_time_t t2) {
  * @return The duration in seconds
  */
 mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt) {
-  #error "Provide a platform-specific implementation for mu_time_duration_to_ms()"
+  return (dt * 1000) / RTC_FREQUENCY;
 }
 
 /**
@@ -103,7 +112,7 @@ mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt) {
  * @return A duration object
  */
 mu_duration_t mu_time_ms_to_duration(mu_duration_ms_t ms) {
-  #error "Provide a platform-specific implementation for mu_time_ms_to_duration()"
+  return (ms * RTC_FREQUENCY) / 1000;
 }
 
 #ifdef MU_FLOAT

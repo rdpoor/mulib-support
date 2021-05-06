@@ -35,15 +35,19 @@
 
 #include <driver_init.h>
 #include <compiler.h>
+#include "mu_platform.h"
 
 ISR(RTC_OVF_vect)
 {
+	// Arrive here
+	mu_time_on_ms_tick();
 	/* Insert your RTC Overflow Interrupt handling code here */
 }
 
 ISR(PORTQ_INT0_vect)
 {
 	/* Insert your PORTQ interrupt handling code here */
+	mu_stddemo_on_button_press(USER_BUTTON_get_level());
 	/* Clear interrupt flags */
 	PORTQ_INTFLAGS = PORT_INT0IF_bm;
 }

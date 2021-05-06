@@ -22,52 +22,36 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_STDDEMO_H_
-#define _MU_STDDEMO_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================================
 // Includes
 
-#include <stdbool.h>
-#include "mu_platform/mu_time.h"
+#include "mu_platform.h"     // must come first
+#include "mu_stddemo.h"
 
 // =============================================================================
-// Types and definitions
-
-/**
- * @brief Signature for a button callback.
- *
- * This is a user-supplied function that gets called at interrupt level when the
- * button chagnes state.
- *
- * @param button_state True if the button is pressed at the time of interrupt.
- */
-typedef void (*mu_stddemo_button_cb)(bool button_state);
+// Private types and definitions
 
 // =============================================================================
-// Functon declarations (public)
+// Private (forward) declarations
 
-/**
- * @brief Initialize the mu_stddemo_support system.
- *
- * @param button_cb Function to call from interrupt level when the user button
- * is pressed.  Set to NULL to inhibit callbacks.
- */
-void mu_stddemo_init(mu_stddemo_button_cb button _cb);
+// =============================================================================
+// Local storage
 
-/**
- * @brief Print a formatted message to standard output (usually a serial port).
- */
-#define mu_stddemo_printf(fmt, ...) printf(fmt, ##__VA_ARGS__)
+static mu_stddemo_button_cb s_button_cb;
+
+// =============================================================================
+// Public code
+
+void mu_stddemo_init(mu_stddemo_button_cb button_cb) {
+  s_button_cb = button_cb;
+}
 
 /**
  * @brief Set the demo LED on or off.
  */
-void mu_stddemo_led_set(bool on);
+void mu_stddemo_led_set(bool on) {
+  USER_LED_set_level(on);
+}
 
 /**
  * @brief Return true if the demo button is currently pressed.
@@ -75,15 +59,18 @@ void mu_stddemo_led_set(bool on);
  * Note that the state of the button can change between the time the button
  * callback is triggered and the button state is read.
  */
-bool mu_stddemo_button_is_pressed(void);
+bool mu_stddemo_button_is_pressed(void) {
+  return USER_BUTTON_get_level();
+}
+
+// =============================================================================
+// Local (static) code
 
 /**
- * @brief Called from ISR when button is pressed.
- */
-void mu_stddemo_on_button_press(void);
-
-#ifdef __cplusplus
+  * @brief EXTI line detection callbacks
+  * @param GPIO_Pin: Specifies the pins connected EXTI line
+  * @retval None
+  */
+void mu_stddemo_on_button_press(void) {
+  s_button_cb(mu_stddemo_button_is_pressed());
 }
-#endif
-
-#endif // _MU_STDDEMO_H_
