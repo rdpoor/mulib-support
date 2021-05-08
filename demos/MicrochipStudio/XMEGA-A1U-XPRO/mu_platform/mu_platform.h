@@ -32,9 +32,9 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_platform/mu_config.h"
-#include "mu_platform/mu_time.h"
-#include "mu_platform/mu_stddemo.h"
+#include "mu_config.h"
+#include "mu_time.h"
+#include "mu_stddemo.h"
 
 // =============================================================================
 // types and definitions

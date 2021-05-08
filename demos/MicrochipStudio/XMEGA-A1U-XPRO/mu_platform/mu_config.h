@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#error "Replace mu_config.h with your platform-specific file"
-
 #ifndef _MU_CONFIG_H_
 #define _MU_CONFIG_H_
 
@@ -63,7 +61,7 @@ extern "C" {
  * in the compiler.
  */
 // #define MU_FLOAT float
-#define MU_FLOAT double
+// #define MU_FLOAT double
 
 /**
  * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
@@ -81,10 +79,10 @@ typedef int32_t mu_duration_ms_t;
   _body                                                                        \
   MU_ENABLE_INTERRUPTS();
 
-#ifndef ASSERT
-//#define ASSERT(expr) do {} while(0)
-#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
-#endif
+// already defined in utils/utils_assert.h
+// #ifndef ASSERT
+// #define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+// #endif
 
 #ifdef MU_TASK_PROFILING
 #define MU_TASK_PROFILING (1)
@@ -98,10 +96,8 @@ typedef int32_t mu_duration_ms_t;
   #define MU_HAS_FLOAT (0)
 #endif
 
-#if defined(MU_FLOAT) && ((MU_FLOAT == float) || (MU_FLOAT == double))
+#if defined(MU_FLOAT)
   typedef MU_FLOAT mu_float_t;
-#else
-  #error MU_FLOAT must be either float or double
 #endif
 
 // =============================================================================

@@ -25,8 +25,9 @@
 // =============================================================================
 // Includes
 
-#include "mu_platform.h"     // must come first
 #include "mu_stddemo.h"
+#include "atmel_start.h"
+#include <stddef.h>
 
 // =============================================================================
 // Private types and definitions
@@ -72,5 +73,7 @@ bool mu_stddemo_button_is_pressed(void) {
   * @retval None
   */
 void mu_stddemo_on_button_press(void) {
-  s_button_cb(mu_stddemo_button_is_pressed());
+  if (s_button_cb != NULL) {
+	  s_button_cb(mu_stddemo_button_is_pressed());
+  }
 }

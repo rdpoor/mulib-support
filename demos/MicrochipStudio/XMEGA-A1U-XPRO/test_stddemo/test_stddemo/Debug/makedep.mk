@@ -36,7 +36,11 @@
 
 ..\..\..\..\..\mulib\extras\mu_rfc_1123.c
 
+..\..\..\..\shared\test_stddemo\test_stddemo.c
+
 ..\..\mu_platform\mu_platform.c
+
+..\..\mu_platform\mu_stddemo.c
 
 ..\..\mu_platform\mu_time.c
 

@@ -1,8 +1,8 @@
 /**
  */
 
-#include "mu_platform/mu_config.h"     // must come first
-#include "mu_platform/mu_time.h"       // included from mulib/src/platform/
+#include "mu_config.h"     // must come first
+#include "mu_time.h"
 
 static volatile mu_time_t s_rtc_ticks;
 

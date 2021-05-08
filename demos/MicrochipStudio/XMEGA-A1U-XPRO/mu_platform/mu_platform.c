@@ -25,9 +25,9 @@
 // =============================================================================
 // Includes
 
-#include "mu_platform/mu_platform.h"     // must come first
-#include "mu_platform/mu_time.h"
-#include "mu_platform/mu_stddemo.h"
+#include "mu_platform.h"     // must come first
+#include "mu_time.h"
+#include "mu_stddemo.h"
 
 // =============================================================================
 // Private types and definitions
@@ -43,7 +43,6 @@
 
 void mu_platform_init(void) {
   mu_time_init();
-  mu_stddemo_init();
 }
 
 // =============================================================================

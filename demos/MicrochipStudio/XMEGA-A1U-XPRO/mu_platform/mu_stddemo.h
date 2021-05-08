@@ -33,7 +33,7 @@ extern "C" {
 // Includes
 
 #include <stdbool.h>
-#include "mu_platform/mu_time.h"
+#include "mu_time.h"
 
 // =============================================================================
 // Types and definitions
@@ -57,7 +57,7 @@ typedef void (*mu_stddemo_button_cb)(bool button_state);
  * @param button_cb Function to call from interrupt level when the user button
  * is pressed.  Set to NULL to inhibit callbacks.
  */
-void mu_stddemo_init(mu_stddemo_button_cb button _cb);
+void mu_stddemo_init(mu_stddemo_button_cb button_cb);
 
 /**
  * @brief Print a formatted message to standard output (usually a serial port).

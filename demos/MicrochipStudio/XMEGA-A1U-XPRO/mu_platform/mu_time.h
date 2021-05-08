@@ -32,16 +32,17 @@ extern "C";
 // =============================================================================
 // includes
 
-#include "mu_platform/mu_config.h"
+#include "mu_config.h"
 #include <stdint.h>
 #include <stdbool.h>
 
 // =============================================================================
 // types and definitions
 
-#ifndef RTC_FREQUENCY 1024
+#define RTC_FREQUENCY 1024L
+#define MS_PER_SECOND 1000L
 
-#define MU_TIME_MS_TO_DURATION(ms) (((ms) * 1000) / RTC_FREQUENCY)
+#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)((((ms)*MS_PER_SECOND))/RTC_FREQUENCY))
 
 // =============================================================================
 // declarations

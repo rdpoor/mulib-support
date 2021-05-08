@@ -38,6 +38,7 @@ static bool s_led_state;
 void test_stddemo_init(void) {
   mu_time_t until;
 
+  mu_platform_init();
   mu_stddemo_init(button_cb);
 
   mu_stddemo_printf("\n\rmulib test_stddemo v%s.\n", VERSION);
