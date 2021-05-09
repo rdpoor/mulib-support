@@ -23,8 +23,8 @@ mu_time_t mu_time_now() {
   // Note that incrementing 32-bit s_rtc_ticks on an 8-bit system isn't atomic.
   // This approach means that we don't have to disable interrupts, but it does
   // assume that mu_time_now() is always called from foreground level.
-  while (s_safe_ticks != s_rtc_tics) {
-    s_safe_tics = s_rtc_tics;
+  while (s_safe_ticks != s_rtc_ticks) {
+    s_safe_ticks = s_rtc_ticks;
   }
   return s_safe_ticks;
 }
