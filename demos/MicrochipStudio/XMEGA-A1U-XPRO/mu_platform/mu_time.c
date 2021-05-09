@@ -1,10 +1,10 @@
 /**
  */
 
-#include "mu_config.h"     // must come first
 #include "mu_time.h"
 
 static volatile mu_time_t s_rtc_ticks;
+static mu_time_t s_safe_ticks;
 
 /**
  * @brief Initialize the time system.  Must be called before any other time
@@ -20,7 +20,13 @@ void mu_time_init(void) {
  * @return A value representing the current time.
  */
 mu_time_t mu_time_now() {
-  return s_rtc_ticks;
+  // Note that incrementing 32-bit s_rtc_ticks on an 8-bit system isn't atomic.
+  // This approach means that we don't have to disable interrupts, but it does
+  // assume that mu_time_now() is always called from foreground level.
+  while (s_safe_ticks != s_rtc_tics) {
+    s_safe_tics = s_rtc_tics;
+  }
+  return s_safe_ticks;
 }
 
 /**
