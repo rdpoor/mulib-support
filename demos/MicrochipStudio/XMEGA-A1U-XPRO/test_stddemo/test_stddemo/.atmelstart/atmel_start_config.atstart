@@ -20,6 +20,49 @@ details: null
 application: null
 middlewares: {}
 drivers:
+  TIMER_0:
+    user_label: TIMER_0
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::TCC0::driver_config_definition::TC0.Normal.Mode::Drivers:TC:Init
+    functionality: Timer
+    api: Drivers:TC:Init
+    configuration:
+      tc0_ccA: 0
+      tc0_ccB: 0
+      tc0_ccC: 0
+      tc0_ccD: 0
+      tc0_ctrlb_ccAen: false
+      tc0_ctrlb_ccBen: false
+      tc0_ctrlb_ccCen: false
+      tc0_ctrlb_ccDen: false
+      tc0_ctrlc_cmpA: false
+      tc0_ctrlc_cmpB: false
+      tc0_ctrlc_cmpC: false
+      tc0_ctrlc_cmpD: false
+      tc0_ctrld_evdly: false
+      tc0_intctrlb_ccAintlvl: Interrupt Disabled
+      tc0_intctrlb_ccBintlvl: Interrupt Disabled
+      tc0_intctrlb_ccCintlvl: Interrupt Disabled
+      tc0_intctrlb_ccDintlvl: Interrupt Disabled
+      tc_cnt: 0
+      tc_ctrla_clksel: System Clock
+      tc_ctrlb_wgmode: Normal Mode
+      tc_ctrld_evact: No Event Action
+      tc_ctrld_evsel: No Event Source
+      tc_ctrle_bytem: false
+      tc_intctrla_errintlvl: Interrupt Disabled
+      tc_intctrla_ovfintlvl: Low Level
+      tc_per: 2000
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC
+          input: CLK CPU/PER
+          external: false
+          external_frequency: 0
+        configuration:
+          tc_clock_source: CLK CPU/PER
   OSC:
     user_label: OSC
     definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::OSC::driver_config_definition::OSC::Drivers:OSC:Init
@@ -104,8 +147,8 @@ drivers:
       enable_lp_source: false
       enable_per2_source: true
       enable_per4_source: true
-      enable_rtc_source: true
-      enable_rtc_source_enable: true
+      enable_rtc_source: false
+      enable_rtc_source_enable: false
       lp_source_oscillator: Ultra Low Power Internal Oscillator
       nvm_clock_source: CLK CPU/PER
       per2_clock_source: CLK PER4
@@ -123,29 +166,6 @@ drivers:
           external: false
           external_frequency: 0
         configuration: {}
-  RTC_0:
-    user_label: RTC_0
-    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::RTC::driver_config_definition::RTC::Drivers:RTC:Init
-    functionality: RTC
-    api: Drivers:RTC:Init
-    configuration:
-      rtc_cnt: 0
-      rtc_comp: 0
-      rtc_ctrl_prescaler: RTC Off
-      rtc_intctrl_compintlvl: Interrupt Disabled
-      rtc_intctrl_ovfintlvl: Low Level
-      rtc_per: 1
-    optional_signals: []
-    variant: null
-    clocks:
-      domain_group:
-        nodes:
-        - name: RTC
-          input: RTC source
-          external: false
-          external_frequency: 0
-        configuration:
-          rtc_clock_source: RTC source
   PMIC:
     user_label: PMIC
     definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::PMIC::driver_config_definition::PMIC::Drivers:PMIC:Init
@@ -265,12 +285,6 @@ pads:
     mode: Digital output
     user_label: PE3
     configuration: null
-  USER_LED:
-    name: PQ1
-    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::pad::PQ1
-    mode: Digital output
-    user_label: USER_LED
-    configuration: null
   USER_BUTTON:
     name: PQ2
     definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::pad::PQ2
@@ -280,12 +294,26 @@ pads:
       pad_dir: In
       pad_initial_level: High
       pad_int0lvl: Low Level
-      pad_int0msk: '2'
+      pad_int0msk: '4'
       pad_int1lvl: Interrupt Disabled
       pad_int1msk: '0'
       pad_isc: Sense Falling Edge
-      pad_output_pull_config: Totem-pole
+      pad_output_pull_config: Pull-up
+  USER_LED:
+    name: PQ3
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::pad::PQ3
+    mode: Digital output
+    user_label: USER_LED
+    configuration:
+      pad_initial_level: High
 toolchain_options:
+- definition:
+    identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Atmel.Studio:7.0.0
+  configuration:
+    compiler_config:
+      avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99
+    linker_config:
+      avrgcc_linker_miscellaneous_LinkerFlags: ''
 - definition:
     identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Microchip.Studio.xc8:7.0.0
   configuration:
@@ -295,13 +323,6 @@ toolchain_options:
       xc8_linker_miscellaneous_LinkerFlags: ''
 - definition:
     identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Microchip.Studio.gcc:7.0.0
-  configuration:
-    compiler_config:
-      avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99
-    linker_config:
-      avrgcc_linker_miscellaneous_LinkerFlags: ''
-- definition:
-    identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Atmel.Studio:7.0.0
   configuration:
     compiler_config:
       avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99

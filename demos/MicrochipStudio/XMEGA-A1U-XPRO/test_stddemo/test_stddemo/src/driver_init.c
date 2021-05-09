@@ -36,9 +36,10 @@
 #include "driver_init.h"
 #include <system.h>
 
-void RTC_0_initialization(void)
+void TIMER_0_initialization(void)
 {
-	RTC_0_init();
+
+	TIMER_0_init();
 }
 
 /* configure pins and initialize registers */
@@ -87,18 +88,6 @@ void system_init()
 {
 	mcu_init();
 
-	/* PORT setting on PQ1 */
-
-	// Set pin direction to output
-	USER_LED_set_dir(PORT_DIR_OUT);
-
-	USER_LED_set_level(
-	    // <y> Initial level
-	    // <id> pad_initial_level
-	    // <false"> Low
-	    // <true"> High
-	    false);
-
 	/* PORT setting on PQ2 */
 
 	USER_BUTTON_set_dir(
@@ -127,7 +116,7 @@ void system_init()
 	    // <PORT_CONFIGURATION_WIREDAND"> Wired-AND
 	    // <PORT_CONFIGURATION_WIREDORPULL"> Wired-OR with pull-down
 	    // <PORT_CONFIGURATION_WIREDANDPULL"> Wired-AND with pull-up
-	    PORT_CONFIGURATION_TOTEM);
+	    PORT_CONFIGURATION_PULLUP);
 
 	USER_BUTTON_set_isc(
 	    // <y> Pin Input/Sense Configuration
@@ -175,7 +164,7 @@ void system_init()
 	    // <12=> 12
 	    // <13=> 13
 	    // <14=> 14
-	    0x2);
+	    0x4);
 
 	USER_BUTTON_int1_mask(
 	    // <o> port vector 1 int mask
@@ -197,11 +186,23 @@ void system_init()
 	    // <14=> 14
 	    0x0);
 
+	/* PORT setting on PQ3 */
+
+	// Set pin direction to output
+	USER_LED_set_dir(PORT_DIR_OUT);
+
+	USER_LED_set_level(
+	    // <y> Initial level
+	    // <id> pad_initial_level
+	    // <false"> Low
+	    // <true"> High
+	    true);
+
+	TIMER_0_initialization();
+
 	OSC_init();
 
 	CLK_init();
-
-	RTC_0_initialization();
 
 	PMIC_init();
 

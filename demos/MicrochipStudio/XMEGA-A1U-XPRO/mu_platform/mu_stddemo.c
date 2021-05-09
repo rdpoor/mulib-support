@@ -51,7 +51,7 @@ void mu_stddemo_init(mu_stddemo_button_cb button_cb) {
  * @brief Set the demo LED on or off.
  */
 void mu_stddemo_led_set(bool on) {
-  USER_LED_set_level(on);
+  USER_LED_set_level(!on);
 }
 
 /**

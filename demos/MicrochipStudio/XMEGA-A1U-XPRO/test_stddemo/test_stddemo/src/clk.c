@@ -51,8 +51,8 @@ int8_t CLK_init()
 
 	// ccp_write_io((void*)&(CLK.LOCK),0 << CLK_LOCK_bp /* Clock System Lock: disabled */);
 
-	CLK.RTCCTRL = CLK_RTCSRC_TOSC_gc   /* 1.024 kHz from 32.768 kHz crystal oscillator */
-	              | 1 << CLK_RTCEN_bp; /* RTC Clock Source Enable: enabled */
+	// CLK.RTCCTRL = CLK_RTCSRC_TOSC_gc /* 1.024 kHz from 32.768 kHz crystal oscillator */
+	//		 | 0 << CLK_RTCEN_bp; /* RTC Clock Source Enable: disabled */
 
 	// CLK.USBCTRL = 0 << CLK_USBPSDIV_gp /* Prescaler Division Factor: 0 */
 	//		 | CLK_USBSRC_PLL_gc /* PLL */

@@ -41,8 +41,8 @@
         <file category="doc" condition="ARMCC, GCC, IAR, XC8" name="modules/clk/doc/clk.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR, XC8" name="modules/clk/doc/osc.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR, XC8" name="modules/pmic/doc/pmic.rst"/>
-        <file category="doc" condition="ARMCC, GCC, IAR, XC8" name="modules/rtc/doc/rtc.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR, XC8" name="modules/sleep/doc/sleep.rst"/>
+        <file category="doc" condition="ARMCC, GCC, IAR, XC8" name="modules/timer/doc/tc.rst"/>
         <file category="doc" condition="ARMCC, GCC, IAR, XC8" name="modules/usart/doc/usart_basic.rst"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="main.c"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/driver_init.c"/>
@@ -55,9 +55,9 @@
         <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/clk.dox"/>
         <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/osc.dox"/>
         <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/pmic.dox"/>
-        <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/rtc.dox"/>
         <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/sleep.dox"/>
         <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/system.dox"/>
+        <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/timer.dox"/>
         <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/usart.dox"/>
         <file category="other" condition="ARMCC, GCC, IAR, XC8" name="doxygen/usart_basic.dox"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="examples/include/usart_basic_example.h"/>
@@ -68,16 +68,16 @@
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/pmic.h"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/port.h"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/protected_io.h"/>
-        <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/rtc.h"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/sleep.h"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/system.h"/>
+        <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/tc.h"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="include/usart_basic.h"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/clk.c"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/osc.c"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/pmic.c"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/protected_io.S"/>
-        <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/rtc.c"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/sleep.c"/>
+        <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/tc.c"/>
         <file category="source" condition="ARMCC, GCC, IAR, XC8" name="src/usart_basic.c"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="utils/assembler.h"/>
         <file category="header" condition="ARMCC, GCC, IAR, XC8" name="utils/assembler/gas.h"/>

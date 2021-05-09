@@ -38,11 +38,10 @@
 #include "mu_stddemo.h"
 #include "mu_time.h"
 
-ISR(RTC_OVF_vect)
+ISR(TCC0_OVF_vect)
 {
-	// Arrive here
+	/* Insert your Timer Overflow/Underflow Interrupt handling code here */
 	mu_time_on_rtc_tick();
-	/* Insert your RTC Overflow Interrupt handling code here */
 }
 
 ISR(PORTQ_INT0_vect)

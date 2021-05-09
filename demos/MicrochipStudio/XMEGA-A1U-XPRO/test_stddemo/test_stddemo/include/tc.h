@@ -1,8 +1,7 @@
 /**
  * \file
  *
- * \brief RTC related functionality implementation.
- *
+ * \brief TC related functionality declaration.
  (c) 2020 Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms,you may use this software and
@@ -22,43 +21,21 @@
     FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
     ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
     THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *
  */
 
-/**
- * \defgroup doc_driver_rtc_init RTC Init Driver
- * \ingroup doc_driver_rtc
- *
- * \section doc_driver_rtc_rev Revision History
- * - v0.0.0.1 Initial Commit
- *
- *@{
- */
-#include <rtc.h>
+#ifndef TC_H_INCLUDED
+#define TC_H_INCLUDED
 
-/**
- * \brief Initialize rtc interface
- * \return Initialization status.
- */
-int8_t RTC_0_init()
-{
+#include <compiler.h>
 
-	while (RTC.STATUS > 0) { /* Wait for register to synchronize */
-	}
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-	RTC.PER = 1; /* Period Register: 1 */
+int8_t TIMER_0_init();
 
-	// RTC.COMP = 0; /* Compare Register: 0 */
-
-	// RTC.CNT = 0; /* 0 */
-
-	// RTC.CTRL = RTC_PRESCALER_OFF_gc; /* RTC Off */
-
-	RTC.INTCTRL = RTC_COMPINTLVL_OFF_gc  /* Interrupt Disabled */
-	              | RTC_OVFINTLVL_LO_gc; /* Low Level */
-
-	while (RTC.STATUS > 0) { /* Wait for registers to synchronize before returning from the API */
-	}
-
-	return 0;
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* TC_H_INCLUDED */

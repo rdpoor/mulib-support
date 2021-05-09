@@ -62,9 +62,9 @@ src\pmic.c
 
 src\protected_io.S
 
-src\rtc.c
-
 src\sleep.c
+
+src\tc.c
 
 src\usart_basic.c
 

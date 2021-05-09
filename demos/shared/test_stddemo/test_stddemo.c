@@ -49,6 +49,7 @@ void test_stddemo_init(void) {
   mu_stddemo_printf("LED should be on for 5 seconds:\n");
   until = mu_time_offset(mu_time_now(), MU_TIME_MS_TO_DURATION(5000));
   while (mu_time_precedes(mu_time_now(), until)) {
+	  asm("nop");
 	  // buzz...
   }
 
