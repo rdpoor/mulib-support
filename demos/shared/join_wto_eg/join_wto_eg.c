@@ -59,8 +59,6 @@ static void start_sleeper(sleeper_ctx_t *sleeper,
 
 static uint32_t random_range(uint32_t min, uint32_t max);
 
-static uint32_t random();
-
 // =============================================================================
 // Local storage
 

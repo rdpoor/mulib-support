@@ -63,6 +63,12 @@ mu_task_t *joiner_wto_add_task(joiner_wto_ctx_t *ctx) {
   return &ctx->task;
 }
 
+void joiner_wto_set_timeout_at(joiner_wto_ctx_t *ctx, mu_time_t at) {
+	// set up the timeout task to call timeout_task_fn at the given time.
+	mu_task_init(&ctx->timeout_task, timeout_task_fn, ctx, "Joiner Timeout");
+	mu_sched_task_at(&ctx->timeout_task, at);
+}
+
 // =============================================================================
 // Local (private) code
 
