@@ -53,6 +53,12 @@ extern "C" {
 #define MU_LOG_ENABLED 1
 
 /**
+ * Define the number of tasks that can be scheduled at interrupt level between
+ * calls to sched_step().  This must be define as a power of two.
+ */
+#define MU_IRQ_TASK_QUEUE_SIZE 8
+
+/**
  * Uncomment if you want task profiling enabled.
  */
 // #define MU_TASK_PROFILING
