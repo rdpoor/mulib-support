@@ -1,0 +1,5 @@
+oblique_eg.c:76:6:oblique_eg_init	8	static
+oblique_eg.c:88:6:oblique_eg_step	8	static
+oblique_eg.c:95:13:task_fn	32	static
+oblique_eg.c:136:13:start_sleeper	32	static
+oblique_eg.c:147:17:random_range	16	static

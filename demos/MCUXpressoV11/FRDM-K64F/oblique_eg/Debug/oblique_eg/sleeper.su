@@ -1,0 +1,4 @@
+sleeper.c:49:12:sleeper_init	24	static
+sleeper.c:60:12:sleeper_task	16	static
+sleeper.c:62:13:sleeper_name	16	static
+sleeper.c:67:13:task_fn	32	static

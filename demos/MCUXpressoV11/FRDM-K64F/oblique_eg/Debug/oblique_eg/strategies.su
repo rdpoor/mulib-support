@@ -1,0 +1,2 @@
+strategies.c:262:6:strategies_choose_and_print	32	static
+strategies.c:281:13:rot13	16	static
