@@ -6,7 +6,7 @@
  * Generated linker script file for MK64FN1M0xxx12
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v11.3.1 [Build 5262] [2021-04-02] on May 10, 2021 5:42:30 AM
+ * MCUXpresso IDE v11.3.1 [Build 5262] [2021-04-02] on May 13, 2021 5:37:32 PM
  */
 
 INCLUDE "oblique_eg_Debug_library.ld"

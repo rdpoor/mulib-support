@@ -36,6 +36,7 @@
 
 typedef struct {
   mu_task_t task;
+  bool has_seed;
 } oblique_ctx_t;
 
 #define MIN_MS (10*1000)
@@ -45,9 +46,8 @@ typedef struct {
 // =============================================================================
 // Local (forward) declarations
 
+static void oblique_task_fn(void *ctx, void *arg);
 static void button_cb(bool button_is_pressed);
-static void oblique_setup(void);
-static void oblique_printer_fn(void *ctx, void *arg);
 
 // =============================================================================
 // Local storage
@@ -63,9 +63,9 @@ void oblique_eg_init() {
   mu_stddemo_init(button_cb);
   mu_stddemo_led_set(false);
 
-  mu_task_init(&s_oblique_ctx.task, oblique_printer_fn, &s_oblique_ctx, "Oblique");
-  mu_stddemo_printf("oblique_eg: Press user button or just be patient...\n");
-  oblique_setup();
+  mu_task_init(&s_oblique_ctx.task, oblique_task_fn, &s_oblique_ctx, "Oblique");
+  s_oblique_ctx.has_seed = false;
+  mu_stddemo_printf("oblique_eg: Press user button to start...\n");
 }
 
 void oblique_eg_step() {
@@ -75,24 +75,24 @@ void oblique_eg_step() {
 // =============================================================================
 // Local (static) code
 
-static void oblique_setup(void) {
-  // Schedule the printing task at some random time in the future.
-  mu_duration_t delay = MU_TIME_MS_TO_DURATION(mu_random_range(MIN_MS, MAX_MS));
-  mu_sched_task_in(&s_oblique_ctx.task, delay);
-}
-
-static void oblique_printer_fn(void *ctx, void *arg) {
-  (void)ctx;
+static void oblique_task_fn(void *ctx, void *arg) {
+  oblique_ctx_t *self = (oblique_ctx_t *)ctx;
   (void)arg;
 
+  // On the first call, set the random seed from the clock, i.e. depending on how
+  // much time has elapsed between startup and the button press.
+  if (!self->has_seed) {
+	  mu_random_seed(mu_time_now());
+	  self->has_seed = true;
+  }
   mu_stddemo_led_set(true);
-  strategies_choose_and_print();
-  oblique_setup();
+  strategies_choose_and_print(); // print an oblique strategy
+  // re-schedule the oblique_task at some random time in the future.
+  mu_duration_t delay = MU_TIME_MS_TO_DURATION(mu_random_range(MIN_MS, MAX_MS));
+  mu_sched_task_in(&s_oblique_ctx.task, delay);
   mu_stddemo_led_set(false);
 }
 
 static void button_cb(bool button_is_pressed) {
-  // BUGFIX: Potential race condition here.  See BUGFIX note in mu_sched.
-  mu_sched_remove_task(&s_oblique_ctx.task);
   mu_sched_task_from_isr(&s_oblique_ctx.task);
 }

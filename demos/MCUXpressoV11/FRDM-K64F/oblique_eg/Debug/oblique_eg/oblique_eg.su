@@ -1,5 +1,4 @@
-oblique_eg.c:60:6:oblique_eg_init	8	static
-oblique_eg.c:70:6:oblique_eg_step	8	static
-oblique_eg.c:77:13:oblique_setup	16	static
-oblique_eg.c:83:13:oblique_printer_fn	16	static
-oblique_eg.c:93:13:button_cb	16	static
+oblique_eg.c:61:6:oblique_eg_init	8	static
+oblique_eg.c:71:6:oblique_eg_step	8	static
+oblique_eg.c:78:13:oblique_task_fn	24	static
+oblique_eg.c:96:13:button_cb	16	static
