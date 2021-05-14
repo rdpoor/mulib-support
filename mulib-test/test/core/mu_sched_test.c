@@ -274,11 +274,11 @@ void mu_sched_test() {
   ASSERT(mu_sched_task_count() == 5);
   ASSERT(mu_task_get_time(&s_counting_task2.task) == 110);
 
-  // mu_sched_err_t mu_sched_task_from_isr(mu_sched_t *sched, mu_task_t *task);
+  // mu_sched_err_t mu_sched_isr_task_now(mu_sched_t *sched, mu_task_t *task);
   setup();
 
   set_time(100);
-  ASSERT(mu_sched_task_from_isr(&s_counting_task2.task) == MU_SCHED_ERR_NONE);
+  ASSERT(mu_sched_isr_task_now(&s_counting_task2.task) == MU_SCHED_ERR_NONE);
   ASSERT(mu_sched_step() == MU_SCHED_ERR_NONE);
   // verify that calling step():
   // - sets the task's time to the scheduler's current time

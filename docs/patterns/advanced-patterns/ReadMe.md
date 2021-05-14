@@ -17,7 +17,7 @@ it easy to add a timeout feature to the join module.
 ## `task-interrupt`: The interrupt handling pattern
 
 mulib provides a simple and efficient mechanism for handling interrupts.  In
-brief, you simply call `mu_sched_task_from_isr()` at interrupt level, and the
+brief, you simply call `mu_sched_isr_task_now()` at interrupt level, and the
 task that you schedule from interrupt level will be the next task executed in
 the foreground.
 

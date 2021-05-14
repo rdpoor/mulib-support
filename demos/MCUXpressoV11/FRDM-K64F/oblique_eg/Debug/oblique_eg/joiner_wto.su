@@ -1,6 +1,0 @@
-joiner_wto.c:52:12:joiner_wto_init	16	static
-joiner_wto.c:61:12:joiner_wto_add_task	16	static
-joiner_wto.c:66:6:joiner_wto_set_timeout_at	16	static
-joiner_wto.c:75:13:task_fn	24	static
-joiner_wto.c:89:13:timeout_task_fn	24	static
-joiner_wto.c:97:13:endgame	32	static

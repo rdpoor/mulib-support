@@ -94,5 +94,5 @@ static void oblique_task_fn(void *ctx, void *arg) {
 }
 
 static void button_cb(bool button_is_pressed) {
-  mu_sched_task_from_isr(&s_oblique_ctx.task);
+  mu_sched_isr_task_now(&s_oblique_ctx.task);
 }
