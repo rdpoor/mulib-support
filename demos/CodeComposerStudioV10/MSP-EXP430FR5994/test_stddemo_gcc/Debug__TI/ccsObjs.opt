@@ -1,1 +1,0 @@
-"./main.obj" "./mu_platform/mu_platform.obj" "./mu_platform/mu_stddemo.obj" "./mu_platform/mu_time.obj" "./test_stddemo/test_stddemo.obj" "../lnk_msp430fr5994.cmd" "../msp430fr5994.ld" -llibmath.a -llibc.a 

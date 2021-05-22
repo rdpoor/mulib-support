@@ -1,1 +1,0 @@
-"./main.o" "./mu_platform/mu_platform.o" "./mu_platform/mu_stddemo.o" "./mu_platform/mu_time.o" "./test_stddemo/test_stddemo.o" -T"../lnk_msp430fr5994.cmd" -T"../msp430fr5994.ld" -Wl,--start-group -lgcc -lc -Wl,--end-group 

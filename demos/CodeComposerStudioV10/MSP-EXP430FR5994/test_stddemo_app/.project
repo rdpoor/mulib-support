@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>test_stddemo_gcc</name>
+	<name>test_stddemo_app</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -31,9 +31,24 @@
 			<locationURI>PARENT-1-PROJECT_LOC/mu_platform</locationURI>
 		</link>
 		<link>
+			<name>mulib</name>
+			<type>2</type>
+			<locationURI>PARENT-4-PROJECT_LOC/mulib</locationURI>
+		</link>
+		<link>
 			<name>test_stddemo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/shared/test_stddemo</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BTI_PRODUCTS_DIR%7D/Users/r/Projects/mulib-support/demos/CodeComposerStudioV10/MSP-EXP430FR5994</value>
+		</variable>
+		<variable>
+			<name>copy_PARENT1</name>
+			<value>$%7BTI_PRODUCTS_DIR%7D/Users/r/Projects/mulib-support/demos</value>
+		</variable>
+	</variableList>
 </projectDescription>
