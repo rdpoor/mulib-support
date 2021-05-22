@@ -40,8 +40,8 @@ typedef struct {
 } oblique_ctx_t;
 
 #define MIN_MS (10*1000)
-// On average, once every 18 hours...
-#define MAX_MS (36*60*60*1000)
+// On average, once every 1/2 hour...
+#define MAX_MS (60*60*1000)
 
 // =============================================================================
 // Local (forward) declarations
