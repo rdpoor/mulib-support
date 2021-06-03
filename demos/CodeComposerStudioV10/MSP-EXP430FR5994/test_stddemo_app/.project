@@ -31,11 +31,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/mu_platform</locationURI>
 		</link>
 		<link>
-			<name>mulib</name>
-			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/mulib</locationURI>
-		</link>
-		<link>
 			<name>test_stddemo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/shared/test_stddemo</locationURI>
