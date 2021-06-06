@@ -34,7 +34,7 @@
 // =============================================================================
 // declarations
 
-int mu_bitvec_test();
+int mu_bvec_test();
 int mu_cirq_test();
 int mu_dlist_test();
 int mu_fsm_test();
@@ -43,7 +43,7 @@ int mu_log_test();
 int mu_pstore_test();
 int mu_queue_test();
 int mu_sched_test();
-int mu_spscq_test();
+// int mu_spscq_test();
 int mu_str_test();
 int mu_strbuf_test();
 int mu_task_test();
@@ -60,7 +60,7 @@ int main() {
   mu_test_init();
   printf("\r\nstarting mu_test...");
 
-  mu_bitvec_test();
+  mu_bvec_test();
   mu_cirq_test();
   mu_dlist_test();
   mu_fsm_test();
@@ -69,7 +69,7 @@ int main() {
   mu_pstore_test();
   mu_queue_test();
   mu_sched_test();
-  mu_spscq_test();
+  // mu_spscq_test();
   mu_str_test();
   mu_strbuf_test();
   mu_task_test();

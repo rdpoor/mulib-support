@@ -40,7 +40,7 @@ extern "C" {
 // types and definitions
 
 #ifndef ASSERT
-define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
 #endif
 
 // =============================================================================
