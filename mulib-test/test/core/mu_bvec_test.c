@@ -22,71 +22,47 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
-#include <stdio.h>
 #include "mu_test_utils.h"
+#include "core/mu_bvec.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+// =============================================================================
+// private types and definitions
+
+#define BIT_COUNT 10   // One byte and two bits
 
 // =============================================================================
-// types and definitions
+// private declarations
 
 // =============================================================================
-// declarations
+// local storage
 
-int mu_bitvec_test();
-int mu_bvec_test();
-int mu_cirq_test();
-int mu_dlist_test();
-int mu_fsm_test();
-int mu_list_test();
-int mu_log_test();
-int mu_pstore_test();
-int mu_queue_test();
-int mu_sched_test();
-int mu_spscq_test();
-int mu_str_test();
-int mu_strbuf_test();
-int mu_task_test();
-int mu_time_test();
-int mu_timer_test();
-int mu_vect_test();
-int mu_version_test();
+static uint8_t s_bits[MU_BVEC_COUNT_TO_BYTE_COUNT(BIT_COUNT)];
 
 // =============================================================================
 // public code
 
-int main() {
+void mu_bvec_test() {
+  ASSERT(sizeof(s_bits) == 2);
+  ASSERT(mu_bvec_byte_index(BIT_COUNT) == 1);
+  ASSERT(mu_bvec_byte_mask(BIT_COUNT) == 0x4);
 
-  mu_test_init();
-  printf("\r\nstarting mu_test...");
-
-  mu_bitvec_test();
-  mu_bvec_test();
-  mu_cirq_test();
-  mu_dlist_test();
-  mu_fsm_test();
-  mu_list_test();
-  mu_log_test();
-  mu_pstore_test();
-  mu_queue_test();
-  mu_sched_test();
-  mu_spscq_test();
-  mu_str_test();
-  mu_strbuf_test();
-  mu_task_test();
-  mu_time_test();
-  mu_timer_test();
-  mu_vect_test();
-  mu_version_test();
-
-  printf("ending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
-
-  return mu_test_error_count();  // return error code 0 on success
+  for(size_t p = 0; p < BIT_COUNT; p++) {
+    mu_bvec_clear_all(BIT_COUNT, s_bits);
+    mu_bvec_set(p, s_bits);
+    for (size_t q = 0; q < BIT_COUNT; q++) {
+      if (p != q) {
+        ASSERT(mu_bvec_read(q, s_bits) == false);
+      } else {
+        ASSERT(mu_bvec_read(q, s_bits) == true);
+      }
+    }
+  }
 }
 
 // =============================================================================

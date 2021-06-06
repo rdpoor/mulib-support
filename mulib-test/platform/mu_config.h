@@ -49,6 +49,12 @@ extern "C" {
 // #define MU_CAN_SLEEP
 
 /**
+ * Define the number of tasks that can be scheduled at interrupt level between
+ * calls to sched_step().  This must be define as a power of two.
+ */
+#define MU_IRQ_TASK_QUEUE_SIZE 8
+
+/**
  * If your port supports floating point operations, choose one of the following
  * either by uncommenting one of the following lines, or by setting the symbol
  * in the compiler.
