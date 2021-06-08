@@ -1,2 +1,5 @@
 language: c
-script: (cd mulib && git fetch && git pull) && (cd mulib-test/tools && make test)
+script:
+- mkdir -p rdpoor/mulib-support/mulib
+- git clone --depth=50 --branch=master https://github.com/rdpoor/mulib.git rdpoor/mulib-support/mulib
+- (cd mulib-test/tools && make test)
