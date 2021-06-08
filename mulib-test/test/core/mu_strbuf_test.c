@@ -26,7 +26,7 @@
  // includes
 
 #include "mu_test_utils.h"
-#include "mulib.h"
+#include "core/mu_strbuf.h"
 #include <string.h>
 #include <stdint.h>
 

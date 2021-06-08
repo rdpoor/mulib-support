@@ -25,8 +25,8 @@
  // =============================================================================
  // includes
 
-#include "mulib.h"
 #include "mu_test_utils.h"
+#include "core/mu_sched.h"
 
 // =============================================================================
 // private types and definitions

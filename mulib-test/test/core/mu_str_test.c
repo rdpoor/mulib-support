@@ -26,12 +26,11 @@
 // includes
 
 #include "mu_test_utils.h"
-#include "mulib.h"
+#include "core/mu_str.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <stdio.h>
 // =============================================================================
 // private types and definitions
 
