@@ -1,7 +1,7 @@
 mulib/
 mulib-test/build/
 
-## MCUXpresso
+## MCUXpresso and derivatives
 Debug/
 # /.settings/
 # /Sources/
@@ -22,3 +22,6 @@ Debug/
 # *.g_c
 # *.g_x
 # ProjectInfo.xml
+
+## Windows Studio and derivatives
+*.launch

@@ -25,8 +25,8 @@
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
 #include "core/mu_bvec.h"
+#include "mu_test_utils.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,27 +42,81 @@
 // =============================================================================
 // local storage
 
-static uint8_t s_bits[MU_BVEC_COUNT_TO_BYTE_COUNT(BIT_COUNT)];
+static uint8_t s_bvec[MU_BVEC_COUNT_TO_BYTE_COUNT(BIT_COUNT)];
 
 // =============================================================================
 // public code
 
 void mu_bvec_test() {
-  ASSERT(sizeof(s_bits) == 2);
-  ASSERT(mu_bvec_byte_index(BIT_COUNT) == 1);
-  ASSERT(mu_bvec_byte_mask(BIT_COUNT) == 0x4);
+  ASSERT(mu_bvec_byte_index(0) == 0);
+  ASSERT(mu_bvec_byte_mask(0) == 0x01);
 
-  for(size_t p = 0; p < BIT_COUNT; p++) {
-    mu_bvec_clear_all(BIT_COUNT, s_bits);
-    mu_bvec_set(p, s_bits);
-    for (size_t q = 0; q < BIT_COUNT; q++) {
-      if (p != q) {
-        ASSERT(mu_bvec_read(q, s_bits) == false);
+  ASSERT(mu_bvec_byte_index(7) == 0);
+  ASSERT(mu_bvec_byte_mask(7) == 0x80);
+
+  ASSERT(mu_bvec_byte_index(8) == 1);
+  ASSERT(mu_bvec_byte_mask(8) == 0x01);
+
+  ASSERT(mu_bvec_byte_index(10) == 1);
+  ASSERT(mu_bvec_byte_mask(10) == 0x04);
+
+
+  for (size_t p=0; p<BIT_COUNT; p++) {
+    mu_bvec_clear_all(BIT_COUNT, s_bvec);
+    mu_bvec_set(p, s_bvec);
+    for (size_t q=0; q<BIT_COUNT; q++) {
+      if (p == q) {
+        ASSERT(mu_bvec_read(q, s_bvec) == true);
       } else {
-        ASSERT(mu_bvec_read(q, s_bits) == true);
+        ASSERT(mu_bvec_read(q, s_bvec) == false);
       }
     }
   }
+
+  mu_bvec_set_all(BIT_COUNT, s_bvec);
+  ASSERT(mu_bvec_is_all_zeros(BIT_COUNT, s_bvec) == false);
+  ASSERT(mu_bvec_is_all_ones(BIT_COUNT, s_bvec) == true);
+
+  mu_bvec_clear_all(BIT_COUNT, s_bvec);
+  ASSERT(mu_bvec_is_all_zeros(BIT_COUNT, s_bvec) == true);
+  ASSERT(mu_bvec_is_all_ones(BIT_COUNT, s_bvec) == false);
+
+  mu_bvec_invert_all(BIT_COUNT, s_bvec);
+  ASSERT(mu_bvec_is_all_zeros(BIT_COUNT, s_bvec) == false);
+  ASSERT(mu_bvec_is_all_ones(BIT_COUNT, s_bvec) == true);
+
+  mu_bvec_write_all(BIT_COUNT, s_bvec, true);
+  ASSERT(mu_bvec_is_all_zeros(BIT_COUNT, s_bvec) == false);
+  ASSERT(mu_bvec_is_all_ones(BIT_COUNT, s_bvec) == true);
+
+  mu_bvec_write_all(BIT_COUNT, s_bvec, false);
+  ASSERT(mu_bvec_is_all_zeros(BIT_COUNT, s_bvec) == true);
+  ASSERT(mu_bvec_is_all_ones(BIT_COUNT, s_bvec) == false);
+
+  mu_bvec_clear_all(BIT_COUNT, s_bvec);
+  ASSERT(mu_bvec_count_ones(BIT_COUNT, s_bvec) == 0);
+  ASSERT(mu_bvec_count_zeros(BIT_COUNT, s_bvec) == BIT_COUNT - 0);
+
+  for (size_t p=0; p<BIT_COUNT; p++) {
+    mu_bvec_clear_all(BIT_COUNT, s_bvec);
+    mu_bvec_set(p, s_bvec);
+    ASSERT(mu_bvec_find_first_one(BIT_COUNT, s_bvec) == p);
+  }
+
+  for (size_t p=0; p<BIT_COUNT; p++) {
+    mu_bvec_set_all(BIT_COUNT, s_bvec);
+    mu_bvec_clear(p, s_bvec);
+    ASSERT(mu_bvec_find_first_zero(BIT_COUNT, s_bvec) == p);
+  }
+
+  mu_bvec_clear_all(BIT_COUNT, s_bvec);
+  for (size_t p=0; p<BIT_COUNT; p++) {
+    mu_bvec_set(p, s_bvec);
+    ASSERT(mu_bvec_count_ones(BIT_COUNT, s_bvec) == p+1);
+    ASSERT(mu_bvec_count_zeros(BIT_COUNT, s_bvec) == BIT_COUNT-(p+1));
+  }
+
+
 }
 
 // =============================================================================

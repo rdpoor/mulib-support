@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
- #include "mu_test_utils.h"
- #include "mulib.h"
- #include <string.h>
- #include <stdint.h>
- // #include <stdio.h>
+#include "mu_test_utils.h"
+#include "core/mu_cirq.h"
+#include <string.h>
+#include <stdint.h>
 
 // =============================================================================
 // private types and definitions

@@ -42,7 +42,7 @@ static char rot13(char c);
 // =============================================================================
 // Local storage
 
-const static const char *s_strategies[] = {
+const static char const *s_strategies[] = {
     "(Betnavp) znpuvarel",
     "Abg ohvyqvat n jnyy ohg znxvat n oevpx",
     "Abg ohvyqvat n jnyy; znxvat n oevpx",

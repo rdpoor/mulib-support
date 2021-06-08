@@ -33,14 +33,14 @@ extern "C" {
  // includes
 
 #include <stdbool.h>
-//#include "../mulib/src/platform/mu_config.h"
-#include "mulib.h"
+#include "mu_config.h"
+
 
 // =============================================================================
 // types and definitions
 
 #ifndef ASSERT
-define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
 #endif
 
 // =============================================================================

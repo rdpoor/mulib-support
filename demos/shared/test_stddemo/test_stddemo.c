@@ -49,7 +49,7 @@ void test_stddemo_init(void) {
   mu_stddemo_printf("LED should be on for 5 seconds:\n");
   until = mu_time_offset(mu_time_now(), MU_TIME_MS_TO_DURATION(5000));
   while (mu_time_precedes(mu_time_now(), until)) {
-	  asm("nop");
+	  asm(" nop");
 	  // buzz...
   }
 
@@ -57,6 +57,7 @@ void test_stddemo_init(void) {
   mu_stddemo_printf("LED should be off for 5 seconds:\n");
   until = mu_time_offset(mu_time_now(), MU_TIME_MS_TO_DURATION(5000));
   while (mu_time_precedes(mu_time_now(), until)) {
+      asm(" nop");
 	  // buzz...
   }
 
@@ -69,6 +70,8 @@ void test_stddemo_step(void) {
     bool led_state = !get_led();
     set_led(led_state);
     mu_stddemo_printf("LED is %s\n", led_state ? "on" : "off");
+  } else {
+    asm(" nop");
   }
 }
 
