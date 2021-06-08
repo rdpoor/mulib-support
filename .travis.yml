@@ -1,2 +1,2 @@
 language: c
-script: cd tools && make test
+script: cd mulib-test/tools && make test
