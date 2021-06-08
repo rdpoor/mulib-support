@@ -1,2 +1,2 @@
 language: c
-script: cd mulib-test/tools && make test
+script: (cd mulib && git fetch && git pull) && (cd mulib-test/tools && make test)
