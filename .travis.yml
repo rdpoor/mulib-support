@@ -1,5 +1,4 @@
 language: c
 script:
-- mkdir -p rdpoor/mulib-support/mulib
-- git clone --depth=50 --branch=main https://github.com/rdpoor/mulib.git rdpoor/mulib-support/mulib
+- git clone --depth=50 --branch=main https://github.com/rdpoor/mulib.git mulib
 - (cd mulib-test/tools && make test)
