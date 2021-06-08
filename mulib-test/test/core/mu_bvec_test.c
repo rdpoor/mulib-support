@@ -34,8 +34,7 @@
 // =============================================================================
 // private types and definitions
 
-// requires two bytes to hold the bits
-#define BIT_COUNT 10
+#define BIT_COUNT 10   // One byte and two bits
 
 // =============================================================================
 // private declarations

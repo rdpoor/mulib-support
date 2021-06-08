@@ -33,8 +33,8 @@ extern "C" {
  // includes
 
 #include <stdbool.h>
-//#include "../mulib/src/platform/mu_config.h"
-#include "mulib.h"
+#include "mu_config.h"
+
 
 // =============================================================================
 // types and definitions

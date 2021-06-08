@@ -26,7 +26,9 @@
 // includes
 
 #include "mu_test_utils.h"
-#include "mulib.h"
+#include "core/mu_fsm.h"
+#include "core/mu_task.h"
+#include <string.h>
 
 // =============================================================================
 // private types and definitions

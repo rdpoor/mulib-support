@@ -1,4 +1,4 @@
-# `mulib` - Software components for microcontrollers  [![Build Status](https://travis-ci.com/rdpoor/mulib.svg?branch=master)](https://travis-ci.com/rdpoor/mulib)
+# `mulib` - Software components for microcontrollers  [![Build Status](https://travis-ci.com/rdpoor/mulib-support.svg?branch=master)](https://travis-ci.com/rdpoor/mulib-support)
 
 `mulib` is a curated collection of software components written in C, designed
 specifically for microcontollers and other resource-constrained environments.

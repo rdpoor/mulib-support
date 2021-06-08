@@ -25,8 +25,8 @@
 // =============================================================================
 // includes
 
-#include "mulib.h"
 #include "mu_test_utils.h"
+#include "mu_time.h"
 #include <unistd.h>
 
 #include <stdio.h>
