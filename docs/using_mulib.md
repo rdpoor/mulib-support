@@ -2,22 +2,22 @@
 
 ## Getting started with `mulib`:
 
-* [How `mulib` is organized](./docs/using_mulib.md#mulib_organization)
-* [Browsing code examples that use `mulib`](./docs/using_mulib.md#browsing_mulib)
-* [Downloading `mulib`](./docs/using_mulib.md#downloading_mulib)
-* [Running `mulib` code examples](./docs/using_mulib.md#running_examples)
-* [Writing a `mulib`-based application for an existing platform](./docs/using_mulib.md#writing_app)
-* [Porting `mulib` to a new IDE or platform](./docs/using_mulib.md#porting_mulib)
+* [How `mulib` is organized](#mulib_organization)
+* [Browsing code examples that use `mulib`](#browsing_mulib)
+* [Downloading `mulib`](#downloading_mulib)
+* [Running `mulib` code examples](#running_examples)
+* [Writing a `mulib`-based application for an existing platform](#writing_app)
+* [Porting `mulib` to a new IDE or platform](#porting_mulib)
 
 ## Advanced topics:
 
-* [Reducing `mulib`'s code footprint](./docs/using_mulib.md#cherry_picking)
-* [Using `mulib` to minimize power consumption](./docs/using_mulib.md#low_power_sleep)
+* [Reducing `mulib`'s code footprint](#cherry_picking)
+* [Using `mulib` to minimize power consumption](#low_power_sleep)
 
 ## Administrivia
 
-* [Reporting bugs and feature requests](./docs/using_mulib.md#reporting_bugs)
-* [Contributing code or bugfixes](./docs/using_mulib#contributing_code)
+* [Reporting bugs and feature requests](#reporting_bugs)
+* [Contributing code or bugfixes](#contributing_code)
 
 ## Getting Started
 
