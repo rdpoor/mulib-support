@@ -43,7 +43,7 @@ Open Source license.
 
 * [I want to understand how mulib is organized.](./docs/using_mulib.md#mulib_organization)
 * [I want to browse some code examples that use `mulib`](./docs/using_mulib.md#browse_mulib)
-* [I want to download `mublib`](./docs/using_mulib.md#download_mulib)
+* [I want to download `mulib`](./docs/using_mulib.md#download_mulib)
 * [I want to run `mulib` code examples](./docs/using_mulib.md#run_examples)
 * [I want to write my own `mulib` application for an existing platform](./docs/using_mulib.md#my_first_app)
 * [I want to port mulib to a new IDE or platform](./docs/using_mulib.md#porting_mulib)
@@ -54,7 +54,5 @@ Open Source license.
 
 ## Administrivia
 
-* [I have a suggestion or feature request for `mulib`](./docs/using_mulib.md#how_to_suggest)
-* [I want to report a bug](./docs/using_mulib.md#report_a_bug)
-* [I want to contribute code](./docs/using_mulib#contribute_code)
-* [I want to contribute money](./docs/using_mulib#manna)
+* [I have a suggestion or feature request to report](./docs/using_mulib.md#reporting_bugs)
+* [I want to contribute code or bugfixes](./docs/using_mulib#contribute_code)
