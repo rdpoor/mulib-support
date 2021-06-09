@@ -104,11 +104,11 @@ This will be a longer discussion that touches on:
 
 ## Administrivia
 
-<h3 id="reporting_bugs">I have bug or feature request to report<\h3>
+<h3 id="reporting_bugs">I have bug or feature request to report</h3>
 
 This will be about how to use the github issues mechanism.
 
-<h3 id="contribute_code">I want to contribute code or bugfixes<\h3>
+<h3 id="contribute_code">I want to contribute code or bugfixes</h3>
 
 This will be about how to create a pull request, either for mulib or for
 mulib-support.
