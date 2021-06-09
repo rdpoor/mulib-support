@@ -9,7 +9,7 @@ specifically for microcontollers and other resource-constrained environments.
 * Fast, safe, copy-free string handling
 * Efficient bit vector operations
 
-## `mulib`'s design philosophy: Small, Fast and Dangerous
+## `mulib`'s philosophy: Small, Fast and Dangerous
 
 `mulib`'s design is guided by the following principals:
 
@@ -39,20 +39,5 @@ applications.
 * **Yours to use**: The entirety of `mulib` is covered under the permissive MIT
 Open Source license.
 
-## Quick Start links for using `mulib`:
 
-* [I want to understand how mulib is organized.](./docs/using_mulib.md#mulib_organization)
-* [I want to browse some code examples that use `mulib`](./docs/using_mulib.md#browse_mulib)
-* [I want to download `mulib`](./docs/using_mulib.md#download_mulib)
-* [I want to run `mulib` code examples](./docs/using_mulib.md#run_examples)
-* [I want to write my own `mulib` application for an existing platform](./docs/using_mulib.md#my_first_app)
-* [I want to port mulib to a new IDE or platform](./docs/using_mulib.md#porting_mulib)
-
-## Advanced topics:
-
-* [I want to minimize power consumption in my `mulib` application](./docs/using_mulib.md#low_power_sleep)
-
-## Administrivia
-
-* [I have a suggestion or feature request to report](./docs/using_mulib.md#reporting_bugs)
-* [I want to contribute code or bugfixes](./docs/using_mulib#contribute_code)
+[Read the mulib documentation.](./docs/using_mulib.md)
