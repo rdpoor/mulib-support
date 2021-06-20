@@ -46,7 +46,7 @@ extern "C" {
 #define N_DISKS 5
 #define POLE_WIDTH (2 * N_DISKS + 1)
 #define POLE_HEIGHT (N_DISKS)
-#define CRUSING_ALTITUDE (TOWER_HEIGHT + 2)
+#define CRUISING_ALTITUDE (POLE_HEIGHT + 2)
 
 // =============================================================================
 // declarations

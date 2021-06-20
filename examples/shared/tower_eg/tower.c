@@ -26,7 +26,11 @@
 // Includes
 
 #include "tower.h"
+#include "animator.h"
+#include "disk.h"
 #include "fb.h"
+#include "mulib.h"
+#include "pole.h"
 #include <stdint.h>
 
 // =============================================================================
@@ -93,17 +97,17 @@ static void move_disk_aux(pole_t *src, pole_t *dst);
 void tower_init(void) {
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");
   // initialize the frame buffer
-  fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buff, s_display_buf);
+  fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
 
   // Initialize all poles
   for (int i=0; i<N_POLES; i++) {
-    uint8_t xpos = i * POLE_WIDTH + (POLE_WIDTH/2) + 1
+    uint8_t xpos = i * POLE_WIDTH + (POLE_WIDTH/2) + 1;
     pole_init(&s_poles[i], xpos);
   }
 
   // Initialize each disk, push them onto POLE_A (largest first), and set their
   // initial coordinates.
-  pole_t *pole = &s_disks[POLE_A];
+  pole_t *pole = &s_poles[POLE_A];
   for (int i=N_DISKS-1; i>=0; i--) {
     disk_t *disk = &s_disks[i];
     uint8_t width = i*2 + 1;
@@ -132,7 +136,7 @@ void tower_draw(void) {
 // Local (static) code
 
 static void tower_task_fn(void *ctx, void *arg) {
-  tower_eg_ctx_t *self = (tower_eg_ctx_t *)ctx;
+  tower_ctx_t *self = (tower_ctx_t *)ctx;
   (void)arg;
   bool running;
   int phase = self->iteration % 3;
@@ -147,17 +151,15 @@ static void tower_task_fn(void *ctx, void *arg) {
 
   if (running) {
     self->iteration += 1;
-    sched_step_now(&self->task);
+    mu_sched_task_now(&self->task);
   }
 }
 
-
 static bool move_disk(pole_t *p1, pole_t *p2) {
-  pole_t *src;
   pole_t *dst;
 
   // which of the two poles is the destination?
-  dst = find_destination(p1, p2);
+  dst = find_destination_pole(p1, p2);
   if (dst == NULL) {
     return false;   // algorithm has completed
   } else if (dst == p1) {
@@ -165,6 +167,7 @@ static bool move_disk(pole_t *p1, pole_t *p2) {
   } else {
     move_disk_aux(p1, p2);
   }
+  return true;
 }
 
 static pole_t *find_destination_pole(pole_t *p1, pole_t *p2) {
@@ -181,7 +184,7 @@ static pole_t *find_destination_pole(pole_t *p1, pole_t *p2) {
     return p2;
   } else {
     // the pole with the larger disk is the destination
-    return (disk_width(d1) > disk_width(d2)) ? p1 : p2;
+    return (disk_get_width(d1) > disk_get_width(d2)) ? p1 : p2;
   }
 }
 

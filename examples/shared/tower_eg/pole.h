@@ -54,8 +54,9 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "fb.h"
+#include "disk.h"
 #include "tower.h"
+#include <stddef.h>
 #include <stdint.h>
 
 // =============================================================================
@@ -91,7 +92,7 @@ uint8_t pole_top_x(pole_t *pole);
  *
  * When placing a disk on the pole, this is the final y coord.
  */
-uint8_t pole_top_y(pole_t *pole) {
+uint8_t pole_top_y(pole_t *pole);
 
 /**
  * Return the # of disks on the pole.

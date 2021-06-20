@@ -26,7 +26,9 @@
 // Includes
 
 #include "pole.h"
+
 #include "fb.h"
+#include "tower.h"
 #include <stdint.h>
 
 // =============================================================================
@@ -61,7 +63,7 @@ void pole_init(pole_t *pole, uint8_t xpos) {
 
 void pole_draw(pole_t *pole) {
   // draw peg
-  for (int y = pole->height-1; y >= 0; y--) {
+  for (int y = POLE_HEIGHT-1; y >= 0; y--) {
     fb_draw(pole->xpos, POLE_YPOS+y, '#');
   }
   // draw base
@@ -97,7 +99,7 @@ void pole_push(pole_t *pole, disk_t *disk) {
 }
 
 disk_t *pole_pop(pole_t *pole) {
-  disk *d = pole->disks;
+  disk_t *d = pole->disks;
   if (d != NULL) {
     pole->disks = d->next;
     d->next = NULL;

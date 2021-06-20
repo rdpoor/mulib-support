@@ -26,6 +26,8 @@
 // Includes
 
 #include "disk.h"
+#include "fb.h"
+#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -74,7 +76,7 @@ void disk_move_y(disk_t *disk, int dy) {
 void disk_draw(disk_t *disk) {
   int radius = disk->width/2;  // truncate towards 0
   for (int x = -radius; x < radius; x++) {
-    fb_draw(disk->xorg+x, 0, '=');
+    fb_draw(disk->xpos+x, disk->ypos, '=');
   }
 }
 

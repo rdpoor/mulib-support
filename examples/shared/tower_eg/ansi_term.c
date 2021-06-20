@@ -105,7 +105,7 @@ void ansi_term_clear_line(void) {
  * @brief Erase line from current cursor position
  */
 void ansi_term_clear_to_end_of_line(void) {
-  puts(CSI "K")
+  puts(CSI "K");
 }
 
 // =============================================================================
