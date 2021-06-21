@@ -1,6 +1,6 @@
 # Developer Notes for mulib-support
 
-## 20120526-0659 Untangle #include and -I paths
+## 20210526-0659 Untangle #include and -I paths
 
 The requirements for -I paths could be better, perhaps something like this:
 
@@ -45,7 +45,7 @@ void foo_init() {
 }
 ```
 
-## 20120526-0800 Prune unused / abandoned mulib code
+## 20210526-0800 Prune unused / abandoned mulib code
 
 There's a bunch of files that are ripe for pruning or fixing:
 
@@ -55,3 +55,14 @@ There's a bunch of files that are ripe for pruning or fixing:
 * mu_fsm is not well designed and not currently used by any code.
 * mu_timer should perhaps migrate to ../extras
 * mu_log could (should) use thunks.
+
+## 20210620-1800 Checklist for Release Candidate
+
+Prior to pushing develop-rc to main:
+
+* Replace all absolute paths in example apps with relative paths
+* Verify all example apps run and work as advertised
+* Provide short README.md for each example app
+* Remove mu_printf from mu_stddemo (just use printf(), putc(), etc...)
+* [maybe]: Only include core modules that are used in example apps
+* Create a matrix of which modules are used in which apps
