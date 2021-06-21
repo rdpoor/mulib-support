@@ -34,7 +34,7 @@
 // =============================================================================
 // Local types and definitions
 
-#define REDRAW_DELAY_MS MU_TIME_MS_TO_DURATION(100)
+#define REDRAW_DELAY_MS MU_TIME_MS_TO_DURATION(50)
 
 typedef enum {
   MOVING_UP,

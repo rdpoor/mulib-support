@@ -93,6 +93,11 @@ static pole_t *find_destination_pole(pole_t *p1, pole_t *p2);
  */
 static void move_disk_aux(pole_t *src, pole_t *dst);
 
+/**
+ * @brief Reset the towers and disks.
+ */
+static void reset(void);
+
 // =============================================================================
 // Public code
 
@@ -103,24 +108,8 @@ void tower_init(void) {
   // initialize the frame buffer
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
 
-   s_tower_ctx.phase = 0;
-
-  // Initialize all poles
-  for (int i=0; i<N_POLES; i++) {
-    uint8_t xpos = i * (POLE_WIDTH + 1) + POLE_WIDTH/2;
-    pole_init(&s_poles[i], xpos);
-  }
-
-  // Initialize each disk, push them onto POLE_A (largest first), and set their
-  // initial coordinates.
-  pole_t *pole = &s_poles[POLE_A];
-  for (int i=N_DISKS-1; i>=0; i--) {
-    disk_t *disk = &s_disks[i];
-    uint8_t width = i*2 + 1;
-    disk_init(disk, width);
-    pole_push(pole, disk);
-    disk_set_position(disk, pole_top_x(pole), pole_top_y(pole));
-  }
+  // set up tower and disk positions
+  reset();
 
   // Schedule the task.
   mu_sched_task_now(&s_tower_ctx.task);
@@ -147,21 +136,30 @@ void tower_draw(void) {
 static void tower_task_fn(void *ctx, void *arg) {
   tower_ctx_t *self = (tower_ctx_t *)ctx;
   (void)arg;
+  bool running;
 
   // NOTE: unless the algo has terminated, move_disk() will start the animator
   // task, which will call back to this task upon completion.
   if (self->phase == 0) {
-    move_disk(&s_poles[POLE_A], &s_poles[POLE_C]);
+    running = move_disk(&s_poles[POLE_A], &s_poles[POLE_C]);
   } else if (self->phase == 1) {
-    move_disk(&s_poles[POLE_A], &s_poles[POLE_B]);
+    running = move_disk(&s_poles[POLE_A], &s_poles[POLE_B]);
   } else /* if (self->phase == 2) */ {
-    move_disk(&s_poles[POLE_B], &s_poles[POLE_C]);
+    running = move_disk(&s_poles[POLE_B], &s_poles[POLE_C]);
   }
 
+  // increment phase
   if (self->phase < 2) {
     self->phase += 1;
   } else {
     self->phase = 0;
+  }
+
+  if (!running) {
+    // Algo completed.  All disks are on POLE_C.  Reset everything and restart
+    // after a short delay...
+    reset();
+    mu_sched_task_in(&s_tower_ctx.task, MU_TIME_MS_TO_DURATION(5000));
   }
 }
 
@@ -209,4 +207,25 @@ static void move_disk_aux(pole_t *src, pole_t *dst) {
                                 pole_top_y(dst),
                                 &s_tower_ctx.task);
   mu_sched_task_now(animator);
+}
+
+static void reset(void) {
+   s_tower_ctx.phase = 0;
+
+  // Initialize all poles
+  for (int i=0; i<N_POLES; i++) {
+    uint8_t xpos = i * (POLE_WIDTH + 1) + POLE_WIDTH/2;
+    pole_init(&s_poles[i], xpos);
+  }
+
+  // Initialize each disk, push them onto POLE_A (largest first), and set their
+  // initial coordinates.
+  pole_t *pole = &s_poles[POLE_A];
+  for (int i=N_DISKS-1; i>=0; i--) {
+    disk_t *disk = &s_disks[i];
+    uint8_t width = i*2 + 1;
+    disk_init(disk, width);
+    pole_push(pole, disk);
+    disk_set_position(disk, pole_top_x(pole), pole_top_y(pole));
+  }
 }
