@@ -30,8 +30,10 @@
 #include "disk.h"
 #include "fb.h"
 #include "mulib.h"
+#include "mu_platform.h"
 #include "pole.h"
 #include <stdint.h>
+#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
@@ -95,6 +97,8 @@ static void move_disk_aux(pole_t *src, pole_t *dst);
 // Public code
 
 void tower_init(void) {
+  mulib_init();
+  mu_stddemo_init(NULL);
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");
   // initialize the frame buffer
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
@@ -115,6 +119,9 @@ void tower_init(void) {
     pole_push(pole, disk);
     disk_set_position(disk, pole_top_x(pole), pole_top_y(pole));
   }
+
+  // Schedule the task.
+  mu_sched_task_now(&s_tower_ctx.task);
 }
 
 void tower_step(void) {
