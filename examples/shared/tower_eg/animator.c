@@ -27,13 +27,14 @@
 
 #include "animator.h"
 #include "tower.h"
+#include "mulib.h"
 #include <stdint.h>
 #include <stdbool.h>
 
 // =============================================================================
 // Local types and definitions
 
-#define REDRAW_DELAY_MS MU_TIME_MS_TO_DURATION(250)
+#define REDRAW_DELAY_MS MU_TIME_MS_TO_DURATION(100)
 
 typedef enum {
   MOVING_UP,
@@ -90,7 +91,7 @@ static void animator_task_fn(void *ctx, void *arg) {
   switch(self->phase) {
     case MOVING_UP: {
       // Moving up off the source pole
-      if (disk_get_ypos(self->disk) == CRUISING_ALTITUDE) {
+      if (disk_get_ypos(self->disk) == CRUISING_ALTITUDE-1) {
         self->phase = MOVING_OVER;
       } else {
         disk_move_y(self->disk, 1);
@@ -111,7 +112,7 @@ static void animator_task_fn(void *ctx, void *arg) {
 
     case MOVING_DOWN: {
       // Moving down onto the destination pole
-      if (disk_get_ypos(self->disk) == self->xdst) {
+      if (disk_get_ypos(self->disk) == self->ydst) {
         self->phase = ARRIVED;
       } else {
         disk_move_y(self->disk, -1);

@@ -48,7 +48,7 @@
 
 typedef struct {
   mu_task_t task;
-  int iteration;
+  uint8_t phase;
 } tower_ctx_t;
 
 // =============================================================================
@@ -103,9 +103,11 @@ void tower_init(void) {
   // initialize the frame buffer
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
 
+   s_tower_ctx.phase = 0;
+
   // Initialize all poles
   for (int i=0; i<N_POLES; i++) {
-    uint8_t xpos = i * POLE_WIDTH + (POLE_WIDTH/2) + 1;
+    uint8_t xpos = i * (POLE_WIDTH + 1) + POLE_WIDTH/2;
     pole_init(&s_poles[i], xpos);
   }
 
@@ -145,20 +147,21 @@ void tower_draw(void) {
 static void tower_task_fn(void *ctx, void *arg) {
   tower_ctx_t *self = (tower_ctx_t *)ctx;
   (void)arg;
-  bool running;
-  int phase = self->iteration % 3;
 
-  if (phase == 0) {
-    running = move_disk(&s_poles[POLE_A], &s_poles[POLE_C]);
-  } else if (phase == 1) {
-    running = move_disk(&s_poles[POLE_A], &s_poles[POLE_B]);
-  } else /* if (phase == 2) */ {
-    running = move_disk(&s_poles[POLE_B], &s_poles[POLE_C]);
+  // NOTE: unless the algo has terminated, move_disk() will start the animator
+  // task, which will call back to this task upon completion.
+  if (self->phase == 0) {
+    move_disk(&s_poles[POLE_A], &s_poles[POLE_C]);
+  } else if (self->phase == 1) {
+    move_disk(&s_poles[POLE_A], &s_poles[POLE_B]);
+  } else /* if (self->phase == 2) */ {
+    move_disk(&s_poles[POLE_B], &s_poles[POLE_C]);
   }
 
-  if (running) {
-    self->iteration += 1;
-    mu_sched_task_now(&self->task);
+  if (self->phase < 2) {
+    self->phase += 1;
+  } else {
+    self->phase = 0;
   }
 }
 

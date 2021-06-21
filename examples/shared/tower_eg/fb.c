@@ -26,8 +26,10 @@
 // Includes
 
 #include "fb.h"
+#include "ansi_term.h"
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 // =============================================================================
 // Local types and definitions
@@ -61,24 +63,27 @@ void fb_init(uint8_t width,
 }
 
 void fb_clear(void) {
-  memset(s_fb.backing_store, 0, s_fb.width * s_fb.height);
+  memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
 }
 
 void fb_draw(uint8_t x, uint8_t y, char ch) {
-  s_fb.backing_store[x + y * s_fb.width] = ch;
+  // [x=0, y=0] is at bottom left
+  s_fb.backing_store[x + (s_fb.height - y - 1) * s_fb.width] = ch;
 }
 
 void fb_flush(void) {
+  ansi_term_home();
+  ansi_term_clear_screen();
   for (uint8_t y = 0; y < s_fb.height; y++) {
     for (uint8_t x=0; x< s_fb.width; x++) {
       int idx = x + y * s_fb.width;
       // This version blindly prints the entire buffer to the screen.  Lots of
       // room for improvement.
       char ch = s_fb.backing_store[idx];
-      putc(ch);
+      putchar(ch);
       s_fb.display_store[idx] = ch;
     }
-    putc('\n');
+    putchar('\n');
   }
 }
 

@@ -34,8 +34,6 @@
 // =============================================================================
 // Local types and definitions
 
-#define POLE_YPOS 0
-
 // =============================================================================
 // Local storage
 
@@ -63,13 +61,12 @@ void pole_init(pole_t *pole, uint8_t xpos) {
 
 void pole_draw(pole_t *pole) {
   // draw peg
-  for (int y = POLE_HEIGHT-1; y >= 0; y--) {
-    fb_draw(pole->xpos, POLE_YPOS+y, '#');
+  for (int i=0; i<POLE_HEIGHT; i++) {
+    fb_draw(pole->xpos, POLE_YPOS + i + 1, '#');
   }
   // draw base
-  int radius = POLE_WIDTH/2;  // truncate towards 0
-  for (int x = -radius; x < radius; x++) {
-    fb_draw(pole->xpos+x, 0, '#');
+  for (int i = 0; i < POLE_WIDTH; i++) {
+    fb_draw(pole->xpos+i-(POLE_WIDTH/2), 0, '#');
   }
 }
 

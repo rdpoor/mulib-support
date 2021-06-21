@@ -74,9 +74,8 @@ void disk_move_y(disk_t *disk, int dy) {
 }
 
 void disk_draw(disk_t *disk) {
-  int radius = disk->width/2;  // truncate towards 0
-  for (int x = -radius; x < radius; x++) {
-    fb_draw(disk->xpos+x, disk->ypos, '=');
+  for (int i=0; i<disk->width; i++) {
+    fb_draw(disk->xpos+i-(disk->width/2), disk->ypos, '=');
   }
 }
 
