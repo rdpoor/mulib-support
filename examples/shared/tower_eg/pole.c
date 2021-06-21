@@ -65,7 +65,7 @@ void pole_draw(pole_t *pole) {
     fb_draw(pole->xpos, POLE_YPOS + i + 1, '#');
   }
   // draw base
-  for (int i = 0; i < POLE_WIDTH; i++) {
+  for (int i=0; i<POLE_WIDTH; i++) {
     fb_draw(pole->xpos+i-(POLE_WIDTH/2), 0, '#');
   }
 }

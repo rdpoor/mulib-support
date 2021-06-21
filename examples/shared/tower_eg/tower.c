@@ -43,7 +43,7 @@
 #define POLE_C 2
 #define N_POLES 3
 
-#define BUFFER_WIDTH ((N_POLES * POLE_WIDTH) + N_POLES - 1)
+#define BUFFER_WIDTH ((N_POLES * POLE_WIDTH) + N_POLES)
 #define BUFFER_HEIGHT (CRUISING_ALTITUDE)
 
 typedef struct {
@@ -109,6 +109,7 @@ void tower_init(void) {
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
 
   // set up tower and disk positions
+  fb_erase();
   reset();
 
   // Schedule the task.
@@ -210,11 +211,11 @@ static void move_disk_aux(pole_t *src, pole_t *dst) {
 }
 
 static void reset(void) {
-   s_tower_ctx.phase = 0;
+  s_tower_ctx.phase = 0;
 
   // Initialize all poles
   for (int i=0; i<N_POLES; i++) {
-    uint8_t xpos = i * (POLE_WIDTH + 1) + POLE_WIDTH/2;
+    uint8_t xpos = i * (POLE_WIDTH + 1) + POLE_WIDTH/2 + 1;
     pole_init(&s_poles[i], xpos);
   }
 

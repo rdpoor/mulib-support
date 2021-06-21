@@ -55,6 +55,11 @@ void fb_init(uint8_t width,
              char *display_store);
 
 /**
+ * @brief erase the screen and reset the backing store.
+ */
+void fb_erase(void);
+
+/**
  * @brief Clear the frame buffer backing store.
  */
 void fb_clear(void);
