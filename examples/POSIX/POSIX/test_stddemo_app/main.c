@@ -14,17 +14,12 @@ void update_display();
  * @brief
  * gets called when anyone calls set_led()
  * since there's no obvious led here in posix, we use this as a prompt to make some other visual change
- * in this case, we simply clear the line and change the text color randomly
+ * in this case, we clear the terminal and print a colored dot 
  * 
 */
 
-void led_was_changed(bool on) {
-    //printf("led_was_changed %d",on);
+void on_led_change(bool on) {
     update_display();
-    // if(on) {
-    //     terminal_erase_last_line();
-    //     set_terminal_foreground_color(mu_random_range(1,230));
-    // }
 }
 
 void update_display() {
@@ -38,7 +33,7 @@ int main(void)
 {
     int ch;
     set_terminal_foreground_color(3);
-    set_led_callback(&led_was_changed);
+    set_led_callback(&on_led_change);
     test_stddemo_init(); 
     mu_set_terminal_attributes(false, false, false); // lets us read individual keypresses from the terminal, without hanging
     while(1) {
@@ -50,8 +45,7 @@ int main(void)
                 break;
             default:
                 if(ch > 0) {
-                    test_stddemo_x(true);
-                    //s_button_was_pressed = true;
+                    mu_stddemo_on_button_press();
                 }
                 break;
         }

@@ -37,29 +37,24 @@
 // =============================================================================
 // Private (forward) declarations
 
-
-//static void init_gpios(void);
-
-/**
- * @brief Initialize buttons and interrupt callbacks.
- */
-//static void init_buttons(void);
+void mu_stddemo_cleanup(void);
 
 // =============================================================================
 // Local storage
 
-//static mu_stddemo_button_cb s_button1_cb;
+static struct termios saved_attributes;
 
-//static mu_stddemo_button_cb s_button2_cb;
+static mu_stddemo_button_cb s_button_cb;
+
+static mu_stddemo_set_led_cb _set_led_cb = false;
 
 // =============================================================================
 // Public code
 
-static struct termios saved_attributes;
-
-void mu_stddemo_cleanup(void);
+// we can connect this button press callback (button_cb) to keypresses in lieu of physical buttons here in POSIX
 
 void mu_stddemo_init(mu_stddemo_button_cb button_cb) {
+    s_button_cb = button_cb;
     /* Save the terminal attributes so we can restore them later, in case we change them. */
     tcgetattr (STDIN_FILENO, &saved_attributes);
     atexit(mu_stddemo_cleanup); // restores terminal attributes
@@ -73,8 +68,11 @@ void mu_stddemo_cleanup(void) {
     printf( "%s%s", ANSI_ESC, ANSI_RESET); // undo any color settings
 }
 
-
-static mu_stddemo_set_led_cb _set_led_cb = false;
+void mu_stddemo_on_button_press(void) {
+  if (s_button_cb != NULL) {
+      s_button_cb(true);
+  }
+}
 
 void set_led_callback(mu_stddemo_set_led_cb led_cb) {
     _set_led_cb = led_cb;
@@ -89,7 +87,6 @@ void mu_stddemo_led_set(bool on) {
         _set_led_cb(on);
     else mu_stddemo_terminal_bell();
 }
-
 
 /**
  * @brief Return true if the demo button is currently pressed.

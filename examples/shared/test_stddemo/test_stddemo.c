@@ -33,11 +33,6 @@ static bool s_led_state;
 // =============================================================================
 // Public code
 
-void test_stddemo_x(int b) {
-    //printf("test_stddemo_x");
-    s_button_was_pressed = true;
-}
-
 void test_stddemo_init(void) {
   mu_time_t until;
 

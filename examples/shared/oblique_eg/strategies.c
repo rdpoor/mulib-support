@@ -273,10 +273,6 @@ void strategies_choose_and_print() {
   current_index = mu_random_range(0, N_STRATEGIES);
   const char *s = s_strategies[current_index];
 
- // s = s_strategies[121];
-
-  //printf("current_index %d %s\n",current_index,s);
-
   int j = 0;
 
   // decode (super secret cryptology!)
