@@ -68,18 +68,26 @@ void mu_stddemo_cleanup(void) {
     printf( "%s%s", ANSI_ESC, ANSI_RESET); // undo any color settings
 }
 
+/**
+ * @brief use this to simulate the user pressing a button
+*/
+
 void mu_stddemo_on_button_press(void) {
   if (s_button_cb != NULL) {
       s_button_cb(true);
   }
 }
 
+/**
+ * @brief register to receive a callback whenever the state of the LED (virtual because we're in POSIX) changes
+ *
+*/
 void set_led_callback(mu_stddemo_set_led_cb led_cb) {
     _set_led_cb = led_cb;
 }
 
 /**
- * @brief Set the demo LED on or off.  Here in posix we allow for a callback (that can customize other visual indicators) 
+ * @brief Set the LED (virtual because we're in POSIX)  on or off.  Here in posix we allow for a callback (that can customize other visual indicators) 
  * and fallback to a simple terminal bell/flash 
  */
 void mu_stddemo_led_set(bool on) {
@@ -139,6 +147,10 @@ int mu_get_key_press(void) {
     }
     return ch;
 }
+
+/**
+ * @brief Change attributes on the terminal.
+*/
 
 void mu_set_terminal_attributes(bool canonical, bool echo_input, bool wait_for_newlines) {
     struct termios info;
