@@ -45,6 +45,8 @@ extern "C" {
  */
 void strategies_choose_and_print();
 
+char *current_choice();
+
 #ifdef __cplusplus
 }
 #endif

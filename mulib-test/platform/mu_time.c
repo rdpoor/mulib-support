@@ -31,8 +31,9 @@ void mu_time_init(void) {
 mu_time_t mu_time_now() {
   struct timespec now;
   clock_gettime(CLOCK_REALTIME, &now);
-  return now.tv_sec + now.tv_nsec / 1000000000.0;
+  return (now.tv_sec * NANOSECS_PER_S + now.tv_nsec) / NANOSECS_PER_MS;
 }
+
 
 /**
  * @brief Add a time and a duration.

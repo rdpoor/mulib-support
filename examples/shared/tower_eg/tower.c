@@ -34,6 +34,7 @@
 #include "pole.h"
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 
 // =============================================================================
 // Local types and definitions

@@ -77,7 +77,7 @@ void join_wto_eg_init(void) {
   mulib_init();
   mu_stddemo_init(NULL);
 
-  mu_stddemo_printf("\r\njoin_wto_eg v%s, seed = %ld\n", VERSION, s_random_seed);
+  printf("\r\njoin_wto_eg v%s, seed = %ld\n", VERSION, s_random_seed);
 
 
   s_join_wto_eg_ctx.sleepers_are_iniitalied = false;
@@ -116,7 +116,7 @@ static void task_fn(void *ctx, void *arg) {
   // completing, each sleeper object will notify the joiner.  After all three
   // sleeper tasks have completed, the joiner task will call its on_completion
   // task (which is this task), and the process will repeat.
-  mu_stddemo_printf("-----\n");
+  printf("-----\n");
   at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_a, "Sleeper A", at);
   at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
@@ -130,14 +130,14 @@ static void task_fn(void *ctx, void *arg) {
   // sleeper tasks have completed.
   at = mu_time_offset(now, mu_time_ms_to_duration(TIMEOUT_MS));
   joiner_wto_set_timeout_at(&s_joiner_wto, at);
-  mu_stddemo_printf("Joiner set to time out at %ld\n", at);
+  printf("Joiner set to time out at %ld\n", at);
 }
 
 static void start_sleeper(sleeper_ctx_t *sleeper,
                           const char *name,
                           mu_time_t wake_at) {
   mu_task_t *task = sleeper_init(sleeper, name, joiner_wto_add_task(&s_joiner_wto));
-  mu_stddemo_printf("%s sleeping until %ld tics\n", name, wake_at);
+  printf("%s sleeping until %ld tics\n", name, wake_at);
   mu_sched_task_at(task, wake_at);
 }
 

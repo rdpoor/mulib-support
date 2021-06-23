@@ -63,6 +63,5 @@ Prior to pushing develop-rc to main:
 * Replace all absolute paths in example apps with relative paths
 * Verify all example apps run and work as advertised
 * Provide short README.md for each example app
-* Remove mu_printf from mu_stddemo (just use printf(), putc(), etc...)
 * [maybe]: Only include core modules that are used in example apps
 * Create a matrix of which modules are used in which apps

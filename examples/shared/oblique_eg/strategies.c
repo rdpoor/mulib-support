@@ -42,7 +42,8 @@ static char rot13(char c);
 // =============================================================================
 // Local storage
 
-const static char const *s_strategies[] = {
+//const static char const *s_strategies[] = {
+static char const *s_strategies[] = {
     "(Betnavp) znpuvarel",
     "Abg ohvyqvat n jnyy ohg znxvat n oevpx",
     "Abg ohvyqvat n jnyy; znxvat n oevpx",
@@ -259,20 +260,31 @@ static const size_t N_STRATEGIES = sizeof(s_strategies) / sizeof(const char *);
 // =============================================================================
 // Public code
 
+static int current_index = 0;
+
+char *current_choice() {
+  return (char *)s_strategies[current_index];
+}
+
 void strategies_choose_and_print() {
   static char buf[MAX_STRATEGY_LEN];
 
   // select a random strategy
-  int i = mu_random_range(0, N_STRATEGIES);
-  const char *s = s_strategies[i];
+  current_index = mu_random_range(0, N_STRATEGIES);
+  const char *s = s_strategies[current_index];
+
+ // s = s_strategies[121];
+
+  //printf("current_index %d %s\n",current_index,s);
+
   int j = 0;
 
   // decode (super secret cryptology!)
-  while (buf[j++] = rot13(*s++)) {
+  while ((buf[j++] = rot13(*s++))) {
   }
 
   // print it
-  mu_stddemo_printf("%s\n", buf);
+  printf("%s\n", buf);
 }
 
 // =============================================================================

@@ -29,6 +29,8 @@
 extern "C" {
 #endif
 
+ #include "mulib.h"
+
 // =============================================================================
 // Includes
 
@@ -38,9 +40,12 @@ extern "C" {
 // =============================================================================
 // Declarations
 
-void oblique_eg_init();
+
+void oblique_eg_init(bool wait_for_button);
 
 void oblique_eg_step();
+
+mu_task_t *oblique_choose_and_print_task();
 
 #ifdef __cplusplus
 }

@@ -70,7 +70,7 @@ static void task_fn(void *ctx, void *arg) {
   (void)arg;  // unused
 
   mu_stddemo_led_set(true);  // turn on LED when any sleeper wakes
-  mu_stddemo_printf("%s waking at %ld tics\n", self->name, mu_time_now());
+  printf("%s waking at %ld tics\n", self->name, mu_time_now());
   if (self->on_completion != NULL) {
     // Subtle bug: It two Sleepers wake up at the same time (or nearly at the
     // same time), the first call to mu_sched_task_now(joiner) will schedule a

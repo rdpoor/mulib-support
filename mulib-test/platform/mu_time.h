@@ -36,6 +36,16 @@ extern "C";
 #include <stdint.h>
 #include <stdbool.h>
 
+#define NANOSECS_PER_S  (1000000000)
+#define NANOSECS_PER_MS (1000000)
+#define MS_PER_SECOND (1000L)
+
+#ifndef RTC_FREQUENCY
+  #error "Provide a platform-specific definition for RTC_FREQUENCY"
+#endif
+
+#define MU_TIME_MS_TO_DURATION(ms) (((ms) * RTC_FREQUENCY) / MS_PER_SECOND)
+
 // =============================================================================
 // types and definitions
 

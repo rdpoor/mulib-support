@@ -30,6 +30,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include "mu_stddemo.h"
 
 // =============================================================================
 // Local types and definitions
@@ -79,17 +80,32 @@ void fb_draw(uint8_t x, uint8_t y, char ch) {
 }
 
 void fb_flush(void) {
+  int idx = 0;
   for (uint8_t y = 0; y < s_fb.height; y++) {
     for (uint8_t x=0; x< s_fb.width; x++) {
-      int idx = x + y * s_fb.width;
-      // This version blindly prints the entire buffer to the screen.  Lots of
-      // room for improvement.
       char ch = s_fb.backing_store[idx];
       if (ch != s_fb.display_store[idx]) {
         ansi_term_cursor_position(y, x);
         putchar(ch);
         s_fb.display_store[idx] = ch;
       }
+      idx++;
+    }
+    putchar('\n');
+  }
+  ansi_term_home();
+}
+
+void fb_flush2(void) {
+  for (uint8_t y = 0; y < s_fb.height; y++) {
+    for (uint8_t x=0; x< s_fb.width; x++) {
+      int idx = x + y * s_fb.width;
+      char ch = s_fb.backing_store[idx];
+      if (ch != s_fb.display_store[idx]) {
+        ansi_term_cursor_position(y, x);
+        putchar(ch);
+        s_fb.display_store[idx] = ch;
+      } 
     }
     putchar('\n');
   }

@@ -14,11 +14,14 @@
 #include "mu_config.h"     // must come first
 #include "mu_time.h"       // included from mulib/src/platform/
 #include "time.h"          // posix time functions
+#include <stdio.h>
 
 /**
  * @brief Initialize the time system.  Must be called before any other time
  * functions are called.
  */
+
+
 void mu_time_init(void) {
   // no initialization required
 }
@@ -31,7 +34,7 @@ void mu_time_init(void) {
 mu_time_t mu_time_now() {
   struct timespec now;
   clock_gettime(CLOCK_REALTIME, &now);
-  return now.tv_sec + now.tv_nsec / 1000000000.0;
+  return (now.tv_sec * NANOSECS_PER_S + now.tv_nsec) / NANOSECS_PER_MS;
 }
 
 /**
@@ -140,16 +143,16 @@ mu_duration_t mu_time_s_to_duration(MU_FLOAT s) {
   return s;
 }
 
-#endif
 
-//#define MU_TIME_TEST
-#ifdef MU_TIME_TEST // rest of file
 
-#include <stdio.h>
-#include <assert.h>
 
-int main(void) {
-  mu_time_t t1, t2;
+
+
+
+#define assert(n)
+
+void time_test(void) {
+    mu_time_t t1, t2;
   mu_duration_t dt;
   mu_duration_ms_t ms;
   mu_float_t s;
@@ -182,10 +185,7 @@ int main(void) {
   assert(s == 1.0);
 
   printf("done.\r\n");
-
-  return 0;
 }
 
+#endif
 
-
-#endif // #ifdef MU_TIME_TEST

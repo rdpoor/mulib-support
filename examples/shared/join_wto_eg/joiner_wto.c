@@ -99,7 +99,7 @@ static void endgame(joiner_wto_ctx_t *self, void *arg, const char *cause) {
   mu_time_t now = mu_time_now();
 
   mu_stddemo_led_set(false);  // turn off LED upon completion
-  mu_stddemo_printf("Joiner %s at %ld\n", cause, now);
+  printf("Joiner %s at %ld\n", cause, now);
   mu_sched_task_now(self->on_completion);
 
 }
