@@ -25,3 +25,18 @@ Debug/
 
 ## Windows Studio and derivatives
 *.launch
+
+*.DS_Store
+
+examples/POSIX/POSIX/tower_app/build/
+examples/POSIX/POSIX/tower_app/main.o
+examples/POSIX/POSIX/tower_app/tower_app
+
+examples/POSIX/POSIX/oblique_app/build/
+examples/POSIX/POSIX/oblique_app/main.o
+examples/POSIX/POSIX/oblique_app/oblique_app
+
+examples/POSIX/POSIX/test_stddemo/build/
+examples/POSIX/POSIX/test_stddemo/main.o
+examples/POSIX/POSIX/test_stddemo/oblique_app
+

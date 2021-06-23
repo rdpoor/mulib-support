@@ -75,7 +75,7 @@ void join_eg_init(void) {
   mulib_init();
   mu_stddemo_init(NULL);
 
-  mu_stddemo_printf("\r\njoin_eg v%s, seed = %ld\n", VERSION, s_random_seed);
+  printf("\r\njoin_eg v%s, seed = %ld\n", VERSION, s_random_seed);
 
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Join Eg");
   mu_sched_task_now(&s_ctx.task);
@@ -102,7 +102,7 @@ static void task_fn(void *ctx, void *arg) {
   // completing, each sleeper object will notify the joiner.  After all three
   // sleeper tasks have completed, the joiner task will call its on_completion
   // task (which is this task), and the process will repeatt.
-  mu_stddemo_printf("-----\n");
+  printf("-----\n");
   at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_a, "Sleeper A", at);
   at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
@@ -117,7 +117,7 @@ static void start_sleeper(sleeper_ctx_t *sleeper,
                           const char *name,
                           mu_time_t wake_at) {
   mu_task_t *task = sleeper_init(sleeper, name, joiner_add_task(&s_joiner));
-  mu_stddemo_printf("%s sleeping until %ld tics\n", name, wake_at);
+  printf("%s sleeping until %ld tics\n", name, wake_at);
   mu_sched_task_at(task, wake_at);
 }
 

@@ -60,7 +60,7 @@ void morse_2_init(void) {
   mulib_init();
   mu_stddemo_init(NULL);
 
-  mu_stddemo_printf("\r\nmorse_2 v%s\n", VERSION);
+  printf("\r\nmorse_2 v%s\n", VERSION);
 
   // initialize the mu_task to associate task_fn with s_ctx
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");

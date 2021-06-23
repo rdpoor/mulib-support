@@ -59,10 +59,6 @@ typedef void (*mu_stddemo_button_cb)(bool button_state);
  */
 void mu_stddemo_init(mu_stddemo_button_cb button_cb);
 
-/**
- * @brief Print a formatted message to standard output (usually a serial port).
- */
-#define mu_stddemo_printf(fmt, ...) printf(fmt, ##__VA_ARGS__)
 
 /**
  * @brief Set the demo LED on or off.

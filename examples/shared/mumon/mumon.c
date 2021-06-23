@@ -64,7 +64,7 @@ void mumon_init(void) {
   mulib_init();
   mu_stddemo_init(NULL);
 
-  mu_stddemo_printf("\r\nmumon v%s, seed = %ld\n", VERSION, s_random_seed);
+  printf("\r\nmumon v%s, seed = %ld\n", VERSION, s_random_seed);
 
   // Initialize the monitor task.
   mu_task_init(mumon_task(), mumon_task_fn, &s_mumon_ctx, "MuMonitor");

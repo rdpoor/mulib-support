@@ -72,11 +72,11 @@ static void task_fn(void *ctx, void *arg) {
 
   self->pending_count -= 1;
 
-  mu_stddemo_printf("Task completed, pending count = %d\n", self->pending_count);
+  printf("Task completed, pending count = %d\n", self->pending_count);
 
   if (self->pending_count == 0) {
     mu_stddemo_led_set(false);  // turn off LED when all sleepers complete
-  	mu_stddemo_printf("All tasks have joined at %ld tics.\n\n", mu_time_now());
+  	printf("All tasks have joined at %ld tics.\n\n", mu_time_now());
     // all joined tasks have completed -- invoke the on_completion task
     if (self->on_completion != NULL) {
       mu_sched_task_now(self->on_completion);

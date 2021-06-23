@@ -44,6 +44,7 @@ void foo_init() {
     s_initialized = true;  
 }
 ```
+AM: There's also the problem of needing to call init functions in the right order.
 
 ## 20210526-0800 Prune unused / abandoned mulib code
 
@@ -63,6 +64,21 @@ Prior to pushing develop-rc to main:
 * Replace all absolute paths in example apps with relative paths
 * Verify all example apps run and work as advertised
 * Provide short README.md for each example app
-* Remove mu_printf from mu_stddemo (just use printf(), putc(), etc...)
 * [maybe]: Only include core modules that are used in example apps
 * Create a matrix of which modules are used in which apps
+
+
+## 20210623-1000 Andy Topics
+
+Working on the POSIX stuff has led me to think about:
+
+* the name "stddemo" -- it seems counterintuitive that I should #include anything with "demo" in its name as part of an application
+** how about breaking stddemo up into mu_button_io, mu_led_io, mu_terminal_io (mu_serial_io?)
+* let's talk through the initialization regime.   mu_platform_init(), mu_stddemo_init(), mu_time_init(), mu_schedule_init(), mulib_init()
+* sexier modularity + Makefiles.   Would be great if the platform-specific makefile complexity could be siloed so that if you're making an app, your Makefile is much simpler.   
+** should mu_platform have its own Makefile?   Should we build modules?
+** Would be great to have a simple mechanism for cherry-picking modules from core, extras.   In lieu of CMake, maybe some shell scripts?   -D flags?
+* Why are .h files living alongside .c files?   Are Terry and I old fogies?   If during a port you're meant to change anything in a .h, it should be stand alone, like config.h.  Also centralize / factor the platform changes.
+* Why is mulib.c outside of core/?
+* There's redundnancy with ansi routines in tower and POSIX/mu_stddemo.   Pull up into mu_platform/mu_terminal_io?
+

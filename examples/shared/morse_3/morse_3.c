@@ -61,7 +61,7 @@ void morse_3_init(void) {
   mulib_init();
   mu_stddemo_init(NULL);
 
-  mu_stddemo_printf("\r\nmorse_3 v%s\n", VERSION);
+  printf("\r\nmorse_3 v%s\n", VERSION);
 
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 3");
 

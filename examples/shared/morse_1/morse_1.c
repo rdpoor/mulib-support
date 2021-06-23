@@ -68,7 +68,7 @@ void morse_1_init(void) {
   mulib_init();
   mu_stddemo_init(NULL);
 
-  mu_stddemo_printf("\r\nmorse_1 v%s\n", VERSION);
+  printf("\r\nmorse_1 v%s\n", VERSION);
 
     // initialize the mu_task to associate blink_basic_fn with s_blink_basic_ctx
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 1");

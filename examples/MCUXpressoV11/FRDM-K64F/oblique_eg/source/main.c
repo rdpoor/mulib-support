@@ -36,7 +36,7 @@ int main(void)
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
 
-    oblique_eg_init();
+    oblique_eg_init(true);
     while(1) {
       oblique_eg_step();
     }

@@ -21,6 +21,8 @@ extern "C" {
 
 // =============================================================================
 // Declarations
+void set_led(int on);
+int get_led(void);
 
 void test_stddemo_init(void);
 
