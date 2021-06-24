@@ -25,18 +25,19 @@
 // =============================================================================
 // Includes
 
-#include "ansi_term.h"
+#include "mu_button_io.h"
+
 #include <stdint.h>
-#include <string.h>
-#include <stdio.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
 
-#define CSI "\e["
-
 // =============================================================================
 // Local storage
+
+static mu_button_io_cb s_button_io_cb;
 
 // =============================================================================
 // Local (forward) declarations
@@ -44,68 +45,12 @@
 // =============================================================================
 // Public code
 
-/**
- * @brief Move cursor to 0, 0
- */
-void ansi_term_home(void) {
-  puts(CSI "H");
+void mu_button_io_init(void) {
+  s_button_io_cb = NULL;
 }
 
-/**
- * @brief Cursor Position
- *
- * Note: assumes row and col are 0 based, but converts to 1 based for ANSI spec.
- */
-void ansi_term_cursor_position(uint8_t row, uint8_t col) {
-  // optimize.
-  if (row == 0) {
-    if (col == 0) {
-      puts(CSI "H");
-    } else {
-      printf(CSI ";%dH", col+1);
-    }
-  } else {
-    if (col == 0) {
-      printf(CSI "%dH", row+1);
-    } else {
-      printf(CSI "%d;%dH", row+1, col+1);
-    }
-  }
-}
-
-/**
- * @brief Erase screen and scrollback
- */
-void ansi_term_clear_buffer(void) {
-  puts(CSI "3J");
-}
-
-/**
- * @brief Erase screen
- */
-void ansi_term_clear_screen(void) {
-  puts(CSI "2J");
-}
-
-/**
- * @brief Erase screen from current cursor position
- */
-void ansi_term_clear_to_end_of_screen(void) {
-  puts(CSI "J");
-}
-
-/**
- * @brief Erase current line
- */
-void ansi_term_clear_line(void) {
-  puts(CSI "2K");
-}
-
-/**
- * @brief Erase line from current cursor position
- */
-void ansi_term_clear_to_end_of_line(void) {
-  puts(CSI "K");
+void mu_button_io_set_callback(mu_button_io_callback_t cb) {
+  s_button_io_cb = cb;
 }
 
 // =============================================================================

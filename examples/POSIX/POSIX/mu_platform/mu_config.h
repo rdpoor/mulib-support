@@ -50,7 +50,7 @@ extern "C" {
 
 /**
  * Define the number of tasks that can be scheduled at interrupt level between
- * calls to sched_step().  This must be define as a power of two.
+ * calls to sched_step().  This must be a power of two.
  */
 #define MU_IRQ_TASK_QUEUE_SIZE 8
 

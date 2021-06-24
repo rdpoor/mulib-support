@@ -26,12 +26,12 @@
 // Includes
 
 #include "tower.h"
+
 #include "animator.h"
 #include "disk.h"
 #include "fb.h"
-#include <mulib.h>
-#include "mu_platform.h"
 #include "pole.h"
+#include <mulib.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>

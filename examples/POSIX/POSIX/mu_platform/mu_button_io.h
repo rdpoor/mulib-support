@@ -22,40 +22,60 @@
  * SOFTWARE.
  */
 
-#ifndef _JOINER_WTO_H_
-#define _JOINER_WTO_H_
+/**
+ * @file mu_button_io.h
+ *
+ * @brief Interact with a platform-specific button.
+ *
+ * mu_button_io defines a platform-specific button.  This is commonly required
+ * example applications, but could be used in production code if needed.
+ *
+ * In the case of the POSIX platform, there is no physical button.  Instead, we
+ * use terminal interactions and watch for a special key sequence (TBD).  Upon
+ * detecting the sequence, mu_button_io invokes the user-supplied callback
+ * function.
+ */
+
+#ifndef _MU_BUTTON_IO_H_
+#define _MU_BUTTON_IO_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // =============================================================================
-// Includes
+// includes
 
-#include "mu_platform.h"
-#include "mulib.h"
-
-// =============================================================================
-// Types and definitions
-
-typedef struct {
-  mu_task_t task;
-  int pending_count;
-  mu_task_t timeout_task;
-  mu_task_t *on_completion;
-} joiner_wto_ctx_t;
+#include <stdbool.h>
+#include <stdint.h>
 
 // =============================================================================
-// Declarations
+// types and definitions
 
-mu_task_t *joiner_wto_init(joiner_wto_ctx_t *ctx, mu_task_t *on_completion);
+// The canonical button used in example code.
+#define MU_BUTTON_0   0
 
-mu_task_t *joiner_wto_add_task(joiner_wto_ctx_t *ctx);
+// Signature of the button callback function
+typedef void (*mu_button_io_cb)(uint8_t button_id, bool pressed);
 
-void joiner_wto_set_timeout_at(joiner_wto_ctx_t *ctx, mu_time_t at);
+// =============================================================================
+// declarations
+
+/**
+ * @brief Initialize the button support.
+ */
+void mu_button_io_init(void);
+
+/**
+ * @brief Set the user-supplied function to be called upon button presses.
+ *
+ * @param cb User-supplied callback function, called when the button changes
+ * state.  A value of NULL will disable callbacks.
+ */
+void mu_button_io_set_callback(mu_button_io_callback_t cb);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _JOINER_WTO_H_
+#endif /* #ifndef __TEMPLATE_H_ */

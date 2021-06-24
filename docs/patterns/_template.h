@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef MU_TEMPLATE_H_
-#define MU_TEMPLATE_H_
+#ifndef __TEMPLATE_H_
+#define __TEMPLATE_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +32,7 @@ extern "C" {
 // =============================================================================
 // includes
 
+#include <mulib.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -45,4 +46,4 @@ extern "C" {
 }
 #endif
 
-#endif /* #ifndef MU_TEMPLATE_H_ */
+#endif /* #ifndef __TEMPLATE_H_ */

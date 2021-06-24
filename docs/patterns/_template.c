@@ -25,7 +25,11 @@
 // =============================================================================
 // Includes
 
-#include "mu_template.h"
+#include "_template.h"
+
+#include <mulib.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
 // Local types and definitions

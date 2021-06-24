@@ -22,41 +22,54 @@
  * SOFTWARE.
  */
 
-#ifndef _SLEEPER_H_
-#define _SLEEPER_H_
+/**
+ * @file mu_led_io.h
+ *
+ * @brief Control a platform-specific LED.
+ *
+ * mu_led_io defines a platform-specific LED.  This is commonly required by
+ * example applications, but could be used in production code if needed.
+ */
+
+#ifndef _MU_LED_IO_H_
+#define _MU_LED_IO_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // =============================================================================
-// Includes
+// includes
 
-#include "mu_platform.h"
-#include "mulib.h"
-
-// =============================================================================
-// Types and definitions
-
-typedef struct {
-  mu_task_t task;
-  const char *name;
-  mu_task_t *on_completion;
-} sleeper_ctx_t;
+#include <stdbool.h>
+#include <stdint.h>
 
 // =============================================================================
-// Declarations
+// types and definitions
 
-mu_task_t *sleeper_init(sleeper_ctx_t *ctx,
-                        const char *name,
-                        mu_task_t *on_completion);
+// The canonical LED used in example code.
+#define MU_LED_0   0
 
-mu_task_t *sleeper_task(sleeper_ctx_t *ctx);
+// =============================================================================
+// declarations
 
-const char *sleeper_name(sleeper_ctx_t *ctx);
+/**
+ * @brief Initialize the LED.
+ */
+void mu_led_io_init(void);
+
+/**
+ * @brief Turn on or off an LED
+ */
+void mu_led_io_set(uint8_t led_id, bool on);
+
+/**
+ * @brief Get the state of an LED.
+ */
+bool mu_led_io_get(uint8_t led_id);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _SLEEPER_H_
+#endif /* #ifndef __TEMPLATE_H_ */

@@ -26,6 +26,7 @@
 // Includes
 
 #include "animator.h"
+
 #include "tower.h"
 #include <mulib.h>
 #include <stdint.h>

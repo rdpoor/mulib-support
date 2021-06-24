@@ -26,11 +26,11 @@
 // Includes
 
 #include "fb.h"
-#include "ansi_term.h"
+
+#include <mulib.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include "mu_stddemo.h"
 
 // =============================================================================
 // Local types and definitions
@@ -64,8 +64,8 @@ void fb_init(uint8_t width,
 }
 
 void fb_erase(void) {
-  ansi_term_home();
-  ansi_term_clear_screen();
+  mu_ansi_term_home();
+  mu_ansi_term_clear_screen();
   memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
   memset(s_fb.display_store, ' ', s_fb.width * s_fb.height);
 }
@@ -85,33 +85,15 @@ void fb_flush(void) {
     for (uint8_t x=0; x< s_fb.width; x++) {
       char ch = s_fb.backing_store[idx];
       if (ch != s_fb.display_store[idx]) {
-        ansi_term_cursor_position(y, x);
+        mu_ansi_term_set_cursor_position(y, x);
         putchar(ch);
         s_fb.display_store[idx] = ch;
       }
       idx++;
     }
-    putchar('\n');
   }
-  ansi_term_home();
+  mu_ansi_term_home();
 }
-
-void fb_flush2(void) {
-  for (uint8_t y = 0; y < s_fb.height; y++) {
-    for (uint8_t x=0; x< s_fb.width; x++) {
-      int idx = x + y * s_fb.width;
-      char ch = s_fb.backing_store[idx];
-      if (ch != s_fb.display_store[idx]) {
-        ansi_term_cursor_position(y, x);
-        putchar(ch);
-        s_fb.display_store[idx] = ch;
-      } 
-    }
-    putchar('\n');
-  }
-  ansi_term_home();
-}
-
 
 // =============================================================================
 // Local (static) code

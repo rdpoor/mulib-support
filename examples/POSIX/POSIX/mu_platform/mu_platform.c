@@ -25,8 +25,9 @@
 // =============================================================================
 // Includes
 
-#include "mu_platform.h"     // must come first
-//#include "mu_stddemo.h"
+#include "mu_platform.h"
+#include "mu_button_io.h"
+#include "mu_led_io.h"
 #include "mu_time.h"
 
 // =============================================================================
@@ -42,6 +43,8 @@
 // Public code
 
 void mu_platform_init(void) {
+  mu_button_io_init();
+  mu_led_io_init()
   mu_time_init();
 }
 
