@@ -9,7 +9,7 @@
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "board.h"
-#include "test_stddemo.h"
+#include "platform_test.h"
 
 /*******************************************************************************
  * Definitions
@@ -38,8 +38,8 @@ int main(void)
 
     mu_platform_init();
 
-    test_stddemo_init();
+    platform_test_init();
     while(1) {
-      test_stddemo_step();
+      platform_test_step();
     }
 }

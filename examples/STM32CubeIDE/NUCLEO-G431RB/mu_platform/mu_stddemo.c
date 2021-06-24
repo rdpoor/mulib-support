@@ -52,14 +52,14 @@ static mu_stddemo_button_cb s_button_cb;
 // =============================================================================
 // Public code
 
-void mu_stddemo_init(mu_stddemo_button_cb button_cb) {
+void mu_button_io_set_callback(mu_stddemo_button_cb button_cb) {
   s_button_cb = button_cb;
 }
 
 /**
  * @brief Set the demo LED on or off.
  */
-void mu_stddemo_led_set(bool on) {
+void mu_led_io_set(bool on) {
       HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 

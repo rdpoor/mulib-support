@@ -1,5 +1,5 @@
 #include <atmel_start.h>
-#include "test_stddemo/test_stddemo.h"
+#include "platform_test/platform_test.h"
 #include <stddef.h>
 
 int main(void)
@@ -8,8 +8,8 @@ int main(void)
 	atmel_start_init();
 
 	/* Replace with your application code */
-	test_stddemo_init();
+	platform_test_init();
 	while (1) {
-		test_stddemo_step();
+		platform_test_step();
 	}
 }

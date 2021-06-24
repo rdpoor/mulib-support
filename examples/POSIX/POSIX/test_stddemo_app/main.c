@@ -1,7 +1,7 @@
-#include "test_stddemo.h"
+#include "platform_test.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "mulib.h"
+#include <mulib.h>
 #include "mu_stddemo.h"
 
 /**
@@ -34,10 +34,10 @@ int main(void)
     int ch;
     set_terminal_foreground_color(3);
     set_led_callback(&on_led_change);
-    test_stddemo_init(); 
+    platform_test_init(); 
     mu_set_terminal_attributes(false, false, false); // lets us read individual keypresses from the terminal, without hanging
     while(1) {
-        test_stddemo_step();
+        platform_test_step();
         ch = mu_get_key_press(); // because of our call to mu_set_terminal_attributes() above, this wont hang -- will return the next character on stdin or 0 if there's nothing waiting
         switch(ch) {
             case 'q':

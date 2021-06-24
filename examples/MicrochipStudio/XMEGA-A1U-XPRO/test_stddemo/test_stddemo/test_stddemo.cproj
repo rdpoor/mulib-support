@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>test_stddemo</AssemblyName>
-    <Name>test_stddemo</Name>
-    <RootNamespace>test_stddemo</RootNamespace>
+    <AssemblyName>platform_test</AssemblyName>
+    <Name>platform_test</Name>
+    <RootNamespace>platform_test</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -220,7 +220,7 @@
     <Folder Include="mu_platform" />
     <Folder Include="mulib" />
     <Folder Include="src\" />
-    <Folder Include="test_stddemo" />
+    <Folder Include="platform_test" />
     <Folder Include="utils\" />
     <Folder Include="utils\assembler\" />
   </ItemGroup>
@@ -365,13 +365,13 @@
       <SubType>compile</SubType>
       <Link>mulib\mulib.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\shared\test_stddemo\test_stddemo.c">
+    <Compile Include="..\..\..\..\shared\platform_test\platform_test.c">
       <SubType>compile</SubType>
-      <Link>test_stddemo\test_stddemo.c</Link>
+      <Link>platform_test\platform_test.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\shared\test_stddemo\test_stddemo.h">
+    <Compile Include="..\..\..\..\shared\platform_test\platform_test.h">
       <SubType>compile</SubType>
-      <Link>test_stddemo\test_stddemo.h</Link>
+      <Link>platform_test\platform_test.h</Link>
     </Compile>
     <Compile Include="..\..\mu_platform\mu_config.h">
       <SubType>compile</SubType>

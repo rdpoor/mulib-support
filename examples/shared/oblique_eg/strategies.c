@@ -26,8 +26,7 @@
 // Includes
 
 #include "strategies.h"
-#include "mu_platform.h"
-#include "mulib.h"
+#include <mulib.h>
 
 // =============================================================================
 // Local types and definitions
@@ -260,18 +259,10 @@ static const size_t N_STRATEGIES = sizeof(s_strategies) / sizeof(const char *);
 // =============================================================================
 // Public code
 
-static int current_index = 0;
-
-char *current_choice() {
-  return (char *)s_strategies[current_index];
-}
-
 void strategies_choose_and_print() {
   static char buf[MAX_STRATEGY_LEN];
-
-  // select a random strategy
-  current_index = mu_random_range(0, N_STRATEGIES);
-  const char *s = s_strategies[current_index];
+  int index = mu_random_range(0, N_STRATEGIES);
+  const char *s = s_strategies[index];
 
   int j = 0;
 

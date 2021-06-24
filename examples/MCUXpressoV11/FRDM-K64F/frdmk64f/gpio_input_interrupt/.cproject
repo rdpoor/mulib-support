@@ -19,7 +19,7 @@
 					<folderInfo id="com.crt.advproject.config.exe.debug.813083310." name="/" resourcePath="">
 						<toolChain id="com.crt.advproject.toolchain.exe.debug.1956858001" name="NXP MCU Tools" superClass="com.crt.advproject.toolchain.exe.debug">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="com.crt.advproject.platform.exe.debug.547226296" name="ARM-based MCU (Debug)" superClass="com.crt.advproject.platform.exe.debug"/>
-							<builder buildPath="${workspace_loc:/test_stddemo}/Debug" id="com.crt.advproject.builder.exe.debug.1348348399" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="com.crt.advproject.builder.exe.debug"/>
+							<builder buildPath="${workspace_loc:/platform_test}/Debug" id="com.crt.advproject.builder.exe.debug.1348348399" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="com.crt.advproject.builder.exe.debug"/>
 							<tool id="com.crt.advproject.cpp.exe.debug.1421607795" name="MCU C++ Compiler" superClass="com.crt.advproject.cpp.exe.debug">
 								<option id="com.crt.advproject.cpp.hdrlib.50982789" name="Library headers" superClass="com.crt.advproject.cpp.hdrlib" useByScannerDiscovery="false"/>
 								<option id="com.crt.advproject.cpp.fpu.228706561" name="Floating point" superClass="com.crt.advproject.cpp.fpu" useByScannerDiscovery="true" value="com.crt.advproject.cpp.fpu.fpv4.hard" valueType="enumerated"/>
@@ -281,7 +281,7 @@
 								<option id="com.crt.advproject.link.gcc.lto.190500119" superClass="com.crt.advproject.link.gcc.lto"/>
 								<option id="com.crt.advproject.link.gcc.lto.optmization.level.553568004" superClass="com.crt.advproject.link.gcc.lto.optmization.level"/>
 								<option id="com.crt.advproject.link.manage.1024151332" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.2133694654" superClass="com.crt.advproject.link.script" value="test_stddemo_Debug.ld" valueType="string"/>
+								<option id="com.crt.advproject.link.script.2133694654" superClass="com.crt.advproject.link.script" value="platform_test_Debug.ld" valueType="string"/>
 								<option id="com.crt.advproject.link.scriptdir.1021668659" superClass="com.crt.advproject.link.scriptdir"/>
 								<option id="com.crt.advproject.link.crpenable.197697143" superClass="com.crt.advproject.link.crpenable"/>
 								<option id="com.crt.advproject.link.flashconfigenable.975329115" superClass="com.crt.advproject.link.flashconfigenable" value="true" valueType="boolean"/>
@@ -349,7 +349,7 @@
 					<folderInfo id="com.crt.advproject.config.exe.release.1419352265." name="/" resourcePath="">
 						<toolChain id="com.crt.advproject.toolchain.exe.release.644963271" name="NXP MCU Tools" superClass="com.crt.advproject.toolchain.exe.release">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="com.crt.advproject.platform.exe.release.1281965539" name="ARM-based MCU (Release)" superClass="com.crt.advproject.platform.exe.release"/>
-							<builder buildPath="${workspace_loc:/test_stddemo}/Release" id="com.crt.advproject.builder.exe.release.649741303" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="com.crt.advproject.builder.exe.release"/>
+							<builder buildPath="${workspace_loc:/platform_test}/Release" id="com.crt.advproject.builder.exe.release.649741303" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="com.crt.advproject.builder.exe.release"/>
 							<tool id="com.crt.advproject.cpp.exe.release.1461166922" name="MCU C++ Compiler" superClass="com.crt.advproject.cpp.exe.release">
 								<option id="com.crt.advproject.cpp.arch.478858140" superClass="com.crt.advproject.cpp.arch" useByScannerDiscovery="true" value="com.crt.advproject.cpp.target.cm4" valueType="enumerated"/>
 								<option id="com.crt.advproject.cpp.misc.dialect.849620396" superClass="com.crt.advproject.cpp.misc.dialect" useByScannerDiscovery="true"/>
@@ -605,7 +605,7 @@
 								<option id="com.crt.advproject.link.gcc.lto.optmization.level.988792992" superClass="com.crt.advproject.link.gcc.lto.optmization.level"/>
 								<option id="com.crt.advproject.link.fpu.1325130249" superClass="com.crt.advproject.link.fpu" value="com.crt.advproject.link.fpu.fpv4.hard" valueType="enumerated"/>
 								<option id="com.crt.advproject.link.manage.834172721" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.783491836" superClass="com.crt.advproject.link.script" value="test_stddemo_Release.ld" valueType="string"/>
+								<option id="com.crt.advproject.link.script.783491836" superClass="com.crt.advproject.link.script" value="platform_test_Release.ld" valueType="string"/>
 								<option id="com.crt.advproject.link.scriptdir.974088030" superClass="com.crt.advproject.link.scriptdir"/>
 								<option id="com.crt.advproject.link.crpenable.342616877" superClass="com.crt.advproject.link.crpenable"/>
 								<option id="com.crt.advproject.link.flashconfigenable.590368860" superClass="com.crt.advproject.link.flashconfigenable" value="true" valueType="boolean"/>
@@ -657,7 +657,7 @@
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="test_stddemo.null.272335869" name="test_stddemo" projectType="com.crt.advproject.projecttype.exe"/>
+		<project id="platform_test.null.272335869" name="platform_test" projectType="com.crt.advproject.projecttype.exe"/>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
@@ -677,9 +677,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="com.nxp.mcuxpresso.core.datamodels">
 		<sdkName>SDK_2.x_FRDM-K64F</sdkName>
-		<sdkExample>test_stddemo</sdkExample>
+		<sdkExample>platform_test</sdkExample>
 		<sdkVersion>2.7.0</sdkVersion>
-		<sdkComponents>utility.debug_console_lite.MK64F12;platform.utilities.assert_lite.MK64F12;platform.drivers.port.MK64F12;platform.drivers.gpio.MK64F12;platform.drivers.flash.MK64F12;platform.drivers.clock.MK64F12;platform.drivers.uart.MK64F12;platform.drivers.smc.MK64F12;device.MK64F12_CMSIS.MK64F12;component.uart_adapter.MK64F12;platform.drivers.common.MK64F12;component.lists.MK64F12;device.MK64F12_startup.MK64F12;platform.Include_core_cm4.MK64F12;platform.Include_common.MK64F12;platform.Include_dsp.MK64F12;platform.utilities.misc_utilities.MK64F12;device.MK64F12_system.MK64F12;test_stddemo;</sdkComponents>
+		<sdkComponents>utility.debug_console_lite.MK64F12;platform.utilities.assert_lite.MK64F12;platform.drivers.port.MK64F12;platform.drivers.gpio.MK64F12;platform.drivers.flash.MK64F12;platform.drivers.clock.MK64F12;platform.drivers.uart.MK64F12;platform.drivers.smc.MK64F12;device.MK64F12_CMSIS.MK64F12;component.uart_adapter.MK64F12;platform.drivers.common.MK64F12;component.lists.MK64F12;device.MK64F12_startup.MK64F12;platform.Include_core_cm4.MK64F12;platform.Include_common.MK64F12;platform.Include_dsp.MK64F12;platform.utilities.misc_utilities.MK64F12;device.MK64F12_system.MK64F12;platform_test;</sdkComponents>
 		<boardId>frdmk64f</boardId>
 		<package>MK64FN1M0VLL12</package>
 		<core>cm4</core>

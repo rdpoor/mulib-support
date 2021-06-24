@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "test_stddemo.h"
+#include "platform_test.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -105,11 +105,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  test_stddemo_init();
+  platform_test_init();
   while (1)
   {
     /* USER CODE END WHILE */
-    test_stddemo_step();
+    platform_test_step();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

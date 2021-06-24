@@ -57,13 +57,13 @@ typedef void (*mu_stddemo_button_cb)(bool button_state);
  * @param button_cb Function to call from interrupt level when the user button
  * is pressed.  Set to NULL to inhibit callbacks.
  */
-void mu_stddemo_init(mu_stddemo_button_cb button_cb);
+void mu_button_io_set_callback(mu_stddemo_button_cb button_cb);
 
 
 /**
  * @brief Set the demo LED on or off.
  */
-void mu_stddemo_led_set(bool on);
+void mu_led_io_set(bool on);
 
 /**
  * @brief Return true if the demo button is currently pressed.

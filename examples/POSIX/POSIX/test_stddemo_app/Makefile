@@ -1,12 +1,12 @@
-# Makefile for the test_stddemo_eg example
+# Makefile for the platform_test_eg example
 #
 # `make` will compile the example.
 # `make run` will build and run the example.
 # `make clean` will clean all
 
-.PHONY: all clean mulib_core_objects mulib_extras_objects mu_platform_objects test_stddemo_eg_objects
+.PHONY: all clean mulib_core_objects mulib_extras_objects mu_platform_objects platform_test_eg_objects
 
-TEST_STDDEMO_EG = test_stddemo_app
+TEST_STDDEMO_EG = platform_test_app
 
 
 SRC_MULIB_SUPPORT_DIR = ../../../..
@@ -14,7 +14,7 @@ SRC_MULIB_DIR = $(SRC_MULIB_SUPPORT_DIR)/mulib
 SRC_MULIB_CORE_DIR = $(SRC_MULIB_DIR)/core
 SRC_MULIB_EXTRAS_DIR = $(SRC_MULIB_DIR)/extras
 SRC_MU_PLATFORM_DIR = ../mu_platform
-SRC_TEST_STDDEMO_EG_DIR = $(SRC_MULIB_SUPPORT_DIR)/examples/shared/test_stddemo
+SRC_TEST_STDDEMO_EG_DIR = $(SRC_MULIB_SUPPORT_DIR)/examples/shared/platform_test
 
 SOURCES_MULIB_CORE := $(wildcard $(SRC_MULIB_CORE_DIR)/*.c)
 SOURCES_MULIB_EXTRAS := $(wildcard $(SRC_MULIB_EXTRAS_DIR)/*.c)
@@ -25,7 +25,7 @@ BUILD_DIR := build
 BUILD_MULIB_CORE_DIR := $(BUILD_DIR)/mulib/core
 BUILD_MULIB_EXTRAS_DIR := $(BUILD_DIR)/mulib/extras
 BUILD_MU_PLATFORM_DIR := $(BUILD_DIR)/mu_platform
-BUILD_TEST_STDDEMO_EG_DIR := $(BUILD_DIR)/test_stddemo_eg
+BUILD_TEST_STDDEMO_EG_DIR := $(BUILD_DIR)/platform_test_eg
 
 OBJECTS_MULIB_CORE ?= $(patsubst $(SRC_MULIB_CORE_DIR)/%.c, $(BUILD_MULIB_CORE_DIR)/%.o, $(SOURCES_MULIB_CORE))
 OBJECTS_MULIB_EXTRAS ?= $(patsubst $(SRC_MULIB_EXTRAS_DIR)/%.c, $(BUILD_MULIB_EXTRAS_DIR)/%.o, $(SOURCES_MULIB_EXTRAS))

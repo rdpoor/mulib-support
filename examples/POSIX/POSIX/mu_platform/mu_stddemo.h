@@ -55,7 +55,7 @@ typedef void (*mu_stddemo_set_led_cb)(bool led_state);
 // =============================================================================
 // Functon declarations (public)
  
-void mu_stddemo_init(mu_stddemo_button_cb button_cb);
+void mu_button_io_set_callback(mu_stddemo_button_cb button_cb);
 
 void mu_stddemo_terminal_bell();
 
@@ -71,7 +71,7 @@ void terminal_erase_last_line();
 
 void terminal_reset();
 
-void mu_stddemo_led_set(bool on);
+void mu_led_io_set(bool on);
 
 bool mu_stddemo_button_is_pressed(void);
 

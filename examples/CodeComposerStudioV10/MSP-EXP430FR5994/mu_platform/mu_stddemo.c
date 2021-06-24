@@ -64,7 +64,7 @@ static mu_stddemo_button_cb s_button2_cb;
 // =============================================================================
 // Public code
 
-void mu_stddemo_init(mu_stddemo_button_cb button_cb) {
+void mu_button_io_set_callback(mu_stddemo_button_cb button_cb) {
     init_gpios();
     init_buttons();
 
@@ -76,7 +76,7 @@ void mu_stddemo_init(mu_stddemo_button_cb button_cb) {
 /**
  * @brief Set the demo LED on or off.
  */
-void mu_stddemo_led_set(bool on) {
+void mu_led_io_set(bool on) {
     if (on) {
         P1OUT |= BIT0;
     } else {

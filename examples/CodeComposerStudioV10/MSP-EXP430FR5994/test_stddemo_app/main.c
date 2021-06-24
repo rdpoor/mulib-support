@@ -1,12 +1,12 @@
-#include "test_stddemo.h"
+#include "platform_test.h"
 
 /**
  * main.c
  */
 int main(void)
 {
-    test_stddemo_init();
+    platform_test_init();
     while(1) {
-        test_stddemo_step();
+        platform_test_step();
     }
 }

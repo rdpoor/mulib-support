@@ -29,7 +29,7 @@
 #include "animator.h"
 #include "disk.h"
 #include "fb.h"
-#include "mulib.h"
+#include <mulib.h>
 #include "mu_platform.h"
 #include "pole.h"
 #include <stdint.h>
@@ -104,7 +104,7 @@ static void reset(void);
 
 void tower_init(void) {
   mulib_init();
-  mu_stddemo_init(NULL);
+  mu_button_io_set_callback(NULL);
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");
   // initialize the frame buffer
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);

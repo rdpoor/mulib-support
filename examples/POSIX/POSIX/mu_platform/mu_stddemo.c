@@ -53,7 +53,7 @@ static mu_stddemo_set_led_cb _set_led_cb = false;
 
 // we can connect this button press callback (button_cb) to keypresses in lieu of physical buttons here in POSIX
 
-void mu_stddemo_init(mu_stddemo_button_cb button_cb) {
+void mu_button_io_set_callback(mu_stddemo_button_cb button_cb) {
     s_button_cb = button_cb;
     /* Save the terminal attributes so we can restore them later, in case we change them. */
     tcgetattr (STDIN_FILENO, &saved_attributes);
@@ -90,7 +90,7 @@ void set_led_callback(mu_stddemo_set_led_cb led_cb) {
  * @brief Set the LED (virtual because we're in POSIX)  on or off.  Here in posix we allow for a callback (that can customize other visual indicators) 
  * and fallback to a simple terminal bell/flash 
  */
-void mu_stddemo_led_set(bool on) {
+void mu_led_io_set(bool on) {
     if(_set_led_cb)
         _set_led_cb(on);
     else mu_stddemo_terminal_bell();
