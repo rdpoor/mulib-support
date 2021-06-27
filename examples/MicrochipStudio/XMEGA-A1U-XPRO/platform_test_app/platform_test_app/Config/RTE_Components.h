@@ -39,7 +39,7 @@
  *
  * \acme_license_stop
  *
- * Project: platform_test
+ * Project: platform_test_app
  * Target:  ATxmega128A1U 
  *
  **/

@@ -54,9 +54,14 @@ void mu_button_io_set_callback(mu_button_io_callback_t cb) {
   s_button_cb = cb;
 }
 
+bool mu_button_io_get_button(uint8_t button_id) {
+  (void)button_id;
+  return !USER_BUTTON_get_level();
+}
+
 void mu_button_io_on_button_change(void) {
   if (s_button_cb) {
-    s_button_cb(MU_BUTTON_0, USER_BUTTON_get_level());
+    s_button_cb(MU_BUTTON_0, mu_button_io_get_button(MU_BUTTON_0));
   }
 }
 

@@ -75,6 +75,11 @@ void mu_button_io_init(void);
 void mu_button_io_set_callback(mu_button_io_callback_t cb);
 
 /**
+ * @brief Get the state of the named button.
+ */
+bool mu_button_io_get_button(uint8_t button_id);
+
+/**
  * @brief Called from interrupt level on button change.
  */
 void mu_button_io_on_button_change(void);
