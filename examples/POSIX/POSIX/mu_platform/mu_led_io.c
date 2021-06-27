@@ -26,7 +26,9 @@
 // Includes
 
 #include "mu_led_io.h"
+#include "mu_ansi_term.h"
 
+#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -51,23 +53,21 @@ void mu_led_io_init(void) {
 // Draw a virtual LED at 0,0 on the screen.  Assumes an ANSI compiant terminal.
 void mu_led_io_set(uint8_t led_id, bool on) {
   (void)led_id;
-  uint8_t saved_color;
-  uint8_t led_color;
 
   s_led_state = on;   // track state
 
   // save current cursor position and color
   mu_ansi_term_save_cursor_position();
-  saved_color = mu_ansi_term_get_foreground_color();
+  //mu_ansi_term_get_terminal_attributes(&term_attr);
 
   // draw a green dot at [0,0]
-  led_color = on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_GREEN;
   mu_ansi_term_set_cursor_position(0, 0);
-  mu_ansi_term_set_foreground_color(led_color);
-  putchar('•');
+  mu_ansi_term_set_foreground_color(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_GREEN);
+  //putchar('•');
+  printf("•");
 
   // restore color and cursor position
-  mu_ansi_term_set_foreground_color(saved_color);
+  mu_ansi_term_reset();
   mu_ansi_term_restore_cursor_position();
 }
 

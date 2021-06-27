@@ -1,7 +1,7 @@
 #include "tower.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "mu_stddemo.h"
+#include <mulib.h>
 
 /**
  * main.c
@@ -14,7 +14,7 @@ int main(void)
     mu_set_terminal_attributes(false, false, false); // lets us read individual keypresses from the terminal, without hanging
     while(1) {
         tower_step();
-        ch = mu_get_key_press(); // because of our call to mu_set_terminal_attributes() above, this wont hang -- will return the next character on stdin or 0 if there's nothing waiting
+        ch = mu_ansi_term_get_key_press(); // because of our call to mu_set_terminal_attributes() above, this wont hang -- will return the next character on stdin or 0 if there's nothing waiting
         switch(ch) {
             case 'q':
                 exit(0);

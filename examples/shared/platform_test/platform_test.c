@@ -9,9 +9,10 @@
 // Includes
 
 #include "platform_test.h"
-#include "mu_platform.h"
+#include <mulib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "mu_platform.h"
 
 // =============================================================================
 // Local types and definitions
@@ -21,8 +22,9 @@
 // =============================================================================
 // Local (forward) declarations
 
-static void button_cb(bool button_is_pressed);
-
+static void button_cb(unsigned char  button_id, bool button_is_pressed);
+void set_led(int on);
+int get_led(void);
 
 // =============================================================================
 // Local storage
@@ -38,6 +40,8 @@ void platform_test_init(void) {
 
   mu_platform_init();
   mu_button_io_set_callback(button_cb);
+
+  mu_ansi_term_clear_screen();
 
   printf("\n\rmulib platform_test v%s.\n", VERSION);
   s_button_was_pressed = false;
@@ -76,13 +80,17 @@ void platform_test_step(void) {
 // =============================================================================
 // Local (private) code
 
-static void button_cb(bool button_is_pressed) {
+static void button_cb(unsigned char button_id, bool button_is_pressed) {
   (void)button_is_pressed;
   s_button_was_pressed = true;
 }
 
 void set_led(int on) {
   s_led_state = on;
-  mu_led_io_set(on);
+  mu_led_io_set(MU_LED_0,on);
 }
-int get_led(void) { return s_led_state; }
+
+int get_led(void) { 
+  return s_led_state; 
+}
+

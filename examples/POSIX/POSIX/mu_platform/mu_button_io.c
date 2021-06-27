@@ -53,5 +53,17 @@ void mu_button_io_set_callback(mu_button_io_callback_t cb) {
   s_button_io_cb = cb;
 }
 
+void mu_button_io_on_button_press(unsigned char button_id) {
+  if (s_button_io_cb != NULL) {
+    s_button_io_cb(button_id, true);
+  }
+}
+
+// void mu_button_io_on_button_change(void) {
+//   if (s_button_io_cb) {
+//     s_button_io_cb(MU_BUTTON_0, USER_BUTTON_get_level());
+//   }
+// }
+
 // =============================================================================
 // Local (static) code
