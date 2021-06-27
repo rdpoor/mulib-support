@@ -42,28 +42,16 @@ extern "C";
 #define RTC_FREQUENCY 1024L
 #define MS_PER_SECOND 1000L
 
-#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)((((ms)*MS_PER_SECOND))/RTC_FREQUENCY))
+/**
+ * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
+ * specific mu_time.h
+ */
+typedef uint32_t mu_time_t;
+typedef int32_t mu_duration_t;
+typedef int32_t mu_duration_ms_t;
 
 // =============================================================================
 // declarations
-
-/**
- * @brief Initialize the time system.  Must be called before any other time
- * functions are called.
- */
-void mu_time_init(void);
-
-/**
- * @brief Get the current system time.
- *
- * @return A value representing the current time.
- */
-mu_time_t mu_time_now(void);
-
-/**
- * @brief Called from interrupt level approximately once every millisecond
- */
-void mu_time_on_rtc_tick(void);
 
 /**
  * @brief Add a time and a duration.

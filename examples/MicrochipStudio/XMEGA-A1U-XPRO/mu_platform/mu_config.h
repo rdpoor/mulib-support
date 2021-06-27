@@ -57,25 +57,12 @@ extern "C" {
 // #define MU_TASK_PROFILING
 
 /**
- * Uncomment if the platform supports putting the processor into low-power mode.
- */
-// #define MU_CAN_SLEEP
-
-/**
  * If your port supports floating point operations, choose one of the following
  * either by uncommenting one of the following lines, or by setting the symbol
  * in the compiler.
  */
 // #define MU_FLOAT float
 // #define MU_FLOAT double
-
-/**
- * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
- * specific mu_time.h
- */
-typedef uint32_t mu_time_t;
-typedef int32_t mu_duration_t;
-typedef int32_t mu_duration_ms_t;
 
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.

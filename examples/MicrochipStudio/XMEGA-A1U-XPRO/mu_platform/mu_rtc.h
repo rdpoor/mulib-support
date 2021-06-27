@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +22,53 @@
  * SOFTWARE.
  */
 
+#ifndef _MU_RTC_H_
+#define _MU_RTC_H_
+
+#ifdef __cplusplus
+extern "C";
+#endif
+
 // =============================================================================
-// Includes
+// includes
 
-#include "mu_button_io.h"
-
+#include "mu_time.h"
 #include <stdint.h>
 #include <stdbool.h>
-#include <stddef.h>
 
 // =============================================================================
-// Local types and definitions
+// types and definitions
+
+#define RTC_FREQUENCY 1024L
+#define MS_PER_SECOND 1000L
+
+#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)((((ms)*MS_PER_SECOND))/RTC_FREQUENCY))
+
+typedef void (*mu_rtc_callback_t)(void);
 
 // =============================================================================
-// Local storage
+// declarations
 
-static mu_button_io_callback_t s_button_io_cb;
+/**
+ * @brief Initialize the Real Time Clock.  Must be called before any other rtc
+ * functions are called.
+ */
+void mu_rtc_init(void);
 
-// =============================================================================
-// Local (forward) declarations
+/**
+ * @brief Get the current time.
+ */
+mu_time_t mu_rtc_now(void);
 
-// =============================================================================
-// Public code
+/**
+ * @brief Set the function to be called when the RTC ticks.
+ *
+ * Pass NULL for the CB to disable RTC alarms.
+ */
+void mu_rtc_set_callback(mu_rtc_callback_t cb);
 
-void mu_button_io_init(void) {
-  s_button_io_cb = NULL;
+#ifdef __cplusplus
 }
+#endif
 
-void mu_button_io_set_callback(mu_button_io_callback_t cb) {
-  s_button_io_cb = cb;
-}
-
-// =============================================================================
-// Local (static) code
+#endif // #ifndef _MU_RTC_H_

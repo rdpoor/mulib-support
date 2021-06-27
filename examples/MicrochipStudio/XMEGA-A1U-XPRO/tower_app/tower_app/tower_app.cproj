@@ -181,7 +181,7 @@
             <Value>../utils/assembler</Value>
             <Value>../</Value>
             <Value>../../../../../../mulib</Value>
-            <Value>../../../mu_platform</Value>
+            <Value>../../..</Value>
             <Value>../../../../../shared</Value>
             <Value>../Config</Value>
             <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
@@ -236,11 +236,18 @@
     <Folder Include="mu_platform" />
     <Folder Include="mulib" />
     <Folder Include="src\" />
-    <Folder Include="tower_eg" />
     <Folder Include="utils\" />
     <Folder Include="utils\assembler\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\..\mulib\core\mu_array.c">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_array.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\core\mu_array.h">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_array.h</Link>
+    </Compile>
     <Compile Include="..\..\..\..\..\mulib\core\mu_bvec.c">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_bvec.c</Link>
@@ -377,6 +384,22 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_version.h</Link>
     </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_ansi_term.c">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_ansi_term.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_ansi_term.h">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_ansi_term.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_random.c">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_random.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_random.h">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_random.h</Link>
+    </Compile>
     <Compile Include="..\..\..\..\..\mulib\extras\mu_rfc_1123.c">
       <SubType>compile</SubType>
       <Link>mulib\extras\mu_rfc_1123.c</Link>
@@ -393,54 +416,6 @@
       <SubType>compile</SubType>
       <Link>mulib\mulib.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\animator.c">
-      <SubType>compile</SubType>
-      <Link>tower_eg\animator.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\animator.h">
-      <SubType>compile</SubType>
-      <Link>tower_eg\animator.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\ansi_term.c">
-      <SubType>compile</SubType>
-      <Link>tower_eg\ansi_term.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\ansi_term.h">
-      <SubType>compile</SubType>
-      <Link>tower_eg\ansi_term.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\disk.c">
-      <SubType>compile</SubType>
-      <Link>tower_eg\disk.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\disk.h">
-      <SubType>compile</SubType>
-      <Link>tower_eg\disk.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\fb.c">
-      <SubType>compile</SubType>
-      <Link>tower_eg\fb.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\fb.h">
-      <SubType>compile</SubType>
-      <Link>tower_eg\fb.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\pole.c">
-      <SubType>compile</SubType>
-      <Link>tower_eg\pole.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\pole.h">
-      <SubType>compile</SubType>
-      <Link>tower_eg\pole.h</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\tower.c">
-      <SubType>compile</SubType>
-      <Link>tower_eg\tower.c</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\shared\tower_eg\tower.h">
-      <SubType>compile</SubType>
-      <Link>tower_eg\tower.h</Link>
-    </Compile>
     <Compile Include="..\..\mu_platform\mu_config.h">
       <SubType>compile</SubType>
       <Link>mu_platform\mu_config.h</Link>
@@ -452,14 +427,6 @@
     <Compile Include="..\..\mu_platform\mu_platform.h">
       <SubType>compile</SubType>
       <Link>mu_platform\mu_platform.h</Link>
-    </Compile>
-    <Compile Include="..\..\mu_platform\mu_stddemo.c">
-      <SubType>compile</SubType>
-      <Link>mu_platform\mu_stddemo.c</Link>
-    </Compile>
-    <Compile Include="..\..\mu_platform\mu_stddemo.h">
-      <SubType>compile</SubType>
-      <Link>mu_platform\mu_stddemo.h</Link>
     </Compile>
     <Compile Include="..\..\mu_platform\mu_time.c">
       <SubType>compile</SubType>
@@ -579,18 +546,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\mulib\.gitignore">
-      <SubType>compile</SubType>
-      <Link>mulib\.gitignore</Link>
-    </None>
-    <None Include="..\..\..\..\..\mulib\LICENSE">
-      <SubType>compile</SubType>
-      <Link>mulib\LICENSE</Link>
-    </None>
-    <None Include="..\..\..\..\..\mulib\README.md">
-      <SubType>compile</SubType>
-      <Link>mulib\README.md</Link>
-    </None>
     <None Include="doxygen\clk.dox">
       <SubType>compile</SubType>
     </None>

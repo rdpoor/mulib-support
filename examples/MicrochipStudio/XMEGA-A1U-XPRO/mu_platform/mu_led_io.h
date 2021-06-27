@@ -22,36 +22,54 @@
  * SOFTWARE.
  */
 
+/**
+ * @file mu_led_io.h
+ *
+ * @brief Control a platform-specific LED.
+ *
+ * mu_led_io defines a platform-specific LED.  This is commonly required by
+ * example applications, but could be used in production code if needed.
+ */
+
+#ifndef _MU_LED_IO_H_
+#define _MU_LED_IO_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
-// Includes
+// includes
 
-#include "mu_button_io.h"
-
-#include <stdint.h>
 #include <stdbool.h>
-#include <stddef.h>
+#include <stdint.h>
 
 // =============================================================================
-// Local types and definitions
+// types and definitions
+
+// The canonical LED used in example code.
+#define MU_LED_0   0
 
 // =============================================================================
-// Local storage
+// declarations
 
-static mu_button_io_callback_t s_button_io_cb;
+/**
+ * @brief Initialize the LED.
+ */
+void mu_led_io_init(void);
 
-// =============================================================================
-// Local (forward) declarations
+/**
+ * @brief Turn on or off an LED
+ */
+void mu_led_io_set(uint8_t led_id, bool on);
 
-// =============================================================================
-// Public code
+/**
+ * @brief Get the state of an LED.
+ */
+bool mu_led_io_get(uint8_t led_id);
 
-void mu_button_io_init(void) {
-  s_button_io_cb = NULL;
+#ifdef __cplusplus
 }
+#endif
 
-void mu_button_io_set_callback(mu_button_io_callback_t cb) {
-  s_button_io_cb = cb;
-}
-
-// =============================================================================
-// Local (static) code
+#endif /* #ifndef __TEMPLATE_H_ */
