@@ -35,8 +35,8 @@
 
 #include <driver_init.h>
 #include <compiler.h>
-#include "mu_platform/mu_rtc.h"
-#include "mu_platform/mu_button_io.h"
+#include "mu_rtc.h"
+#include "mu_button_io.h"
 
 ISR(TCC0_OVF_vect)
 {
