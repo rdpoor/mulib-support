@@ -67,6 +67,11 @@ mu_time_t mu_rtc_now(void);
  */
 void mu_rtc_set_callback(mu_rtc_callback_t cb);
 
+/**
+ * @brief Called from interrupt level RTC_FREQUENCY times per second.
+ */
+void mu_rtc_on_rtc_tick(void);
+
 #ifdef __cplusplus
 }
 #endif

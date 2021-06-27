@@ -235,6 +235,7 @@
     <Folder Include="mulib\core" />
     <Folder Include="mu_platform" />
     <Folder Include="mulib" />
+    <Folder Include="tower_eg" />
     <Folder Include="src\" />
     <Folder Include="utils\" />
     <Folder Include="utils\assembler\" />
@@ -416,9 +417,65 @@
       <SubType>compile</SubType>
       <Link>mulib\mulib.h</Link>
     </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\animator.c">
+      <SubType>compile</SubType>
+      <Link>tower_eg\animator.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\animator.h">
+      <SubType>compile</SubType>
+      <Link>tower_eg\animator.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\disk.c">
+      <SubType>compile</SubType>
+      <Link>tower_eg\disk.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\disk.h">
+      <SubType>compile</SubType>
+      <Link>tower_eg\disk.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\fb.c">
+      <SubType>compile</SubType>
+      <Link>tower_eg\fb.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\fb.h">
+      <SubType>compile</SubType>
+      <Link>tower_eg\fb.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\pole.c">
+      <SubType>compile</SubType>
+      <Link>tower_eg\pole.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\pole.h">
+      <SubType>compile</SubType>
+      <Link>tower_eg\pole.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\tower.c">
+      <SubType>compile</SubType>
+      <Link>tower_eg\tower.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\shared\tower_eg\tower.h">
+      <SubType>compile</SubType>
+      <Link>tower_eg\tower.h</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_button_io.c">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_button_io.c</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_button_io.h">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_button_io.h</Link>
+    </Compile>
     <Compile Include="..\..\mu_platform\mu_config.h">
       <SubType>compile</SubType>
       <Link>mu_platform\mu_config.h</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_led_io.c">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_led_io.c</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_led_io.h">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_led_io.h</Link>
     </Compile>
     <Compile Include="..\..\mu_platform\mu_platform.c">
       <SubType>compile</SubType>
@@ -427,6 +484,14 @@
     <Compile Include="..\..\mu_platform\mu_platform.h">
       <SubType>compile</SubType>
       <Link>mu_platform\mu_platform.h</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_rtc.c">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_rtc.c</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_rtc.h">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_rtc.h</Link>
     </Compile>
     <Compile Include="..\..\mu_platform\mu_time.c">
       <SubType>compile</SubType>

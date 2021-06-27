@@ -26,7 +26,7 @@
 // Includes
 
 #include "mu_led_io.h"
-
+#include "atmel_start.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -36,8 +36,6 @@
 // =============================================================================
 // Local storage
 
-bool s_led_state;
-
 // =============================================================================
 // Local (forward) declarations
 
@@ -45,36 +43,17 @@ bool s_led_state;
 // Public code
 
 void mu_led_io_init(void) {
-  mu_led_io_set(0, false);
+  mu_led_io_set(MU_LED_0, false);
 }
 
-// Draw a virtual LED at 0,0 on the screen.  Assumes an ANSI compiant terminal.
 void mu_led_io_set(uint8_t led_id, bool on) {
   (void)led_id;
-  uint8_t saved_row, saved_col;
-  uint8_t saved_color;
-  uint8_t led_color;
-
-  s_led_state = on;   // track state
-
-  // save current cursor position and color
-  mu_ansi_term_get_cursor_position(&saved_row, &saved_col);
-  saved_color = mu_ansi_term_get_foreground_color();
-
-  // draw a green dot at [0,0]
-  led_color = on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_GREEN;
-  mu_ansi_term_set_cursor_position(0, 0);
-  mu_ansi_term_set_foreground_color(led_color);
-  putchar('•');
-
-  // restore color and cursor position
-  mu_ansi_term_set_foreground_color(saved_color);
-  mu_ansi_term_set_cursor_position(saved_row, saved_col);
+  USER_LED_set_level(on);
 }
 
 bool mu_led_io_get(uint8_t led_id) {
   (void)led_id;
-  return s_led_state;
+  return USER_LED_get_level();
 }
 
 // =============================================================================

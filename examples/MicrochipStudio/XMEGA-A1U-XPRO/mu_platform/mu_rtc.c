@@ -1,10 +1,27 @@
 /**
  */
 
+ // =============================================================================
+ // includes
+
+#include "mu_rtc.h"
 #include "mu_time.h"
+
+// =============================================================================
+// local types and definitions
+
+// =============================================================================
+// local (forward) declarations
+
+// =============================================================================
+// local storage
 
 static volatile mu_time_t s_rtc_ticks;
 static mu_time_t s_safe_ticks;
+static mu_rtc_callback_t s_rtc_cb;
+
+// =============================================================================
+// public code
 
 /**
  * @brief Initialize the Real Time Clock.  Must be called before any other rtc
@@ -36,15 +53,15 @@ void mu_rtc_set_callback(mu_rtc_callback_t cb) {
   s_rtc_cb = cb;
 }
 
-// =============================================================================
-// local (static) code
-
 /**
  * @brief Called from interrupt level RTC_FREQUENCY times per second.
  */
-static void on_rtc_tick(void) {
+void mu_rtc_on_rtc_tick(void) {
   s_rtc_ticks += 1;
   if (s_rtc_cb) {
     s_rtc_cb();
   }
 }
+
+// =============================================================================
+// local (static) code

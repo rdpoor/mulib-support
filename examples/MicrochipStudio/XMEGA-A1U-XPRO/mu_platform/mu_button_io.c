@@ -27,6 +27,7 @@
 
 #include "mu_button_io.h"
 
+#include "atmel_start.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -37,7 +38,7 @@
 // =============================================================================
 // Local storage
 
-static mu_button_io_callback_t s_button_io_cb;
+static mu_button_io_callback_t s_button_cb;
 
 // =============================================================================
 // Local (forward) declarations
@@ -46,11 +47,17 @@ static mu_button_io_callback_t s_button_io_cb;
 // Public code
 
 void mu_button_io_init(void) {
-  s_button_io_cb = NULL;
+  s_button_cb = NULL;
 }
 
 void mu_button_io_set_callback(mu_button_io_callback_t cb) {
-  s_button_io_cb = cb;
+  s_button_cb = cb;
+}
+
+void mu_button_io_on_button_change(void) {
+  if (s_button_cb) {
+    s_button_cb(MU_BUTTON_0, USER_BUTTON_get_level());
+  }
 }
 
 // =============================================================================

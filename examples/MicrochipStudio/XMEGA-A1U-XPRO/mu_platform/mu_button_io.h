@@ -74,6 +74,11 @@ void mu_button_io_init(void);
  */
 void mu_button_io_set_callback(mu_button_io_callback_t cb);
 
+/**
+ * @brief Called from interrupt level on button change.
+ */
+void mu_button_io_on_button_change(void);
+
 #ifdef __cplusplus
 }
 #endif
