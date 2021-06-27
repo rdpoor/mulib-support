@@ -182,7 +182,7 @@
       <Value>../</Value>
       <Value>../../../../../../mulib</Value>
       <Value>../../../mu_platform</Value>
-      <Value>../../../../../shared</Value>
+      <Value>../../../../../shared/tower_eg</Value>
       <Value>../Config</Value>
       <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
     </ListValues>

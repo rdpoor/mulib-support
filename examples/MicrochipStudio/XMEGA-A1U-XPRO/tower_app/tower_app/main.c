@@ -1,5 +1,5 @@
 #include <atmel_start.h>
-#include "tower_eg/tower.h"
+#include "tower.h"
 
 int main(void)
 {
