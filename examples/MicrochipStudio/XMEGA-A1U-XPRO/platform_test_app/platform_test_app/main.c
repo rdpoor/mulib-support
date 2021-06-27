@@ -1,6 +1,5 @@
 #include <atmel_start.h>
-#include "platform_test/platform_test.h"
-#include <stddef.h>
+#include "platform_test.h"
 
 int main(void)
 {

@@ -12,18 +12,18 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>platform_test</AssemblyName>
-    <Name>platform_test</Name>
-    <RootNamespace>platform_test</RootNamespace>
+    <AssemblyName>platform_test_app</AssemblyName>
+    <Name>platform_test_app</Name>
+    <RootNamespace>platform_test_app</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress />
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue />
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <ResetRule>0</ResetRule>
     <eraseonlaunchrule>0</eraseonlaunchrule>
@@ -90,55 +90,71 @@
         <NonsecureFilesInfo />
       </AcmeProjectConfig>
     </AcmeProjectConfig>
+    <avrtool>com.atmel.avrdbg.tool.edbg</avrtool>
+    <avrtoolserialnumber>ATML1802021800002215</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E974C</avrdeviceexpectedsignature>
+    <avrtoolinterface>PDI</avrtoolinterface>
+    <com_atmel_avrdbg_tool_edbg>
+      <ToolOptions>
+        <InterfaceProperties>
+          <PdiClock>4000000</PdiClock>
+        </InterfaceProperties>
+        <InterfaceName>PDI</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.edbg</ToolType>
+      <ToolNumber>ATML1802021800002215</ToolNumber>
+      <ToolName>EDBG</ToolName>
+    </com_atmel_avrdbg_tool_edbg>
+    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
       <AvrGcc>
-  <avrgcc.common.Device>-mmcu=atxmega128a1u -B "%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\gcc\dev\atxmega128a1u"</avrgcc.common.Device>
-  <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
-  <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
-  <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
-  <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
-  <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
-  <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-  <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-  <avrgcc.compiler.symbols.DefSymbols>
-    <ListValues>
-      <Value>NDEBUG</Value>
-    </ListValues>
-  </avrgcc.compiler.symbols.DefSymbols>
-  <avrgcc.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>../examples/include</Value>
-      <Value>../include</Value>
-      <Value>../utils</Value>
-      <Value>../utils/assembler</Value>
-      <Value>../</Value>
-      <Value>../Config</Value>
-      <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
-    </ListValues>
-  </avrgcc.compiler.directories.IncludePaths>
-  <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
-  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
-  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-  <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-  <avrgcc.linker.libraries.Libraries>
-    <ListValues>
-      <Value>libm</Value>
-    </ListValues>
-  </avrgcc.linker.libraries.Libraries>
-  <avrgcc.assembler.general.IncludePaths>
-    <ListValues>
-      <Value>../Config</Value>
-      <Value>../examples/include</Value>
-      <Value>../include</Value>
-      <Value>../utils</Value>
-      <Value>../utils/assembler</Value>
-      <Value>../</Value>
-      <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
-    </ListValues>
-  </avrgcc.assembler.general.IncludePaths>
-</AvrGcc>
+        <avrgcc.common.Device>-mmcu=atxmega128a1u -B "%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\gcc\dev\atxmega128a1u"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>../examples/include</Value>
+            <Value>../include</Value>
+            <Value>../utils</Value>
+            <Value>../utils/assembler</Value>
+            <Value>../</Value>
+            <Value>../Config</Value>
+            <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>../Config</Value>
+            <Value>../examples/include</Value>
+            <Value>../include</Value>
+            <Value>../utils</Value>
+            <Value>../utils/assembler</Value>
+            <Value>../</Value>
+            <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+      </AvrGcc>
     </ToolchainSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -166,7 +182,7 @@
       <Value>../</Value>
       <Value>../../../../../../mulib</Value>
       <Value>../../../mu_platform</Value>
-      <Value>../../../../../shared</Value>
+      <Value>../../../../../shared/platform_test_eg</Value>
       <Value>../Config</Value>
       <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
     </ListValues>
@@ -215,23 +231,31 @@
     <Folder Include="modules\timer\doc\" />
     <Folder Include="modules\usart\" />
     <Folder Include="modules\usart\doc\" />
-    <Folder Include="mulib\core" />
     <Folder Include="mulib\extras" />
+    <Folder Include="mulib\core" />
     <Folder Include="mu_platform" />
     <Folder Include="mulib" />
+    <Folder Include="platform_test_eg" />
     <Folder Include="src\" />
-    <Folder Include="platform_test" />
     <Folder Include="utils\" />
     <Folder Include="utils\assembler\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\mulib\core\mu_bitvec.c">
+    <Compile Include="..\..\..\..\..\mulib\core\mu_array.c">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_bitvec.c</Link>
+      <Link>mulib\core\mu_array.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\mulib\core\mu_bitvec.h">
+    <Compile Include="..\..\..\..\..\mulib\core\mu_array.h">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_bitvec.h</Link>
+      <Link>mulib\core\mu_array.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\core\mu_bvec.c">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_bvec.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\core\mu_bvec.h">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_bvec.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\..\mulib\core\mu_cirq.c">
       <SubType>compile</SubType>
@@ -240,6 +264,14 @@
     <Compile Include="..\..\..\..\..\mulib\core\mu_cirq.h">
       <SubType>compile</SubType>
       <Link>mulib\core\mu_cirq.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\core\mu_dlist.c">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_dlist.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\core\mu_dlist.h">
+      <SubType>compile</SubType>
+      <Link>mulib\core\mu_dlist.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\..\mulib\core\mu_fsm.c">
       <SubType>compile</SubType>
@@ -289,13 +321,13 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_sched.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\mulib\core\mu_spscq.c">
+    <Compile Include="..\..\..\..\..\mulib\core\mu_spsc.c">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_spscq.c</Link>
+      <Link>mulib\core\mu_spsc.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\mulib\core\mu_spscq.h">
+    <Compile Include="..\..\..\..\..\mulib\core\mu_spsc.h">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_spscq.h</Link>
+      <Link>mulib\core\mu_spsc.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\..\mulib\core\mu_str.c">
       <SubType>compile</SubType>
@@ -353,6 +385,22 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_version.h</Link>
     </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_ansi_term.c">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_ansi_term.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_ansi_term.h">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_ansi_term.h</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_random.c">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_random.c</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\mulib\extras\mu_random.h">
+      <SubType>compile</SubType>
+      <Link>mulib\extras\mu_random.h</Link>
+    </Compile>
     <Compile Include="..\..\..\..\..\mulib\extras\mu_rfc_1123.c">
       <SubType>compile</SubType>
       <Link>mulib\extras\mu_rfc_1123.c</Link>
@@ -361,21 +409,41 @@
       <SubType>compile</SubType>
       <Link>mulib\extras\mu_rfc_1123.h</Link>
     </Compile>
+    <Compile Include="..\..\..\..\..\mulib\mulib.c">
+      <SubType>compile</SubType>
+      <Link>mulib\mulib.c</Link>
+    </Compile>
     <Compile Include="..\..\..\..\..\mulib\mulib.h">
       <SubType>compile</SubType>
       <Link>mulib\mulib.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\shared\platform_test\platform_test.c">
+    <Compile Include="..\..\..\..\shared\platform_test_eg\platform_test.c">
       <SubType>compile</SubType>
-      <Link>platform_test\platform_test.c</Link>
+      <Link>platform_test_eg\platform_test.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\shared\platform_test\platform_test.h">
+    <Compile Include="..\..\..\..\shared\platform_test_eg\platform_test.h">
       <SubType>compile</SubType>
-      <Link>platform_test\platform_test.h</Link>
+      <Link>platform_test_eg\platform_test.h</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_button_io.c">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_button_io.c</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_button_io.h">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_button_io.h</Link>
     </Compile>
     <Compile Include="..\..\mu_platform\mu_config.h">
       <SubType>compile</SubType>
       <Link>mu_platform\mu_config.h</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_led_io.c">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_led_io.c</Link>
+    </Compile>
+    <Compile Include="..\..\mu_platform\mu_led_io.h">
+      <SubType>compile</SubType>
+      <Link>mu_platform\mu_led_io.h</Link>
     </Compile>
     <Compile Include="..\..\mu_platform\mu_platform.c">
       <SubType>compile</SubType>
@@ -385,13 +453,13 @@
       <SubType>compile</SubType>
       <Link>mu_platform\mu_platform.h</Link>
     </Compile>
-    <Compile Include="..\..\mu_platform\mu_stddemo.c">
+    <Compile Include="..\..\mu_platform\mu_rtc.c">
       <SubType>compile</SubType>
-      <Link>mu_platform\mu_stddemo.c</Link>
+      <Link>mu_platform\mu_rtc.c</Link>
     </Compile>
-    <Compile Include="..\..\mu_platform\mu_stddemo.h">
+    <Compile Include="..\..\mu_platform\mu_rtc.h">
       <SubType>compile</SubType>
-      <Link>mu_platform\mu_stddemo.h</Link>
+      <Link>mu_platform\mu_rtc.h</Link>
     </Compile>
     <Compile Include="..\..\mu_platform\mu_time.c">
       <SubType>compile</SubType>
@@ -511,18 +579,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\mulib\.gitignore">
-      <SubType>compile</SubType>
-      <Link>mulib\.gitignore</Link>
-    </None>
-    <None Include="..\..\..\..\..\mulib\LICENSE">
-      <SubType>compile</SubType>
-      <Link>mulib\LICENSE</Link>
-    </None>
-    <None Include="..\..\..\..\..\mulib\README.md">
-      <SubType>compile</SubType>
-      <Link>mulib\README.md</Link>
-    </None>
     <None Include="doxygen\clk.dox">
       <SubType>compile</SubType>
     </None>

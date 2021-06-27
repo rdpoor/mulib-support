@@ -48,12 +48,12 @@ void mu_led_io_init(void) {
 
 void mu_led_io_set(uint8_t led_id, bool on) {
   (void)led_id;
-  USER_LED_set_level(on);
+  USER_LED_set_level(!on);       // low true
 }
 
 bool mu_led_io_get(uint8_t led_id) {
   (void)led_id;
-  return USER_LED_get_level();
+  return !USER_LED_get_level();  // Low true
 }
 
 // =============================================================================
