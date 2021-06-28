@@ -4,12 +4,14 @@
 .PHONY: all clean
 
 MULIB_DIR = ../../mulib
-MULIB_PLATFORM_DIR = ../platform
+#MULIB_PLATFORM_DIR = ../platform
+MULIB_PLATFORM_DIR = ../../examples/POSIX/POSIX/mu_platform/
 
 MULIB_TEST_DIR = ../test
 MULIB_TEST_CORE_DIR = $(MULIB_TEST_DIR)/core
 MULIB_TEST_EXTRAS_DIR = $(MULIB_TEST_DIR)/extras
-MULIB_TEST_PLATFORM_DIR = $(MULIB_TEST_DIR)/platform
+#MULIB_TEST_PLATFORM_DIR = $(MULIB_TEST_DIR)/platform
+MULIB_TEST_PLATFORM_DIR = ../../examples/POSIX/POSIX/mu_platform/
 
 # NB: We allow test object files to co-mingle with mulib object files in the
 # same directories.
@@ -42,9 +44,10 @@ MULIB_TEST_OBJECTS := $(patsubst $(MULIB_TEST_DIR)/%.c, $(BUILD_DIR)/%.o, $(MULI
 
 CFLAGS = -Wall -Werror -g -DMU_LOG_ENABLED
 
-IFLAGS = -I$(MULIB_TEST_DIR) -I $(MULIB_DIR) -I $(MULIB_PLATFORM_DIR)
+IFLAGS = -I$(MULIB_TEST_DIR) -I $(MULIB_DIR) -I $(MULIB_PLATFORM_DIR) -I $(MULIB_EXTRAS_DIR)
 
 all : $(MULIB_TEST_OBJECTS) $(MULIB_TEST_CORE_OBJECTS) $(MULIB_TEST_EXTRAS_OBJECTS) $(MULIB_TEST_PLATFORM_OBJECTS)
+
 
 clean :
 	rm -rf $(BUILD_DIR)

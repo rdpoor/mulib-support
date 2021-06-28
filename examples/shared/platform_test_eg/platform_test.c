@@ -20,6 +20,7 @@
 // Local types and definitions
 
 #define VERSION "1.0"
+#define DEMO_INTERVAL_SECS (5.0)
 
 // =============================================================================
 // Local (forward) declarations
@@ -37,6 +38,7 @@ volatile static bool s_button_was_pressed;
 // Public code
 
 void platform_test_init(void) {
+
   mu_time_t until;
 
   mulib_init();
@@ -51,23 +53,25 @@ void platform_test_init(void) {
   s_button_was_pressed = false;
 
   mu_led_io_set(MU_LED_0, true);
-  printf("LED should be on for 5 seconds:\n");
-  until = mu_time_offset(mu_rtc_now(), MU_TIME_MS_TO_DURATION(5000));
+  printf("LED should be on for %2.2f seconds.\n", DEMO_INTERVAL_SECS);
+  until = mu_time_offset(mu_rtc_now(), MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
   while (mu_time_precedes(mu_rtc_now(), until)) {
 	  asm(" nop");
 	  // buzz...
   }
 
   mu_led_io_set(MU_LED_0, false);
-  printf("LED should be off for 5 seconds:\n");
-  until = mu_time_offset(mu_rtc_now(), MU_TIME_MS_TO_DURATION(5000));
+  printf("LED should be off for %2.2f seconds.\n", DEMO_INTERVAL_SECS);
+  until = mu_time_offset(mu_rtc_now(), MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
   while (mu_time_precedes(mu_rtc_now(), until)) {
       asm(" nop");
 	  // buzz...
   }
-
+  mu_ansi_term_clear_screen();
   mu_led_io_set(MU_LED_0, true);
-  printf("Press button to toggle LED:           \n");
+  printf("LED is %s\n", mu_led_io_get(MU_LED_0) ? "on" : "off");
+  printf("Press button or key to toggle LED.");
+  printf("\n'q' or CTRL-C to quit.");
 
   mu_begin_polling_for_keypress();
   atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
@@ -80,7 +84,8 @@ void platform_test_step(void) {
   if(kp || s_button_was_pressed == true) {
     s_button_was_pressed = false;
     mu_led_io_set(MU_LED_0, !mu_led_io_get(MU_LED_0));
-    printf("LED is %s                               \n", mu_led_io_get(MU_LED_0) ? "on" : "off");
+    printf("LED is %s", mu_led_io_get(MU_LED_0) ? "on" : "off");
+    mu_ansi_term_clear_to_end_of_line();
   } else {
     asm(" nop");
   }

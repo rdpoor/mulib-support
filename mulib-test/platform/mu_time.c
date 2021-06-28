@@ -13,6 +13,7 @@
 
 #include "mu_config.h"     // must come first
 #include "mu_time.h"       // included from mulib/src/platform/
+#include "mu_rtc.h"       // included from mulib/src/platform/
 #include "time.h"          // posix time functions
 
 /**
@@ -158,7 +159,7 @@ int main(void) {
   printf("Starting mu_time unit tests...");
 
   mu_time_init();
-  t1 = mu_time_now();
+  t1 = mu_rtc_now();
   t2 = mu_time_offset(t1, 1);
   assert(mu_time_difference(t2, t1) == 1);
 

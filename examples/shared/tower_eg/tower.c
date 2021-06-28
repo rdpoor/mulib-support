@@ -35,6 +35,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "mu_platform.h"
 
 // =============================================================================
@@ -110,6 +111,7 @@ void tower_init(void) {
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");
   // initialize the frame buffer
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
+  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
 
   // set up tower and disk positions
   fb_erase();

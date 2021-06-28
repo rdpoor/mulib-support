@@ -49,7 +49,7 @@ void mu_time_test() {
   mu_duration_t dt1;
   mu_duration_ms_t dm1;
 
-  t1 = mu_time_now();   // an arbitrary time
+  t1 = mu_rtc_now();   // an arbitrary time
   dm1 = mu_time_ms_to_duration(1000);
   t2 = mu_time_offset(t1, dm1);
 
@@ -70,7 +70,7 @@ void mu_time_test() {
 #if (MU_VM_HAS_FLOAT)
   mu_time_s_dt ds1;
 
-  t1 = mu_time_now();   // an arbitrary time
+  t1 = mu_rtc_now();   // an arbitrary time
   ds1 = mu_time_s_to_duration(1.0);
   t2 = mu_time_offset(t1, dm1);
 

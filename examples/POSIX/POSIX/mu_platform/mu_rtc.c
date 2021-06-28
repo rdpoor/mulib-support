@@ -6,6 +6,7 @@
 
 #include "mu_rtc.h"
 #include "mu_time.h"
+#include "time.h"          // posix time functions
 
 // =============================================================================
 // local types and definitions
@@ -35,7 +36,9 @@ void mu_rtc_init(void) {
  * @brief Get the current time.
  */
 mu_time_t mu_rtc_now(void) {
-  return mu_time_now();
+  struct timespec now;
+  clock_gettime(CLOCK_REALTIME, &now);
+  return (now.tv_sec * NANOSECS_PER_S + now.tv_nsec) / NANOSECS_PER_MS;
 }
 
 /**

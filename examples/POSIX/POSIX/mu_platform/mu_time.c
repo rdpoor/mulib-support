@@ -13,7 +13,7 @@
 
 #include "mu_config.h"     // must come first
 #include "mu_time.h"       // included from mulib/src/platform/
-#include "time.h"          // posix time functions
+#include "mu_rtc.h"       // included from mulib/src/platform/
 #include <stdio.h>
 
 /**
@@ -26,16 +26,6 @@ void mu_time_init(void) {
   // no initialization required
 }
 
-/**
- * @brief Get the current system time.
- *
- * @return A value representing the current time.
- */
-mu_time_t mu_time_now() {
-  struct timespec now;
-  clock_gettime(CLOCK_REALTIME, &now);
-  return (now.tv_sec * NANOSECS_PER_S + now.tv_nsec) / NANOSECS_PER_MS;
-}
 
 /**
  * @brief Add a time and a duration.
@@ -119,6 +109,7 @@ mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt) {
  * @return A duration object
  */
 mu_duration_t mu_time_ms_to_duration(mu_duration_ms_t ms) {
+  printf("ms %d\n",ms);
   return ms / 1000.0;
 }
 
@@ -160,7 +151,7 @@ void time_test(void) {
   printf("Starting mu_time unit tests...");
 
   mu_time_init();
-  t1 = mu_time_now();
+  t1 = mu_rtc_now();
   t2 = mu_time_offset(t1, 1);
   assert(mu_time_difference(t2, t1) == 1);
 
