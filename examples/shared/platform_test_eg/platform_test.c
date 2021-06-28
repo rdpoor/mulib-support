@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "mu_platform.h"
 
 // =============================================================================
@@ -38,10 +39,12 @@ volatile static bool s_button_was_pressed;
 void platform_test_init(void) {
   mu_time_t until;
 
-  mu_platform_init();
+  mulib_init();
+  //mu_platform_init();
   mu_button_io_set_callback(button_cb);
 
   mu_ansi_term_clear_screen();
+  mu_ansi_term_set_foreground_color(MU_ANSI_TERM_YELLOW);
 
   printf("\n\rmulib platform_test v%s.\n", VERSION);
   s_button_was_pressed = false;
@@ -64,10 +67,16 @@ void platform_test_init(void) {
 
   mu_led_io_set(MU_LED_0, true);
   printf("Press button to toggle LED:\n");
+
+  mu_begin_polling_for_keypress();
+  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
 }
 
 void platform_test_step(void) {
-  if (s_button_was_pressed == true) {
+  mu_sched_step();
+  unsigned char kp = mu_term_get_current_keypress();
+  if(kp == 'q') exit(0);
+  if(kp || s_button_was_pressed == true) {
     s_button_was_pressed = false;
     mu_led_io_set(MU_LED_0, !mu_led_io_get(MU_LED_0));
     printf("LED is %s\n", mu_led_io_get(MU_LED_0) ? "on" : "off");

@@ -31,6 +31,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+#include "mu_platform.h"
 
 // =============================================================================
 // Local types and definitions
@@ -64,7 +65,9 @@ static ctx_t s_ctx;
 // Public code
 
 void morse_1_init(void) {
+
   mulib_init();
+  mu_ansi_term_clear_screen();
 
   printf("\r\nmorse_1 v%s, mulib v%s\n", VERSION, MU_VERSION);
 
