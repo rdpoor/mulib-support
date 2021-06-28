@@ -11,9 +11,8 @@
 int main(void)
 {
     mu_ansi_term_clear_screen();
-    oblique_init(true); // this will hang until a key press happens
+    oblique_init(); // this will hang until a key press ir button press appens
     atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
-    mu_ansi_term_clear_screen();
     while(1) {
         oblique_step();
     }

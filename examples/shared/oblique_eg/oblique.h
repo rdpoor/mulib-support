@@ -40,7 +40,7 @@ extern "C" {
 // =============================================================================
 // Declarations
 
-void oblique_init(bool use_terminal_instead_of_button);
+void oblique_init();
 
 void oblique_step();
 

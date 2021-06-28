@@ -61,39 +61,35 @@ static void oblique_task_fn(void *ctx, void *arg);
 
 typedef struct {
   mu_task_t task;
-  bool has_seed;
 } oblique_ctx_t;
 
 static oblique_ctx_t s_oblique_ctx;
-static bool button_got_pressed = false;
+
+static bool button_was_pressed = false;
 
 // =============================================================================
 // Public code
 
+/**
+ * @brief Seed the random number generator, start a chain of tasks to print strategies
+ * For the seed, we increment an int in a while loop, interrupted by either a button press of ansi term key press
+ * 
+ */
 
-void oblique_init(bool use_terminal_instead_of_button) {
+void oblique_init() {
   uint32_t seed = 0;
   mulib_init();
   mu_task_init(&s_oblique_ctx.task, oblique_task_fn, &s_oblique_ctx, "Oblique");
-  s_oblique_ctx.has_seed = false;
+  mu_button_io_set_callback(button_cb);
+  mu_begin_polling_for_keypress(); 
 
-  if(!use_terminal_instead_of_button) {
-    mu_button_io_set_callback(button_cb);
-    printf("oblique_eg v%s mulib v%s: Press user button to start...\n", VERSION, MU_VERSION);
-    while (!s_oblique_ctx.has_seed) {
-      seed += 1;
-    }
-  } else {
-    printf("oblique_eg v%s mulib v%s: Press any key to start...\n", VERSION, MU_VERSION);
-    begin_polling_for_keypress();
-    while(mu_term_get_current_keypress() == 0) {
-      mu_sched_step(); // because no IRQ is available
-      seed += 1;
-    }
+  printf("oblique_app v%s mulib v%s: Press user button or any key to start...\n", VERSION, MU_VERSION);
+  while (!button_was_pressed && mu_term_get_current_keypress() == 0) {
+    mu_sched_step(); // because no IRQ is available for reading the terminal, we called mu_begin_polling_for_keypress() to make the temrinal noncanonical and check it several times per second
+    seed += 1;
   }
-  printf("Random seed is %u.\n", seed);
+
   mu_random_seed(seed);
-  strategies_choose_and_print(); // print an oblique strategy
   mu_sched_task_now(&s_oblique_ctx.task); // sets up the periodic printing of a new strategy -- independent of any subsequent keypresses
 }
 
@@ -101,9 +97,8 @@ void oblique_step() {
   mu_sched_step();
   unsigned char kp = mu_term_get_current_keypress();
   if(kp == 'q') exit(0);
-  if(kp || button_got_pressed) {
-    strategies_choose_and_print(); // print an oblique strategy
-    button_got_pressed = false;
+  if(kp) {
+    strategies_choose_and_print(); // print an oblique strategy immediately
   }
 }
 
@@ -112,7 +107,6 @@ void oblique_step() {
 // Local (static) code
 
 static void oblique_task_fn(void *ctx, void *arg) {
-  //oblique_ctx_t *self = (oblique_ctx_t *)ctx;
   (void)ctx;
   (void)arg;
   strategies_choose_and_print(); // print an oblique strategy
@@ -123,7 +117,5 @@ static void oblique_task_fn(void *ctx, void *arg) {
 
 static void button_cb(uint8_t button_id, bool button_is_pressed) {
   (void)button_id;
-  button_got_pressed = true;
-  s_oblique_ctx.has_seed = true;
-  mu_sched_isr_task_now(&s_oblique_ctx.task);
+  button_was_pressed = true;
 }
