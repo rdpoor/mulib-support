@@ -1,0 +1,13 @@
+/*------------------------------------------------------------------------*/ /**
+\defgroup doc_driver_clk CLK Drivers
+
+The clock sources are divided in two main groups: internal oscillators and external clock sources.
+
+\section doc_driver_clk_basic_and_practice CLK Basics and Best Practice
+
+Most of the clock sources can be directly enabled and disabled from software, while others are automatically enabled or disabled,
+depending on peripheral settings. After reset, the device starts up running from the 2MHz internal oscillator. The other
+clock sources, DFLLs and PLL, are turned off by default.
+
+*/
+

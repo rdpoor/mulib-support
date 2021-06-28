@@ -27,6 +27,7 @@
 
 #include "strategies.h"
 #include <mulib.h>
+#include <stdio.h>
 
 // =============================================================================
 // Local types and definitions

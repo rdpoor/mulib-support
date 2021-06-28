@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef PARSE_HTTP_EG_H_
-#define PARSE_HTTP_EG_H_
+#ifndef PARSE_HTTP_H_
+#define PARSE_HTTP_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,9 +35,9 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-void parse_http_eg_init(void);
+void parse_http_init(void);
 
-void parse_http_eg_step(void);
+void parse_http_step(void);
 
 // =============================================================================
 // declarations
@@ -46,4 +46,4 @@ void parse_http_eg_step(void);
 }
 #endif
 
-#endif /* #ifndef PARSE_HTTP_EG_H_ */
+#endif /* #ifndef PARSE_HTTP_H_ */

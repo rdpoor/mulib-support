@@ -105,11 +105,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  parse_http_eg_init();
+  parse_http_init();
   while (1)
   {
     /* USER CODE END WHILE */
-    parse_http_eg_step();
+    parse_http_step();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

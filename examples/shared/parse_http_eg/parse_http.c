@@ -39,10 +39,8 @@
 // =============================================================================
 // Includes
 
-#include "parse_http_eg.h"
-#include "mulib/core/mu_array.h"
-#include "mulib/core/mu_strbuf.h"
-#include "mulib/core/mu_str.h"
+#include "parse_http.h"
+#include "mulib.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -182,12 +180,12 @@ static int kv_sort_fn(void *e1, void *e2);
 // =============================================================================
 // Public code
 
-void parse_http_eg_init(void) {
+void parse_http_init(void) {
   process_http_header("HTTP Request", s_request_header);
   process_http_header("HTTP Response", s_response_header);
 }
 
-void parse_http_eg_step(void) {
+void parse_http_step(void) {
   // nothing to do past initialization
 }
 
@@ -340,7 +338,7 @@ rm -rf parse_http_app parse_http_eg.dSYM
  */
 
 int main(void) {
-  parse_http_eg_init();
+  parse_http_init();
   return 0;
 }
 

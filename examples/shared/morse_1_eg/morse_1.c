@@ -77,7 +77,7 @@ void morse_1_init(void) {
   s_ctx.led_is_on = false;
 
   // Make sure the LED is initially off
-  mu_led_io_set(false);
+  mu_led_io_set(MU_LED_0, false);
 
   // Make the first call to the scheduler to start things off.  The task_fn will
   // reschedule itself upon completion.
@@ -106,7 +106,7 @@ static void task_fn(void *ctx, void *arg) {
 
   // Toggle the internal state and make the LED match the internal state
   self->led_is_on = !self->led_is_on;
-  mu_led_io_set(self->led_is_on);
+  mu_led_io_set(MU_LED_0, self->led_is_on);
 
   // Reschedule the blink_basic task in the specified amount of time.
   mu_sched_reschedule_in(self->led_is_on ? self->on_time : self->off_time);

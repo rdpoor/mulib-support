@@ -148,7 +148,7 @@ mu_task_t *morse_char_init(char ascii, mu_task_t *on_completion) {
   s_ctx.on_completion = on_completion;
 
   // Make sure the LED is initially off
-  mu_led_io_set(false);
+  mu_led_io_set(MU_LED_0, false);
 
   // Return the task object, ready to be passed to the scheduler
   return &s_ctx.task;
@@ -164,24 +164,24 @@ static void task_fn(void *ctx, void *arg) {
 
   switch(*self->s++) {
     case '.':  // dot: turn LED on for MORSE_SHORT_MARK
-    mu_led_io_set(true);
+    mu_led_io_set(MU_LED_0, true);
     mu_sched_reschedule_in(MORSE_SHORT_MARK);
     break;
 
     case '-':  // dash: turn LED on for MORSE_LONG_MARK
-    mu_led_io_set(true);
+    mu_led_io_set(MU_LED_0, true);
     mu_sched_reschedule_in(MORSE_LONG_MARK);
     break;
 
     case ' ':  // intra-character: turn LED off for MORSE_INTRA_CHAR_GAP
-    mu_led_io_set(false);
+    mu_led_io_set(MU_LED_0, false);
     mu_sched_reschedule_in(MORSE_INTRA_CHAR_GAP);
     break;
 
     case '\0':
     // Arrive here when the character has been emitted: turn the LED off and
     // call the on_completion task after MORSE_INTER_CHAR_GAP
-    mu_led_io_set(false);
+    mu_led_io_set(MU_LED_0, false);
     if (self->on_completion != NULL) {
       mu_sched_task_in(self->on_completion, MORSE_INTER_CHAR_GAP);
     }

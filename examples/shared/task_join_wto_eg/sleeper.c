@@ -68,7 +68,7 @@ static void task_fn(void *ctx, void *arg) {
   sleeper_ctx_t *self = (sleeper_ctx_t *)ctx;
   (void)arg;  // unused
 
-  mu_led_io_set(true);  // turn on LED when any sleeper wakes
+  mu_led_io_set(MU_LED_0, true);  // turn on LED when any sleeper wakes
   printf("%s waking at %ld tics\n", self->name, mu_time_now());
   if (self->on_completion != NULL) {
     // Subtle bug: It two Sleepers wake up at the same time (or nearly at the

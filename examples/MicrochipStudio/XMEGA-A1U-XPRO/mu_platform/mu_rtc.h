@@ -39,11 +39,6 @@ extern "C";
 // =============================================================================
 // types and definitions
 
-#define RTC_FREQUENCY 1024L
-#define MS_PER_SECOND 1000L
-
-#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)((((ms)*MS_PER_SECOND))/RTC_FREQUENCY))
-
 typedef void (*mu_rtc_callback_t)(void);
 
 // =============================================================================
