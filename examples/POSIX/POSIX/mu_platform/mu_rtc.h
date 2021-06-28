@@ -39,13 +39,9 @@ extern "C";
 // =============================================================================
 // types and definitions
 
-#define RTC_FREQUENCY 1024L
+#define RTC_FREQUENCY (1024L)
 
 // =============================================================================
-// Some widely accepted truths
-#define NANOSECS_PER_S  (1000000000)
-#define NANOSECS_PER_MS (1000000)
-#define MS_PER_SECOND (1000L)
 
 #define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)((((ms)*MS_PER_SECOND))/RTC_FREQUENCY))
 

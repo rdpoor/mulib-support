@@ -38,6 +38,7 @@ extern "C";
 
 // =============================================================================
 // types and definitions
+#define RTC_FREQUENCY ((mu_duration_t)1024)
 
 typedef void (*mu_rtc_callback_t)(void);
 

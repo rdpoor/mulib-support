@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 // =============================================================================
 // Local types and definitions
@@ -48,6 +49,7 @@ bool s_led_state;
 
 void mu_led_io_init(void) {
   mu_led_io_set(0, false);
+  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
 }
 
 // Draw a virtual LED at 0,0 on the screen.  Assumes an ANSI compiant terminal.
@@ -55,21 +57,16 @@ void mu_led_io_set(uint8_t led_id, bool on) {
   (void)led_id;
 
   s_led_state = on;   // track state
-
-  // save current cursor position and color
-  mu_ansi_term_save_cursor_position();
-  //mu_ansi_term_get_terminal_attributes(&term_attr);
+  //mu_ansi_term_save_cursor_position();
 
   // draw a green dot at [0,0]
-  mu_ansi_term_set_cursor_position(0, 0);
   mu_ansi_term_set_foreground_color(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE);
-  //putchar('•');
-  printf("•");
-
+  mu_ansi_term_set_cursor_position(0, 0);
+  puts("•\n");
   // restore color and cursor position
   mu_ansi_term_reset();
-  mu_ansi_term_restore_cursor_position();
-  printf("%d ",on);
+  //mu_ansi_term_restore_cursor_position();
+ // mu_ansi_term_set_cursor_visible(true);
 }
 
 bool mu_led_io_get(uint8_t led_id) {

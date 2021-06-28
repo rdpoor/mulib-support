@@ -105,6 +105,7 @@ static void reset(void);
 
 void tower_init(void) {
   mulib_init();
+  mu_ansi_term_set_cursor_visible(false);
   mu_button_io_set_callback(NULL);
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");
   // initialize the frame buffer
