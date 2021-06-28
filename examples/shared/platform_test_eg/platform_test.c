@@ -45,6 +45,7 @@ void platform_test_init(void) {
 
   mu_ansi_term_clear_screen();
   mu_ansi_term_set_foreground_color(MU_ANSI_TERM_YELLOW);
+  mu_ansi_term_set_cursor_visible(false);
 
   printf("\n\rmulib platform_test v%s.\n", VERSION);
   s_button_was_pressed = false;
@@ -66,7 +67,7 @@ void platform_test_init(void) {
   }
 
   mu_led_io_set(MU_LED_0, true);
-  printf("Press button to toggle LED:\n");
+  printf("Press button to toggle LED:           \n");
 
   mu_begin_polling_for_keypress();
   atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
@@ -79,7 +80,7 @@ void platform_test_step(void) {
   if(kp || s_button_was_pressed == true) {
     s_button_was_pressed = false;
     mu_led_io_set(MU_LED_0, !mu_led_io_get(MU_LED_0));
-    printf("LED is %s\n", mu_led_io_get(MU_LED_0) ? "on" : "off");
+    printf("LED is %s                               \n", mu_led_io_get(MU_LED_0) ? "on" : "off");
   } else {
     asm(" nop");
   }
