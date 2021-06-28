@@ -25,7 +25,7 @@
 // =============================================================================
 // Includes
 
-#include "join_wto_eg.h"
+#include "task_join_wto.h"
 
 #include "joiner_wto.h"
 #include "sleeper.h"
@@ -91,7 +91,7 @@ static void task_fn(void *ctx, void *arg) {
   // Recast the void * argument to a join_wto_eg_ctx_t * argument.
   join_wto_eg_ctx_t *self = (join_wto_eg_ctx_t *)ctx;
   (void)arg;  // unused
-  mu_time_t now = mu_time_now();
+  mu_time_t now = mu_rtc_now();
   mu_time_t at;
 
   if (self->sleepers_are_iniitalied) {
@@ -112,11 +112,11 @@ static void task_fn(void *ctx, void *arg) {
   // sleeper tasks have completed, the joiner task will call its on_completion
   // task (which is this task), and the process will repeat.
   printf("-----\n");
-  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  at = mu_time_offset(now, mu_time_ms_to_duration(mu_random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_a, "Sleeper A", at);
-  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  at = mu_time_offset(now, mu_time_ms_to_duration(mu_random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_b, "Sleeper B", at);
-  at = mu_time_offset(now, mu_time_ms_to_duration(random_range(MIN_MS, MAX_MS)));
+  at = mu_time_offset(now, mu_time_ms_to_duration(mu_random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_c, "Sleeper C", at);
 
   self->sleepers_are_iniitalied = true;

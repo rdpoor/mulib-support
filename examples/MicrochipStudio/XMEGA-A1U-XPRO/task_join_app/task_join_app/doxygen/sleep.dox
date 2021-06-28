@@ -1,0 +1,14 @@
+/*------------------------------------------------------------------------*/ /**
+\defgroup doc_driver_sleep SLEEP Drivers
+
+
+\section doc_driver_sleep_basic_and_practice SLEEP Basics and Best Practice
+
+Sleep modes are used to shut down peripherals and clock domains in the device in order to save power. The Sleep Controller (SLEEP) controls and handles the transitions between active modes and sleep modes.
+Power-Reduction can be used to shutdown each unnecessary peripheral individually.
+
+NOTE: To actually enter sleep, the user need to invoke the sleep instruction.
+
+*/
+
+

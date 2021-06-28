@@ -102,7 +102,7 @@ static void oblique_task_fn(void *ctx, void *arg) {
   strategies_choose_and_print(); // print an oblique strategy
 
   // re-schedule the oblique_task at some random time in the future.
-  mu_duration_t delay = MU_TIME_MS_TO_DURATION(mu_random_range(MIN_MS, MAX_MS));
+  mu_duration_t delay = MU_TIME_MS_TO_DURATION(mu_mu_random_range(MIN_MS, MAX_MS));
   mu_sched_task_in(oblique_task(), delay);
   mu_led_io_set(MU_LED_0, false);
 }

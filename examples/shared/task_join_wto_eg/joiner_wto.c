@@ -95,7 +95,7 @@ static void timeout_task_fn(void *ctx, void *arg) {
 
 static void endgame(joiner_wto_ctx_t *self, void *arg, const char *cause) {
   (void)arg;
-  mu_time_t now = mu_time_now();
+  mu_time_t now = mu_rtc_now();
 
   mu_led_io_set(MU_LED_0, false);  // turn off LED upon completion
   printf("Joiner %s at %ld\n", cause, now);

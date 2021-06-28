@@ -262,7 +262,7 @@ static const size_t N_STRATEGIES = sizeof(s_strategies) / sizeof(const char *);
 
 void strategies_choose_and_print() {
   static char buf[MAX_STRATEGY_LEN];
-  int index = mu_random_range(0, N_STRATEGIES);
+  int index = mu_mu_random_range(0, N_STRATEGIES);
   const char *s = s_strategies[index];
 
   int j = 0;
