@@ -69,6 +69,7 @@ void mu_led_io_set(uint8_t led_id, bool on) {
   // restore color and cursor position
   mu_ansi_term_reset();
   mu_ansi_term_restore_cursor_position();
+  printf("%d ",on);
 }
 
 bool mu_led_io_get(uint8_t led_id) {

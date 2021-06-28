@@ -40,6 +40,12 @@ examples/POSIX/POSIX/platform_test/build/
 examples/POSIX/POSIX/platform_test/main.o
 examples/POSIX/POSIX/platform_test/platform_test_app
 
-examples/POSIX/POSIX/morse_1/build/
-examples/POSIX/POSIX/morse_1/main.o
-examples/POSIX/POSIX/morse_1/morse_1_app
+examples/POSIX/POSIX/morse_1_app/build/
+examples/POSIX/POSIX/morse_1_app/main.o
+examples/POSIX/POSIX/morse_1_app/morse_1_app
+
+examples/POSIX/POSIX/morse_1_eg/build/
+examples/POSIX/POSIX/morse_1_eg/main.o
+examples/POSIX/POSIX/morse_1_eg/morse_1_app
+
+

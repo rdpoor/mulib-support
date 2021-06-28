@@ -38,7 +38,7 @@
 
 #define VERSION "1.0"
 
-#define ON_TIME_MS 10
+#define ON_TIME_MS 200
 #define OFF_TIME_MS (1000 - ON_TIME_MS)
 
 // Define the context for a morse_1 task.  When task_fn is called, this
@@ -68,7 +68,7 @@ void morse_1_init(void) {
 
   mulib_init();
   mu_ansi_term_clear_screen();
-
+  mu_ansi_term_set_cursor_visible(false);
   printf("\r\nmorse_1 v%s, mulib v%s\n", VERSION, MU_VERSION);
 
   // initialize the mu_task to associate function (task_fn) with context (s_ctx)
@@ -110,7 +110,10 @@ static void task_fn(void *ctx, void *arg) {
   // Toggle the internal state and make the LED match the internal state
   self->led_is_on = !self->led_is_on;
   mu_led_io_set(MU_LED_0, self->led_is_on);
-
+  mu_time_t dur = self->on_time;
+  if(!self->led_is_on) dur = self->off_time;
   // Reschedule the blink_basic task in the specified amount of time.
+  //mu_sched_task_in(&s_ctx.task, self->led_is_on ? self->on_time : self->off_time);
+  printf("resched %d ",self->led_is_on ? self->on_time : self->off_time);
   mu_sched_reschedule_in(self->led_is_on ? self->on_time : self->off_time);
 }

@@ -34,7 +34,7 @@
  // =============================================================================
  // Local types and definitions
 
- #define ON_TIME_MS 10
+ #define ON_TIME_MS 100
  #define OFF_TIME_MS (500 - ON_TIME_MS)
 
  #define ISR_QUEUE_SIZE 8
