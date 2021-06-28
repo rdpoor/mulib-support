@@ -248,7 +248,7 @@ static char const *s_strategies[] = {
     "Znxr jung'f cresrpg zber uhzna",
     "Znxr n fhqqra, qrfgehpgvir hacerqvpgnoyr npgvba; vapbecbengr",
     "Znxr n oynax inyhnoyr ol chggvat vg va na rkdhvfvgr senzr",
-    "Znxr na rkunhfgvir yvfg bs rirelguvat lbh zvtug qb naq qb gur ynfg guvat "
+    "Znxr na rkunhfgvir yvfg bs rirelguvat lbh zvtug qb naq qb gur ynfg guvat",
     "ba gur yvfg",
     "Znxr vg zber frafhny",
     "Zrpunavpnyvfr fbzrguvat vqvbflapengvp",

@@ -87,7 +87,7 @@ static void task_fn(void *ctx, void *arg) {
   // Recast the void * argument to a ctx_t * argument.
   ctx_t *self = (ctx_t *)ctx;
   (void)arg;  // unused
-  mu_time_t now = mu_time_now();
+  mu_time_t now = mu_rtc_now();
   mu_time_t at;
 
   // initialize the joiner object.  Upon completion (when all tasks have
@@ -98,11 +98,11 @@ static void task_fn(void *ctx, void *arg) {
   // sleeper tasks have completed, the joiner task will call its on_completion
   // task (which is this task), and the process will repeatt.
   printf("-----\n");
-  at = mu_time_offset(now, mu_time_ms_to_duration(mu_random_range(MIN_MS, MAX_MS)));
+  at = mu_time_offset(now, mu_time_ms_to_duration(mu_mu_random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_a, "Sleeper A", at);
-  at = mu_time_offset(now, mu_time_ms_to_duration(mu_random_range(MIN_MS, MAX_MS)));
+  at = mu_time_offset(now, mu_time_ms_to_duration(mu_mu_random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_b, "Sleeper B", at);
-  at = mu_time_offset(now, mu_time_ms_to_duration(mu_random_range(MIN_MS, MAX_MS)));
+  at = mu_time_offset(now, mu_time_ms_to_duration(mu_mu_random_range(MIN_MS, MAX_MS)));
   start_sleeper(&s_sleeper_c, "Sleeper C", at);
 }
 

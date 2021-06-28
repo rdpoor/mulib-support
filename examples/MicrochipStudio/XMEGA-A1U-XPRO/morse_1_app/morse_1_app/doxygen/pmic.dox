@@ -1,0 +1,13 @@
+/*------------------------------------------------------------------------*/ /**
+\defgroup doc_driver_pmic PMIC Drivers
+
+
+\section doc_driver_pmic_basic_and_practice PMIC Basics and Best Practice
+
+XMEGA devices contain a Programmable Multilevel Interrupt Controller (PMIC) for Interrupt prioritizing according to level and vector address
+PMIC have three selectable interrupt levels for all interrupts: low, medium and high and supports selectable, round-robin priority scheme within low-level interrupts
+
+
+*/
+
+

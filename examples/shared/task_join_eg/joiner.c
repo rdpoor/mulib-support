@@ -38,10 +38,6 @@
 
 static void task_fn(void *ctx, void *arg);
 
-static void timeout_task_fn(void *ctx, void *arg);
-
-static void endgame(joiner_wto_ctx_t *self, void *arg, const char *cause);
-
 // =============================================================================
 // Local storage
 
@@ -74,8 +70,8 @@ static void task_fn(void *ctx, void *arg) {
   printf("Task completed, pending count = %d\n", self->pending_count);
 
   if (self->pending_count == 0) {
-    mu_led_io_set(false);  // turn off LED when all sleepers complete
-  	printf("All tasks have joined at %ld tics.\n\n", mu_time_now());
+    mu_led_io_set(MU_LED_0, false);  // turn off LED when all sleepers complete
+  	printf("All tasks have joined at %ld tics.\n\n", mu_rtc_now());
     // all joined tasks have completed -- invoke the on_completion task
     if (self->on_completion != NULL) {
       mu_sched_task_now(self->on_completion);

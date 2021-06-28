@@ -41,12 +41,13 @@
 // =============================================================================
 // Local types and definitions
 
-#define VERSION "1.1"
+
+#define VERSION "1.0"
 
 // The min and max wait times before offering a new strategy
 // on average once every 1/2 hour...
-#define MIN_MS (10*1000)
-#define MAX_MS (60*60*1000)
+#define MIN_MS (10L * 1000L)
+#define MAX_MS (60L * 60L * 1000L)
 
 // =============================================================================
 // Local (forward) declarations
@@ -79,7 +80,7 @@ void oblique_init(bool use_terminal_instead_of_button) {
   if(!use_terminal_instead_of_button) {
     mu_button_io_set_callback(button_cb);
     printf("oblique_eg v%s mulib v%s: Press user button to start...\n", VERSION, MU_VERSION);
-    while (!button_got_pressed) {
+    while (!s_oblique_ctx.has_seed) {
       seed += 1;
     }
   } else {
@@ -90,6 +91,7 @@ void oblique_init(bool use_terminal_instead_of_button) {
       seed += 1;
     }
   }
+  printf("Random seed is %u.\n", seed);
   mu_random_seed(seed);
   strategies_choose_and_print(); // print an oblique strategy
   mu_sched_task_now(&s_oblique_ctx.task); // sets up the periodic printing of a new strategy -- independent of any subsequent keypresses
@@ -111,6 +113,7 @@ void oblique_step() {
 
 static void oblique_task_fn(void *ctx, void *arg) {
   //oblique_ctx_t *self = (oblique_ctx_t *)ctx;
+  (void)ctx;
   (void)arg;
   strategies_choose_and_print(); // print an oblique strategy
   // re-schedule the oblique_task at some random time in the future.
@@ -118,7 +121,9 @@ static void oblique_task_fn(void *ctx, void *arg) {
   mu_sched_task_in(&s_oblique_ctx.task, delay);
 }
 
-
 static void button_cb(uint8_t button_id, bool button_is_pressed) {
+  (void)button_id;
   button_got_pressed = true;
+  s_oblique_ctx.has_seed = true;
+  mu_sched_isr_task_now(&s_oblique_ctx.task);
 }

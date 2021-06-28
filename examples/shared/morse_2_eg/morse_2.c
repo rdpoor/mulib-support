@@ -64,7 +64,7 @@ void morse_2_init(void) {
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");
 
   // Initialize s_ctx
-  s_ctx.ascii = 'A';
+  s_ctx.ascii = 'Y';
 
   mu_sched_task_now(&s_ctx.task);
 }

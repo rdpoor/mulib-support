@@ -1,0 +1,330 @@
+format_version: '2'
+name: morse_1_app
+versions:
+  api: '1.0'
+  backend: 1.8.543
+  commit: 931b2422bde1a793dea853de68547f48bf245b0f
+  content: unknown
+  content_pack_name: unknown
+  format: '2'
+  frontend: 1.8.543
+  packs_version_avr8: 1.0.1457
+  packs_version_qtouch: unknown
+  packs_version_sam: 1.0.1726
+  version_backend: 1.8.543
+  version_frontend: ''
+board:
+  identifier: XMEGAA1UXplainedPro
+  device: ATxmega128A1U-AN
+details: null
+application: null
+middlewares: {}
+drivers:
+  TIMER_0:
+    user_label: TIMER_0
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::TCC0::driver_config_definition::TC0.Normal.Mode::Drivers:TC:Init
+    functionality: Timer
+    api: Drivers:TC:Init
+    configuration:
+      tc0_ccA: 0
+      tc0_ccB: 0
+      tc0_ccC: 0
+      tc0_ccD: 0
+      tc0_ctrlb_ccAen: false
+      tc0_ctrlb_ccBen: false
+      tc0_ctrlb_ccCen: false
+      tc0_ctrlb_ccDen: false
+      tc0_ctrlc_cmpA: false
+      tc0_ctrlc_cmpB: false
+      tc0_ctrlc_cmpC: false
+      tc0_ctrlc_cmpD: false
+      tc0_ctrld_evdly: false
+      tc0_intctrlb_ccAintlvl: Interrupt Disabled
+      tc0_intctrlb_ccBintlvl: Interrupt Disabled
+      tc0_intctrlb_ccCintlvl: Interrupt Disabled
+      tc0_intctrlb_ccDintlvl: Interrupt Disabled
+      tc_cnt: 0
+      tc_ctrla_clksel: System Clock
+      tc_ctrlb_wgmode: Normal Mode
+      tc_ctrld_evact: No Event Action
+      tc_ctrld_evsel: No Event Source
+      tc_ctrle_bytem: false
+      tc_intctrla_errintlvl: Interrupt Disabled
+      tc_intctrla_ovfintlvl: Low Level
+      tc_per: 2000
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC
+          input: CLK CPU/PER
+          external: false
+          external_frequency: 0
+        configuration:
+          tc_clock_source: CLK CPU/PER
+  OSC:
+    user_label: OSC
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::OSC::driver_config_definition::OSC::Drivers:OSC:Init
+    functionality: System
+    api: Drivers:OSC:Init
+    configuration:
+      $input: 2000000
+      $input_id: 2MHz Internal Oscillator
+      RESERVED_InputFreq: 2000000
+      RESERVED_InputFreq_id: 2MHz Internal Oscillator
+      _$freq_output_External Crystal Oscillator 0.4-16MHz: 400000
+      _$freq_output_PLL: 1000000
+      dfll2m_calib_a: 0
+      dfll2m_calib_b: 0
+      dfll2m_calib_ref: false
+      dfll2m_comp_1: 0
+      dfll2m_comp_2: 0
+      dfll32m_calib_a: 0
+      dfll32m_calib_b: 0
+      dfll32m_calib_ref: Internal 32.768 kHz RC Oscillator
+      dfll32m_comp_1: 0
+      dfll32m_comp_2: 0
+      enable_dfll2m: false
+      enable_dfll32m: false
+      enable_pll: false
+      enable_xosc32k: true
+      osc2m_cal_override: false
+      osc2m_enable: true
+      osc32k_calib: 0
+      osc32k_enable: false
+      osc32m_cal_override: false
+      osc32m_enable: false
+      osc_xoscctrl_x32klpm: false
+      osc_xoscctrl_xoscsel: External Clock - 6 CLK
+      osc_xoscfail_pllfden: false
+      osc_xoscfail_pllfdif: false
+      osc_xoscfail_xoscfden: false
+      osc_xoscfail_xoscfdif: false
+      pll_div: true
+      pll_fac: 1
+      pll_src: 2MHz Internal Oscillator
+      xosc32k_klpm: false
+      xosc_enable: false
+      xosc_frequency: 400000
+      xosc_frqrange: 0.4 - 2 MHz
+      xosc_owr: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  CLK:
+    user_label: CLK
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::CLK::driver_config_definition::CLK::Drivers:CLK:Init
+    functionality: System
+    api: Drivers:CLK:Init
+    configuration:
+      $input: 1000000
+      $input_id: PLL
+      RESERVED_InputFreq: 1000000
+      RESERVED_InputFreq_id: PLL
+      _$freq_output_CLK CPU/PER: 2000000
+      _$freq_output_CLK PER2: 2000000
+      _$freq_output_CLK PER4: 2000000
+      _$freq_output_CLK USB: 1000000
+      _$freq_output_CPU: 2000000
+      _$freq_output_NVM: 2000000
+      _$freq_output_RAM: 2000000
+      _$freq_output_RTC source: 1024
+      clk_cpu_clock_source: CLK PER2
+      clk_lock_lock: false
+      clk_psctrl_psadiv: Divide by 1
+      clk_psctrl_psbcdiv: Divide B by 1 and C by 1
+      clk_sys_source_oscillator: 2MHz Internal Oscillator
+      clk_usb_clock_prescaler: 0
+      clk_usb_source_oscillator: PLL
+      cpu_clock_prescaler: 0
+      cpu_clock_source: CLK CPU/PER
+      enable_clk_cpu_source: true
+      enable_clk_sys_source: true
+      enable_clk_usb_source: false
+      enable_cpu_source: true
+      enable_lp_source: false
+      enable_per2_source: true
+      enable_per4_source: true
+      enable_rtc_source: false
+      enable_rtc_source_enable: false
+      lp_source_oscillator: Ultra Low Power Internal Oscillator
+      nvm_clock_source: CLK CPU/PER
+      per2_clock_source: CLK PER4
+      per4_clock_source: CLK SYS source
+      ram_clock_source: CLK CPU/PER
+      rtc_divider: true
+      rtc_source_oscillator: 32kHz External Crystal Oscillator
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: CPU
+          input: CPU
+          external: false
+          external_frequency: 0
+        configuration: {}
+  PMIC:
+    user_label: PMIC
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::PMIC::driver_config_definition::PMIC::Drivers:PMIC:Init
+    functionality: System
+    api: Drivers:PMIC:Init
+    configuration:
+      cpu_sreg_i: true
+      inc_isr_harness: true
+      pmic_ctrl_hilvlen: false
+      pmic_ctrl_ivsel: false
+      pmic_ctrl_lolvlen: true
+      pmic_ctrl_medlvlen: false
+      pmic_ctrl_rren: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  SLEEP:
+    user_label: SLEEP
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::SLEEP::driver_config_definition::SLEEP::Drivers:SLEEP:Init
+    functionality: System
+    api: Drivers:SLEEP:Init
+    configuration:
+      pr_prgen_aes: false
+      pr_prgen_dma: false
+      pr_prgen_ebi: false
+      pr_prgen_evsys: false
+      pr_prgen_rtc: false
+      pr_prgen_usb: false
+      pr_prpa_aca: false
+      pr_prpa_adca: false
+      pr_prpa_daca: false
+      pr_prpb_acb: false
+      pr_prpb_adcb: false
+      pr_prpb_dacb: false
+      pr_prpc_hiresc: false
+      pr_prpc_spic: false
+      pr_prpc_tc0c: false
+      pr_prpc_tc1c: false
+      pr_prpc_twic: false
+      pr_prpc_usart0c: false
+      pr_prpc_usart1c: false
+      pr_prpd_hiresd: false
+      pr_prpd_spid: false
+      pr_prpd_tc0d: false
+      pr_prpd_tc1d: false
+      pr_prpd_twid: false
+      pr_prpd_usart0d: false
+      pr_prpd_usart1d: false
+      pr_prpe_hirese: false
+      pr_prpe_spie: false
+      pr_prpe_tc0e: false
+      pr_prpe_tc1e: false
+      pr_prpe_twie: false
+      pr_prpe_usart0e: false
+      pr_prpe_usart1e: false
+      pr_prpf_hiresf: false
+      pr_prpf_spif: false
+      pr_prpf_tc0f: false
+      pr_prpf_tc1f: false
+      pr_prpf_twif: false
+      pr_prpf_usart0f: false
+      pr_prpf_usart1f: false
+      sleep_ctrl_sen: false
+      sleep_ctrl_smode: Idle mode
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  USART_0:
+    user_label: USART_0
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::USARTE0::driver_config_definition::Async.Polled.Mode::Drivers:USART:Basic
+    functionality: USART
+    api: Drivers:USART:Basic
+    configuration:
+      baud_rate: 115200
+      printf_support: true
+      usart_ctrlb_clk2x: false
+      usart_ctrlb_mpcm: false
+      usart_ctrlb_rxen: true
+      usart_ctrlb_txen: true
+      usart_ctrlc_chsize: 'Character size: 8 bit'
+      usart_ctrlc_cmode: Async Polled Mode
+      usart_ctrlc_pmode: No Parity
+      usart_ctrlc_sbmode: 1 stop bit
+      usart_ctrlc_ucpha: Sample DATA on Falling edge of XCK
+      usart_ctrlc_udord: Send MSB of DATA First
+    optional_signals: []
+    variant:
+      specification: CMODE=0
+      required_signals:
+      - name: USARTE0/RXD
+        pad: PE2
+        label: RXD
+      - name: USARTE0/TXD
+        pad: PE3
+        label: TXD
+    clocks:
+      domain_group:
+        nodes:
+        - name: USART
+          input: CLK CPU/PER
+          external: false
+          external_frequency: 0
+        configuration:
+          usart_clock_source: CLK CPU/PER
+pads:
+  PE2:
+    name: PE2
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::pad::PE2
+    mode: Digital input
+    user_label: PE2
+    configuration: null
+  PE3:
+    name: PE3
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::pad::PE3
+    mode: Digital output
+    user_label: PE3
+    configuration: null
+  USER_BUTTON:
+    name: PQ2
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::pad::PQ2
+    mode: Advanced
+    user_label: USER_BUTTON
+    configuration:
+      pad_dir: In
+      pad_initial_level: High
+      pad_int0lvl: Low Level
+      pad_int0msk: '4'
+      pad_int1lvl: Interrupt Disabled
+      pad_int1msk: '0'
+      pad_isc: Sense Falling Edge
+      pad_output_pull_config: Pull-up
+  USER_LED:
+    name: PQ3
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::pad::PQ3
+    mode: Digital output
+    user_label: USER_LED
+    configuration:
+      pad_initial_level: High
+toolchain_options:
+- definition:
+    identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Atmel.Studio:7.0.0
+  configuration:
+    compiler_config:
+      avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99
+    linker_config:
+      avrgcc_linker_miscellaneous_LinkerFlags: ''
+- definition:
+    identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Microchip.Studio.xc8:7.0.0
+  configuration:
+    compiler_config:
+      xc8_compiler_miscellaneous_OtherFlags: -std=gnu99
+    linker_config:
+      xc8_linker_miscellaneous_LinkerFlags: ''
+- definition:
+    identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Microchip.Studio.gcc:7.0.0
+  configuration:
+    compiler_config:
+      avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99
+    linker_config:
+      avrgcc_linker_miscellaneous_LinkerFlags: ''
