@@ -14,7 +14,7 @@ SRC_MULIB_DIR = $(SRC_MULIB_SUPPORT_DIR)/mulib
 SRC_MULIB_CORE_DIR = $(SRC_MULIB_DIR)/core
 SRC_MULIB_EXTRAS_DIR = $(SRC_MULIB_DIR)/extras
 SRC_MU_PLATFORM_DIR = ../mu_platform
-SRC_TEST_STDDEMO_EG_DIR = $(SRC_MULIB_SUPPORT_DIR)/examples/shared/platform_test
+SRC_TEST_STDDEMO_EG_DIR = $(SRC_MULIB_SUPPORT_DIR)/examples/shared/platform_test_eg
 
 SOURCES_MULIB_CORE := $(wildcard $(SRC_MULIB_CORE_DIR)/*.c)
 SOURCES_MULIB_EXTRAS := $(wildcard $(SRC_MULIB_EXTRAS_DIR)/*.c)

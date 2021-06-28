@@ -33,6 +33,7 @@ extern "C";
 // includes
 
 #include "mu_config.h"
+#include "mu_rtc.h"
 #include <stdint.h>
 #include <stdbool.h>
 

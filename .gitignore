@@ -38,5 +38,5 @@ examples/POSIX/POSIX/oblique_app/oblique_app
 
 examples/POSIX/POSIX/platform_test/build/
 examples/POSIX/POSIX/platform_test/main.o
-examples/POSIX/POSIX/platform_test/oblique_app
+examples/POSIX/POSIX/platform_test/platform_test_app
 

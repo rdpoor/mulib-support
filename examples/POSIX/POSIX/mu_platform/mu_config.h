@@ -54,8 +54,6 @@ extern "C" {
  */
 #define MU_IRQ_TASK_QUEUE_SIZE 8
 
-#define RTC_FREQUENCY 1000
-
 /**
  * If your port supports floating point operations, choose one of the following
  * either by uncommenting one of the following lines, or by setting the symbol
@@ -68,12 +66,6 @@ typedef uint32_t mu_time_t;
 typedef int32_t mu_duration_t;
 typedef int32_t mu_duration_ms_t;
 
-// =============================================================================
-// Some widely accepted truths
-
-#define NANOSECS_PER_S  (1000000000)
-#define NANOSECS_PER_MS (1000000)
-#define MS_PER_SECOND (1000L)
 
 
 // =============================================================================

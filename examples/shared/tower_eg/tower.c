@@ -35,6 +35,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
+#include "mu_platform.h"
 
 // =============================================================================
 // Local types and definitions

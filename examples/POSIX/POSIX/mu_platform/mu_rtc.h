@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 Klatu Networks, Inc
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,30 +22,63 @@
  * SOFTWARE.
  */
 
-#ifndef _OBLIQUE_H_
-#define _OBLIQUE_H_
+#ifndef _MU_RTC_H_
+#define _MU_RTC_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C";
 #endif
 
- #include <mulib.h>
+// =============================================================================
+// includes
+
+#include "mu_time.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
-// Includes
+// types and definitions
+
+#define RTC_FREQUENCY 1024L
 
 // =============================================================================
-// Types and definitions
+// Some widely accepted truths
+#define NANOSECS_PER_S  (1000000000)
+#define NANOSECS_PER_MS (1000000)
+#define MS_PER_SECOND (1000L)
+
+#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)((((ms)*MS_PER_SECOND))/RTC_FREQUENCY))
+
+typedef void (*mu_rtc_callback_t)(void);
 
 // =============================================================================
-// Declarations
+// declarations
 
-void oblique_init(bool use_terminal_instead_of_button);
+/**
+ * @brief Initialize the Real Time Clock.  Must be called before any other rtc
+ * functions are called.
+ */
+void mu_rtc_init(void);
 
-void oblique_step();
+/**
+ * @brief Get the current time.
+ */
+mu_time_t mu_rtc_now(void);
+
+/**
+ * @brief Set the function to be called when the RTC ticks.
+ *
+ * Pass NULL for the CB to disable RTC alarms.
+ */
+void mu_rtc_set_callback(mu_rtc_callback_t cb);
+
+/**
+ * @brief Called from interrupt level RTC_FREQUENCY times per second.
+ */
+void mu_rtc_on_rtc_tick(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _OBLIQUE_H_ */
+#endif // #ifndef _MU_RTC_H_

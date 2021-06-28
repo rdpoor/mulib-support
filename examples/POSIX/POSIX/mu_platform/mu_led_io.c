@@ -62,7 +62,7 @@ void mu_led_io_set(uint8_t led_id, bool on) {
 
   // draw a green dot at [0,0]
   mu_ansi_term_set_cursor_position(0, 0);
-  mu_ansi_term_set_foreground_color(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_GREEN);
+  mu_ansi_term_set_foreground_color(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE);
   //putchar('•');
   printf("•");
 

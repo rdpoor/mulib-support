@@ -33,15 +33,10 @@ extern "C";
 // includes
 
 #include "mu_config.h"
+#include "mu_rtc.h"
 #include <stdint.h>
 #include <stdbool.h>
 
-
-#ifndef RTC_FREQUENCY
-  #error "Provide a platform-specific definition for RTC_FREQUENCY"
-#endif
-
-#define MU_TIME_MS_TO_DURATION(ms) (((ms) * RTC_FREQUENCY) / MS_PER_SECOND)
 
 // =============================================================================
 // types and definitions

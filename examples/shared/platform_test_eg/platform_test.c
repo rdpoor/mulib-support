@@ -79,22 +79,15 @@ void platform_test_step(void) {
 // =============================================================================
 // Local (private) code
 
-<<<<<<< HEAD:examples/shared/platform_test/platform_test.c
-static void button_cb(unsigned char button_id, bool button_is_pressed) {
-  (void)button_is_pressed;
-  s_button_was_pressed = true;
-}
 
 void set_led(int on) {
-  s_led_state = on;
   mu_led_io_set(MU_LED_0,on);
 }
 
 int get_led(void) { 
-  return s_led_state; 
+  return mu_led_io_get(MU_LED_0); 
 }
 
-=======
 static void button_cb(uint8_t button_id, bool button_is_pressed) {
   (void)button_id;
 
@@ -102,4 +95,3 @@ static void button_cb(uint8_t button_id, bool button_is_pressed) {
     s_button_was_pressed = true;
   }
 }
->>>>>>> 1b90a926f66ea41c20d33deabf81929765634e7e:examples/shared/platform_test_eg/platform_test.c
