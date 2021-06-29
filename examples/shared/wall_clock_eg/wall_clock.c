@@ -58,7 +58,20 @@ void wall_clock_step(void) {
   unsigned char kp = mu_term_get_current_keypress();
   if(kp == 'q') exit(0);
 }
+  
+ static char _local_time_string[16];
 
+char *local_time_string() {
+ struct tm  ts;
+  time_t now;
+
+  time(&now);
+  //now = mu_rtc_now() / 1000;
+
+  ts = *localtime(&now);  // Fill in the tm structure
+  strftime(_local_time_string, sizeof(_local_time_string), "%I:%M:%S", &ts); // %H for 24H
+  return _local_time_string;
+}
 
 void mu_begin_polling_clock() {
   mu_task_init(&clock_poll_ctx.task, clock_poll_fn, &clock_poll_ctx, "clock_poll");
@@ -68,23 +81,10 @@ void mu_begin_polling_clock() {
 static void clock_poll_fn(void *ctx, void *arg) {
   (void)ctx;  // unused
   (void)arg;  // unused
-  struct tm  ts;
-  char       buf[80];
-  time_t now;
-  
-  //now = mu_rtc_now() / 1000;
-  time(&now);
-  // Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
-  ts = *localtime(&now);
-
-  //strftime(buf, sizeof(buf), "%a %Y-%m-%d %H:%M:%S %Z", &ts);
-  strftime(buf, sizeof(buf), "%H:%M:%S", &ts);
+ 
   mu_ansi_term_clear_screen();
   mu_ansi_term_set_cursor_position(0,0);
-  print_string_using_big_font(buf);
-
-  //printf("%s\n", buf);
-  //printf("%ld\n",now);
+  print_string_using_big_font(local_time_string());
   mu_duration_t delay = MU_TIME_MS_TO_DURATION(CLOCK_POLL_INTERVAL_MS);
   mu_sched_task_in(&clock_poll_ctx.task, delay);
 }
