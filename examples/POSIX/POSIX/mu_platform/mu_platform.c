@@ -28,7 +28,7 @@
 #include "mu_platform.h"
 #include "mu_button_io.h"
 #include "mu_led_io.h"
-#include "mu_time.h"
+#include "mu_rtc.h"
 
 // =============================================================================
 // Private types and definitions

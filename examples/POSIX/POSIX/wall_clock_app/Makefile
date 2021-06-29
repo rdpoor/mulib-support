@@ -36,6 +36,9 @@ CFLAGS = -Wall -Werror -g -DMU_LOG_ENABLED
 
 IFLAGS = -I $(SRC_MULIB_DIR) -I $(SRC_MU_PLATFORM_DIR) -I $(SRC_WALL_CLOCK_EG_DIR) -I $(SRC_MULIB_EXTRAS_DIR)
 
+# alacarte: $(SRC_MULIB_CORE_DIR)/mu_sched.o $(SRC_MULIB_CORE_DIR)/mu_dlist.o $(SRC_MULIB_CORE_DIR)/mu_thunk.o $(SRC_MULIB_CORE_DIR)/mu_spsc.o $(SRC_MULIB_CORE_DIR)/mu_task.o $(SRC_MU_PLATFORM_DIR)/mu_time.o $(SRC_MU_PLATFORM_DIR)/mu_rtc.o $(SRC_MULIB_EXTRAS_DIR)/mu_ansi_term.o $(OBJECTS_WALL_CLOCK_EG) main.o
+# 	$(CC) $(SRC_MULIB_CORE_DIR)/mu_sched.o $(SRC_MULIB_CORE_DIR)/mu_dlist.o $(SRC_MULIB_CORE_DIR)/mu_thunk.o $(SRC_MULIB_CORE_DIR)/mu_spsc.o $(SRC_MULIB_CORE_DIR)/mu_task.o $(SRC_MU_PLATFORM_DIR)/mu_time.o $(SRC_MU_PLATFORM_DIR)/mu_rtc.o $(SRC_MULIB_EXTRAS_DIR)/mu_ansi_term.o $(OBJECTS_WALL_CLOCK_EG) main.o -o $(WALL_CLOCK_EG)
+
 all: $(OBJECTS_MULIB_CORE) $(OBJECTS_MULIB_EXTRAS) $(OBJECTS_MU_PLATFORM) $(OBJECTS_WALL_CLOCK_EG) $(SRC_MULIB_DIR)/mulib.o main.o
 	$(CC) $(CFLAGS) $(IFLAGS) $(OBJECTS_MULIB_CORE) $(OBJECTS_MULIB_EXTRAS) $(OBJECTS_MU_PLATFORM) $(OBJECTS_WALL_CLOCK_EG) $(SRC_MULIB_DIR)/mulib.o main.o -o $(WALL_CLOCK_EG)
 
@@ -46,8 +49,6 @@ clean:
 	rm -rf $(BUILD_DIR)
 	rm main.o
 
-.c.o:
-	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
 $(BUILD_MULIB_CORE_DIR)/%.o : $(SRC_MULIB_CORE_DIR)/%.c $(SRC_MULIB_CORE_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/*.h
 	@mkdir -p $(@D)
@@ -63,4 +64,7 @@ $(BUILD_MU_PLATFORM_DIR)/%.o: $(SRC_MU_PLATFORM_DIR)/%.c $(SRC_MU_PLATFORM_DIR)/
 
 $(BUILD_WALL_CLOCK_EG_DIR)/%.o: $(SRC_WALL_CLOCK_EG_DIR)/%.c $(SRC_WALL_CLOCK_EG_DIR)/*.h
 	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
+
+.c.o:
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@

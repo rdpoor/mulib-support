@@ -72,9 +72,7 @@ void platform_test_init(void) {
   printf("LED is %s\n", mu_led_io_get(MU_LED_0) ? "on" : "off");
   printf("Press button or key to toggle LED.");
   printf("\n'q' or CTRL-C to quit.");
-
   mu_begin_polling_for_keypress();
-  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
 }
 
 void platform_test_step(void) {

@@ -35,7 +35,7 @@ extern "C" {
 #include "mu_config.h"
 #include "mu_led_io.h"
 #include "mu_button_io.h"
-#include "mu_time.h"
+#include "mu_rtc.h"
 
 // =============================================================================
 // types and definitions

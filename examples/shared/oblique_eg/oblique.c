@@ -82,7 +82,6 @@ void oblique_init() {
   mu_task_init(&s_oblique_ctx.task, oblique_task_fn, &s_oblique_ctx, "Oblique");
   mu_button_io_set_callback(button_cb);
   mu_begin_polling_for_keypress();
-  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
   mu_ansi_term_clear_screen();
   printf("oblique_app v%s mulib v%s: Press user button or any key to start...\n", VERSION, MU_VERSION);
   while (!button_was_pressed && mu_term_get_current_keypress() == 0) {

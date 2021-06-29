@@ -10,12 +10,18 @@
 
 #include "wall_clock.h"
 #include "ansi_big_font.h"
-#include <mulib.h>
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "mu_platform.h"
+
+
+// here we include mu modules a la carte 
+#include "mu_rtc.h"
+#include "mu_ansi_term.h"
+//#include "mu_sched.h"
+
 
 // =============================================================================
 // Local types and definitions
@@ -23,8 +29,6 @@
 
 // =============================================================================
 // Local (forward) declarations
-
-static void button_cb(uint8_t button_id, bool button_is_pressed);
 
 void mu_begin_polling_clock();
 static void clock_poll_fn(void *ctx, void *arg);
@@ -36,27 +40,18 @@ typedef struct {
 
 static clock_poll_ctx_t clock_poll_ctx;
 
-volatile static bool s_button_was_pressed;
-
 // =============================================================================
 // Public code
 
 void wall_clock_init(void) {
-  mulib_init();
+  mu_time_init();
+  mu_sched_init();
   mu_ansi_term_clear_screen();
-  mu_ansi_term_set_foreground_color(MU_ANSI_TERM_YELLOW);
-  //mu_ansi_term_set_cursor_visible(false);
-  print_string_using_big_font("67:89");
-  //mu_platform_init();
-  mu_button_io_set_callback(button_cb);
-  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
   mu_begin_polling_clock();
 }
 
 void wall_clock_step(void) {
   mu_sched_step();
-  unsigned char kp = mu_term_get_current_keypress();
-  if(kp == 'q') exit(0);
 }
   
  static char _local_time_string[16];
@@ -93,10 +88,3 @@ static void clock_poll_fn(void *ctx, void *arg) {
 // =============================================================================
 // Local (private) code
 
-static void button_cb(uint8_t button_id, bool button_is_pressed) {
-  (void)button_id;
-
-  if (button_is_pressed) {
-    s_button_was_pressed = true;
-  }
-}
