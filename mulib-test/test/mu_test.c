@@ -51,6 +51,7 @@ int mu_time_test();
 int mu_timer_test();
 int mu_vect_test();
 int mu_version_test();
+int mu_ansi_term_test();
 
 // =============================================================================
 // public code
@@ -59,7 +60,7 @@ int main(void) {
 
   printf("\r\nstarting mu_test...");
 
-/*
+
   mu_test_init();
 
   mu_bvec_test();
@@ -80,6 +81,8 @@ int main(void) {
   mu_vect_test();
   mu_version_test();
 
+  mu_ansi_term_test();
+
 
   printf("ending mu_test: %d error%s out of %d test%s\r\n",
          mu_test_error_count(),
@@ -89,7 +92,7 @@ int main(void) {
 
   return mu_test_error_count();  // return error code 0 on success
 
-  */
+  
 }
 
 // =============================================================================

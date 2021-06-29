@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,57 +23,46 @@
  */
 
 // =============================================================================
-// Includes
+// includes
 
-#include "mu_led_io.h"
-#include "mu_ansi_term.h"
-
-#include <stdio.h>
+#include "mu_test_utils.h"
+#include "extras/mu_ansi_term.h"
+#include <string.h>
 #include <stdint.h>
-#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 // =============================================================================
-// Local types and definitions
+// private types and definitions
 
 // =============================================================================
-// Local storage
+// private declarations
 
-bool s_led_state;
+
+int test_tty();
+
+// static void print_item(const item_t *item);
 
 // =============================================================================
-// Local (forward) declarations
+// local storage
+
 
 // =============================================================================
-// Public code
+// public code
 
-void mu_led_io_init(void) {
-  mu_led_io_set(0, false);
-  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
+void mu_ansi_term_test() {
+  ASSERT(test_tty() == 1);
 }
 
-// Draw a virtual LED at 0,0 on the screen.  Assumes an ANSI compiant terminal.
-void mu_led_io_set(uint8_t led_id, bool on) {
-  (void)led_id;
-
-  s_led_state = on;   // track state
-  //mu_ansi_term_save_cursor_position();
-
-  // draw a green dot at [0,0]
-  //mu_ansi_term_set_foreground_color(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE);
-  mu_ansi_term_set_colors(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE, MU_ANSI_TERM_DEFAULT_COLOR);
-  mu_ansi_term_set_cursor_position(0, 0);
-  puts("•\n");
-  // restore color and cursor position
-  mu_ansi_term_reset();
-  //mu_ansi_term_restore_cursor_position();
- // mu_ansi_term_set_cursor_visible(true);
-}
-
-bool mu_led_io_get(uint8_t led_id) {
-  (void)led_id;
-  return s_led_state;
+int test_tty() {
+  if (!isatty (STDIN_FILENO)) {
+    printf ("Not a terminal.\n");
+    return -1;
+  }
+  return 1;
 }
 
 // =============================================================================
-// Local (static) code
+// private code
+

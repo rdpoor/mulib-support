@@ -6,37 +6,95 @@
 #   Links all the objects into the ../build/mu_test executable
 #   Runs ../build/mu_test
 
-.PHONY: all clean mulib_objects mulib_test_objects
 
-BUILD_DIR := ../build
-BUILD_CORE_DIR := $(BUILD_DIR)/core
-BUILD_EXTRAS_DIR := $(BUILD_DIR)/extras
-BUILD_PLATFORM_DIR := $(BUILD_DIR)/platform
+.PHONY: all clean
 
-# NOTE: use ?= rather than := for late binding: the object files don't exist
-# until make_mulib and make_mulib_test have run.
-CORE_OBJECTS ?= $(wildcard $(BUILD_CORE_DIR)/*.o)
-EXTRAS_OBJECTS ?= $(wildcard $(BUILD_EXTRAS_DIR)/*.o)
-PLATFORM_OBJECTS ?= $(wildcard $(BUILD_PLATFORM_DIR)/*.o)
-TEST_OBJECTS ?= $(wildcard $(BUILD_DIR)/*.o)
-ALL_OBJECTS ?= $(CORE_OBJECTS) $(EXTRAS_OBJECTS) $(PLATFORM_OBJECTS) $(TEST_OBJECTS)
+UNIT_TEST := mu_test
 
-UNIT_TEST := $(BUILD_DIR)/mu_test
+SRC_MULIB_SUPPORT_DIR = ../../../mulib-support
+SRC_MULIB_DIR = $(SRC_MULIB_SUPPORT_DIR)/mulib
+SRC_MULIB_CORE_DIR = $(SRC_MULIB_DIR)/core
+SRC_MULIB_EXTRAS_DIR = $(SRC_MULIB_DIR)/extras
+#SRC_MU_PLATFORM_DIR = ../mu_platform
+SRC_MU_PLATFORM_DIR = ../../examples/POSIX/POSIX/mu_platform/
+SRC_TEST_DIR = ../test
+SRC_TEST_CORE_DIR = $(SRC_TEST_DIR)/core
+SRC_TEST_EXTRAS_DIR = $(SRC_TEST_DIR)/extras
 
-all : mulib_objects mulib_test_objects
-	$(CC) $(CFLAGS) $(IFLAGS) $(ALL_OBJECTS) -o $(UNIT_TEST)
+SOURCES_MULIB_CORE := $(wildcard $(SRC_MULIB_CORE_DIR)/*.c)
+SOURCES_MULIB_EXTRAS := $(wildcard $(SRC_MULIB_EXTRAS_DIR)/*.c)
+SOURCES_MU_PLATFORM := $(wildcard $(SRC_MU_PLATFORM_DIR)/*.c)
+SOURCES_TEST := $(wildcard $(SRC_TEST_DIR)/*.c)
+SOURCES_TEST_CORE := $(wildcard $(SRC_TEST_CORE_DIR)/*.c)
+SOURCES_TEST_EXTRAS := $(wildcard $(SRC_TEST_EXTRAS_DIR)/*.c)
 
-test : all
-	cd $(BUILD_DIR) && $(UNIT_TEST)
+ $(info    SOURCES_TEST_EXTRAS is $(SOURCES_TEST_EXTRAS))
 
-clean :
+
+BUILD_DIR := build
+BUILD_MULIB_CORE_DIR := $(BUILD_DIR)/mulib/core
+BUILD_MULIB_EXTRAS_DIR := $(BUILD_DIR)/mulib/extras
+BUILD_MU_PLATFORM_DIR := $(BUILD_DIR)/mu_platform
+BUILD_TEST_DIR := $(BUILD_DIR)/test
+BUILD_TEST_CORE_DIR := $(BUILD_DIR)/test/core
+BUILD_TEST_EXTRAS_DIR := $(BUILD_DIR)/test/extras
+
+OBJECTS_MULIB_CORE ?= $(patsubst $(SRC_MULIB_CORE_DIR)/%.c, $(BUILD_MULIB_CORE_DIR)/%.o, $(SOURCES_MULIB_CORE))
+OBJECTS_MULIB_EXTRAS ?= $(patsubst $(SRC_MULIB_EXTRAS_DIR)/%.c, $(BUILD_MULIB_EXTRAS_DIR)/%.o, $(SOURCES_MULIB_EXTRAS))
+OBJECTS_MU_PLATFORM ?= $(patsubst $(SRC_MU_PLATFORM_DIR)/%.c, $(BUILD_MU_PLATFORM_DIR)/%.o, $(SOURCES_MU_PLATFORM))
+OBJECTS_TEST ?= $(patsubst $(SRC_TEST_DIR)/%.c, $(BUILD_TEST_DIR)/%.o, $(SOURCES_TEST))
+OBJECTS_TEST_CORE ?= $(patsubst $(SRC_TEST_CORE_DIR)/%.c, $(BUILD_TEST_CORE_DIR)/%.o, $(SOURCES_TEST_CORE))
+OBJECTS_TEST_EXTRAS ?= $(patsubst $(SRC_TEST_EXTRAS_DIR)/%.c, $(BUILD_TEST_EXTRAS_DIR)/%.o, $(SOURCES_TEST_EXTRAS))
+
+ $(info    OBJECTS_MULIB_CORE is $(OBJECTS_MULIB_CORE))
+ $(info    OBJECTS_MULIB_EXTRAS is $(OBJECTS_MULIB_EXTRAS))
+ $(info    OBJECTS_MU_PLATFORM is $(OBJECTS_MU_PLATFORM))
+ $(info    OBJECTS_TEST is $(OBJECTS_TEST))
+ $(info    OBJECTS_TEST_CORE is $(OBJECTS_TEST_CORE))
+ $(info    OBJECTS_TEST_EXTRAS is $(OBJECTS_TEST_EXTRAS))
+
+
+
+CFLAGS = -Wall -Werror -g -DMU_LOG_ENABLED
+
+IFLAGS = -I $(SRC_MULIB_DIR) -I $(SRC_MU_PLATFORM_DIR) -I $(SRC_TEST_DIR) -I $(SRC_MULIB_EXTRAS_DIR)
+
+# alacarte: $(SRC_MULIB_CORE_DIR)/mu_sched.o $(SRC_MULIB_CORE_DIR)/mu_dlist.o $(SRC_MULIB_CORE_DIR)/mu_thunk.o $(SRC_MULIB_CORE_DIR)/mu_spsc.o $(SRC_MULIB_CORE_DIR)/mu_task.o $(SRC_MU_PLATFORM_DIR)/mu_time.o $(SRC_MU_PLATFORM_DIR)/mu_rtc.o $(SRC_MULIB_EXTRAS_DIR)/mu_ansi_term.o $(OBJECTS_WALL_CLOCK_EG) main.o
+# 	$(CC) $(SRC_MULIB_CORE_DIR)/mu_sched.o $(SRC_MULIB_CORE_DIR)/mu_dlist.o $(SRC_MULIB_CORE_DIR)/mu_thunk.o $(SRC_MULIB_CORE_DIR)/mu_spsc.o $(SRC_MULIB_CORE_DIR)/mu_task.o $(SRC_MU_PLATFORM_DIR)/mu_time.o $(SRC_MU_PLATFORM_DIR)/mu_rtc.o $(SRC_MULIB_EXTRAS_DIR)/mu_ansi_term.o $(OBJECTS_WALL_CLOCK_EG) main.o -o $(WALL_CLOCK_EG)
+
+test: $(OBJECTS_MULIB_CORE) $(OBJECTS_MULIB_EXTRAS) $(OBJECTS_MU_PLATFORM) $(OBJECTS_TEST) $(OBJECTS_TEST_CORE) $(OBJECTS_TEST_EXTRAS) 
+	$(CC) $(CFLAGS) $(IFLAGS) $(OBJECTS_MULIB_CORE) $(OBJECTS_MULIB_EXTRAS) $(OBJECTS_MU_PLATFORM) $(OBJECTS_TEST) $(OBJECTS_TEST_CORE) $(OBJECTS_TEST_EXTRAS) -o $(UNIT_TEST)
+
+run: all
+	./$(UNIT_TEST)
+
+clean:
 	rm -rf $(BUILD_DIR)
 
-mulib_objects :
-	make -f make_mulib
 
-mulib_test_objects :
-	make -f make_mulib_test
+$(BUILD_MULIB_CORE_DIR)/%.o : $(SRC_MULIB_CORE_DIR)/%.c $(SRC_MULIB_CORE_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/*.h
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
+$(BUILD_MULIB_EXTRAS_DIR)/%.o: $(SRC_MULIB_EXTRAS_DIR)/%.c $(SRC_MULIB_EXTRAS_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/*.h
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
+$(BUILD_MU_PLATFORM_DIR)/%.o: $(SRC_MU_PLATFORM_DIR)/%.c $(SRC_MU_PLATFORM_DIR)/*.h
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
+$(BUILD_TEST_DIR)/%.o: $(SRC_TEST_DIR)/%.c $(SRC_TEST_DIR)/*.h
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
+
+$(BUILD_TEST_CORE_DIR)/%.o: $(SRC_TEST_CORE_DIR)/%.c $(SRC_TEST_CORE_DIR)/*.h
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
+
+$(BUILD_TEST_EXTRAS_DIR)/%.o: $(SRC_TEST_EXTRAS_DIR)/%.c $(SRC_TEST_EXTRAS_DIR)/*.h
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
+
+.c.o:
+	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@

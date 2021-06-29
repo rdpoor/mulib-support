@@ -46,7 +46,6 @@ void platform_test_init(void) {
   mu_button_io_set_callback(button_cb);
 
   mu_ansi_term_clear_screen();
-  mu_ansi_term_set_foreground_color(MU_ANSI_TERM_YELLOW);
   mu_ansi_term_set_cursor_visible(false);
 
   printf("\n\rmulib platform_test v%s.\n", VERSION);
