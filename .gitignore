@@ -48,4 +48,7 @@ examples/POSIX/POSIX/morse_1_eg/build/
 examples/POSIX/POSIX/morse_1_eg/main.o
 examples/POSIX/POSIX/morse_1_eg/morse_1_app
 
+examples/POSIX/POSIX/wall_clock_eg/build/
+examples/POSIX/POSIX/wall_clock_eg/main.o
+examples/POSIX/POSIX/wall_clock_eg/wall_clock_app
 

@@ -9,6 +9,7 @@
 // Includes
 
 #include "wall_clock.h"
+#include "ansi_big_font.h"
 #include <mulib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -18,50 +19,22 @@
 
 // =============================================================================
 // Local types and definitions
-
+#define CLOCK_POLL_INTERVAL_MS (200)
 
 // =============================================================================
 // Local (forward) declarations
 
 static void button_cb(uint8_t button_id, bool button_is_pressed);
 
-// =============================================================================
-// Local storage
+void mu_begin_polling_clock();
+static void clock_poll_fn(void *ctx, void *arg);
 
-// note that '\' has to be escaped as "\\"
-static int big_font_line_count = 6;
-// star wars font from https://manytools.org/hacker-tools/ascii-banner/
-const char *big_font[] = {
-  "  ___    / _ \\  | | | | | | | | | |_| |  \\___/  ", // 0
-  " __  /_ |  | |  | |  | |  |_| ", // 1
-  " ___   |__ \\     ) |   / /   / /_  |____| ", // 2
-  " ____   |___ \\    __) |  |__ <   ___) | |____/  ", // 3
-  " _  _    | || |   | || |_  |__   _|    | |      |_|   ", // 4
-  " _____  | ____| | |__   |___ \\   ___) | |____/  ", // 5
-  "   __     / /    / /_   | '_ \\  | (_) |  \\___/  ", // 6
-  " ______  |____  |     / /     / /     / /     /_/     ", // 7
-  "  ___    / _ \\  | (_) |  > _ <  | (_) |  \\___/  ", // 8
-  "  ___    / _ \\  | (_) |  \\__, |    / /    /_/   ", // 9
-  "     _  (_)      _  (_)    ", // :
-  "    _ (_)    _ (_)" // :
-};
+typedef struct {
+  mu_task_t task;
+  unsigned char key_char;
+} clock_poll_ctx_t;
 
-int big_font_index_for_char(char c) {
-  if(c == ':') return 10;
-  return c - 48;
-}
-
-void print_string_using_big_font(char *wut) {
-  for(int i = 0; i < big_font_line_count; i++) {
-    for(int ci = 0; ci < strlen(wut); ci++) {
-     char c = wut[ci];
-      const char *s = big_font[big_font_index_for_char(c)];
-      int line_len = strlen(s) / big_font_line_count;
-      printf("%.*s ", line_len, s + (line_len * i)); 
-    }
-    printf("\n");
-  }
-}
+static clock_poll_ctx_t clock_poll_ctx;
 
 volatile static bool s_button_was_pressed;
 
@@ -69,18 +42,15 @@ volatile static bool s_button_was_pressed;
 // Public code
 
 void wall_clock_init(void) {
-  print_string_using_big_font("67:89");
   mulib_init();
-  //mu_platform_init();
-  mu_button_io_set_callback(button_cb);
-
   mu_ansi_term_clear_screen();
   mu_ansi_term_set_foreground_color(MU_ANSI_TERM_YELLOW);
-  mu_ansi_term_set_cursor_visible(false);
-
-  
-  //mu_begin_polling_for_keypress();
+  //mu_ansi_term_set_cursor_visible(false);
+  print_string_using_big_font("67:89");
+  //mu_platform_init();
+  mu_button_io_set_callback(button_cb);
   atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
+  mu_begin_polling_clock();
 }
 
 void wall_clock_step(void) {
@@ -88,6 +58,37 @@ void wall_clock_step(void) {
   unsigned char kp = mu_term_get_current_keypress();
   if(kp == 'q') exit(0);
 }
+
+
+void mu_begin_polling_clock() {
+  mu_task_init(&clock_poll_ctx.task, clock_poll_fn, &clock_poll_ctx, "clock_poll");
+  mu_sched_task_now(&clock_poll_ctx.task);
+}
+
+static void clock_poll_fn(void *ctx, void *arg) {
+  (void)ctx;  // unused
+  (void)arg;  // unused
+  struct tm  ts;
+  char       buf[80];
+  time_t now;
+  
+  //now = mu_rtc_now() / 1000;
+  time(&now);
+  // Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
+  ts = *localtime(&now);
+
+  //strftime(buf, sizeof(buf), "%a %Y-%m-%d %H:%M:%S %Z", &ts);
+  strftime(buf, sizeof(buf), "%H:%M:%S", &ts);
+  mu_ansi_term_clear_screen();
+  mu_ansi_term_set_cursor_position(0,0);
+  print_string_using_big_font(buf);
+
+  //printf("%s\n", buf);
+  //printf("%ld\n",now);
+  mu_duration_t delay = MU_TIME_MS_TO_DURATION(CLOCK_POLL_INTERVAL_MS);
+  mu_sched_task_in(&clock_poll_ctx.task, delay);
+}
+
 
 // =============================================================================
 // Local (private) code
