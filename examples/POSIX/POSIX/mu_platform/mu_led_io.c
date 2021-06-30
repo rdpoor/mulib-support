@@ -48,9 +48,12 @@ bool s_led_state;
 // Public code
 
 void mu_led_io_init(void) {
+  //mu_ansi_term_enter_noncanonical_mode();
   mu_led_io_set(0, false);
   atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
 }
+
+//static uint8_t _cursor_x, _cursor_y;
 
 // Draw a virtual LED at 0,0 on the screen.  Assumes an ANSI compiant terminal.
 void mu_led_io_set(uint8_t led_id, bool on) {
@@ -58,14 +61,15 @@ void mu_led_io_set(uint8_t led_id, bool on) {
 
   s_led_state = on;   // track state
   //mu_ansi_term_save_cursor_position();
-
+  //mu_ansi_term_get_cursor_position(&_cursor_x, &_cursor_y);
   // draw a green dot at [0,0]
   //mu_ansi_term_set_foreground_color(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE);
   mu_ansi_term_set_colors(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE, MU_ANSI_TERM_DEFAULT_COLOR);
   mu_ansi_term_set_cursor_position(0, 0);
-  puts("•\n");
+  printf("•\n");
   // restore color and cursor position
   mu_ansi_term_reset();
+ // mu_ansi_term_set_cursor_position(_cursor_x, _cursor_y);
   //mu_ansi_term_restore_cursor_position();
  // mu_ansi_term_set_cursor_visible(true);
 }

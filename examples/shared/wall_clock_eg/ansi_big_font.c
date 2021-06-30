@@ -35,6 +35,7 @@ const char *big_font[] = {
 
 int big_font_index_for_char(char c) {
   if(c == ':') return 10;
+  if(c < 48 || c > 58) return 10; // to avoid a crash 
   return c - 48;
 }
 

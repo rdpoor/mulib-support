@@ -44,10 +44,10 @@ static clock_poll_ctx_t clock_poll_ctx;
 // Public code
 
 void wall_clock_init(void) {
+  // a l carte means we are responsible for calling these inits
   mu_time_init();
   mu_sched_init();
   mu_ansi_term_init();
-  mu_ansi_term_clear_screen();
   mu_ansi_term_set_cursor_visible(false);
   mu_begin_polling_clock();
 }

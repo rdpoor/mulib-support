@@ -27,10 +27,11 @@
 
 #include "morse_1.h"
 
-#include <mulib.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+
+#include <mulib.h>
 #include "mu_platform.h"
 
 // =============================================================================
@@ -97,7 +98,7 @@ void morse_1_step(void) {
 // two arguments: morse_1's state ('context') and a user-supplied argument
 // (currently unused).
 //
-// If the LED is off, turn is on for on_time.  If the LED is on, turn it off
+// If the LED is off, turn it on for on_time.  If the LED is on, turn it off
 // for off_time.
 //
 static void task_fn(void *ctx, void *arg) {
@@ -108,8 +109,5 @@ static void task_fn(void *ctx, void *arg) {
   // Toggle the internal state and make the LED match the internal state
   self->led_is_on = !self->led_is_on;
   mu_led_io_set(MU_LED_0, self->led_is_on);
-  // Reschedule the blink_basic task in the specified amount of time.
-  //mu_sched_task_in(&s_ctx.task, self->led_is_on ? self->on_time : self->off_time);
-  //mu_sched_reschedule_in(self->led_is_on ? self->on_time : self->off_time);
   mu_sched_reschedule_in(s_ctx.led_is_on ? s_ctx.on_time : s_ctx.off_time);
 }

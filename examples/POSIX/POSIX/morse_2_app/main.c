@@ -1,7 +1,4 @@
 #include "morse_2.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <mulib.h>
 
 /**
  * main.c

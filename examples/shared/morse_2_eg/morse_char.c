@@ -28,15 +28,17 @@
 #include "morse_char.h"
 
 #include <mulib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 // =============================================================================
 // Local types and definitions
 
 // Define Morse timing constants
-#define MORSE_CHAR_QUANTUM MU_TIME_MS_TO_DURATION(100)
+#define MORSE_CHAR_QUANTUM MU_TIME_MS_TO_DURATION(200)
 #define MORSE_SHORT_MARK (1 * MORSE_CHAR_QUANTUM)
 #define MORSE_LONG_MARK (3 * MORSE_CHAR_QUANTUM)
-#define MORSE_INTRA_CHAR_GAP (1 * MORSE_CHAR_QUANTUM)
+#define MORSE_INTRA_CHAR_GAP (2 * MORSE_CHAR_QUANTUM)
 #define MORSE_INTER_CHAR_GAP (5 * MORSE_CHAR_QUANTUM)
 #define MORSE_INTER_WORD_GAP (11 * MORSE_CHAR_QUANTUM)
 
@@ -156,21 +158,27 @@ mu_task_t *morse_char_init(char ascii, mu_task_t *on_completion) {
 
 // =============================================================================
 // Local (private) code
+static uint8_t nchars = 0;
 
 static void task_fn(void *ctx, void *arg) {
   // Recast the void * argument to a ctx_t * argument.
   ctx_t *self = (ctx_t *)ctx;
   (void)arg;  // unused
 
+
   switch(*self->s++) {
     case '.':  // dot: turn LED on for MORSE_SHORT_MARK
     mu_led_io_set(MU_LED_0, true);
     mu_sched_reschedule_in(MORSE_SHORT_MARK);
+    mu_ansi_term_set_cursor_position(2,nchars++);
+    fputc('.',stdout);
     break;
 
     case '-':  // dash: turn LED on for MORSE_LONG_MARK
     mu_led_io_set(MU_LED_0, true);
     mu_sched_reschedule_in(MORSE_LONG_MARK);
+    mu_ansi_term_set_cursor_position(2,nchars++);
+    fputc('-',stdout);
     break;
 
     case ' ':  // intra-character: turn LED off for MORSE_INTRA_CHAR_GAP
@@ -182,6 +190,7 @@ static void task_fn(void *ctx, void *arg) {
     // Arrive here when the character has been emitted: turn the LED off and
     // call the on_completion task after MORSE_INTER_CHAR_GAP
     mu_led_io_set(MU_LED_0, false);
+    nchars += 2;
     if (self->on_completion != NULL) {
       mu_sched_task_in(self->on_completion, MORSE_INTER_CHAR_GAP);
     }

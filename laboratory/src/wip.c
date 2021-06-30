@@ -43,3 +43,14 @@ for( i = 0, ch = 0; ch != 'R'; i++ )
 void mu_ansi_term_restore_cursor_position2(void) {
   mu_ansi_term_set_cursor_position(_cursor_x,_cursor_y);
 } 
+
+
+
+
+/* Makefile a la carte testing
+
+# alacarte: $(SRC_MULIB_CORE_DIR)/mu_sched.o $(SRC_MULIB_CORE_DIR)/mu_dlist.o $(SRC_MULIB_CORE_DIR)/mu_thunk.o $(SRC_MULIB_CORE_DIR)/mu_spsc.o $(SRC_MULIB_CORE_DIR)/mu_task.o $(SRC_MU_PLATFORM_DIR)/mu_time.o $(SRC_MU_PLATFORM_DIR)/mu_rtc.o $(SRC_MULIB_EXTRAS_DIR)/mu_ansi_term.o $(OBJECTS_WALL_CLOCK_EG) main.o
+#   $(CC) $(SRC_MULIB_CORE_DIR)/mu_sched.o $(SRC_MULIB_CORE_DIR)/mu_dlist.o $(SRC_MULIB_CORE_DIR)/mu_thunk.o $(SRC_MULIB_CORE_DIR)/mu_spsc.o $(SRC_MULIB_CORE_DIR)/mu_task.o $(SRC_MU_PLATFORM_DIR)/mu_time.o $(SRC_MU_PLATFORM_DIR)/mu_rtc.o $(SRC_MULIB_EXTRAS_DIR)/mu_ansi_term.o $(OBJECTS_WALL_CLOCK_EG) main.o -o $(WALL_CLOCK_EG)
+
+
+*/
