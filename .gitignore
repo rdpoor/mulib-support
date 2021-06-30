@@ -52,7 +52,7 @@ examples/POSIX/POSIX/morse_3_app/build/
 examples/POSIX/POSIX/morse_3_app/main.o
 examples/POSIX/POSIX/morse_3_app/morse_3_app
 
-examples/POSIX/POSIX/wall_clock_eg/build/
-examples/POSIX/POSIX/wall_clock_eg/main.o
-examples/POSIX/POSIX/wall_clock_eg/wall_clock_app
+examples/POSIX/POSIX/wall_clock_app/build/
+examples/POSIX/POSIX/wall_clock_app/main.o
+examples/POSIX/POSIX/wall_clock_app/wall_clock_app
 
