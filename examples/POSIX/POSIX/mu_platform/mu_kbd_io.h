@@ -22,14 +22,8 @@
  * SOFTWARE.
  */
 
-/**
- * @file fb.h
- *
- * Frame Buffer uses a double buffer to paint ASCII art onto a screen.
- */
-
-#ifndef FB_H_
-#define FB_H_
+#ifndef _MU_KBD_IO_H_
+#define _MU_KBD_IO_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,52 +32,21 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include <stdint.h>
-
 // =============================================================================
 // types and definitions
+
+// Signature of the keyboard callback function
+typedef void (*mu_kbd_io_callback_t)(char ch);
 
 // =============================================================================
 // declarations
 
-/**
- * @brief Initialize the frame buffer with backing store and display store.
- */
-void fb_init(uint8_t width,
-             uint8_t height,
-             char *backing_store,
-             char *display_store);
+void mu_kdb_io_init(void);
 
-/**
- * @brief erase the screen and reset the backing store.
- */
-void fb_erase(void);
-
-/**
- * @brief Clear the frame buffer backing store.
- */
-void fb_clear(void);
-
-/**
- * @brief Return a pointer to the first char of the given row #.
- */
-char *fb_row_ref(uint8_t row_number);
-
-/**
- * @brief Draw character into the frame buffer backing store at x, y
- */
-void fb_draw(uint8_t x, uint8_t y, char ch);
-
-/**
- * @brief Flush the frame buffer backing store to the screen
- *
- * In theory, this only paints characters that have changed, but that's an
- * implementation detail...
- */
-void fb_flush(void);
+void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef FB_H_ */
+#endif /* #ifndef _MU_KBD_IO_H_ */

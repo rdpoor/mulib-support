@@ -1,7 +1,7 @@
 /**
  * ansi_big_font.c
- * 
- * 
+ *
+ *
  */
 
 // =============================================================================
@@ -35,7 +35,7 @@ const char *big_font[] = {
 
 int big_font_index_for_char(char c) {
   if(c == ':') return 10;
-  if(c < 48 || c > 58) return 10; // to avoid a crash 
+  if(c < 48 || c > 58) return 10; // to avoid a crash
   return c - 48;
 }
 
@@ -45,7 +45,8 @@ void print_string_using_big_font(char *wut) {
      char c = wut[ci];
       const char *s = big_font[big_font_index_for_char(c)];
       int line_len = strlen(s) / big_font_line_count;
-      printf("%.*s ", line_len, s + (line_len * i)); 
+      // sprintf(fb_row_ref(i), "%.*s ", line_len, s + (line_len * i));
+      printf("%.*s ", line_len, s + (line_len * i));
     }
     printf("\n");
   }

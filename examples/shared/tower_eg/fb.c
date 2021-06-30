@@ -74,6 +74,10 @@ void fb_clear(void) {
   memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
 }
 
+char *fb_row_ref(uint8_t row_number) {
+  return &s_fb.backing_store[s_fb.width * row_number];
+}
+
 void fb_draw(uint8_t x, uint8_t y, char ch) {
   // [x=0, y=0] is at bottom left
   s_fb.backing_store[x + (s_fb.height - y - 1) * s_fb.width] = ch;
