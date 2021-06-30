@@ -44,9 +44,13 @@ examples/POSIX/POSIX/morse_1_app/build/
 examples/POSIX/POSIX/morse_1_app/main.o
 examples/POSIX/POSIX/morse_1_app/morse_1_app
 
-examples/POSIX/POSIX/morse_1_eg/build/
-examples/POSIX/POSIX/morse_1_eg/main.o
-examples/POSIX/POSIX/morse_1_eg/morse_1_app
+examples/POSIX/POSIX/morse_2_app/build/
+examples/POSIX/POSIX/morse_2_app/main.o
+examples/POSIX/POSIX/morse_2_app/morse_2_app
+
+examples/POSIX/POSIX/morse_3_app/build/
+examples/POSIX/POSIX/morse_3_app/main.o
+examples/POSIX/POSIX/morse_3_app/morse_3_app
 
 examples/POSIX/POSIX/wall_clock_eg/build/
 examples/POSIX/POSIX/wall_clock_eg/main.o

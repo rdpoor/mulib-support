@@ -58,6 +58,7 @@ static ctx_t s_ctx;
 
 void morse_3_init(void) {
   mulib_init();
+  mu_ansi_term_clear_screen();
 
   printf("\r\nmorse_3 v%s, mulib v%s\n", VERSION, MU_VERSION);
 
