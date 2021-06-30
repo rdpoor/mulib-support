@@ -46,7 +46,7 @@
 void mu_platform_init(void) {
   mu_button_io_init();
   mu_led_io_init();
-  mu_time_init();
+  mu_rtc_init();
   mu_ansi_term_init();
 }
 
