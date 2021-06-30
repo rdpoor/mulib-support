@@ -1,10 +1,6 @@
 # Main makefile for mulib unit testing:
 #
 # `make test`:
-#   Invokes `make_mulib` to compile the mulib object files
-#   Invokes `make_mulib_test` to compille the mulib unit test object files
-#   Links all the objects into the ../build/mu_test executable
-#   Runs ../build/mu_test
 
 
 .PHONY: all clean
@@ -65,7 +61,7 @@ IFLAGS = -I $(SRC_MULIB_DIR) -I $(SRC_MU_PLATFORM_DIR) -I $(SRC_TEST_DIR) -I $(S
 test: $(OBJECTS_MULIB_CORE) $(OBJECTS_MULIB_EXTRAS) $(OBJECTS_MU_PLATFORM) $(OBJECTS_TEST) $(OBJECTS_TEST_CORE) $(OBJECTS_TEST_EXTRAS) 
 	$(CC) $(CFLAGS) $(IFLAGS) $(OBJECTS_MULIB_CORE) $(OBJECTS_MULIB_EXTRAS) $(OBJECTS_MU_PLATFORM) $(OBJECTS_TEST) $(OBJECTS_TEST_CORE) $(OBJECTS_TEST_EXTRAS) -o $(UNIT_TEST)
 
-run: all
+run: test
 	./$(UNIT_TEST)
 
 clean:

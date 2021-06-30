@@ -26,17 +26,20 @@
 // Includes
 
 #include "tower.h"
-
 #include "animator.h"
 #include "disk.h"
 #include "fb.h"
 #include "pole.h"
-#include <mulib.h>
+
+// here we include mu modules a la carte -- this means we need to call  mu_time_init() and mu_sched_init() which we do in our own tower_init()
+#include "mu_rtc.h"
+#include "mu_ansi_term.h"
+#include "mu_platform.h"
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "mu_platform.h"
 
 // =============================================================================
 // Local types and definitions
@@ -105,7 +108,9 @@ static void reset(void);
 // Public code
 
 void tower_init(void) {
-  mulib_init();
+  mu_time_init();
+  mu_sched_init();
+
   mu_ansi_term_set_cursor_visible(false);
   mu_button_io_set_callback(NULL);
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");

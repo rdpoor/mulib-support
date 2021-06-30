@@ -1,9 +1,4 @@
 #include "tower.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <mulib.h>
-#include "mu_platform.h"
-
 /**
  * main.c
  */

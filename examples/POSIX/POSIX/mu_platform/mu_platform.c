@@ -29,6 +29,7 @@
 #include "mu_button_io.h"
 #include "mu_led_io.h"
 #include "mu_rtc.h"
+#include "mu_ansi_term.h"
 
 // =============================================================================
 // Private types and definitions
@@ -46,6 +47,7 @@ void mu_platform_init(void) {
   mu_button_io_init();
   mu_led_io_init();
   mu_time_init();
+  mu_ansi_term_init();
 }
 
 // =============================================================================
