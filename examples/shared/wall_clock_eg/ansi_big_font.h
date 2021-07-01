@@ -22,9 +22,6 @@ extern "C" {
 
 void print_string_using_big_font(char *wut);
 
-char *test_comp(char * s);
-void try(void);
-
 #ifdef __cplusplus
 }
 #endif

@@ -62,15 +62,6 @@ void wall_clock_init(void) {
   mu_time_init();
   mu_sched_init();
   mu_ansi_term_init();
-
-  //test_comp("  ___    / _ \\  | | | | | | | | | |_| |  \\___/  ");
-  test_comp("####### #   ######## # #  ### # ##### ### #  #### #");
-
-  try();
-
-  exit(0);
-
-
   mu_ansi_term_set_cursor_visible(false);
   mu_ansi_term_clear_screen();
   fb_init(TERM_WIDTH, TERM_HEIGHT, s_backing_buf, s_display_buf);
@@ -84,22 +75,6 @@ void wall_clock_step(void) {
 
 // =============================================================================
 // Local (private) code
-
-
-/*
-static void test1() {
-  long long a = 0b000110000010010001000010011111100100001001000010; // 26544013460034
-  printf("a %lld\n",a);
-  long long temp = a;
-  for(int i = 0;i<64;i++) {
-    if(temp & 1) printf("#");
-    else printf(" ");
-    if((i % 6) == 5) printf("\n");
-    temp = temp >> 1;
-  }
-}
-*/
-
 
 // non-POSIX systems will need to use mu_rtc_now() / 1000 instead of time(&now)
 static char *local_time_string() {
