@@ -40,8 +40,6 @@ extern "C";
 // =============================================================================
 // types and definitions
 
-#define NANOSECS_PER_S  (1000000000)
-#define NANOSECS_PER_MS (1000000)
 #define MS_PER_SECOND (1000L)
 
 #define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)(((((mu_duration_t)ms)*MS_PER_SECOND))/RTC_FREQUENCY))
@@ -50,8 +48,8 @@ extern "C";
  * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
  * specific mu_time.h
  */
-typedef uint32_t mu_time_t;
-typedef int32_t mu_duration_t;
+typedef uint32_t mu_time_t;        // absolute number of ticks since startup (with rollover)
+typedef int32_t mu_duration_t;     // relative number of ticks
 typedef int32_t mu_duration_ms_t;
 
 // =============================================================================
