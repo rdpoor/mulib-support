@@ -16,11 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-// here we include mu modules a la carte
-#include "mu_rtc.h"
-#include "mu_ansi_term.h"
-//#include "mu_sched.h"
+#include "mulib.h"
 
 
 // =============================================================================

@@ -53,6 +53,8 @@
 // Local (forward) declarations
 
 static void button_cb(uint8_t button_id, bool button_is_pressed);
+static void kbd_cb(unsigned char ch);
+
 
 static void oblique_task_fn(void *ctx, void *arg);
 
@@ -65,7 +67,8 @@ typedef struct {
 
 static oblique_ctx_t s_oblique_ctx;
 
-static bool button_was_pressed = false;
+static bool user_was_impatient = false;
+static char _most_recent_character = 'x';
 
 // =============================================================================
 // Public code
@@ -81,24 +84,25 @@ void oblique_init() {
   mulib_init();
   mu_task_init(&s_oblique_ctx.task, oblique_task_fn, &s_oblique_ctx, "Oblique");
   mu_button_io_set_callback(button_cb);
-  mu_begin_polling_for_keypress();
+  mu_kbd_io_set_callback(kbd_cb);
   mu_ansi_term_clear_screen();
   printf("oblique_app v%s mulib v%s: Press user button or any key to start...\n", VERSION, MU_VERSION);
-  while (!button_was_pressed && mu_term_get_current_keypress() == 0) {
-    mu_sched_step(); // because no IRQ is available for reading the terminal, we called mu_begin_polling_for_keypress() to make the temrinal noncanonical and check it several times per second
+  user_was_impatient = false;
+  while (!user_was_impatient) {
     seed += 1;
   }
+  user_was_impatient = false;
   mu_random_seed(seed);
   mu_sched_task_now(&s_oblique_ctx.task); // initiates the periodic printing of a new strategy
 }
 
 void oblique_step() {
   mu_sched_step();
-  unsigned char kp = mu_term_get_current_keypress();
+  unsigned char kp = _most_recent_character;
   if(kp == 'q') exit(0);
-  if(kp || button_was_pressed) {
+  if(user_was_impatient) {
     strategies_choose_and_print(); // print an oblique strategy immediately
-    button_was_pressed = false;
+    user_was_impatient = false;
   }
 }
 
@@ -117,5 +121,12 @@ static void oblique_task_fn(void *ctx, void *arg) {
 
 static void button_cb(uint8_t button_id, bool button_is_pressed) {
   (void)button_id;
-  button_was_pressed = true;
+  user_was_impatient = true;
+  printf("hey button_cb\n");
 }
+
+static void kbd_cb(unsigned char ch) {
+  _most_recent_character = ch; // TODO -- calling this from POSIX thread violates the single thread thing -- really should just call sched_isr_task_now BUT we cant store ch without violating this...
+  user_was_impatient = true;
+}
+

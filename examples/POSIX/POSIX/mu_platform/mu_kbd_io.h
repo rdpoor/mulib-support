@@ -31,12 +31,14 @@ extern "C" {
 
 // =============================================================================
 // includes
-
+#include <termios.h>
+#include "mulib.h"
 // =============================================================================
 // types and definitions
 
+
 // Signature of the keyboard callback function
-typedef void (*mu_kbd_io_callback_t)(char ch);
+typedef void (*mu_kbd_io_callback_t)(unsigned char ch);
 
 // =============================================================================
 // declarations
@@ -44,6 +46,19 @@ typedef void (*mu_kbd_io_callback_t)(char ch);
 void mu_kdb_io_init(void);
 
 void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb);
+
+void fire_kbd_io_callback(char ch);
+
+void mu_kbd_enter_noncanonical_mode(void);
+
+void mu_kbd_exit_noncanonical_mode(void);
+
+int mu_kbd_get_key_press(void);
+
+int mu_kbd_ncols();
+
+int mu_kbd_nrows();
+
 
 #ifdef __cplusplus
 }

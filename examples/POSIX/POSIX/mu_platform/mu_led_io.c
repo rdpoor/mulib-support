@@ -50,7 +50,7 @@ bool s_led_state;
 void mu_led_io_init(void) {
   //mu_ansi_term_enter_noncanonical_mode();
   mu_led_io_set(0, false);
-  atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
+  //atexit(mu_ansi_term_exit_noncanonical_mode); // restores terminal attributes
 }
 
 //static uint8_t _cursor_x, _cursor_y;

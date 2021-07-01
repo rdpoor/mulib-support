@@ -28,6 +28,10 @@ Debug/
 
 *.DS_Store
 
+# Object files
+*.o
+
+
 examples/POSIX/POSIX/tower_app/build/
 examples/POSIX/POSIX/tower_app/main.o
 examples/POSIX/POSIX/tower_app/tower_app
