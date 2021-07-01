@@ -62,6 +62,15 @@ void wall_clock_init(void) {
   mu_time_init();
   mu_sched_init();
   mu_ansi_term_init();
+
+  //test_comp("  ___    / _ \\  | | | | | | | | | |_| |  \\___/  ");
+  test_comp("####### #   ######## # #  ### # ##### ### #  #### #");
+
+  try();
+
+  exit(0);
+
+
   mu_ansi_term_set_cursor_visible(false);
   mu_ansi_term_clear_screen();
   fb_init(TERM_WIDTH, TERM_HEIGHT, s_backing_buf, s_display_buf);
