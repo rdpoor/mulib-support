@@ -25,66 +25,88 @@
 // =============================================================================
 // Includes
 
-#include "morse_2.h"
-#include "morse_char.h"
+#include "fb.h"
 
-#include <mulib.h>
+#include "mu_ansi_term.h"
+
+#include <stdint.h>
+#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
 
-#define VERSION "1.0"
-
 typedef struct {
-  mu_task_t task;
-  char ascii;
-} ctx_t;
-
-// =============================================================================
-// Local (forward) declarations
-
-static void task_fn(void *ctx, void *arg);
+  char *backing_store;
+  char *display_store;
+  uint8_t width;
+  uint8_t height;
+} fb_t;
 
 // =============================================================================
 // Local storage
 
-static ctx_t s_ctx;
+static fb_t s_fb = {.width = 0, .height = 0};
+
+// =============================================================================
+// Local (forward) declarations
 
 // =============================================================================
 // Public code
 
-void morse_2_init(void) {
-  mulib_init();
-  mu_ansi_term_clear_screen();
-  mu_ansi_term_set_cursor_visible(false);
-  atexit(mu_ansi_term_reset);
-
-  printf("\r\nmorse_2 v%s, mulib v%s\n", VERSION, MU_VERSION);
-
-  // initialize the mu_task to associate task_fn with s_ctx
-  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");
-
-  // Initialize s_ctx
-  s_ctx.ascii = 'Y';
-
-  mu_sched_task_now(&s_ctx.task);
+void fb_init(int width,
+             int height,
+             char *backing_store,
+             char *display_store) {
+  s_fb.width = width;
+  s_fb.height = height;
+  s_fb.backing_store = backing_store;
+  s_fb.display_store = display_store;
 }
 
-void morse_2_step(void) {
-  mu_sched_step();
+void fb_erase(void) {
+  mu_ansi_term_home();
+  mu_ansi_term_clear_screen();
+  memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
+  memset(s_fb.display_store, ' ', s_fb.width * s_fb.height);
+}
+
+void fb_clear(void) {
+  memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
+}
+
+void fb_clear_to_end_of_line(char *pos) {
+  int len_to_end, st;
+  st = (pos - s_fb.backing_store) % s_fb.width;
+  len_to_end = s_fb.width - st;
+  memset(pos, ' ', len_to_end);
+}
+
+char *fb_row_ref(int row_number) {
+  if(!s_fb.width) return 0; // detect uninitialized state
+  return &s_fb.backing_store[s_fb.width * row_number];
+}
+
+void fb_draw(int x, int y, char ch) {
+  // [x=0, y=0] is at bottom left
+  s_fb.backing_store[x + (s_fb.height - y - 1) * s_fb.width] = ch;
+}
+
+void fb_flush(void) {
+  int idx = 0;
+  for (uint8_t y = 0; y < s_fb.height; y++) {
+    for (uint8_t x=0; x< s_fb.width; x++) {
+      char ch = s_fb.backing_store[idx];
+      if (ch != s_fb.display_store[idx]) {
+        mu_ansi_term_set_cursor_position(y, x);
+        putchar(ch);
+        s_fb.display_store[idx] = ch;
+      }
+      idx++;
+    }
+  }
+  mu_ansi_term_home();
 }
 
 // =============================================================================
-// Local (private) code
-
-static void task_fn(void *ctx, void *arg) {
-  // Recast the void * argument to a morse_2 ctx_t * argument.
-  ctx_t *self = (ctx_t *)ctx;
-  (void)arg;  // unused
-
-  // Schedule sub-task to blink the ascii and upon completion, call this task.
-  mu_sched_task_now(morse_char_init(self->ascii, &self->task));
-}
+// Local (static) code

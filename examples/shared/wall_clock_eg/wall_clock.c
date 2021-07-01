@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "mulib.h"
 
@@ -41,6 +42,7 @@ static void clock_poll_fn(void *ctx, void *arg);
 static char *local_time_string(void);
 
 static void begin_polling_clock(void);
+
 
 // =============================================================================
 // Local storage
@@ -73,6 +75,22 @@ void wall_clock_step(void) {
 
 // =============================================================================
 // Local (private) code
+
+
+/*
+static void test1() {
+  long long a = 0b000110000010010001000010011111100100001001000010; // 26544013460034
+  printf("a %lld\n",a);
+  long long temp = a;
+  for(int i = 0;i<64;i++) {
+    if(temp & 1) printf("#");
+    else printf(" ");
+    if((i % 6) == 5) printf("\n");
+    temp = temp >> 1;
+  }
+}
+*/
+
 
 // non-POSIX systems will need to use mu_rtc_now() / 1000 instead of time(&now)
 static char *local_time_string() {

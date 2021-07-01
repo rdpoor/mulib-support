@@ -17,11 +17,10 @@
 // =============================================================================
 // Local storage
 
-// note that '\' has to be escaped as "\\"
 static int big_font_line_count = 6;
 // star wars font from https://manytools.org/hacker-tools/ascii-banner/
-const char *big_font[] = {
-  "  ___    / _ \\  | | | | | | | | | |_| |  \\___/  ", // 0
+const char *big_font[] = { // note that '\' has to be escaped as "\\"
+  "  ___    / _ \\  | | | | | | | | | |_| |  \\___/  ", // 0 (48)
   " __  /_ |  | |  | |  | |  |_| ", // 1
   " ___   |__ \\     ) |   / /   / /_  |____| ", // 2
   " ____   |___ \\    __) |  |__ <   ___) | |____/  ", // 3
@@ -32,6 +31,14 @@ const char *big_font[] = {
   "  ___    / _ \\  | (_) |  > _ <  | (_) |  \\___/  ", // 8
   "  ___    / _ \\  | (_) |  \\__, |    / /    /_/   ", // 9
   "     _  (_)      _  (_)    ", // :
+
+  "   ##     #  #   #    #  ######  #    #  #    # ", // a (97) 48 bytes
+  "#####   #    #  #####   #    #  #    #  ##### ", // b
+
+
+  "   ##3 #  #1 #2 #  4#  #2 #  #1 # ", // a (97) -- mult compression 34 bytes
+  "   ##     #  #   #    #  ######  #    #  #    # ", // a (97)
+   // 13272006730017 a (97) uint64_t -- 8 bytes
 };
 
 static int big_font_index_for_char(char c) {
@@ -54,7 +61,7 @@ void print_string_using_big_font(char *wut) {
       sprintf(fb_line_start, "%.*s ", line_len, s + (line_len * i));
       fb_line_start += line_len + 1;
     }
-    // we clear the line all the way to the end, to make sure that we erase anything left over from wider characters printed on the prior cycle
+    // we clear the line all the way to the end, to make sure that we erase anything left over from wider characters printed previously
     fb_clear_to_end_of_line(fb_line_start);
   }
   fb_flush();

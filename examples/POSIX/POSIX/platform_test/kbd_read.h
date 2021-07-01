@@ -22,69 +22,32 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// Includes
+#ifndef __KBD_READ_H_
+#define __KBD_READ_H_
 
-#include "morse_2.h"
-#include "morse_char.h"
-
-#include <mulib.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// Local types and definitions
+// includes
 
-#define VERSION "1.0"
-
-typedef struct {
-  mu_task_t task;
-  char ascii;
-} ctx_t;
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
-// Local (forward) declarations
-
-static void task_fn(void *ctx, void *arg);
+// types and definitions
 
 // =============================================================================
-// Local storage
+// declarations
 
-static ctx_t s_ctx;
+void start_kbd_reader_thread(void);
 
-// =============================================================================
-// Public code
-
-void morse_2_init(void) {
-  mulib_init();
-  mu_ansi_term_clear_screen();
-  mu_ansi_term_set_cursor_visible(false);
-  atexit(mu_ansi_term_reset);
-
-  printf("\r\nmorse_2 v%s, mulib v%s\n", VERSION, MU_VERSION);
-
-  // initialize the mu_task to associate task_fn with s_ctx
-  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");
-
-  // Initialize s_ctx
-  s_ctx.ascii = 'Y';
-
-  mu_sched_task_now(&s_ctx.task);
+#ifdef __cplusplus
 }
+#endif
 
-void morse_2_step(void) {
-  mu_sched_step();
-}
+#endif /* #ifndef __KBD_READ_H_ */
 
-// =============================================================================
-// Local (private) code
 
-static void task_fn(void *ctx, void *arg) {
-  // Recast the void * argument to a morse_2 ctx_t * argument.
-  ctx_t *self = (ctx_t *)ctx;
-  (void)arg;  // unused
 
-  // Schedule sub-task to blink the ascii and upon completion, call this task.
-  mu_sched_task_now(morse_char_init(self->ascii, &self->task));
-}
