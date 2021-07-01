@@ -8,6 +8,7 @@
 // Includes
 #include <stdio.h>
 #include <string.h>
+#include "fb.h"
 
 // =============================================================================
 // Local types and definitions
@@ -33,7 +34,7 @@ const char *big_font[] = {
   "     _  (_)      _  (_)    ", // :
 };
 
-int big_font_index_for_char(char c) {
+static int big_font_index_for_char(char c) {
   if(c == ':') return 10;
   if(c < 48 || c > 58) return 10; // to avoid a crash
   return c - 48;
@@ -41,13 +42,20 @@ int big_font_index_for_char(char c) {
 
 void print_string_using_big_font(char *wut) {
   for(int i = 0; i < big_font_line_count; i++) {
+    char *fb_line_start = fb_row_ref(i);
+    if(!fb_line_start) {
+      printf("print_string_using_big_font() needs fb_init(width, height) to have been called.\n");
+      return;
+    }
     for(int ci = 0; ci < strlen(wut); ci++) {
-     char c = wut[ci];
+      char c = wut[ci];
       const char *s = big_font[big_font_index_for_char(c)];
       int line_len = strlen(s) / big_font_line_count;
-      // sprintf(fb_row_ref(i), "%.*s ", line_len, s + (line_len * i));
-      printf("%.*s ", line_len, s + (line_len * i));
+      sprintf(fb_line_start, "%.*s ", line_len, s + (line_len * i));
+      fb_line_start += line_len + 1;
     }
-    printf("\n");
+    // we clear the line all the way to the end, to make sure that we erase anything left over from wider characters printed on the prior cycle
+    fb_clear_to_end_of_line(fb_line_start);
   }
+  fb_flush();
 }

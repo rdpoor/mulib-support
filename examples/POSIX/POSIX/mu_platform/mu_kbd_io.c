@@ -153,6 +153,5 @@ void mu_kbd_enter_noncanonical_mode() {
 void mu_kbd_exit_noncanonical_mode() {
   if(_has_saved_attributes)
     mu_kbd_set_terminal_attributes(&saved_attributes);
-  printf( "%s%s\n", MU_ANSI_TERM_ESC, MU_ANSI_TERM_RESET); // undo any color settings
-  mu_ansi_term_set_cursor_visible(true);
+  mu_ansi_term_reset();
 }

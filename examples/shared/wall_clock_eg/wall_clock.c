@@ -10,11 +10,11 @@
 
 #include "wall_clock.h"
 #include "ansi_big_font.h"
+#include "fb.h"
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "mulib.h"
 
@@ -23,6 +23,10 @@
 // Local types and definitions
 
 #define CLOCK_POLL_INTERVAL_MS (200)
+
+#define TERM_WIDTH (480L)
+#define TERM_HEIGHT (25)
+
 
 typedef struct {
   mu_task_t task;
@@ -45,6 +49,9 @@ static clock_poll_ctx_t clock_poll_ctx;
 
 static char _local_time_string[16];
 
+static char s_backing_buf[TERM_WIDTH * TERM_HEIGHT];
+static char s_display_buf[TERM_WIDTH * TERM_HEIGHT];
+
 // =============================================================================
 // Public code
 
@@ -54,6 +61,8 @@ void wall_clock_init(void) {
   mu_sched_init();
   mu_ansi_term_init();
   mu_ansi_term_set_cursor_visible(false);
+  mu_ansi_term_clear_screen();
+  fb_init(TERM_WIDTH, TERM_HEIGHT, s_backing_buf, s_display_buf);
   begin_polling_clock();
 }
 
@@ -65,8 +74,9 @@ void wall_clock_step(void) {
 // =============================================================================
 // Local (private) code
 
+// non-POSIX systems will need to use mu_rtc_now() / 1000 instead of time(&now)
 static char *local_time_string() {
- struct tm  ts;
+  struct tm  ts;
   time_t now;
 
   time(&now);
@@ -81,8 +91,8 @@ static void clock_poll_fn(void *ctx, void *arg) {
   (void)ctx;  // unused
   (void)arg;  // unused
 
-  mu_ansi_term_clear_screen();
-  mu_ansi_term_set_cursor_position(0,0);
+  //mu_ansi_term_clear_screen();
+  //mu_ansi_term_set_cursor_position(0,0);
   print_string_using_big_font(local_time_string());
   mu_duration_t delay = MU_TIME_MS_TO_DURATION(CLOCK_POLL_INTERVAL_MS);
   mu_sched_task_in(&clock_poll_ctx.task, delay);
