@@ -41,7 +41,7 @@ extern "C" {
 // =============================================================================
 // declarations
 
-void start_reader_thread(void);
+void start_kbd_reader_thread(void);
 
 #ifdef __cplusplus
 }

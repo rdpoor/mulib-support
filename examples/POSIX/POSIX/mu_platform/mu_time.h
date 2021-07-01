@@ -40,9 +40,6 @@ extern "C";
 
 // =============================================================================
 // types and definitions
-// Some widely accepted truths
-#define NANOSECS_PER_S  (1000000000)
-#define NANOSECS_PER_MS (1000000)
 #define MS_PER_SECOND (1000L)
 
 // =============================================================================

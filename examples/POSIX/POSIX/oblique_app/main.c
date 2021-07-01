@@ -10,8 +10,8 @@
 
 int main(void)
 {
-    start_reader_thread();
-    oblique_init(); // this will hang until a key press ir button press happens
+    start_kbd_reader_thread();
+    oblique_init(); // this will hang until a key press or button press happens
     while(1) {
         oblique_step();
     }
