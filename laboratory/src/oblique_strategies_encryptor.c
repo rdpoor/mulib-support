@@ -1,0 +1,592 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2021 Klatu Networks, Inc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+// =============================================================================
+// Includes
+
+#include "oblique_strategies_encryptor.h"
+#include <mulib.h>
+#include <stdio.h>
+
+// =============================================================================
+// Local types and definitions
+
+#define MAX_STRATEGY_LEN 130
+
+// =============================================================================
+// Local (forward) declarations
+
+static char rot13(char c);
+void strategies_output_decoded();
+void strategies_output_encoded();
+
+// =============================================================================
+// Local storage
+
+//const static char const *s_strategies[] = {
+static char const *s_strategies[] = {
+    "(Betnavp) znpuvarel",
+    "Abg ohvyqvat n jnyy ohg znxvat n oevpx",
+    "Abg ohvyqvat n jnyy; znxvat n oevpx",
+    "Bapr gur frnepu unf ortha, fbzrguvat jvyy or sbhaq",
+    "Bapr gur frnepu vf va cebterff, fbzrguvat jvyy or sbhaq",
+    "Bayl bar ryrzrag bs rnpu xvaq",
+    "Bayl n cneg, abg gur jubyr",
+    "Bcrayl erfvfg punatr",
+    "Biregyl erfvfg punatr",
+    "Chg va rnecyhtf",
+    "Cnr Juvgr'f aba-oynax tencuvp zrgnpneq",
+    "Dhrfgvba gur urebvp nccebnpu",
+    "Dhrfgvba gur urebvp",
+    "Ercrgvgvba vf n sbez bs punatr",
+    "Ergenpr lbhe fgrcf",
+    "Erinyhngvba (n jnez srryvat)",
+    "Erirefr",
+    "Erzbir fcrpvsvpf naq pbaireg gb nzovthvgvrf",
+    "Erzbir n erfgevpgvba",
+    "Erzbir nzovthvgvrf naq pbaireg gb fcrpvsvpf",
+    "Erzrzore .gubfr dhvrg riravatf",
+    "Erzrzore dhvrg riravatf",
+    "Fcrpgehz nanylfvf",
+    "Fgngr gur ceboyrz nf pyrneyl nf cbffvoyr",
+    "Fgngr gur ceboyrz va jbeqf nf fvzcyl nf cbffvoyr",
+    "Fgngr gur ceboyrz va jbeqf nf pyrneyl nf cbffvoyr",
+    "Fubeg pvephvg (rknzcyr; n zna rngvat crnf jvgu gur vqrn gung gurl jvyy "
+    "vzcebir uvf ivevyvgl fubiryf gurz fgenvtug vagb uvf ync)",
+    "Fuhg gur qbbe naq yvfgra sebz bhgfvqr",
+    "Fvzcyl n znggre bs jbex",
+    "Fvzcyr Fhogenpgvba",
+    "Fvzcyr fhogenpgvba",
+    "Fybj cercnengvba, snfg rkrphgvba",
+    "Gbjneqf gur vafvtavsvpnag",
+    "Gehfg va gur lbh bs abj",
+    "Gel snxvat vg (sebz Fgrjneg Oenaq)",
+    "Ghea vg hcfvqr qbja",
+    "Gjvfg gur fcvar",
+    "Gncr lbhe zbhgu (tvira ol Evgin Fnnevxxb)",
+    "Gnxr n oernx",
+    "Gnxr njnl gur ryrzragf va beqre bs nccnerag aba-vzcbegnapr",
+    "Gnxr njnl gur vzcbegnag cnegf",
+    "Gur gncr vf abj gur zhfvp",
+    "Gur vapbafvfgrapl cevapvcyr",
+    "Gur zbfg rnfvyl sbetbggra guvat vf gur zbfg vzcbegnag",
+    "Gur zbfg vzcbegnag guvat vf gur guvat zbfg rnfvyl sbetbggra",
+    "Guvax - vafvqr gur jbex -bhgfvqr gur jbex",
+    "Guvax bs gur enqvb",
+    "Gvql hc",
+    "Hfr 'hadhnyvsvrq' crbcyr",
+    "Hfr fbzrguvat arneol nf n zbqry",
+    "Hfr lbhe bja vqrnf",
+    "Hfr na byq vqrn",
+    "Hfr na hanpprcgnoyr pbybhe",
+    "Hfr pyvpurf",
+    "Hfr srjre abgrf",
+    "Hfr svygref",
+    "Ibvpr lbhe fhfcvpvbaf",
+    "Jbex ng n qvssrerag fcrrq",
+    "Jbhyq nalbar jnag vg?",
+    "Jbhyq nalobql jnag vg?",
+    "Jngre",
+    "Jung gb vapernfr? Jung gb erqhpr? Jung gb znvagnva?",
+    "Jung jbhyq lbhe pybfrfg sevraq qb?",
+    "Jung jbhyqa'g lbh qb?",
+    "Jung jrer lbh ernyyl guvaxvat nobhg whfg abj?",
+    "Jung ner gur frpgvbaf frpgvbaf bs? Vzntvar n pngrecvyyne zbivat",
+    "Jung ner lbh ernyyl guvaxvat nobhg whfg abj? Vapbecbengr",
+    "Jung ner lbh ernyyl guvaxvat nobhg whfg abj?",
+    "Jung pbagrkg jbhyq ybbx evtug?",
+    "Jung vf gur ernyvgl bs gur fvghngvba?",
+    "Jung vf gur fvzcyrfg fbyhgvba?",
+    "Jung zvfgnxrf qvq lbh znxr ynfg gvzr?",
+    "Jura vf vg sbe?",
+    "Jurer vf gur rqtr?",
+    "Juvpu cnegf pna or tebhcrq?",
+    "Lbh ner na ratvarre",
+    "Lbh pna bayl znxr bar qbg ng n gvzr",
+    "Lbh qba'g unir gb or nfunzrq bs hfvat lbhe bja vqrnf",
+    "Lbhe zvfgnxr jnf n uvqqra vagragvba",
+    "N irel fznyy bowrpg -Vgf prager",
+    "N yvar unf gjb fvqrf",
+    "Ner gurer frpgvbaf? Pbafvqre genafvgvbaf",
+    "Nffrzoyr fbzr bs gur ryrzragf va n tebhc naq gerng gur tebhc",
+    "Nffrzoyr fbzr bs gur vafgehzragf va n tebhc naq gerng gur tebhc",
+    "Nfx crbcyr gb jbex ntnvafg gurve orggre whqtrzrag",
+    "Nfx lbhe obql",
+    "Nonaqba abezny vafgehpgvbaf",
+    "Nonaqba abezny vafgehzragf",
+    "Nonaqba qrfver",
+    "Nppergvba",
+    "Npprcg nqivpr",
+    "Nqqvat ba",
+    "Nyjnlf gur svefg fgrcf",
+    "Nyjnlf svefg fgrcf",
+    "Nyjnlf tvir lbhefrys perqvg sbe univat zber guna crefbanyvgl (tvira ol "
+    "Negb Yvaqfnl)",
+    "Nyybj na rnfrzrag (na rnfrzrag vf gur nonaqbazrag bs n fgevpgher)",
+    "Oerngur zber qrrcyl",
+    "Oevqtrf -ohvyq -ohea",
+    "Onynapr gur pbafvfgrapl cevapvcyr jvgu gur vapbafvfgrapl cevapvcyr",
+    "Or qvegl",
+    "Or rkgenintnag",
+    "Or yrff pevgvpny zber bsgra",
+    "Or yrff pevgvpny",
+    "Pbafhyg bgure fbheprf -cebzvfvat -hacebzvfvat",
+    "Pbafvqre genafvgvbaf",
+    "Pbafvqre qvssrerag snqvat flfgrzf",
+    "Pbaireg n zrybqvp ryrzrag vagb n eulguzvp ryrzrag",
+    "Pbhentr!",
+    "Phg n ivgny pbaarpgvba",
+    "Pnfpnqrf",
+    "Punatr abguvat naq pbagvahr jvgu vzznphyngr pbafvfgrapl",
+    "Punatr abguvat naq pbagvahr pbafvfgragyl",
+    "Punatr fcrpvsvpf gb nzovthvgvrf",
+    "Punatr nzovthvgvrf gb fcrpvsvpf",
+    "Punatr vafgehzrag ebyrf",
+    "Puvyqera -fcrnxvat -fvatvat",
+    "Puvyqera'f ibvprf -fcrnxvat -fvatvat",
+    "Pyhfgre nanylfvf",
+    "Qb abguvat sbe nf ybat nf cbffvoyr",
+    "Qb fbzrguvat fhqqra, qrfgehpgvir naq hacerqvpgnoyr",
+    "Qb fbzrguvat obevat",
+    "Qb gur jbeqf arrq punatvat?",
+    "Qb gur jnfuvat hc",
+    "Qb gur ynfg guvat svefg",
+    "Qb jr arrq ubyrf?",
+    "Qba'g fgerff *ba* guvat zber guna nabgure (fvp)",
+    "Qba'g fgerff bar guvat zber guna nabgure",
+    "Qba'g nibvq jung vf rnfl",
+    "Qba'g oernx gur fvyrapr",
+    "Qba'g or nsenvq bs guvatf orpnhfr gurl'er rnfl gb qb",
+    "Qba'g or sevtugrarq bs pyvpurf",
+    "Qba'g or sevtugrarq gb qvfcynl lbhe gnyragf",
+    "Qrfgebl -abguvat -gur zbfg vzcbegnag guvat",
+    "Qrfgebl abguvat; Qrfgebl gur zbfg vzcbegnag guvat",
+    "Qrpbengr, qrpbengr",
+    "Qrsvar na nern nf 'fnsr' naq hfr vg nf na napube",
+    "Qvfcynl lbhe gnyrag",
+    "Qvfgbeg gvzr",
+    "Qvfgbegvat gvzr",
+    "Qvfpbaarpg sebz qrfver",
+    "Qvfpbire gur erpvcrf lbh ner hfvat naq nonaqba gurz",
+    "Qvfpbire lbhe sbezhynf naq nonaqba gurz",
+    "Qvfpneq na nkvbz",
+    "Qvfpvcyvarq frys-vaqhytrapr",
+    "Rzcunfvfr ercrgvgvbaf",
+    "Rzcunfvfr gur synjf",
+    "Rzcunfvfr qvssreraprf",
+    "Rzcunfvmr gur synjf",
+    "Rzcunfvmr qvssreraprf",
+    "Sebz abguvat gb zber guna abguvat",
+    "Snprq jvgu n pubvpr, qb obgu (sebz Qvrgre Ebg)",
+    "Snprq jvgu n pubvpr, qb obgu (tvira ol Qvrgre Ebg)",
+    "Srrq gur erpbeqvat onpx bhg bs gur zrqvhz",
+    "Srrqonpx erpbeqvatf vagb na npbhfgvp fvghngvba",
+    "Svaq n fnsr cneg naq hfr vg nf na napube",
+    "Svyy rirel orng jvgu fbzrguvat",
+    "Tb bhgfvqr. Fuhg gur qbbe.",
+    "Tb fybjyl nyy gur jnl ebhaq gur bhgfvqr",
+    "Tb gb na rkgerzr, pbzr cneg jnl onpx",
+    "Tb gb na rkgerzr, zbir onpx gb n zber pbzsbegnoyr cynpr",
+    "Trg lbhe arpx znffntrq",
+    "Tubfg rpubrf",
+    "Tvir gur tnzr njnl",
+    "Tvir jnl gb lbhe jbefg vzchyfr",
+    "Ubabe gul reebe nf n uvqqra vagragvba",
+    "Ubj jbhyq fbzrbar ryfr qb vg?",
+    "Ubj jbhyq lbh unir qbar vg?",
+    "Uhznavfr fbzrguvat serr bs reebe",
+    "Va gbgny qnexarff, be va n irel ynetr ebbz, irel dhvrgyl",
+    "Vagb gur vzcbffvoyr",
+    "Vagragvbaf -abovyvgl bs -uhzvyvgl bs -perqvovyvgl bs",
+    "Vagragvbaf -perqvovyvgl bs -abovyvgl bs -uhzvyvgl bs",
+    "Vasvavgrfvzny tenqngvbaf",
+    "Vf fbzrguvat zvffvat?",
+    "Vf gur fglyr evtug?",
+    "Vf gur ghavat nccebcevngr?",
+    "Vf gur ghavat vagbangvba pbeerpg?",
+    "Vf gur vagbangvba pbeerpg?",
+    "Vf gurer fbzrguvat zvffvat?",
+    "Vf vg svavfurq?",
+    "Vg vf dhvgr cbffvoyr (nsgre nyy)",
+    "Vg vf fvzcyl n znggre be jbex",
+    "Vqvbg tyrr (?)",
+    "Vzntvar gur cvrpr nf n frg bs qvfpbaarpgrq riragf",
+    "Vzntvar gur zhfvp nf n frg bs qvfpbaarpgrq riragf",
+    "Vzntvar gur zhfvp nf n zbivat punva be pngrecvyyne",
+    "Whfg pneel ba",
+    "Ybbx ng gur beqre va juvpu lbh qb guvatf",
+    "Ybbx ng n irel fznyy bowrpg, ybbx ng vgf prager",
+    "Ybbx pybfryl ng gur zbfg rzoneenffvat qrgnvyf naq nzcyvsl gurz",
+    "Ybfg va hfryrff greevgbel",
+    "Ybjrfg pbzzba qrabzvangbe purpx -fvatyr orng -fvatyr abgr -fvatyr evss",
+    "Ybjrfg pbzzba qrabzvangbe",
+    "Yrsg punaary, evtug punaary, prager punaary",
+    "Yvfgra gb gur dhvrg ibvpr",
+    "Yvfgra va gbgny qnexarff, be va n irel ynetr ebbz, irel dhvrgyl",
+    "Zbir gbjneqf gur havzcbegnag",
+    "Zhgr naq pbagvahr",
+    "Zntavsl gur zbfg qvssvphyg qrgnvyf",
+    "Znxr jung'f cresrpg zber uhzna",
+    "Znxr n fhqqra, qrfgehpgvir hacerqvpgnoyr npgvba; vapbecbengr",
+    "Znxr n oynax inyhnoyr ol chggvat vg va na rkdhvfvgr senzr",
+    "Znxr na rkunhfgvir yvfg bs rirelguvat lbh zvtug qb naq qb gur ynfg guvat",
+    "ba gur yvfg",
+    "Znxr vg zber frafhny",
+    "Zrpunavpnyvfr fbzrguvat vqvbflapengvp",
+    "[oynax juvgr pneq]",
+};
+
+
+static char const *s_strategies_decoded[] = {
+  "(Organic) machinery",
+  "Not building a wall; making a brick",
+  "Once the search has begun, something will be found",
+  "Only one element of each kind",
+  "Only a part, not the whole",
+  "Overtly resist change",
+  "Put in earplugs",
+  "Question the heroic",
+  "Repetition is a form of change",
+  "Retrace your steps",
+  "Revaluation (a warm feeling)",
+  "Reverse",
+  "Remove specifics and convert to ambiguities",
+  "Remove a restriction",
+  "Remember those quiet evenings",
+  "Spectrum analysis",
+  "State the problem as clearly as possible",
+  "Short circuit",
+  "Shut the door and listen from outside",
+  "Simply a matter of work",
+  "Simple Subtraction",
+  "Slow preparation, fast execution",
+  "Towards the insignificant",
+  "Trust in the you of now",
+  "Try faking it",
+  "Turn it upside down",
+  "Twist the spine",
+  "Tape your mouth",
+  "Take a break",
+  "Take away the elements in order of apparent non-importance",
+  "Take away the important parts",
+  "The tape is now the music",
+  "The inconsistency principle",
+  "The most important thing is the thing most easily forgotten",
+  "Think - inside the work -outside the work",
+  "Think of the radio",
+  "Tidy up",
+  "Use 'unqualified' people",
+  "Use something nearby as a model",
+  "Use your own ideas",
+  "Use an old idea",
+  "Use an unacceptable colour",
+  "Use cliches",
+  "Use fewer notes",
+  "Use filters",
+  "Voice your suspicions",
+  "Work at a different speed",
+  "Would anyone want it?",
+  "Water",
+  "What to increase? What to reduce? What to maintain?",
+  "What would your closest friend do?",
+  "What wouldn't you do?",
+  "What were you really thinking about just now?",
+  "What context would look right?",
+  "What is the reality of the situation?",
+  "What is the simplest solution?",
+  "What mistakes did you make last time?",
+  "When is it for?",
+  "Where is the edge?",
+  "Which parts can be grouped?",
+  "You are an engineer",
+  "You can only make one dot at a time",
+  "You don't have to be ashamed of using your own ideas",
+  "Your mistake was a hidden intention",
+  "A very small object - its centre",
+  "A line has two sides",
+  "Are there sections? Consider transitions",
+  "Assemble some of the elements in a group and treat the group",
+  "Ask people to work against their better judgement",
+  "Ask your body",
+  "Abandon normal instruments",
+  "Abandon desire",
+  "Accretion",
+  "Accept advice",
+  "Adding on",
+  "Always first steps",
+  "Allow an easement",
+  "Breathe more deeply",
+  "Bridges: build; burn",
+  "Balance the consistency principle with the inconsistency principle",
+  "Be dirty",
+  "Be extravagant",
+  "Be less critical",
+  "Consult other sources -promising -unpromising",
+  "Consider transitions",
+  "Consider different fading systems",
+  "Convert a melodic element into a rhythmic element",
+  "Courage!",
+  "Cut a vital connection",
+  "Cascades",
+  "Change nothing and continue consistently",
+  "Change specifics to ambiguities",
+  "Change ambiguities to specifics",
+  "Change instrument roles",
+  "Children -speaking -singing",
+  "Cluster analysis",
+  "Do nothing for as long as possible",
+  "Do something sudden, destructive and unpredictable",
+  "Do something boring",
+  "Do the words need changing?",
+  "Do the washing up",
+  "Do the last thing first",
+  "Do we need holes?",
+  "Don't stress one thing more than another",
+  "Don't avoid what is easy",
+  "Don't break the silence",
+  "Don't be afraid of things because they're easy to do",
+  "Don't be frightened of cliches",
+  "Don't be afraid to display your talents",
+  "Destroy nothing; Destroy the most important thing",
+  "Decorate, decorate",
+  "Define an area as 'safe' and use it as an anchor",
+  "Display your talent",
+  "Distort time",
+  "Distorting time",
+  "Disconnect from desire",
+  "Discover the recipes you are using and abandon them",
+  "Discard an axiom",
+  "Disciplined self-indulgence",
+  "Emphasise repetitions",
+  "Emphasise the flaws",
+  "Emphasise differences",
+  "From nothing to more than nothing",
+  "Faced with a choice, do both",
+  "Feedback recordings into an acoustic situation",
+  "Find a safe part and use it as an anchor",
+  "Fill every beat with something",
+  "Go outside. Shut the door.",
+  "Go slowly all the way round the outside",
+  "Go to an extreme, come part way back",
+  "Get your neck massaged",
+  "Ghost echoes",
+  "Give the game away",
+  "Give way to your worst impulse",
+  "Honor thy error as a hidden intention",
+  "How would someone else do it?",
+  "How would you have done it?",
+  "Humanise something free of error",
+  "In total darkness, or in a very large room, very quietly",
+  "Into the impossible",
+  "Infinitesimal gradations",
+  "Is the style right?",
+  "Is the tuning appropriate?",
+  "Is the tuning intonation correct?",
+  "Is the intonation correct?",
+  "Is there something missing?",
+  "Is it finished?",
+  "It is simply a matter or work",
+  "Idiot glee (?)",
+  "Imagine the music as a set of disconnected events",
+  "Just carry on",
+  "Look at the order in which you do things",
+  "Look at a very small object, look at its centre",
+  "Look closely at the most embarrassing details and amplify them",
+  "Lost in useless territory",
+  "Lowest common denominator",
+  "Left channel, right channel, centre channel",
+  "Listen to the quiet voice",
+  "Listen in total darkness, or in a very large room, very quietly",
+  "Move towards the unimportant",
+  "Mute and continue",
+  "Magnify the most difficult details",
+  "Make what's perfect more human",
+  "Make a sudden, destructive unpredictable action; incorporate",
+  "Make a blank valuable by putting it in an exquisite frame",
+  "Make an exhaustive list of everything you might do and do the last thing",
+  "Make it more sensual",
+  "Mechanicalise something idiosyncratic",
+  "[blank white card]",
+    "Abandon desire",
+    "Abandon normal instructions",
+    "Accept advice",
+    "Adding on",
+    "A line has two sides",
+    "Always the first steps",
+    "Ask people to work against their better judgement",
+    "Ask your body",
+    "Be dirty",
+    "Be extravagant",
+    "Be less critical",
+    "Breathe more deeply",
+    "Bridges -build -burn",
+    "Change ambiguities to specifics",
+    "Change nothing and continue consistently",
+    "Change specifics to ambiguities",
+    "Consider transitions",
+    "Courage!",
+    "Cut a vital connection",
+    "Decorate, decorate",
+    "Destroy nothing; Destroy the most important thing",
+    "Discard an axiom",
+    "Disciplined self-indulgence",
+    "Discover your formulas and abandon them",
+    "Display your talent",
+    "Distort time",
+    "Do nothing for as long as possible",
+    "Don't avoid what is easy",
+    "Don't break the silence",
+    "Don't stress one thing more than another",
+    "Do something boring",
+    "Do something sudden, destructive and unpredictable",
+    "Do the last thing first",
+    "Do the words need changing?",
+    "Emphasize differences",
+    "Emphasize the flaws",
+    "Find a safe part and use it as an anchor",
+    "Give the game away",
+    "Give way to your worst impulse",
+    "Go outside. Shut the door.",
+    "Go to an extreme, come part way back",
+    "How would someone else do it?",
+    "How would you have done it?",
+    "In total darkness, or in a very large room, very quietly",
+    "Is it finished?",
+    "Is something missing?",
+    "Is the style right?",
+    "It is simply a matter or work",
+    "Just carry on",
+    "Listen to the quiet voice",
+    "Look at the order in which you do things",
+    "Magnify the most difficult details",
+    "Make it more sensual",
+    "Make what's perfect more human",
+    "Move towards the unimportant",
+    "Not building a wall; making a brick",
+    "Once the search has begun, something will be found",
+    "Only a part, not the whole",
+    "Only one element of each kind",
+    "Openly resist change",
+    "Question the heroic",
+    "Remember quiet evenings",
+    "Remove a restriction",
+    "Repetition is a form of change",
+    "Retrace your steps",
+    "Reverse",
+    "Simple Subtraction",
+    "Slow preparation, fast execution",
+    "State the problem as clearly as possible",
+    "Take a break",
+    "Take away the important parts",
+    "The inconsistency principle",
+    "The most easily forgotten thing is the most important",
+    "Think - inside the work -outside the work",
+    "Tidy up",
+    "Try faking it",
+    "Turn it upside down",
+    "Use an old idea",
+    "Use cliches",
+    "Use filters",
+    "Use something nearby as a model",
+    "Use 'unqualified' people",
+    "Use your own ideas",
+    "Voice your suspicions",
+    "Water",
+    "What context would look right?",
+    "What is the simplest solution?",
+    "What mistakes did you make last time?",
+    "What to increase? What to reduce? What to maintain?",
+    "What were you really thinking about just now?",
+    "What wouldn't you do?",
+    "What would your closest friend do?",
+    "When is it for?",
+    "Where is the edge?",
+    "Which parts can be grouped?",
+    "Work at a different speed",
+    "Would anyone want it?",
+    "Your mistake was a hidden intention"
+};
+
+
+
+static const size_t N_STRATEGIES = sizeof(s_strategies) / sizeof(const char *);
+
+// =============================================================================
+// Public code
+
+int main(void)
+{
+    strategies_output_decoded();
+    strategies_output_encoded();
+}
+
+// =============================================================================
+// Local (static) code
+
+static char rot13(char c) {
+  if (((c >= 'a') && (c <= 'm')) || ((c >= 'A') && (c <= 'M'))) {
+    return c + 13;
+  } else if (((c >= 'n') && (c <= 'z')) || ((c >= 'N') && (c <= 'Z'))) {
+    return c - 13;
+  } else {
+    return c;
+  }
+}
+
+void strategies_output_encoded() {
+  static char buf[MAX_STRATEGY_LEN];
+  printf("static char const *s_strategies[] = {\n");
+
+  for(int i=0;i<N_STRATEGIES;i++) {
+    int j = 0;
+    const char *s = s_strategies_decoded[i]; // s_strategies_decoded s_strategies
+    while ((buf[j++] = rot13(*s++))) {
+    }
+    // print it
+    printf("\t\"%s\"", buf);
+    if(i != N_STRATEGIES -1)
+      printf(",\n");
+  }
+  printf("\n};\n");
+}
+
+void strategies_output_decoded() {
+  static char buf[MAX_STRATEGY_LEN];
+  printf("static char const *s_strategies_decoded[] = {\n");
+
+  for(int i=0;i<N_STRATEGIES;i++) {
+    int j = 0;
+    const char *s = s_strategies[i]; // s_strategies_decoded s_strategies
+    while ((buf[j++] = rot13(*s++))) {
+    }
+    // print it
+    printf("\t\"%s\"", buf);
+    if(i != N_STRATEGIES -1)
+      printf(",\n");
+  }
+  printf("\n};\n");
+}
+
+
+
