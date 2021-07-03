@@ -10,6 +10,7 @@
 
 #include "wall_clock.h"
 #include "ansi_big_font.h"
+#include "ansi_nico_font.h"
 #include "fb.h"
 
 #include <stdbool.h>
@@ -24,7 +25,7 @@
 
 #define CLOCK_POLL_INTERVAL_MS (200)
 
-#define TERM_WIDTH (480L)
+#define TERM_WIDTH (255)
 #define TERM_HEIGHT (25)
 
 
@@ -93,7 +94,7 @@ static void clock_poll_fn(void *ctx, void *arg) {
 
   //mu_ansi_term_clear_screen();
   //mu_ansi_term_set_cursor_position(0,0);
-  print_string_using_big_font(local_time_string());
+  print_string_using_nico_font(local_time_string());
   mu_duration_t delay = MU_TIME_MS_TO_DURATION(CLOCK_POLL_INTERVAL_MS);
   mu_sched_task_in(&clock_poll_ctx.task, delay);
 }

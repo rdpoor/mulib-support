@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,35 +25,78 @@
 // =============================================================================
 // Includes
 
-#include "mu_button_io.h"
-#include "mu_config.h"
-#include "mu_kbd_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
-#include "mu_time.h"
+#include "fb.h"
 
-#include "mu_platform.h"
-#include "mu_button_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
+#include <mulib.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 
 // =============================================================================
-// Private types and definitions
+// Local types and definitions
 
-// =============================================================================
-// Private (forward) declarations
+typedef struct {
+  char *backing_store;
+  char *display_store;
+  uint8_t width;
+  uint8_t height;
+} fb_t;
 
 // =============================================================================
 // Local storage
 
+static fb_t s_fb;
+
+// =============================================================================
+// Local (forward) declarations
+
 // =============================================================================
 // Public code
 
-void mu_platform_init(void) {
-  mu_button_io_init();
-  mu_kbd_io_init();
-  mu_led_io_init();
-  mu_rtc_init();
+void fb_init(uint8_t width,
+             uint8_t height,
+             char *backing_store,
+             char *display_store) {
+  s_fb.width = width;
+  s_fb.height = height;
+  s_fb.backing_store = backing_store;
+  s_fb.display_store = display_store;
+}
+
+void fb_erase(void) {
+  mu_ansi_term_home();
+  mu_ansi_term_clear_screen();
+  memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
+  memset(s_fb.display_store, ' ', s_fb.width * s_fb.height);
+}
+
+void fb_clear(void) {
+  memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
+}
+
+char *fb_row_ref(uint8_t row_number) {
+  return &s_fb.backing_store[s_fb.width * row_number];
+}
+
+void fb_draw(uint8_t x, uint8_t y, char ch) {
+  // [x=0, y=0] is at bottom left
+  s_fb.backing_store[x + (s_fb.height - y - 1) * s_fb.width] = ch;
+}
+
+void fb_flush(void) {
+  int idx = 0;
+  for (uint8_t y = 0; y < s_fb.height; y++) {
+    for (uint8_t x=0; x< s_fb.width; x++) {
+      char ch = s_fb.backing_store[idx];
+      if (ch != s_fb.display_store[idx]) {
+        mu_ansi_term_set_cursor_position(y, x);
+        putchar(ch);
+        s_fb.display_store[idx] = ch;
+      }
+      idx++;
+    }
+  }
+  mu_ansi_term_home();
 }
 
 // =============================================================================

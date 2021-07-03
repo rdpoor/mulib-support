@@ -133,13 +133,13 @@ MU_FLOAT mu_time_duration_to_s(mu_duration_t dt) {
 mu_duration_t mu_time_s_to_duration(MU_FLOAT s) {
   return s;
 }
+#endif
 
 
 
 
 
-
-
+#if 0
 #define assert(n)
 
 void time_test(void) {
@@ -179,4 +179,3 @@ void time_test(void) {
 }
 
 #endif
-
