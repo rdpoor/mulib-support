@@ -26,7 +26,8 @@
 // Includes
 
 #include "mu_kbd_io.h"
-#inclue <stddef.h>
+#include "driver_init.h"
+#include <stddef.h>
 
 // =============================================================================
 // Local types and definitions
@@ -39,12 +40,18 @@ static mu_kbd_io_callback_t s_kbd_io_cb;
 // =============================================================================
 // Local (forward) declarations
 
-static void trigger_callback(char ch);
+static void handle_rx_isr(void);
+// Normally we avoid extern declarations, but these two functions are not
+// declared in usart_basic.h (though they should be).
+extern void USART_0_default_rx_isr_cb(void);
+extern void USART_0_default_udre_isr_cb(void);
 
 // =============================================================================
 // Public code
 
-void mu_bd_io_init(void) {
+void mu_kbd_io_init(void) {
+  // Set up to capture keyboard rx interrupts
+  USART_0_set_ISR_cb(handle_rx_isr, RX_CB);
   s_kbd_io_cb = NULL;
 }
 
@@ -55,8 +62,13 @@ void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb) {
 // =============================================================================
 // Local (static) code
 
-static void trigger_callback(char ch) {
+static void handle_rx_isr(void) {
+  // Arrive here at interrupt level when a character is received on the kbd.
+  // TODO: verify that reading USARTE0.DATA leaves the data available
+  uint8_t data = USARTE0.DATA;
+  USART_0_default_rx_isr_cb();   // call the default handler...
+  // If there is a user callback, call it...
   if (s_kbd_io_cb) {
-    s_kbd_io_cb(ch);
+    s_kbd_io_cb(data);
   }
 }

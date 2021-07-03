@@ -35,6 +35,16 @@
 extern "C" {
 #endif
 
+/* USART_0 Ringbuffer */
+
+#define USART_0_RX_BUFFER_SIZE 8
+#define USART_0_TX_BUFFER_SIZE 8
+#define USART_0_RX_BUFFER_MASK (USART_0_RX_BUFFER_SIZE - 1)
+#define USART_0_TX_BUFFER_MASK (USART_0_TX_BUFFER_SIZE - 1)
+
+typedef enum { RX_CB = 1, UDRE_CB } usart_cb_type_t;
+typedef void (*usart_cb_t)(void);
+
 int8_t USART_0_init();
 
 void USART_0_enable();
@@ -56,6 +66,8 @@ bool USART_0_is_tx_busy();
 uint8_t USART_0_read(void);
 
 void USART_0_write(const uint8_t data);
+
+void USART_0_set_ISR_cb(usart_cb_t cb, usart_cb_type_t type);
 
 #ifdef __cplusplus
 }

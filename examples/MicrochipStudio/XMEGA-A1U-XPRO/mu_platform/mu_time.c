@@ -2,6 +2,7 @@
  */
 
 #include "mu_time.h"
+#include "mu_rtc.h"
 
 /**
  * @brief Add a time and a duration.

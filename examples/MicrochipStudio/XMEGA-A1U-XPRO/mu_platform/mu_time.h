@@ -33,7 +33,6 @@ extern "C";
 // includes
 
 #include "mu_config.h"
-#include "mu_rtc.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -41,8 +40,6 @@ extern "C";
 // types and definitions
 
 #define MS_PER_SECOND (1000L)
-
-#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)(((((mu_duration_t)ms)*MS_PER_SECOND))/RTC_FREQUENCY))
 
 /**
  * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-

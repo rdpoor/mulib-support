@@ -2,16 +2,16 @@ format_version: '2'
 name: platform_test_app
 versions:
   api: '1.0'
-  backend: 1.8.543
-  commit: 931b2422bde1a793dea853de68547f48bf245b0f
+  backend: 1.8.580
+  commit: f3d8d96e294de8dee688333bbbe8d8458a4f6b4c
   content: unknown
   content_pack_name: unknown
   format: '2'
-  frontend: 1.8.543
-  packs_version_avr8: 1.0.1457
+  frontend: 1.8.580
+  packs_version_avr8: 1.0.1463
   packs_version_qtouch: unknown
   packs_version_sam: 1.0.1726
-  version_backend: 1.8.543
+  version_backend: 1.8.580
   version_frontend: ''
 board:
   identifier: XMEGAA1UXplainedPro
@@ -237,18 +237,23 @@ drivers:
       domain_group: null
   USART_0:
     user_label: USART_0
-    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::USARTE0::driver_config_definition::Async.Polled.Mode::Drivers:USART:Basic
+    definition: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::USARTE0::driver_config_definition::Async.IRQ.Mode::Drivers:USART:Basic
     functionality: USART
     api: Drivers:USART:Basic
     configuration:
       baud_rate: 115200
+      driver_rx_buffer_size: '8'
+      driver_tx_buffer_size: '8'
       printf_support: true
+      usart_ctrla_dreintlvl: Low Level
+      usart_ctrla_rxcintlvl: Low Level
+      usart_ctrla_txcintlvl: 'Off'
       usart_ctrlb_clk2x: false
       usart_ctrlb_mpcm: false
       usart_ctrlb_rxen: true
       usart_ctrlb_txen: true
       usart_ctrlc_chsize: 'Character size: 8 bit'
-      usart_ctrlc_cmode: Async Polled Mode
+      usart_ctrlc_cmode: Async IRQ Mode
       usart_ctrlc_pmode: No Parity
       usart_ctrlc_sbmode: 1 stop bit
       usart_ctrlc_ucpha: Sample DATA on Falling edge of XCK
@@ -297,7 +302,7 @@ pads:
       pad_int0msk: '4'
       pad_int1lvl: Interrupt Disabled
       pad_int1msk: '0'
-      pad_isc: Sense Falling Edge
+      pad_isc: Sense Both Edges
       pad_output_pull_config: Pull-up
   USER_LED:
     name: PQ3
@@ -308,13 +313,6 @@ pads:
       pad_initial_level: High
 toolchain_options:
 - definition:
-    identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Atmel.Studio:7.0.0
-  configuration:
-    compiler_config:
-      avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99
-    linker_config:
-      avrgcc_linker_miscellaneous_LinkerFlags: ''
-- definition:
     identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Microchip.Studio.xc8:7.0.0
   configuration:
     compiler_config:
@@ -322,9 +320,17 @@ toolchain_options:
     linker_config:
       xc8_linker_miscellaneous_LinkerFlags: ''
 - definition:
+    identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Atmel.Studio:7.0.0
+  configuration:
+    compiler_config:
+      avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99
+    linker_config:
+      avrgcc_linker_miscellaneous_LinkerFlags: ''
+- definition:
     identifier: Atmel:XMEGA_A_B_C_Drivers:1.0.0::ATxmega128A1U-AN::environment_definition::All:Microchip.Studio.gcc:7.0.0
   configuration:
     compiler_config:
       avrgcc_compiler_miscellaneous_OtherFlags: -std=gnu99
     linker_config:
       avrgcc_linker_miscellaneous_LinkerFlags: ''
+static_files: []
