@@ -33,17 +33,17 @@
 		<link>
 			<name>morse_1</name>
 			<type>2</type>
-			<location>/Users/r/Projects/mulib-support/demos/shared/morse_1</location>
+			<location>/Users/barney/Dev/mulib-official/mulib-support/examples/shared/morse_1_eg</location>
 		</link>
 		<link>
 			<name>mu_platform</name>
 			<type>2</type>
-			<location>/Users/r/Projects/mulib-support/demos/STM32CubeIDE/NUCLEO-G431RB/mu_platform</location>
+			<location>/Users/barney/Dev/mulib-official/mulib-support/examples/STM32CubeIDE/NUCLEO-G431RB/mu_platform</location>
 		</link>
 		<link>
 			<name>mulib</name>
 			<type>2</type>
-			<location>/Users/r/Projects/mulib-support/mulib</location>
+			<location>/Users/barney/Dev/mulib-official/mulib-support/mulib</location>
 		</link>
 	</linkedResources>
 </projectDescription>

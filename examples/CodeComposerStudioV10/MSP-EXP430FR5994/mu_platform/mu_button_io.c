@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,65 +22,48 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_STDDEMO_H_
-#define _MU_STDDEMO_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================================
 // Includes
 
+#include "mu_button_io.h"
+
+#include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include "mu_time.h"
+#include <stddef.h>
 
 // =============================================================================
-// Types and definitions
-
-/**
- * @brief Signature for a button callback.
- *
- * This is a user-supplied function that gets called at interrupt level when the
- * button chagnes state.
- *
- * @param button_state True if the button is pressed at the time of interrupt.
- */
-typedef void (*mu_stddemo_button_cb)(bool button_state);
+// Local types and definitions
 
 // =============================================================================
-// Functon declarations (public)
+// Local storage
 
-/**
- * @brief Initialize the mu_stddemo_support system.
- *
- * @param button_cb Function to call from interrupt level when the user button
- * is pressed.  Set to NULL to inhibit callbacks.
- */
-void mu_button_io_set_callback(mu_stddemo_button_cb button_cb);
+static mu_button_io_callback_t s_button_io_cb;
 
+// =============================================================================
+// Local (forward) declarations
 
-/**
- * @brief Set the demo LED on or off.
- */
-void mu_led_io_set(bool on);
+// =============================================================================
+// Public code
 
-/**
- * @brief Return true if the demo button is currently pressed.
- *
- * Note that the state of the button can change between the time the button
- * callback is triggered and the button state is read.
- */
-bool mu_stddemo_button_is_pressed(void);
-
-/**
- * @brief Called from ISR when button is pressed.
- */
-void mu_stddemo_on_button_press(void);
-
-#ifdef __cplusplus
+void mu_button_io_init(void) {
+  s_button_io_cb = NULL;
 }
-#endif
 
-#endif // _MU_STDDEMO_H_
+void mu_button_io_set_callback(mu_button_io_callback_t cb) {
+  s_button_io_cb = cb;
+}
+
+void mu_button_io_on_button_press(unsigned char button_id) {
+  if (s_button_io_cb != NULL) {
+    s_button_io_cb(button_id, true);
+  }
+}
+
+// void mu_button_io_on_button_change(void) {
+//   if (s_button_io_cb) {
+//     s_button_io_cb(MU_BUTTON_0, USER_BUTTON_get_level());
+//   }
+// }
+
+// =============================================================================
+// Local (static) code

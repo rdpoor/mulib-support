@@ -33,19 +33,14 @@ extern "C";
 // includes
 
 #include "mu_config.h"
+#include "mu_rtc.h"
 #include <stdint.h>
 #include <stdbool.h>
 
+
 // =============================================================================
 // types and definitions
-
-#define RTC_FREQUENCY 1000
-
-#ifndef RTC_FREQUENCY
-  #error "Provide a platform-specific definition for RTC_FREQUENCY"
-#endif
-
-#define MU_TIME_MS_TO_DURATION(ms) (((ms) * 1000) / RTC_FREQUENCY)
+#define MS_PER_SECOND (1000L)
 
 // =============================================================================
 // declarations
@@ -55,13 +50,6 @@ extern "C";
  * functions are called.
  */
 void mu_time_init(void);
-
-/**
- * @brief Get the current system time.
- *
- * @return A value representing the current time.
- */
-mu_time_t mu_time_now();
 
 /**
  * @brief Add a time and a duration.

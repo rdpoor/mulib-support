@@ -33,13 +33,12 @@ extern "C" {
 // includes
 
 #include <stdint.h>
-#include "stm32g4xx_hal.h"
 
 // =============================================================================
 // types and definitions
 
-#define MU_DISABLE_INTERRUPTS() __disable_irq
-#define MU_ENABLE_INTERRUPTS() __enable_irq
+#define MU_DISABLE_INTERRUPTS() do {} while(0)
+#define MU_ENABLE_INTERRUPTS() do {} while(0)
 
 /**
  * Uncomment if you want logging enabled.
@@ -68,7 +67,7 @@ extern "C" {
  * in the compiler.
  */
 // #define MU_FLOAT float
-#define MU_FLOAT double
+// #define MU_FLOAT double
 
 /**
  * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
@@ -78,21 +77,39 @@ typedef uint32_t mu_time_t;
 typedef int32_t mu_duration_t;
 typedef int32_t mu_duration_ms_t;
 
+//! \brief CPU Active Frequency in Hz.
+//!
+#define CPU_FREQ_HZ                 (8000000)
+//! \brief CPU Active Frequency in MHz.
+//!
+#define CPU_FREQ_MHZ                (CPU_FREQ_HZ/1000000)
+//! \brief High Speed Bus Frequency in Hz.
+//!         Used by High Speed peripherals such as UART.
+//!
+#define HSBUS_FREQ_HZ               (8000000)
+//! \brief High Speed Bus Frequency in MHz.
+//!         Used by High Speed peripherals such as UART.
+//!
+#define HSBUS_FREQ_MHZ              (HSBUS_FREQ_HZ/1000000)
+//! \brief Low Speed Bus Frequency in Hz.
+//!         Used by Low Speed peripherals such as LPM timers.
+//!
+#define LSBUS_FREQ_HZ               (10000)
+
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.
 
 #define MU_WITH_INTERRUPTS_DISABLED(_body)                                     \
   MU_DISABLE_INTERRUPTS();                                                     \
   _body                                                                        \
-  MU_ENABLE_INTERRUPTS()
+  MU_ENABLE_INTERRUPTS();
 
-#ifndef ASSERT
-//#define ASSERT(expr) do {} while(0)
-#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
-#endif
+// already defined in utils/utils_assert.h
+// #ifndef ASSERT
+// #define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+// #endif
 
 #ifdef MU_TASK_PROFILING
-#undef MU_TASK_PROFILING
 #define MU_TASK_PROFILING (1)
 #else
 #define MU_TASK_PROFILING (0)
@@ -104,10 +121,8 @@ typedef int32_t mu_duration_ms_t;
   #define MU_HAS_FLOAT (0)
 #endif
 
-#if defined(MU_FLOAT) && ((MU_FLOAT == float) || (MU_FLOAT == double))
+#if defined(MU_FLOAT)
   typedef MU_FLOAT mu_float_t;
-#else
-  #error MU_FLOAT must be either float or double
 #endif
 
 // =============================================================================

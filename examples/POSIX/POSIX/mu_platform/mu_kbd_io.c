@@ -32,9 +32,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
+#ifdef HAS_MU_KBD
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#endif
+
 // =============================================================================
 // Local types and definitions
 

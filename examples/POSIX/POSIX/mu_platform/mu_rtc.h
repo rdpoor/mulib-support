@@ -62,6 +62,11 @@ void mu_rtc_init(void);
 mu_time_t mu_rtc_now(void);
 
 /**
+ * @brief Busy wait for the given number of RTC ticks.
+ */
+void mu_rtc_busy_wait(mu_time_t ticks);
+
+/**
  * @brief Set the function to be called when the RTC ticks.
  *
  * Pass NULL for the CB to disable RTC alarms.

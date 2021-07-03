@@ -36,7 +36,6 @@
 #include <mulib.h>
 #include "mu_platform.h"
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 

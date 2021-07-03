@@ -9,111 +9,116 @@
 // Includes
 
 #include "platform_test.h"
-#include <mulib.h>
+#include "mu_platform.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "mu_platform.h"
 
 // =============================================================================
 // Local types and definitions
 
 #define VERSION "1.1"
-#define DEMO_INTERVAL_SECS (5.0)
+#define DEMO_INTERVAL_SECS (5)
 
 // =============================================================================
 // Local (forward) declarations
 
+/**
+ * @brief Called from interrupt level when a button changes state.
+ */
 static void button_cb(uint8_t button_id, bool button_is_pressed);
+
+/**
+ * @brief Called from interrupt level when a key is received.
+ */
 static void kbd_cb(unsigned char ch);
-void set_led(int on);
-int get_led(void);
+
+/**
+ * @brief Invert the state of the user LED.
+ */
+static void toggle_led(void);
 
 // =============================================================================
 // Local storage
 
-volatile static bool s_button_was_pressed;
-static bool user_hit_key = false;
-static char _most_recent_character = 'x';
+// Linkage between interrupt level and foreground -- see button_cb(), kbd_cb()
+// and platform_test_step().  These variables are declared volatile so the
+// compiler won't optimize them away.
+volatile static bool s_button_changed_state;
+volatile static bool s_button_state;
+volatile static uint8_t s_button_id;
+
+volatile static bool s_key_changed_state;
+volatile static bool s_key_pressed;
+volatile static char s_last_char;
 
 // =============================================================================
 // Public code
 
 void platform_test_init(void) {
 
-  mu_time_t until;
-
-  mulib_init();
-  //mu_platform_init();
+  mu_platform_init();
   mu_button_io_set_callback(button_cb);
   mu_kbd_io_set_callback(kbd_cb);
 
-  mu_ansi_term_clear_screen();
-  mu_ansi_term_set_cursor_visible(false);
+  printf("\n\rmu_platform test v%s.\n", VERSION);
+  s_button_changed_state = false;
+  s_key_changed_state = false;
 
-  printf("\n\rmulib platform_test v%s.\n", VERSION);
-  s_button_was_pressed = false;
-
+  // Turn LED on and then off to verify the RTC and time functions are working
+  // properly...
   mu_led_io_set(MU_LED_0, true);
-  printf("LED should be on for %2.2f seconds.\n", DEMO_INTERVAL_SECS);
-  until = mu_time_offset(mu_rtc_now(), MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
-  while (mu_time_precedes(mu_rtc_now(), until)) {
-	  asm(" nop");
-	  // buzz...
-  }
+  printf("LED should be on for %d seconds.\n", DEMO_INTERVAL_SECS);
+  mu_rtc_busy_wait(MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
 
   mu_led_io_set(MU_LED_0, false);
-  printf("LED should be off for %2.2f seconds.\n", DEMO_INTERVAL_SECS);
-  until = mu_time_offset(mu_rtc_now(), MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
-  while (mu_time_precedes(mu_rtc_now(), until)) {
-      asm(" nop");
-	  // buzz...
-  }
-  mu_ansi_term_clear_screen();
+  printf("LED should be off for %d seconds.\n", DEMO_INTERVAL_SECS);
+  mu_rtc_busy_wait(MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
+
   mu_led_io_set(MU_LED_0, true);
-  printf("LED is %s\n", mu_led_io_get(MU_LED_0) ? "on" : "off");
-  printf("Press button or key to toggle LED.");
-  printf("\n'q' or CTRL-C to quit.");
+  printf("Press button or any key...\n");
 }
 
 void platform_test_step(void) {
-  mu_sched_step();
+  // Called continually from the main loop.  Here we test mu_button_io and
+  // mu_kbd_io to make sure they are working properly.
+  if (s_button_changed_state) {
+    s_button_changed_state = false;
+    printf("button %d %s\n", s_button_id, s_button_state ? "down" : "up");
+    toggle_led();
+  }
 
-  if(user_hit_key || s_button_was_pressed == true) {
-    if(_most_recent_character == 'q') exit(0);
-    s_button_was_pressed = user_hit_key = false;
-    mu_led_io_set(MU_LED_0, !mu_led_io_get(MU_LED_0));
-    printf("LED is %s", mu_led_io_get(MU_LED_0) ? "on" : "off");
-    mu_ansi_term_clear_to_end_of_line();
-  } else {
-    asm(" nop");
+  if (s_key_pressed) {
+    s_key_pressed = false;
+    printf("key 0x%02x pressed\n", s_last_char);
+    toggle_led();
   }
 }
 
 // =============================================================================
 // Local (private) code
 
-
-void set_led(int on) {
-  mu_led_io_set(MU_LED_0,on);
-}
-
-int get_led(void) { 
-  return mu_led_io_get(MU_LED_0); 
-}
-
 static void button_cb(uint8_t button_id, bool button_is_pressed) {
-  (void)button_id;
-
-  if (button_is_pressed) {
-    s_button_was_pressed = true;
-  }
+  // Called at interrupt level when a button changes state.  Note that we do
+  // not want to call printf() or any time-consuming operations from within
+  // interrupt level.  Instead, we just set some variables in order to notify
+  // the main loop after the interrupt returns -- see platform_test_step().
+  s_button_id = button_id;
+  s_button_state = button_is_pressed;
+  s_button_changed_state = true;
 }
 
 static void kbd_cb(unsigned char ch) {
-  // TODO -- calling this from POSIX thread violates the single thread thing -- really should just call sched_isr_task_now BUT we cant store ch without violating this...
-  _most_recent_character = ch; 
-  user_hit_key = true;
+  // Called at interrupt level when a key changes state.  Note that we do
+  // not want to call printf() or any time-consuming operations from within
+  // interrupt level.  Instead, we just set some variables in order to notify
+  // the main loop after the interrupt returns -- see platform_test_step().
+  s_last_char = ch;
+  s_key_pressed = true;
 }
 
+static void toggle_led(void) {
+  mu_led_io_set(MU_LED_0, !mu_led_io_get(MU_LED_0));
+}

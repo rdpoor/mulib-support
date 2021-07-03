@@ -239,3 +239,29 @@ void try(void) {
 
 
 
+
+
+
+
+
+
+
+/* Example of using system() dynamically by doing sprintf to a string that we pass to system()
+
+*/
+
+char *datafile = "file.dat";
+  char *sortedfile = "file.sort";
+  char cmdbuf[50];
+  FILE *fp = fopen(datafile, "w");
+
+  /* ...write to fp to build data file... */
+
+  fclose(fp);
+
+  sprintf(cmdbuf, "sort < %s > %s", datafile, sortedfile);
+  system(cmdbuf);
+
+  fp = fopen(sortedfile, "r");
+  /* ...now read sorted data from fp... */
+

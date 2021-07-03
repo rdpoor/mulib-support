@@ -10,8 +10,8 @@
 
 int main(void)
 {
-    printf("FR\n");
-    start_kbd_reader_thread();
+    //printf("FR\n");
+    //start_kbd_reader_thread();
     platform_test_init(); 
     while(1) {
         platform_test_step();

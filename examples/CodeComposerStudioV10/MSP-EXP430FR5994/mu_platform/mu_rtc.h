@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,58 +22,59 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_STDDEMO_H_
-#define _MU_STDDEMO_H_
+#ifndef _MU_RTC_H_
+#define _MU_RTC_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C";
 #endif
 
 // =============================================================================
-// Includes
+// includes
 
-#include <stdbool.h>
 #include "mu_time.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
-// Types and definitions
+// types and definitions
 
-/**
- * @brief Signature for a button callback.
- *
- * This is a user-supplied function that gets called at interrupt level when the
- * button chagnes state.
- *
- * @param button_state True if the button is pressed at the time of interrupt.
- */
-typedef void (*mu_stddemo_button_cb)(bool button_state);
+#define RTC_FREQUENCY (1024L)
 
 // =============================================================================
-// Functon declarations (public)
+
+#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)((((ms)*MS_PER_SECOND))/RTC_FREQUENCY))
+
+typedef void (*mu_rtc_callback_t)(void);
+
+// =============================================================================
+// declarations
 
 /**
- * @brief Initialize the mu_stddemo_support system.
+ * @brief Initialize the Real Time Clock.  Must be called before any other rtc
+ * functions are called.
+ */
+void mu_rtc_init(void);
+
+/**
+ * @brief Get the current time.
+ */
+mu_time_t mu_rtc_now(void);
+
+/**
+ * @brief Set the function to be called when the RTC ticks.
  *
- * @param button_cb Function to call from interrupt level when the user button
- * is pressed.  Set to NULL to inhibit callbacks.
+ * Pass NULL for the CB to disable RTC alarms.
  */
-void mu_button_io_set_callback(mu_stddemo_button_cb button_cb);
+void mu_rtc_set_callback(mu_rtc_callback_t cb);
 
 /**
- * @brief Set the demo LED on or off.
+ * @brief Called from interrupt level RTC_FREQUENCY times per second.
  */
-void mu_led_io_set(bool on);
-
-/**
- * @brief Return true if the demo button is currently pressed.
- *
- * Note that the state of the button can change between the time the button
- * callback is triggered and the button state is read.
- */
-bool mu_stddemo_button_is_pressed(void);
+void mu_rtc_on_rtc_tick(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _MU_STDDEMO_H_
+#endif // #ifndef _MU_RTC_H_
