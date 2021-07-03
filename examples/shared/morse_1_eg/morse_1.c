@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <mulib.h>
 #include "mu_platform.h"
@@ -68,6 +69,7 @@ static ctx_t s_ctx;
 void morse_1_init(void) {
 
   mulib_init();
+  mu_platform_init();
   mu_ansi_term_clear_screen();
   printf("\r\nmorse_1 v%s, mulib v%s\n", VERSION, MU_VERSION);
 
@@ -81,10 +83,12 @@ void morse_1_init(void) {
   // Make sure the LED is initially off
   mu_led_io_set(MU_LED_0, false);
 
+  atexit(mu_ansi_term_reset);
   // Make the first call to the scheduler to start things off.  The task_fn will
   // reschedule itself upon completion.
   mu_sched_task_now(&s_ctx.task);
 }
+
 
 void morse_1_step(void) {
   // Just run the scheduler

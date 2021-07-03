@@ -66,6 +66,8 @@ typedef uint32_t mu_time_t;
 typedef int32_t mu_duration_t;
 typedef int32_t mu_duration_ms_t;
 
+// only define if this platform implements <signal.h>
+#define HAS_SIGNAL (1)
 
 
 // =============================================================================

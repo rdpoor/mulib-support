@@ -44,7 +44,7 @@
 // Local types and definitions
 
 
-#define VERSION "1.0"
+#define VERSION "1.1"
 
 // The min and max wait times before offering a new strategy
 // on average once every 1/2 hour...
@@ -68,7 +68,6 @@ typedef struct {
 } oblique_ctx_t;
 
 static oblique_ctx_t s_oblique_ctx;
-
 static bool user_was_impatient = false;
 static char _most_recent_character = 'x';
 
@@ -84,6 +83,8 @@ static char _most_recent_character = 'x';
 void oblique_init() {
   uint32_t seed = 0;
   mulib_init();
+  mu_platform_init();
+
   mu_task_init(&s_oblique_ctx.task, oblique_task_fn, &s_oblique_ctx, "Oblique");
   mu_button_io_set_callback(button_cb);
   mu_kbd_io_set_callback(kbd_cb);

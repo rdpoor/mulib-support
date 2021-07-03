@@ -31,6 +31,7 @@ const char *big_font[] = { // note that '\' has to be escaped as "\\"
   "  ___    / _ \\  | (_) |  > _ <  | (_) |  \\___/  ", // 8
   "  ___    / _ \\  | (_) |  \\__, |    / /    /_/   ", // 9
   "     _  (_)      _  (_)    ", // :
+  "                 _  (_)    ", // .
 };
 
 
@@ -69,6 +70,6 @@ void print_string_using_big_font(char *wut) {
 
 static int big_font_index_for_char(char c) {
   if(c == ':') return 10;
-  if(c < 48 || c > 58) return 10; // to avoid a crash
+  if(c < 48 || c > 58) return 11; // any chars not currently defined will display as "."
   return c - 48;
 }
