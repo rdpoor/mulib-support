@@ -42,7 +42,7 @@ extern "C";
 
 #define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)(((((mu_duration_t)ms)*MS_PER_SECOND))/RTC_FREQUENCY))
 
-typedef void (*mu_rtc_callback_t)(void);
+typedef void (*mu_rtc_match_cb_t)(void);
 
 // =============================================================================
 // declarations
@@ -61,19 +61,24 @@ mu_time_t mu_rtc_now(void);
 /**
  * @brief Busy wait for the given number of RTC ticks.
  */
-void mu_rtc_busy_wait(mu_time_t ticks);
+void mu_rtc_busy_wait(mu_duration_t duration);
+
+/**
+ * @brief Set the time at which the RTC should trigger a callback.
+ */
+void mu_rtc_set_match_count(mu_time_t count);
+
+/**
+ * @brief Get the time at which the RTC should trigger a callback.
+ */
+mu_time_t mu_rtc_get_match_count(void);
 
 /**
  * @brief Set the function to be called when the RTC ticks.
  *
- * Pass NULL for the CB to disable RTC alarms.
+ * Pass NULL for the CB to disable RTC match count callbacks.
  */
-void mu_rtc_set_callback(mu_rtc_callback_t cb);
-
-/**
- * @brief Called from interrupt level RTC_FREQUENCY times per second.
- */
-void mu_rtc_on_rtc_tick(void);
+void mu_rtc_set_match_cb(mu_rtc_match_cb_t cb);
 
 #ifdef __cplusplus
 }
