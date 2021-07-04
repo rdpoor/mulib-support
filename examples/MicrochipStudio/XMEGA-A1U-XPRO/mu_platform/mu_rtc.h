@@ -74,11 +74,23 @@ void mu_rtc_set_match_count(mu_time_t count);
 mu_time_t mu_rtc_get_match_count(void);
 
 /**
- * @brief Set the function to be called when the RTC ticks.
+ * @brief Set the function to be called when the RTC count matches.
  *
  * Pass NULL for the CB to disable RTC match count callbacks.
  */
 void mu_rtc_set_match_cb(mu_rtc_match_cb_t cb);
+
+// =============================================================================
+// These are not public functions, but need to be declared for the RTC ISR
+// functions.
+
+// TODO: Design pattern question: perhaps this is the one place where we don't
+// provide a declaration in the .h file and instead use an extern declaration
+// in the driver_isr.c file instead.
+
+// void mu_rtc_on_compare_interrupt(void);
+
+// void mu_rtc_on_overflow_interrupt(void);
 
 #ifdef __cplusplus
 }

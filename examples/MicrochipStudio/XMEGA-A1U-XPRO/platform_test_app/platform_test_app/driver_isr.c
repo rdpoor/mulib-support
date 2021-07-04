@@ -35,13 +35,21 @@
 
 #include <driver_init.h>
 #include <compiler.h>
-#include "mu_rtc.h"
-#include "mu_button_io.h"
+
+extern void mu_rtc_on_match(void);
+extern void mu_rtc_on_overflow(void);
+extern void mu_button_io_on_button_change();
+
+ISR(RTC_COMP_vect)
+{
+	/* Insert your RTC Compare Match Interrupt handling code here */
+	mu_rtc_on_compare_interrupt();
+}
 
 ISR(TCC0_OVF_vect)
 {
 	/* Insert your Timer Overflow/Underflow Interrupt handling code here */
-	mu_rtc_on_rtc_tick();
+	mu_rtc_on_overflow_interrupt();
 }
 
 ISR(PORTQ_INT0_vect)
