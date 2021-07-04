@@ -50,6 +50,7 @@ extern "C" {
 
 #include "mu_button_io.h"
 #include "mu_config.h"
+#include "mu_kbd_io.h"
 #include "mu_led_io.h"
 #include "mu_rtc.h"
 #include "mu_time.h"

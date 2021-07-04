@@ -48,9 +48,6 @@ static void toggle_led(void);
 // compiler won't optimize them away.
 volatile static bool s_button_changed_state;
 volatile static bool s_button_state;
-volatile static uint8_t s_button_id;
-
-volatile static bool s_key_changed_state;
 volatile static bool s_key_pressed;
 volatile static char s_last_char;
 
@@ -65,7 +62,7 @@ void platform_test_init(void) {
 
   printf("\n\rmu_platform test v%s.\n", VERSION);
   s_button_changed_state = false;
-  s_key_changed_state = false;
+  s_key_pressed = false;
 
   // Turn LED on and then off to verify the RTC and time functions are working
   // properly...
@@ -86,7 +83,7 @@ void platform_test_step(void) {
   // mu_kbd_io to make sure they are working properly.
   if (s_button_changed_state) {
     s_button_changed_state = false;
-    printf("button %d %s\n", s_button_id, s_button_state ? "down" : "up");
+    printf("button %s\n", s_button_state ? "down" : "up");
     toggle_led();
   }
 
@@ -105,7 +102,7 @@ static void button_cb(uint8_t button_id, bool button_is_pressed) {
   // not want to call printf() or any time-consuming operations from within
   // interrupt level.  Instead, we just set some variables in order to notify
   // the main loop after the interrupt returns -- see platform_test_step().
-  s_button_id = button_id;
+  (void)button_id;   // unused.
   s_button_state = button_is_pressed;
   s_button_changed_state = true;
 }

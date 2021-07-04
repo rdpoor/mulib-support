@@ -26,7 +26,6 @@
 // Includes
 
 #include "mu_led_io.h"
-#include "extras/mu_ansi_term.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -64,11 +63,15 @@ void mu_led_io_set(uint8_t led_id, bool on) {
   //mu_ansi_term_get_cursor_position(&_cursor_x, &_cursor_y);
   // draw a green dot at [0,0]
   //mu_ansi_term_set_foreground_color(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE);
-  mu_ansi_term_set_colors(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE, MU_ANSI_TERM_DEFAULT_COLOR);
-  mu_ansi_term_set_cursor_position(0, 0);
-  printf("•\n");
+
+  //mu_ansi_term_set_colors(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE, MU_ANSI_TERM_DEFAULT_COLOR);
+ // mu_ansi_term_set_cursor_position(0, 0);
+ // printf("•\n");
+
+
   // restore color and cursor position
-  mu_ansi_term_reset();
+  //mu_ansi_term_reset();
+  
  // mu_ansi_term_set_cursor_position(_cursor_x, _cursor_y);
   //mu_ansi_term_restore_cursor_position();
  // mu_ansi_term_set_cursor_visible(true);

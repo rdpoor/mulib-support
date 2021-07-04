@@ -61,6 +61,12 @@ void mu_rtc_init(void);
  */
 mu_time_t mu_rtc_now(void);
 
+void mu_rtc_busy_wait(mu_time_t ticks);
+
+
+
+
+
 /**
  * @brief Set the function to be called when the RTC ticks.
  *

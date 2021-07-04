@@ -49,6 +49,14 @@ mu_time_t mu_rtc_now(void) {
   return HAL_GetTick();
 }
 
+
+void mu_rtc_busy_wait(mu_time_t ticks) {
+  mu_time_t until  = mu_time_offset(mu_rtc_now(), ticks);
+  while (mu_time_precedes(mu_rtc_now(), until)) {
+    asm(" nop");
+    // buzz...
+  }
+}
 /**
  * @brief Set the function to be called when the RTC ticks
  *

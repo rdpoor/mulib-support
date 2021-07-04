@@ -22,53 +22,38 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// Includes
+#ifndef _MU_KBD_IO_H_
+#define _MU_KBD_IO_H_
 
-#include "mu_kbd_io.h"
-//#include "driver_init.h"
-#include <stddef.h>
-
-// =============================================================================
-// Local types and definitions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// Local storage
-
-static mu_kbd_io_callback_t s_kbd_io_cb;
+// includes
 
 // =============================================================================
-// Local (forward) declarations
+// types and definitions
 
-static void handle_rx_isr(void);
-// Normally we avoid extern declarations, but these two functions are not
-// declared in usart_basic.h (though they should be).
-extern void USART_0_default_rx_isr_cb(void);
-extern void USART_0_default_udre_isr_cb(void);
+// Signature of the keyboard callback function
+typedef void (*mu_kbd_io_callback_t)(unsigned char ch);
 
 // =============================================================================
-// Public code
+// declarations
 
-void mu_kbd_io_init(void) {
-  // Set up to capture keyboard rx interrupts
-  //USART_0_set_ISR_cb(handle_rx_isr, RX_CB);
-  s_kbd_io_cb = NULL;
+/**
+ * @brief Initialize the keyboard input module.
+ */
+void mu_kdb_io_init(void);
+
+/**
+ * @brief Install a callback to be triggered (at interrupt level) when a
+ * character is received from the keyboard.
+ */
+void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb);
+
+#ifdef __cplusplus
 }
+#endif
 
-void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb) {
-  s_kbd_io_cb = cb;
-}
-
-// =============================================================================
-// Local (static) code
-
-static void handle_rx_isr(void) {
-  // Arrive here at interrupt level when a character is received on the kbd.
-  // TODO: verify that reading USARTE0.DATA leaves the data available
-  //uint8_t data = USARTE0.DATA;
- // USART_0_default_rx_isr_cb();   // call the default handler...
-  // If there is a user callback, call it...
- // if (s_kbd_io_cb) {
- //   s_kbd_io_cb(data);
- // }
-}
+#endif /* #ifndef _MU_KBD_IO_H_ */

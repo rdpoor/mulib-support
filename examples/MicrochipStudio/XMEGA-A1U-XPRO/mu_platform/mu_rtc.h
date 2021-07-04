@@ -40,6 +40,8 @@ extern "C";
 // types and definitions
 #define RTC_FREQUENCY ((mu_duration_t)1024)
 
+#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)(((((mu_duration_t)ms)*MS_PER_SECOND))/RTC_FREQUENCY))
+
 typedef void (*mu_rtc_callback_t)(void);
 
 // =============================================================================
@@ -55,6 +57,11 @@ void mu_rtc_init(void);
  * @brief Get the current time.
  */
 mu_time_t mu_rtc_now(void);
+
+/**
+ * @brief Busy wait for the given number of RTC ticks.
+ */
+void mu_rtc_busy_wait(mu_time_t ticks);
 
 /**
  * @brief Set the function to be called when the RTC ticks.

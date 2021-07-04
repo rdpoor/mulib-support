@@ -166,3 +166,15 @@ static void read_ttysize() {
 }
 
 
+static void handle_rx_isr(void) {
+  // Arrive here at interrupt level when a character is received on the kbd.
+  // TODO: verify that reading USARTE0.DATA leaves the data available
+
+  //uint8_t data = USARTE0.DATA;
+  //USART_0_default_rx_isr_cb();   // call the default handler...
+  // If there is a user callback, call it...
+ // if (s_kbd_io_cb) {
+ //   s_kbd_io_cb(data);
+//  }
+}
+
