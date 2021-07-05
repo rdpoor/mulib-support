@@ -27,9 +27,12 @@
 
 #include "mu_kbd_io.h"
 #include "driver_init.h"
+#include <usart_basic.h>
+#include <atomic.h>
 #include <stddef.h>
 
 // =============================================================================
+
 // Local types and definitions
 
 // =============================================================================
@@ -52,6 +55,8 @@ extern void USART_0_default_udre_isr_cb(void);
 void mu_kbd_io_init(void) {
   // Set up to capture keyboard rx interrupts
   USART_0_set_ISR_cb(handle_rx_isr, RX_CB);
+  USART_0_enable();
+  ENABLE_INTERRUPTS();
   s_kbd_io_cb = NULL;
 }
 

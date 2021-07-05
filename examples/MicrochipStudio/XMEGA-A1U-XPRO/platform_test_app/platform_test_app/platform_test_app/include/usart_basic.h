@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief CLK related functionality implementation.
+ * \brief USART basic driver.
  *
  (c) 2020 Microchip Technology Inc. and its subsidiaries.
 
@@ -25,38 +25,52 @@
  *
  */
 
-/**
- * \defgroup doc_driver_clk_init CLK Init Driver
- * \ingroup doc_driver_clk
- *
- * \section doc_driver_clk_rev Revision History
- * - v0.0.0.1 Initial Commit
- *
- *@{
- */
-#include <clk.h>
-#include <ccp.h>
+#ifndef USART_BASIC_H_INCLUDED
+#define USART_BASIC_H_INCLUDED
 
-/**
- * \brief Initialize clk interface
- * \return Initialization status.
- */
-int8_t CLK_init()
-{
+#include <atmel_start.h>
+#include <stdbool.h>
 
-	// ccp_write_io((void*)&(CLK.CTRL),CLK_SCLKSEL_RC2M_gc /* 2MHz Internal Oscillator */);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-	// ccp_write_io((void*)&(CLK.PSCTRL),CLK_PSADIV_1_gc /* Divide by 1 */
-	//		 | CLK_PSBCDIV_1_1_gc /* Divide B by 1 and C by 1 */);
+/* USART_0 Ringbuffer */
 
-	// ccp_write_io((void*)&(CLK.LOCK),0 << CLK_LOCK_bp /* Clock System Lock: disabled */);
+#define USART_0_RX_BUFFER_SIZE 8
+#define USART_0_TX_BUFFER_SIZE 8
+#define USART_0_RX_BUFFER_MASK (USART_0_RX_BUFFER_SIZE - 1)
+#define USART_0_TX_BUFFER_MASK (USART_0_TX_BUFFER_SIZE - 1)
 
-	// CLK.RTCCTRL = CLK_RTCSRC_TOSC_gc /* 1.024 kHz from 32.768 kHz crystal oscillator */
-	//		 | 0 << CLK_RTCEN_bp; /* RTC Clock Source Enable: disabled */
+typedef enum { RX_CB = 1, UDRE_CB } usart_cb_type_t;
+typedef void (*usart_cb_t)(void);
 
-	// CLK.USBCTRL = 0 << CLK_USBPSDIV_gp /* Prescaler Division Factor: 0 */
-	//		 | CLK_USBSRC_PLL_gc /* PLL */
-	//		 | 0 << CLK_USBSEN_bp; /* Clock Source Enable: disabled */
+int8_t USART_0_init();
 
-	return 0;
+void USART_0_enable();
+
+void USART_0_enable_rx();
+
+void USART_0_enable_tx();
+
+void USART_0_disable();
+
+uint8_t USART_0_get_data();
+
+bool USART_0_is_tx_ready();
+
+bool USART_0_is_rx_ready();
+
+bool USART_0_is_tx_busy();
+
+uint8_t USART_0_read(void);
+
+void USART_0_write(const uint8_t data);
+
+void USART_0_set_ISR_cb(usart_cb_t cb, usart_cb_type_t type);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* USART_BASIC_H_INCLUDED */

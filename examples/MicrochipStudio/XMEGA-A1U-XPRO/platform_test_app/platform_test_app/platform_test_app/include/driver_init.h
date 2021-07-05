@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief Driver ISR.
+ * \brief Driver initialization.
  *
  (c) 2020 Microchip Technology Inc. and its subsidiaries.
 
@@ -33,21 +33,34 @@
  * to avoid losing it when reconfiguring.
  */
 
-#include <driver_init.h>
+#ifndef DRIVER_INIT_H_INCLUDED
+#define DRIVER_INIT_H_INCLUDED
+
 #include <compiler.h>
-#include "mu_rtc.h"
-#include "mu_button_io.h"
+#include <clock_config.h>
+#include <port.h>
+#include <atmel_start_pins.h>
 
-ISR(TCC0_OVF_vect)
-{
-	/* Insert your Timer Overflow/Underflow Interrupt handling code here */
-	mu_rtc_on_rtc_tick();
-}
+#include <osc.h>
+#include <ccp.h>
 
-ISR(PORTQ_INT0_vect)
-{
-	/* Insert your PORTQ interrupt handling code here */
-	mu_button_io_on_button_change();
-	/* Clear interrupt flags */
-	PORTQ_INTFLAGS = PORT_INT0IF_bm;
+#include <clk.h>
+#include <rtc.h>
+#include <pmic.h>
+#include <ccp.h>
+
+#include <sleep.h>
+
+#include <usart_basic.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void system_init(void);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* DRIVER_INIT_H_INCLUDED */

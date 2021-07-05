@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief Driver initialization.
+ * \brief Driver ISR.
  *
  (c) 2020 Microchip Technology Inc. and its subsidiaries.
 
@@ -33,35 +33,29 @@
  * to avoid losing it when reconfiguring.
  */
 
-#ifndef DRIVER_INIT_H_INCLUDED
-#define DRIVER_INIT_H_INCLUDED
-
+#include <driver_init.h>
 #include <compiler.h>
-#include <clock_config.h>
-#include <port.h>
-#include <atmel_start_pins.h>
 
-#include <tc.h>
+extern void mu_rtc_on_compare_interrupt(void);
+extern void mu_rtc_on_overflow_interrupt(void);
+extern void mu_button_io_on_button_change(void);
 
-#include <osc.h>
-#include <ccp.h>
-
-#include <clk.h>
-#include <pmic.h>
-#include <ccp.h>
-
-#include <sleep.h>
-
-#include <usart_basic.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void system_init(void);
-
-#ifdef __cplusplus
+ISR(RTC_COMP_vect)
+{
+	/* Insert your RTC Compare Match Interrupt handling code here */
+	mu_rtc_on_compare_interrupt();
 }
-#endif
 
-#endif /* DRIVER_INIT_H_INCLUDED */
+ISR(RTC_OVF_vect)
+{
+	/* Insert your Timer Overflow/Underflow Interrupt handling code here */
+	mu_rtc_on_overflow_interrupt();
+}
+
+ISR(PORTQ_INT0_vect)
+{
+	/* Insert your PORTQ interrupt handling code here */
+	mu_button_io_on_button_change();
+	/* Clear interrupt flags */
+	PORTQ_INTFLAGS = PORT_INT0IF_bm;
+}

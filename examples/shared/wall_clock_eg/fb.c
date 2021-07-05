@@ -27,8 +27,12 @@
 
 #include "fb.h"
 
+<<<<<<< HEAD
 #include "extras/mu_ansi_term.h"
 
+=======
+#include <mulib.h>
+>>>>>>> platform-update
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
@@ -46,7 +50,11 @@ typedef struct {
 // =============================================================================
 // Local storage
 
+<<<<<<< HEAD
 static fb_t s_fb = {.width = 0, .height = 0};
+=======
+static fb_t s_fb;
+>>>>>>> platform-update
 
 // =============================================================================
 // Local (forward) declarations
@@ -54,8 +62,13 @@ static fb_t s_fb = {.width = 0, .height = 0};
 // =============================================================================
 // Public code
 
+<<<<<<< HEAD
 void fb_init(int width,
              int height,
+=======
+void fb_init(uint8_t width,
+             uint8_t height,
+>>>>>>> platform-update
              char *backing_store,
              char *display_store) {
   s_fb.width = width;
@@ -75,6 +88,7 @@ void fb_clear(void) {
   memset(s_fb.backing_store, ' ', s_fb.width * s_fb.height);
 }
 
+<<<<<<< HEAD
 void fb_clear_to_end_of_line(char *pos) {
   int len_to_end, st;
   st = (pos - s_fb.backing_store) % s_fb.width;
@@ -88,6 +102,13 @@ char *fb_row_ref(int row_number) {
 }
 
 void fb_draw(int x, int y, char ch) {
+=======
+char *fb_row_ref(uint8_t row_number) {
+  return &s_fb.backing_store[s_fb.width * row_number];
+}
+
+void fb_draw(uint8_t x, uint8_t y, char ch) {
+>>>>>>> platform-update
   // [x=0, y=0] is at bottom left
   s_fb.backing_store[x + (s_fb.height - y - 1) * s_fb.width] = ch;
 }

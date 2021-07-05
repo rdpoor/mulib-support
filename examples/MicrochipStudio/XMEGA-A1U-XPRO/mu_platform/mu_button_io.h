@@ -79,10 +79,15 @@ void mu_button_io_set_callback(mu_button_io_callback_t cb);
  */
 bool mu_button_io_get_button(uint8_t button_id);
 
-/**
- * @brief Called from interrupt level on button change.
- */
-void mu_button_io_on_button_change(void);
+// =============================================================================
+// This is not public functions, but need to be declared for the ISR in
+// driver_isr.c
+
+// TODO: Design pattern question: perhaps this is the one place where we don't
+// provide a declaration in the .h file and instead use an extern declaration
+// in the driver_isr.c file instead.
+
+// void mu_button_io_on_button_change(void);
 
 #ifdef __cplusplus
 }

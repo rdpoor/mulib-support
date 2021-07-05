@@ -36,6 +36,14 @@ static void button_cb(uint8_t button_id, bool button_is_pressed);
 static void kbd_cb(unsigned char ch);
 
 /**
+<<<<<<< HEAD
+=======
+ * @brief Called from interrupt level on RTC count match.
+ */
+static void rtc_cb(void);
+
+/**
+>>>>>>> platform-update
  * @brief Invert the state of the user LED.
  */
 static void toggle_led(void);
@@ -48,8 +56,16 @@ static void toggle_led(void);
 // compiler won't optimize them away.
 volatile static bool s_button_changed_state;
 volatile static bool s_button_state;
+<<<<<<< HEAD
 volatile static bool s_key_pressed;
 volatile static char s_last_char;
+=======
+
+volatile static bool s_key_pressed;
+volatile static char s_last_char;
+
+volatile static bool s_rtc_count_matched;
+>>>>>>> platform-update
 
 // =============================================================================
 // Public code
@@ -63,10 +79,15 @@ void platform_test_init(void) {
   printf("\n\rmu_platform test v%s.\n", VERSION);
   s_button_changed_state = false;
   s_key_pressed = false;
+<<<<<<< HEAD
+=======
+  s_rtc_count_matched = false;
+>>>>>>> platform-update
 
   // Turn LED on and then off to verify the RTC and time functions are working
   // properly...
   mu_led_io_set(MU_LED_0, true);
+<<<<<<< HEAD
   printf("LED should be on for %d seconds.\n", DEMO_INTERVAL_SECS);
   mu_rtc_busy_wait(MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
 
@@ -74,6 +95,21 @@ void platform_test_init(void) {
   printf("LED should be off for %d seconds.\n", DEMO_INTERVAL_SECS);
   mu_rtc_busy_wait(MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
 
+=======
+  printf("LED should be on for %d seconds (busy wait).\n", DEMO_INTERVAL_SECS);
+  mu_rtc_busy_wait(MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000));
+
+  mu_led_io_set(MU_LED_0, false);
+  printf("LED should be off for %d seconds (match callback).\n", DEMO_INTERVAL_SECS);
+  mu_rtc_set_match_count(
+    mu_time_offset(mu_rtc_now(),
+                   MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000)));
+  mu_rtc_set_match_cb(rtc_cb);
+  while (!s_rtc_count_matched) {
+	  asm("nop");    // buzz...
+  }
+  s_rtc_count_matched = false;
+>>>>>>> platform-update
   mu_led_io_set(MU_LED_0, true);
   printf("Press button or any key...\n");
 }
@@ -105,6 +141,7 @@ static void button_cb(uint8_t button_id, bool button_is_pressed) {
   (void)button_id;   // unused.
   s_button_state = button_is_pressed;
   s_button_changed_state = true;
+<<<<<<< HEAD
 }
 
 static void kbd_cb(unsigned char ch) {
@@ -119,3 +156,23 @@ static void kbd_cb(unsigned char ch) {
 static void toggle_led(void) {
   mu_led_io_set(MU_LED_0, !mu_led_io_get(MU_LED_0));
 }
+=======
+}
+
+static void kbd_cb(unsigned char ch) {
+  // Called at interrupt level when a key changes state.  Note that we do
+  // not want to call printf() or any time-consuming operations from within
+  // interrupt level.  Instead, we just set some variables in order to notify
+  // the main loop after the interrupt returns -- see platform_test_step().
+  s_last_char = ch;
+  s_key_pressed = true;
+}
+
+static void rtc_cb(void) {
+  s_rtc_count_matched = true;
+}
+
+static void toggle_led(void) {
+  mu_led_io_set(MU_LED_0, !mu_led_io_get(MU_LED_0));
+}
+>>>>>>> platform-update

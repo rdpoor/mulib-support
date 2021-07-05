@@ -36,10 +36,9 @@
 #include "driver_init.h"
 #include <system.h>
 
-void TIMER_0_initialization(void)
+void RTC_0_initialization(void)
 {
-
-	TIMER_0_init();
+	RTC_0_init();
 }
 
 /* configure pins and initialize registers */
@@ -126,7 +125,7 @@ void system_init()
 	    // <PORT_ISC_FALLING_gc"> Sense Falling Edge
 	    // <PORT_ISC_INPUT_DISABLE_gc"> Digital Input Buffer disabled
 	    // <PORT_ISC_LEVEL_gc"> Sense low Level
-	    PORT_ISC_FALLING_gc);
+	    PORT_ISC_BOTHEDGES_gc);
 
 	USER_BUTTON_int_level(
 	    // <y> port vector 0 int level
@@ -198,11 +197,11 @@ void system_init()
 	    // <true"> High
 	    true);
 
-	TIMER_0_initialization();
-
 	OSC_init();
 
 	CLK_init();
+
+	RTC_0_initialization();
 
 	PMIC_init();
 
