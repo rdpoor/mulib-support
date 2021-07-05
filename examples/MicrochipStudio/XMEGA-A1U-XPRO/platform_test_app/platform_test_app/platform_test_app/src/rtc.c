@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief USART basic driver.
+ * \brief RTC related functionality implementation.
  *
  (c) 2020 Microchip Technology Inc. and its subsidiaries.
 
@@ -25,40 +25,34 @@
  *
  */
 
-#ifndef USART_BASIC_H_INCLUDED
-#define USART_BASIC_H_INCLUDED
+/**
+ * \defgroup doc_driver_rtc_init RTC Init Driver
+ * \ingroup doc_driver_rtc
+ *
+ * \section doc_driver_rtc_rev Revision History
+ * - v0.0.0.1 Initial Commit
+ *
+ *@{
+ */
+#include <rtc.h>
 
-#include <atmel_start.h>
-#include <stdbool.h>
+/**
+ * \brief Initialize rtc interface
+ * \return Initialization status.
+ */
+int8_t RTC_0_init()
+{
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+	// RTC.PER = 65535; /* Period Register: 65535 */
 
-int8_t USART_0_init();
+	// RTC.COMP = 0; /* Compare Register: 0 */
 
-void USART_0_enable();
+	// RTC.CNT = 0; /* 0 */
 
-void USART_0_enable_rx();
+	// RTC.CTRL = RTC_PRESCALER_OFF_gc; /* RTC Off */
 
-void USART_0_enable_tx();
+	RTC.INTCTRL = RTC_COMPINTLVL_LO_gc   /* Low Level */
+	              | RTC_OVFINTLVL_LO_gc; /* Low Level */
 
-void USART_0_disable();
-
-uint8_t USART_0_get_data();
-
-bool USART_0_is_tx_ready();
-
-bool USART_0_is_rx_ready();
-
-bool USART_0_is_tx_busy();
-
-uint8_t USART_0_read(void);
-
-void USART_0_write(const uint8_t data);
-
-#ifdef __cplusplus
+	return 0;
 }
-#endif
-
-#endif /* USART_BASIC_H_INCLUDED */

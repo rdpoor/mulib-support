@@ -1,7 +1,8 @@
 /**
  * \file
  *
- * \brief TC related functionality declaration.
+ * \brief RTC related functionality declaration.
+ *
  (c) 2020 Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms,you may use this software and
@@ -21,21 +22,23 @@
     FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
     ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
     THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+ *
  */
 
-#ifndef TC_H_INCLUDED
-#define TC_H_INCLUDED
+#ifndef RTC_H_INCLUDED
+#define RTC_H_INCLUDED
 
 #include <compiler.h>
+#include <utils_assert.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int8_t TIMER_0_init();
+int8_t RTC_0_init();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* TC_H_INCLUDED */
+#endif /* RTC_H_INCLUDED */

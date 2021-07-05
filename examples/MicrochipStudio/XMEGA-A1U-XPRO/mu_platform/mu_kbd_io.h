@@ -44,7 +44,7 @@ typedef void (*mu_kbd_io_callback_t)(unsigned char ch);
 /**
  * @brief Initialize the keyboard input module.
  */
-void mu_kdb_io_init(void);
+void mu_kbd_io_init(void);
 
 /**
  * @brief Install a callback to be triggered (at interrupt level) when a
