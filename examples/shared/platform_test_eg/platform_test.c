@@ -82,14 +82,13 @@ void platform_test_init(void) {
   mu_led_io_set(MU_LED_0, false);
   printf("LED should be off for %d seconds (match callback).\n", DEMO_INTERVAL_SECS);
   mu_rtc_set_match_count(
-    mu_time_offset(mu_time_now(),
-    MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000)
-  );
+    mu_time_offset(mu_rtc_now(),
+                   MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000)));
   mu_rtc_set_match_cb(rtc_cb);
   while (!s_rtc_count_matched) {
-    // buzz...
+	  asm("nop");    // buzz...
   }
-  
+  s_rtc_count_matched = false;
   mu_led_io_set(MU_LED_0, true);
   printf("Press button or any key...\n");
 }
@@ -130,6 +129,10 @@ static void kbd_cb(unsigned char ch) {
   // the main loop after the interrupt returns -- see platform_test_step().
   s_last_char = ch;
   s_key_pressed = true;
+}
+
+static void rtc_cb(void) {
+  s_rtc_count_matched = true;
 }
 
 static void toggle_led(void) {

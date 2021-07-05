@@ -24,6 +24,7 @@
 
 #include "mu_rtc.h"
 #include "mu_time.h"
+#include <rtc.h>
 
 // =============================================================================
 // local types and definitions
@@ -34,7 +35,9 @@
 // =============================================================================
 // local storage
 
-static mu_rtc_callback_t s_rtc_cb;
+static mu_rtc_match_cb_t s_rtc_match_cb;
+volatile static uint16_t s_rtc_hi;
+static uint16_t s_match_count_hi;
 
 // =============================================================================
 // public code
@@ -65,10 +68,10 @@ mu_time_t mu_rtc_now(void) {
     rtc_hi = s_rtc_hi;
     rtc_lo = RTC.CNT;
   }
-  return rtc_hi << 16 | rtc_lo;
+  return (uint32_t)rtc_hi << 16 | rtc_lo;
 }
 
-void mu_rtc_busy_wait(mu_time_t ticks) {
+void mu_rtc_busy_wait(mu_duration_t ticks) {
   mu_time_t until  = mu_time_offset(mu_rtc_now(), ticks);
   while (mu_time_precedes(mu_rtc_now(), until)) {
     asm(" nop");
@@ -80,7 +83,8 @@ void mu_rtc_busy_wait(mu_time_t ticks) {
  * @brief Set the time at which the RTC should trigger a callback.
  */
 void mu_rtc_set_match_count(mu_time_t count) {
-  s_compare_count_hi = count >> 16;
+  RTC.INTFLAGS |= (1 << 1);   // clear COMPARE Interrupt flag
+  s_match_count_hi = count >> 16;
   RTC.COMP = count & 0xFFFF;
 }
 
@@ -88,7 +92,7 @@ void mu_rtc_set_match_count(mu_time_t count) {
  * @brief Get the time at which the RTC should trigger a callback.
  */
 mu_time_t mu_rtc_get_match_count(void) {
-  return s_compare_count_hi << 16 | RTC.COMP;
+  return (uint32_t)s_match_count_hi << 16 | RTC.COMP;
 }
 
 /**
@@ -115,7 +119,7 @@ void mu_rtc_set_match_cb(mu_rtc_match_cb_t cb) {
  * @brief Called from interrupt level on compare interrupt.
  */
 void mu_rtc_on_compare_interrupt(void) {
-  if (s_compare_count_hi == s_rtc_hi) {
+  if (s_match_count_hi == s_rtc_hi) {
     if (s_rtc_match_cb != NULL) {
       s_rtc_match_cb();
     }

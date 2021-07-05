@@ -19,9 +19,8 @@
       <Value>../utils</Value>
       <Value>../utils/assembler</Value>
       <Value>../</Value>
-      <Value>../../../../../../mulib</Value>
-      <Value>../../../mu_platform</Value>
-      <Value>../../../../../shared/platform_test_eg</Value>
+      <Value>../../../../../../shared/platform_test_eg</Value>
+      <Value>../../../../mu_platform</Value>
       <Value>../Config</Value>
       <Value>%24(PackRepoDir)\Atmel\XMEGAA_DFP\1.1.68\include</Value>
     </ListValues>

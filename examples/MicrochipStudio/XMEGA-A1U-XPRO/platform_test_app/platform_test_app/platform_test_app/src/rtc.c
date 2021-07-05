@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief CLK related functionality implementation.
+ * \brief RTC related functionality implementation.
  *
  (c) 2020 Microchip Technology Inc. and its subsidiaries.
 
@@ -26,37 +26,33 @@
  */
 
 /**
- * \defgroup doc_driver_clk_init CLK Init Driver
- * \ingroup doc_driver_clk
+ * \defgroup doc_driver_rtc_init RTC Init Driver
+ * \ingroup doc_driver_rtc
  *
- * \section doc_driver_clk_rev Revision History
+ * \section doc_driver_rtc_rev Revision History
  * - v0.0.0.1 Initial Commit
  *
  *@{
  */
-#include <clk.h>
-#include <ccp.h>
+#include <rtc.h>
 
 /**
- * \brief Initialize clk interface
+ * \brief Initialize rtc interface
  * \return Initialization status.
  */
-int8_t CLK_init()
+int8_t RTC_0_init()
 {
 
-	// ccp_write_io((void*)&(CLK.CTRL),CLK_SCLKSEL_RC2M_gc /* 2MHz Internal Oscillator */);
+	// RTC.PER = 65535; /* Period Register: 65535 */
 
-	// ccp_write_io((void*)&(CLK.PSCTRL),CLK_PSADIV_1_gc /* Divide by 1 */
-	//		 | CLK_PSBCDIV_1_1_gc /* Divide B by 1 and C by 1 */);
+	// RTC.COMP = 0; /* Compare Register: 0 */
 
-	// ccp_write_io((void*)&(CLK.LOCK),0 << CLK_LOCK_bp /* Clock System Lock: disabled */);
+	// RTC.CNT = 0; /* 0 */
 
-	// CLK.RTCCTRL = CLK_RTCSRC_TOSC_gc /* 1.024 kHz from 32.768 kHz crystal oscillator */
-	//		 | 0 << CLK_RTCEN_bp; /* RTC Clock Source Enable: disabled */
+	// RTC.CTRL = RTC_PRESCALER_OFF_gc; /* RTC Off */
 
-	// CLK.USBCTRL = 0 << CLK_USBPSDIV_gp /* Prescaler Division Factor: 0 */
-	//		 | CLK_USBSRC_PLL_gc /* PLL */
-	//		 | 0 << CLK_USBSEN_bp; /* Clock Source Enable: disabled */
+	RTC.INTCTRL = RTC_COMPINTLVL_LO_gc   /* Low Level */
+	              | RTC_OVFINTLVL_LO_gc; /* Low Level */
 
 	return 0;
 }

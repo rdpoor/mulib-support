@@ -36,10 +36,9 @@
 #include "driver_init.h"
 #include <system.h>
 
-void TIMER_0_initialization(void)
+void RTC_0_initialization(void)
 {
-
-	TIMER_0_init();
+	RTC_0_init();
 }
 
 /* configure pins and initialize registers */
@@ -198,11 +197,11 @@ void system_init()
 	    // <true"> High
 	    true);
 
-	TIMER_0_initialization();
-
 	OSC_init();
 
 	CLK_init();
+
+	RTC_0_initialization();
 
 	PMIC_init();
 
