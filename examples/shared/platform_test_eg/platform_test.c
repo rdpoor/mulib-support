@@ -36,14 +36,11 @@ static void button_cb(uint8_t button_id, bool button_is_pressed);
 static void kbd_cb(unsigned char ch);
 
 /**
-<<<<<<< HEAD
-=======
  * @brief Called from interrupt level on RTC count match.
  */
 static void rtc_cb(void);
 
 /**
->>>>>>> platform-update
  * @brief Invert the state of the user LED.
  */
 static void toggle_led(void);
