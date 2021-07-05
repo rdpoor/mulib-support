@@ -79,14 +79,6 @@ void mu_rtc_busy_wait(mu_duration_t ticks) {
   }
 }
 
-void mu_rtc_busy_wait(mu_time_t ticks) {
-  mu_time_t until  = mu_time_offset(mu_rtc_now(), ticks);
-  while (mu_time_precedes(mu_rtc_now(), until)) {
-    asm(" nop");
-    // buzz...
-  }
-}
-
 /**
  * @brief Set the time at which the RTC should trigger a callback.
  */
