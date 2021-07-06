@@ -58,11 +58,8 @@ void print_string_using_big_font(char *wut) {
       sprintf(fb_line_start, "%.*s ", line_len, s + (line_len * i));
       fb_line_start += line_len + 1;
     }
-<<<<<<< HEAD
     // we clear the line all the way to the end, to make sure that we erase anything left over from wider characters printed previously
     fb_clear_to_end_of_line(fb_line_start);
-=======
->>>>>>> platform-update
   }
   fb_flush();
 }

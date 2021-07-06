@@ -49,13 +49,9 @@ extern "C" {
 /**
  * @brief Initialize the frame buffer with backing store and display store.
  */
-<<<<<<< HEAD
-void fb_init(int width,
-             int height,
-=======
+
 void fb_init(uint8_t width,
              uint8_t height,
->>>>>>> platform-update
              char *backing_store,
              char *display_store);
 
@@ -69,7 +65,6 @@ void fb_erase(void);
  */
 void fb_clear(void);
 
-<<<<<<< HEAD
 
 /**
  * @brief Clear from some internal point to the end of that line
@@ -79,22 +74,13 @@ void fb_clear_to_end_of_line(char *pos);
 /**
  * @brief Return a pointer to the first char of the given row #.
  */
-char *fb_row_ref(int row_number);
-=======
-/**
- * @brief Return a pointer to the first char of the given row #.
- */
 char *fb_row_ref(uint8_t row_number);
->>>>>>> platform-update
 
 /**
  * @brief Draw character into the frame buffer backing store at x, y
  */
-<<<<<<< HEAD
-void fb_draw(int x, int y, char ch);
-=======
+
 void fb_draw(uint8_t x, uint8_t y, char ch);
->>>>>>> platform-update
 
 /**
  * @brief Flush the frame buffer backing store to the screen
