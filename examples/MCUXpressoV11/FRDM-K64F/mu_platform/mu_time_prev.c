@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,45 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_TIME_H_
-#define _MU_TIME_H_
-
-#ifdef __cplusplus
-extern "C";
-#endif
-
 // =============================================================================
-// includes
+// Includes
 
 #include "mu_config.h"
-#include <stdint.h>
-#include <stdbool.h>
+#include "mu_time.h"
 
 // =============================================================================
-// types and definitions
+// Private types and definitions
 
-#define MS_PER_SECOND (1000L)
+// =============================================================================
+// Private (forward) declarations
+
+// =============================================================================
+// Local storage
+
+volatile uint32_t s_systick_count;
+
+// =============================================================================
+// Public code
 
 /**
- * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
- * specific mu_time.h
+ * @brief Initialize the time system.  Must be called before any other time
+ * functions are called.
  */
-typedef uint32_t mu_time_t;        // absolute number of ticks since startup (with rollover)
-typedef int32_t mu_duration_t;     // relative number of ticks
-typedef int32_t mu_duration_ms_t;
+void mu_time_init(void) {
+  /* Set systick reload value to generate 1ms interrupt */
+  if (SysTick_Config(SystemCoreClock / 1000U)) {
+    while (1) {
+			// SysTick_Config failed
+    }
+	}
+}
 
-// =============================================================================
-// declarations
+/**
+ * @brief Get the current system time.
+ *
+ * @return A value representing the current time.
+ */
+mu_time_t mu_time_now() { return s_systick_count; }
 
 /**
  * @brief Add a time and a duration.
@@ -61,7 +71,7 @@ typedef int32_t mu_duration_ms_t;
  * @param dt a duration object
  * @return t1 offset by dt
  */
-mu_time_t mu_time_offset(mu_time_t t1, mu_duration_t dt);
+mu_time_t mu_time_offset(mu_time_t t1, mu_duration_t dt) { return t1 + dt; }
 
 /**
  * @brief Take the difference between two time objects
@@ -72,7 +82,7 @@ mu_time_t mu_time_offset(mu_time_t t1, mu_duration_t dt);
  * @param t2 A time object
  * @return (t1-t2) as a duration object
  */
-mu_duration_t mu_time_difference(mu_time_t t1, mu_time_t t2);
+mu_duration_t mu_time_difference(mu_time_t t1, mu_time_t t2) { return t1 - t2; }
 
 /**
  * @brief Return true if t1 is strictly before t2
@@ -84,7 +94,7 @@ mu_duration_t mu_time_difference(mu_time_t t1, mu_time_t t2);
  * @param t2 A time object
  * @return true if t1 is strictly before t2, false otherwise.
  */
-bool mu_time_precedes(mu_time_t t1, mu_time_t t2);
+bool mu_time_precedes(mu_time_t t1, mu_time_t t2) { return t1 < t2; }
 
 /**
  * @brief Return true if t1 is equal to t2
@@ -93,7 +103,7 @@ bool mu_time_precedes(mu_time_t t1, mu_time_t t2);
  * @param t2 A time object
  * @return true if t1 equals t2, false otherwise.
  */
-bool mu_time_equals(mu_time_t t1, mu_time_t t2);
+bool mu_time_equals(mu_time_t t1, mu_time_t t2) { return t1 == t2; }
 
 /**
  * @brief Return true if t1 is strictly after t2
@@ -105,7 +115,7 @@ bool mu_time_equals(mu_time_t t1, mu_time_t t2);
  * @param t2 A time object
  * @return true if t1 is strictly after t2, false otherwise.
  */
-bool mu_time_follows(mu_time_t t1, mu_time_t t2);
+bool mu_time_follows(mu_time_t t1, mu_time_t t2) { return t1 > t2; }
 
 /**
  * @brief Convert a duration to milliseconds.
@@ -113,7 +123,9 @@ bool mu_time_follows(mu_time_t t1, mu_time_t t2);
  * @param dt A duration object
  * @return The duration in seconds
  */
-mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt);
+mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt) {
+  return (dt * 1000) / SYSTICK_FREQUENCY;
+}
 
 /**
  * @brief Convert milliseconds to a duration
@@ -121,7 +133,9 @@ mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt);
  * @param ms The duration in milliseconds
  * @return A duration object
  */
-mu_duration_t mu_time_ms_to_duration(mu_duration_ms_t ms);
+mu_duration_t mu_time_ms_to_duration(mu_duration_ms_t ms) {
+  return (ms * SYSTICK_FREQUENCY) / 1000;
+}
 
 #ifdef MU_FLOAT
 /**
@@ -130,7 +144,9 @@ mu_duration_t mu_time_ms_to_duration(mu_duration_ms_t ms);
  * @param dt A duration object
  * @return The duration in seconds
  */
-MU_FLOAT mu_time_duration_to_s(mu_duration_t dt);
+MU_FLOAT mu_time_duration_to_s(mu_duration_t dt) {
+  return dt / (MU_FLOAT)(SYSTICK_FREQUENCY);
+}
 
 /**
  * @brief Convert seconds to a duration.
@@ -138,11 +154,14 @@ MU_FLOAT mu_time_duration_to_s(mu_duration_t dt);
  * @param s The duration in seconds
  * @return A duration object
  */
-mu_duration_t mu_time_s_to_duration(MU_FLOAT s);
+mu_duration_t mu_time_s_to_duration(MU_FLOAT s) { return s * SYSTICK_FREQUENCY; }
+
 #endif
 
-#ifdef __cplusplus
+// =============================================================================
+// Local code
+
+
+void SysTick_Handler(void) {
+	s_systick_count += 1;
 }
-#endif
-
-#endif // #ifndef _MU_TIME_H_

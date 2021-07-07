@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,59 +22,54 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_STDDEMO_H_
-#define _MU_STDDEMO_H_
+/**
+ * @file mu_led_io.h
+ *
+ * @brief Control a platform-specific LED.
+ *
+ * mu_led_io defines a platform-specific LED.  This is commonly required by
+ * example applications, but could be used in production code if needed.
+ */
+
+#ifndef _MU_LED_IO_H_
+#define _MU_LED_IO_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // =============================================================================
-// Includes
+// includes
 
 #include <stdbool.h>
-#include "fsl_debug_console.h"
+#include <stdint.h>
 
 // =============================================================================
-// Types and definitions
+// types and definitions
 
-/**
- * @brief Signature for a button callback.
- *
- * This is a user-supplied function that gets called at interrupt level when the
- * button chagnes state.
- *
- * @param button_state True if the button is pressed at the time of interrupt.
- */
-typedef void (*mu_stddemo_button_cb)(bool button_state);
+// The canonical LED used in example code.
+#define MU_LED_0   0
 
 // =============================================================================
-// Functon declarations (public)
+// declarations
 
 /**
- * @brief Initialize the mu_stddemo_support system.
- *
- * @param button_cb Function to call from interrupt level when the user button
- * is pressed.  Set to NULL to inhibit callbacks.
+ * @brief Initialize the LED.
  */
-void mu_button_io_set_callback(mu_stddemo_button_cb button_cb);
-
+void mu_led_io_init(void);
 
 /**
- * @brief Set the demo LED on or off.
+ * @brief Turn on or off an LED
  */
-void mu_led_io_set(bool on);
+void mu_led_io_set(uint8_t led_id, bool on);
 
 /**
- * @brief Return true if the demo button is currently pressed.
- *
- * Note that the state of the button can change between the time the button
- * callback is triggered and the button state is read.
+ * @brief Get the state of an LED.
  */
-bool mu_stddemo_button_is_pressed(void);
+bool mu_led_io_get(uint8_t led_id);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _MU_STDDEMO_H_
+#endif /* #ifndef __TEMPLATE_H_ */

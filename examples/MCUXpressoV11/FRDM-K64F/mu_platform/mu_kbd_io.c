@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,36 +25,55 @@
 // =============================================================================
 // Includes
 
-#include "mu_button_io.h"
-#include "mu_config.h"
 #include "mu_kbd_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
-#include "mu_time.h"
-
-#include "mu_platform.h"
-#include "mu_button_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
+#include "driver_init.h"
+#include <usart_basic.h>
+#include <atomic.h>
+#include <stddef.h>
 
 // =============================================================================
-// Private types and definitions
 
-// =============================================================================
-// Private (forward) declarations
+// Local types and definitions
 
 // =============================================================================
 // Local storage
 
+static mu_kbd_io_callback_t s_kbd_io_cb;
+
+// =============================================================================
+// Local (forward) declarations
+
+static void handle_rx_isr(void);
+// Normally we avoid extern declarations, but these two functions are not
+// declared in usart_basic.h (though they should be).
+extern void USART_0_default_rx_isr_cb(void);
+extern void USART_0_default_udre_isr_cb(void);
+
 // =============================================================================
 // Public code
 
-void mu_platform_init(void) {
-  mu_button_io_init();
-  mu_kbd_io_init();
-  mu_led_io_init();
-  mu_rtc_init();
+void mu_kbd_io_init(void) {
+  // Set up to capture keyboard rx interrupts
+  USART_0_set_ISR_cb(handle_rx_isr, RX_CB);
+  USART_0_enable();
+  ENABLE_INTERRUPTS();
+  s_kbd_io_cb = NULL;
+}
+
+void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb) {
+  s_kbd_io_cb = cb;
 }
 
 // =============================================================================
 // Local (static) code
+
+static void handle_rx_isr(void) {
+  // Arrive here at interrupt level when a character is received on the kbd.
+  // TODO: verify that reading USARTE0.DATA leaves the data available
+  uint8_t data = USARTE0.DATA;
+  USART_0_default_rx_isr_cb();   // call the default handler...
+  // If there is a user callback, call it...
+  if (s_kbd_io_cb) {
+    s_kbd_io_cb(data);
+  }
+}

@@ -22,49 +22,78 @@
  * SOFTWARE.
  */
 
-#ifndef _MU_PLATFORM_H_
-#define _MU_PLATFORM_H_
-
-// About mu_platform.h:
-//
-// mu_platform contains the platform specific code required by the mulib system.
-//
-// Like mulib.h, mu_platform.h offers build strategies, referred to as the
-// "prix fixe" approach and the "ala carte" approach.
-//
-// The _prix fixe_ approach is the easiest: if you include "mulib.h" and call
-// "mu_init()" when your code starts up, everything required from mu_platform
-// is provided for you.
-//
-// But if you want the smallest possible code impage, you'll want to use the
-// _ala carte_ approach.  In this scheme, you `#include` only the mu_platform
-// modules that your application needs.  In addition, for each module named
-// `xxx`, you may need to call `xxx_init()` if that module requires it.
+#ifndef _MU_RTC_H_
+#define _MU_RTC_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C";
 #endif
 
 // =============================================================================
 // includes
 
-#include "mu_button_io.h"
-#include "mu_config.h"
-#include "mu_kbd_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
 #include "mu_time.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
 // types and definitions
+#define RTC_FREQUENCY ((mu_duration_t)1024)
 
-void mu_platform_init(void);
+#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)(((((mu_duration_t)ms)*MS_PER_SECOND))/RTC_FREQUENCY))
+
+typedef void (*mu_rtc_match_cb_t)(void);
 
 // =============================================================================
 // declarations
+
+/**
+ * @brief Initialize the Real Time Clock.  Must be called before any other rtc
+ * functions are called.
+ */
+void mu_rtc_init(void);
+
+/**
+ * @brief Get the current time.
+ */
+mu_time_t mu_rtc_now(void);
+
+/**
+ * @brief Busy wait for the given number of RTC ticks.
+ */
+void mu_rtc_busy_wait(mu_duration_t duration);
+
+/**
+ * @brief Set the time at which the RTC should trigger a callback.
+ */
+void mu_rtc_set_match_count(mu_time_t count);
+
+/**
+ * @brief Get the time at which the RTC should trigger a callback.
+ */
+mu_time_t mu_rtc_get_match_count(void);
+
+/**
+ * @brief Set the function to be called when the RTC count matches.
+ *
+ * Pass NULL for the CB to disable RTC match count callbacks.
+ */
+void mu_rtc_set_match_cb(mu_rtc_match_cb_t cb);
+
+// =============================================================================
+// These are not public functions, but need to be declared for the RTC ISR
+// functions.
+
+// TODO: Design pattern question: perhaps this is the one place where we don't
+// provide a declaration in the .h file and instead use an extern declaration
+// in the driver_isr.c file instead.
+
+// void mu_rtc_on_compare_interrupt(void);
+
+// void mu_rtc_on_overflow_interrupt(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _MU_PLATFORM_H_ */
+#endif // #ifndef _MU_RTC_H_

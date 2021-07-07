@@ -62,14 +62,6 @@ void mu_button_io_set_callback(mu_stddemo_button_cb button_cb) {
   };
   GPIO_PinInit(BOARD_LED_GPIO, BOARD_LED_GPIO_PIN, &led_config);
 
-  gpio_pin_config_t sw_config = {
-      kGPIO_DigitalInput,
-      0,
-  };
-  GPIO_PinInit(BOARD_SW_GPIO, BOARD_SW_GPIO_PIN, &sw_config);
-
-  PORT_SetPinInterruptConfig(BOARD_SW_PORT, BOARD_SW_GPIO_PIN, kPORT_InterruptFallingEdge);
-  EnableIRQ(BOARD_SW_IRQ);
 }
 
 /**
@@ -83,24 +75,6 @@ void mu_led_io_set(bool on) {
   }
 }
 
-/**
- * @brief Return true if the demo button is currently pressed.
- *
- * Note that the state of the button can change between the time the button
- * callback is triggered and the button state is read.
- */
-bool mu_stddemo_button_is_pressed(void) {
-  return GPIO_PinRead(BOARD_SW_GPIO, 1U << BOARD_SW_GPIO_PIN);
-}
 
 // =============================================================================
 // Local (static) code
-
-void BOARD_SW_IRQ_HANDLER(void) {
-  /* Clear external interrupt flag. */
-  GPIO_PortClearInterruptFlags(BOARD_SW_GPIO, 1U << BOARD_SW_GPIO_PIN);
-  if (s_button_cb != NULL) {
-    s_button_cb(mu_stddemo_button_is_pressed());
-  }
-  SDK_ISR_EXIT_BARRIER;
-}

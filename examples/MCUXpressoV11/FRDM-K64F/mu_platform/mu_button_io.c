@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,35 +26,61 @@
 // Includes
 
 #include "mu_button_io.h"
-#include "mu_config.h"
-#include "mu_kbd_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
-#include "mu_time.h"
 
-#include "mu_platform.h"
-#include "mu_button_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
+#include "board.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 // =============================================================================
-// Private types and definitions
+// Local types and definitions
 
-// =============================================================================
-// Private (forward) declarations
+#define BOARD_SW_GPIO BOARD_SW3_GPIO
+#define BOARD_SW_GPIO_PIN BOARD_SW3_GPIO_PIN
+#define BOARD_SW_IRQ_HANDLER BOARD_SW3_IRQ_HANDLER
+#define BOARD_SW_PORT BOARD_SW3_PORT
 
 // =============================================================================
 // Local storage
 
+static mu_button_io_callback_t s_button_cb;
+
+// =============================================================================
+// Local (forward) declarations
+
 // =============================================================================
 // Public code
 
-void mu_platform_init(void) {
-  mu_button_io_init();
-  mu_kbd_io_init();
-  mu_led_io_init();
-  mu_rtc_init();
+void mu_button_io_init(void) {
+  s_button_cb = NULL;
+
+  gpio_pin_config_t sw_config = {
+      kGPIO_DigitalInput,
+      0,
+  };
+  GPIO_PinInit(BOARD_SW_GPIO, BOARD_SW_GPIO_PIN, &sw_config);
+
+  PORT_SetPinInterruptConfig(BOARD_SW_PORT, BOARD_SW_GPIO_PIN, kPORT_InterruptFallingEdge);
+  EnableIRQ(BOARD_SW_IRQ);
+}
+
+void mu_button_io_set_callback(mu_button_io_callback_t cb) {
+  s_button_cb = cb;
+}
+
+bool mu_button_io_get_button(uint8_t button_id) {
+  (void)button_id;
+  return GPIO_PinRead(BOARD_SW_GPIO, 1U << BOARD_SW_GPIO_PIN);
 }
 
 // =============================================================================
 // Local (static) code
+
+void BOARD_SW_IRQ_HANDLER(void) {
+  /* Clear external interrupt flag. */
+  GPIO_PortClearInterruptFlags(BOARD_SW_GPIO, 1U << BOARD_SW_GPIO_PIN);
+  if (s_button_cb != NULL) {
+    s_button_cb(mu_button_io_get_button());
+  }
+  SDK_ISR_EXIT_BARRIER;
+}
