@@ -42,7 +42,7 @@ extern "C";
 
 #define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)(((((mu_duration_t)ms)*MS_PER_SECOND))/RTC_FREQUENCY))
 
-typedef void (*mu_rtc_match_cb_t)(void);
+typedef void (*mu_rtc_alarm_cb_t)(void);
 
 // =============================================================================
 // declarations
@@ -78,15 +78,15 @@ mu_time_t mu_rtc_get_alarm(void);
  *
  * Pass NULL for the CB to disable RTC match count callbacks.
  */
-void mu_rtc_set_match_cb(mu_rtc_match_cb_t cb);
+void mu_rtc_set_alarm_cb(mu_rtc_alarm_cb_t cb);
 
 // =============================================================================
 // These are not public functions, but need to be declared for the RTC ISR
 // functions.
 
-// TODO: Design pattern question: perhaps this is the one place where we don't
-// provide a declaration in the .h file and instead use an extern declaration
-// in the driver_isr.c file instead.
+// Design pattern: this is one of the few places where we don't provide a
+// declaration in the .h file and instead use an extern declaration in the
+// driver_isr.c file instead.
 
 // void mu_rtc_on_compare_interrupt(void);
 

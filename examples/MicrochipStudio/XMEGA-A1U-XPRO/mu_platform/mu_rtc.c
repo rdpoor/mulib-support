@@ -35,7 +35,7 @@
 // =============================================================================
 // local storage
 
-static mu_rtc_match_cb_t s_rtc_match_cb;
+static mu_rtc_alarm_cb_t s_rtc_alarm_cb;
 volatile static uint16_t s_rtc_hi;
 static uint16_t s_match_count_hi;
 
@@ -57,7 +57,7 @@ void mu_rtc_init(void) {
     // Enable RTC, running at the given RTC clock rate
     RTC.CTRL = RTC_PRESCALER_DIV1_gc;
 
-    mu_rtc_set_match_cb(NULL);
+    mu_rtc_set_alarm_cb(NULL);
     s_rtc_hi = 0;
 }
 
@@ -100,8 +100,8 @@ mu_time_t mu_rtc_get_alarm(void) {
  *
  * Pass NULL for the CB to disable RTC compare callbacks.
  */
-void mu_rtc_set_match_cb(mu_rtc_match_cb_t cb) {
-  s_rtc_match_cb = cb;
+void mu_rtc_set_alarm_cb(mu_rtc_alarm_cb_t cb) {
+  s_rtc_alarm_cb = cb;
 
   if (cb == NULL) {
     // disable compare interrupts, enable overflow interrupts.
@@ -115,13 +115,16 @@ void mu_rtc_set_match_cb(mu_rtc_match_cb_t cb) {
   }
 }
 
+// =============================================================================
+// Private code
+
 /**
  * @brief Called from interrupt level on compare interrupt.
  */
 void mu_rtc_on_compare_interrupt(void) {
   if (s_match_count_hi == s_rtc_hi) {
-    if (s_rtc_match_cb != NULL) {
-      s_rtc_match_cb();
+    if (s_rtc_alarm_cb != NULL) {
+      s_rtc_alarm_cb();
     }
   }
 }
@@ -132,6 +135,3 @@ void mu_rtc_on_compare_interrupt(void) {
 void mu_rtc_on_overflow_interrupt(void) {
   s_rtc_hi += 1;
 }
-
-// =============================================================================
-// local (static) code

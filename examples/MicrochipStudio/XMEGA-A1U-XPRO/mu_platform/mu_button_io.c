@@ -59,11 +59,11 @@ bool mu_button_io_get_button(uint8_t button_id) {
   return !USER_BUTTON_get_level();
 }
 
+// =============================================================================
+// Private code
+
 void mu_button_io_on_button_change(void) {
   if (s_button_cb) {
     s_button_cb(MU_BUTTON_0, mu_button_io_get_button(MU_BUTTON_0));
   }
 }
-
-// =============================================================================
-// Local (static) code
