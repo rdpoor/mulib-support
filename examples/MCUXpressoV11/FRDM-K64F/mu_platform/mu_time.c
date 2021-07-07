@@ -60,7 +60,7 @@ void mu_time_init(void) {
  *
  * @return A value representing the current time.
  */
-mu_time_t mu_time_now() { return s_systick_count; }
+mu_time_t mu_rtc_now() { return s_systick_count; }
 
 /**
  * @brief Add a time and a duration.

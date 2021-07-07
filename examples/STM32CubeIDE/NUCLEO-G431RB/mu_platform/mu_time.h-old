@@ -61,7 +61,7 @@ void mu_time_init(void);
  *
  * @return A value representing the current time.
  */
-mu_time_t mu_time_now();
+mu_time_t mu_rtc_now();
 
 /**
  * @brief Add a time and a duration.

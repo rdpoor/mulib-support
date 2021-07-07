@@ -58,7 +58,7 @@ void mu_time_init(void);
  *
  * @return A value representing the current time.
  */
-mu_time_t mu_time_now(void);
+mu_time_t mu_rtc_now(void);
 
 /**
  * @brief Called from interrupt level approximately once every millisecond

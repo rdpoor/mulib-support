@@ -119,7 +119,7 @@ The file `mu_platform/mu_time.h` provides the declarations and documentation for
 
 A simple strategy is to copy all the function declarations from mu_time.h into mu_time.c and then convert those declarations into functions as appropriate for your platform.
 
-The most complex platform-specific function you'll need to write is probably `mu_time_now()`, whose contract is to return the value of your real-time clock.
+The most complex platform-specific function you'll need to write is probably `mu_rtc_now()`, whose contract is to return the value of your real-time clock.
 
 ### mu_stddemo.c
 
