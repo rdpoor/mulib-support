@@ -33,7 +33,6 @@ extern "C";
 // includes
 
 #include "mu_config.h"
-#include "mu_rtc.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -41,6 +40,11 @@ extern "C";
 // =============================================================================
 // types and definitions
 #define MS_PER_SECOND (1000L)
+
+typedef uint32_t mu_time_t;
+typedef int32_t mu_duration_t;
+typedef int32_t mu_duration_ms_t;
+
 
 // =============================================================================
 // declarations

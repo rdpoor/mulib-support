@@ -108,7 +108,8 @@ void platform_test_step(void) {
 
   if (s_key_pressed) {
     s_key_pressed = false;
-    printf("key 0x%02x pressed\n", s_last_char);
+    //printf("key 0x%02x pressed\n", s_last_char);
+    printf("key %d pressed\n", s_last_char);
     toggle_led();
   }
 }

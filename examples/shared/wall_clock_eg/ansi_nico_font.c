@@ -179,6 +179,7 @@ void print_string_using_nico_font(char *wut) {
       sprintf(fb_line_start, "%.*s ", line_len, s + (line_len * i));
       fb_line_start += line_len + 1;
     }
+    fb_clear_to_end_of_line(fb_line_start);
   }
   fb_flush();
 }
