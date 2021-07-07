@@ -83,7 +83,7 @@ void platform_test_init(void) {
   mu_led_io_set(MU_LED_0, false);
 
   printf("LED should be off for %d seconds (match callback).\n", DEMO_INTERVAL_SECS);
-  mu_rtc_set_match_count(
+  mu_rtc_set_alarm(
     mu_time_offset(mu_rtc_now(),
                    MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000)));
   mu_rtc_set_match_cb(rtc_cb);

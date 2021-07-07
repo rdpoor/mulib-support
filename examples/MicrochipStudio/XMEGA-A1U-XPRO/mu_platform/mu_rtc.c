@@ -82,7 +82,7 @@ void mu_rtc_busy_wait(mu_duration_t ticks) {
 /**
  * @brief Set the time at which the RTC should trigger a callback.
  */
-void mu_rtc_set_match_count(mu_time_t count) {
+void mu_rtc_set_alarm(mu_time_t count) {
   RTC.INTFLAGS |= (1 << 1);   // clear COMPARE Interrupt flag
   s_match_count_hi = count >> 16;
   RTC.COMP = count & 0xFFFF;
@@ -91,7 +91,7 @@ void mu_rtc_set_match_count(mu_time_t count) {
 /**
  * @brief Get the time at which the RTC should trigger a callback.
  */
-mu_time_t mu_rtc_get_match_count(void) {
+mu_time_t mu_rtc_get_alarm(void) {
   return (uint32_t)s_match_count_hi << 16 | RTC.COMP;
 }
 
