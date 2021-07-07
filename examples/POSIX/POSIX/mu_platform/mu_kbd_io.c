@@ -60,7 +60,10 @@ static int mu_kbd_rows = 24;
 static void mu_kbd_get_terminal_attributes(struct termios *terminal_attributes);
 static void mu_kbd_set_terminal_attributes(struct termios *terminal_attributes);
 static void read_ttysize();
+
+#ifdef HAS_SIGNAL 
 static void handle_sigwinch();
+#endif
 
 // =============================================================================
 // Public code
@@ -136,10 +139,11 @@ void mu_kbd_exit_noncanonical_mode() {
 
 // =============================================================================
 // Local (static) code
-
+#ifdef HAS_SIGNAL 
 static void handle_sigwinch() {
    read_ttysize();
 }
+#endif
 
 static void mu_kbd_set_terminal_attributes(struct termios *terminal_attributes) {
   tcsetattr(STDIN_FILENO, TCSANOW, terminal_attributes);

@@ -37,7 +37,7 @@
 // =============================================================================
 // Local storage
 
-static mu_button_io_callback_t s_button_io_cb;
+static mu_button_io_callback_t s_button_cb;
 
 // =============================================================================
 // Local (forward) declarations
@@ -46,24 +46,23 @@ static mu_button_io_callback_t s_button_io_cb;
 // Public code
 
 void mu_button_io_init(void) {
-  s_button_io_cb = NULL;
+  s_button_cb = NULL;
 }
 
 void mu_button_io_set_callback(mu_button_io_callback_t cb) {
-  s_button_io_cb = cb;
+  s_button_cb = cb;
 }
 
-void mu_button_io_on_button_press(unsigned char button_id) {
-  if (s_button_io_cb != NULL) {
-    s_button_io_cb(button_id, true);
+bool mu_button_io_get_button(uint8_t button_id) {
+  (void)button_id;
+  //return !USER_BUTTON_get_level();
+  return false;
+}
+
+void mu_button_io_on_button_change(void) {
+  if (s_button_cb) {
+    s_button_cb(MU_BUTTON_0, mu_button_io_get_button(MU_BUTTON_0));
   }
 }
-
-// void mu_button_io_on_button_change(void) {
-//   if (s_button_io_cb) {
-//     s_button_io_cb(MU_BUTTON_0, USER_BUTTON_get_level());
-//   }
-// }
-
 // =============================================================================
 // Local (static) code
