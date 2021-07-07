@@ -62,6 +62,24 @@ void mu_rtc_init(void);
 mu_time_t mu_rtc_now(void);
 
 /**
+ * @brief Set the time at which the RTC should trigger a callback.
+ */
+void mu_rtc_set_alarm(mu_time_t count);
+
+/**
+ * @brief Get the time at which the RTC should trigger a callback.
+ */
+mu_time_t mu_rtc_get_alarm(void);
+
+/**
+ * @brief Set the function to be called when the RTC count matches.
+ *
+ * Pass NULL for the CB to disable RTC match count callbacks.
+ */
+void mu_rtc_set_alarm_cb(mu_rtc_alarm_cb_t cb);
+
+
+/**
  * @brief Busy wait for the given number of RTC ticks.
  */
 void mu_rtc_busy_wait(mu_time_t ticks);
