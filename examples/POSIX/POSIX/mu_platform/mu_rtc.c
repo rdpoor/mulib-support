@@ -22,7 +22,8 @@
 
 static volatile mu_time_t s_rtc_ticks;
 //static mu_time_t s_safe_ticks;
-static mu_rtc_callback_t s_rtc_cb;
+static mu_rtc_alarm_cb_t s_rtc_alarm_cb;
+static mu_time_t s_rtc_alarm_time; 
 
 // =============================================================================
 // public code
@@ -92,6 +93,7 @@ void mu_rtc_set_alarm(mu_time_t count) {
  */
 mu_time_t mu_rtc_get_alarm(void) {
   //return (uint32_t)s_match_count_hi << 16 | RTC.COMP;
+  return s_rtc_alarm_time;
 }
 
 /**
@@ -114,25 +116,6 @@ void mu_rtc_set_alarm_cb(mu_rtc_alarm_cb_t cb) {
   // }
 }
 
-
-/**
- * @brief Set the function to be called when the RTC ticks
- *
- * Pass NULL for the CB to disable RTC callbacks.
- */
-void mu_rtc_set_callback(mu_rtc_callback_t cb) {
-  s_rtc_cb = cb;
-}
-
-/**
- * @brief Called from interrupt level RTC_FREQUENCY times per second.
- */
-void mu_rtc_on_rtc_tick(void) {
-  s_rtc_ticks += 1;
-  if (s_rtc_cb) {
-    s_rtc_cb();
-  }
-}
 
 // =============================================================================
 // local (static) code

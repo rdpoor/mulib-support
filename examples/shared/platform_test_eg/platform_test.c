@@ -57,7 +57,7 @@ volatile static bool s_button_state;
 volatile static bool s_key_pressed;
 volatile static char s_last_char;
 
-volatile static bool s_rtc_count_matched;
+volatile static bool s_rtc_alarm_fired;
 
 // =============================================================================
 // Public code
@@ -71,7 +71,7 @@ void platform_test_init(void) {
   printf("\n\rmu_platform test v%s.\n", VERSION);
   s_button_changed_state = false;
   s_key_pressed = false;
-  s_rtc_count_matched = false;
+  s_rtc_alarm_fired = false;
 
   // Turn LED on and then off to verify the RTC and time functions are working
   // properly...
@@ -87,10 +87,10 @@ void platform_test_init(void) {
     mu_time_offset(mu_rtc_now(),
                    MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000)));
   mu_rtc_set_alarm_cb(rtc_cb);
-  while (!s_rtc_count_matched) {
+  while (!s_rtc_alarm_fired) {
 	  asm("nop");    // buzz...
   }
-  s_rtc_count_matched = false;
+  s_rtc_alarm_fired = false;
 
   mu_led_io_set(MU_LED_0, true);
 
@@ -108,7 +108,6 @@ void platform_test_step(void) {
 
   if (s_key_pressed) {
     s_key_pressed = false;
-    //printf("key 0x%02x pressed\n", s_last_char);
     printf("key %d pressed\n", s_last_char);
     toggle_led();
   }
@@ -137,7 +136,7 @@ static void kbd_cb(unsigned char ch) {
 }
 
 static void rtc_cb(void) {
-  s_rtc_count_matched = true;
+  s_rtc_alarm_fired = true;
 }
 
 static void toggle_led(void) {
