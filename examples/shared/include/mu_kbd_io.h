@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,38 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// Includes
+#ifndef _MU_KBD_IO_H_
+#define _MU_KBD_IO_H_
 
-#include "mu_button_io.h"
-#include "mu_config.h"
-#include "mu_kbd_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
-#include "mu_time.h"
-
-#include "mu_platform.h"
-#include "mu_button_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// Private types and definitions
+// includes
 
 // =============================================================================
-// Private (forward) declarations
+// types and definitions
+
+// Signature of the keyboard callback function
+typedef void (*mu_kbd_io_callback_t)(unsigned char ch);
 
 // =============================================================================
-// Local storage
+// declarations
 
-// =============================================================================
-// Public code
+/**
+ * @brief Initialize the keyboard input module.
+ */
+void mu_kbd_io_init(void);
 
-void mu_platform_init(void) {
-  mu_button_io_init();
-  mu_kbd_io_init();
-  mu_led_io_init();
-  mu_rtc_init();
+/**
+ * @brief Install a callback to be triggered (at interrupt level) when a
+ * character is received from the keyboard.
+ */
+void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb);
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// Local (static) code
+#endif /* #ifndef _MU_KBD_IO_H_ */

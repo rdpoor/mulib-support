@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,54 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// Includes
+/**
+ * @file mu_led_io.h
+ *
+ * @brief Control a platform-specific LED.
+ *
+ * mu_led_io defines a platform-specific LED.  This is commonly required by
+ * example applications, but could be used in production code if needed.
+ */
 
-#include "mu_button_io.h"
-#include "mu_config.h"
-#include "mu_kbd_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
-#include "mu_time.h"
+#ifndef _MU_LED_IO_H_
+#define _MU_LED_IO_H_
 
-#include "mu_platform.h"
-#include "mu_button_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
-
-// =============================================================================
-// Private types and definitions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// Private (forward) declarations
+// includes
+
+#include <stdbool.h>
+#include <stdint.h>
 
 // =============================================================================
-// Local storage
+// types and definitions
+
+// The canonical LED used in example code.
+#define MU_LED_0   0
 
 // =============================================================================
-// Public code
+// declarations
 
-void mu_platform_init(void) {
-  mu_button_io_init();
-  mu_kbd_io_init();
-  mu_led_io_init();
-  mu_rtc_init();
+/**
+ * @brief Initialize the LED.
+ */
+void mu_led_io_init(void);
+
+/**
+ * @brief Turn on or off an LED
+ */
+void mu_led_io_set(uint8_t led_id, bool on);
+
+/**
+ * @brief Get the state of an LED.
+ */
+bool mu_led_io_get(uint8_t led_id);
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// Local (static) code
+#endif /* #ifndef __TEMPLATE_H_ */

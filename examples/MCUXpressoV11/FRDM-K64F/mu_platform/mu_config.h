@@ -33,19 +33,12 @@ extern "C" {
 // includes
 
 #include <stdint.h>
-#include "fsl_common.h"
 
 // =============================================================================
 // types and definitions
 
-#define MU_WITH_INTERRUPTS_DISABLED(_body)                                     \
-  do {                                                                         \
-    uint32_t primask = DisableGlobalIRQ();                                     \
-    do {                                                                       \
-      _body                                                                    \
-    } while(0);                                                                \
-    EnableGlobalIRQ(primask);                                                  \
-  } while(0)
+#define MU_DISABLE_INTERRUPTS() do {} while(0)
+#define MU_ENABLE_INTERRUPTS() do {} while(0)
 
 /**
  * Uncomment if you want logging enabled.
@@ -64,38 +57,29 @@ extern "C" {
 // #define MU_TASK_PROFILING
 
 /**
- * Uncomment if the platform supports putting the processor into low-power mode.
- */
-// #define MU_CAN_SLEEP
-
-/**
  * If your port supports floating point operations, choose one of the following
  * either by uncommenting one of the following lines, or by setting the symbol
  * in the compiler.
  */
 // #define MU_FLOAT float
-#define MU_FLOAT double
-
-/**
- * Define mu_time_t, mu_duration_t, mu_duration_ms_t as required by your platform-
- * specific mu_time.h
- */
-typedef uint32_t mu_time_t;
-typedef int32_t mu_duration_t;
-typedef int32_t mu_duration_ms_t;
+// #define MU_FLOAT double
 
 #define RTC_FREQUENCY ((mu_duration_t)1000)
 
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.
 
-#ifndef ASSERT
-//#define ASSERT(expr) do {} while(0)
-#define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
-#endif
+#define MU_WITH_INTERRUPTS_DISABLED(_body)                                     \
+  MU_DISABLE_INTERRUPTS();                                                     \
+  _body                                                                        \
+  MU_ENABLE_INTERRUPTS();
+
+// already defined in utils/utils_assert.h
+// #ifndef ASSERT
+// #define ASSERT(expr) mu_test_assert((expr), #expr, __FILE__, __LINE__)
+// #endif
 
 #ifdef MU_TASK_PROFILING
-#undef MU_TASK_PROFILING
 #define MU_TASK_PROFILING (1)
 #else
 #define MU_TASK_PROFILING (0)
@@ -107,10 +91,8 @@ typedef int32_t mu_duration_ms_t;
   #define MU_HAS_FLOAT (0)
 #endif
 
-#if (defined(MU_FLOAT) && ((MU_FLOAT == float) || (MU_FLOAT == double)))
+#if defined(MU_FLOAT)
   typedef MU_FLOAT mu_float_t;
-#else
-  #error MU_FLOAT must be either float or double
 #endif
 
 // =============================================================================

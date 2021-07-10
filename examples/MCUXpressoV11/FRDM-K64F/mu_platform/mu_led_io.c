@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,35 +25,42 @@
 // =============================================================================
 // Includes
 
-#include "mu_button_io.h"
-#include "mu_config.h"
-#include "mu_kbd_io.h"
 #include "mu_led_io.h"
-#include "mu_rtc.h"
-#include "mu_time.h"
-
-#include "mu_platform.h"
-#include "mu_button_io.h"
-#include "mu_led_io.h"
-#include "mu_rtc.h"
+#include "atmel_start.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
-// Private types and definitions
-
-// =============================================================================
-// Private (forward) declarations
+// Local types and definitions
 
 // =============================================================================
 // Local storage
 
 // =============================================================================
+// Local (forward) declarations
+
+// =============================================================================
 // Public code
 
-void mu_platform_init(void) {
-  mu_button_io_init();
-  mu_kbd_io_init();
-  mu_led_io_init();
-  mu_rtc_init();
+void mu_led_io_init(void) {
+  gpio_pin_config_t led_config = {
+      kGPIO_DigitalOutput,
+      0,
+  };
+  GPIO_PinInit(BOARD_LED_GPIO, BOARD_LED_GPIO_PIN, &led_config);
+}
+
+void mu_led_io_set(uint8_t led_id, bool on) {
+  if (on) {
+    GPIO_PortClear(BOARD_LED_GPIO, 1U << BOARD_LED_GPIO_PIN);
+  } else {
+    GPIO_PortSet(BOARD_LED_GPIO, 1U << BOARD_LED_GPIO_PIN);
+  }
+}
+
+bool mu_led_io_get(uint8_t led_id) {
+  (void)led_id;
+  return GPIO_PinRead(BOARD_LED_GPIO, 1 << BOARD_LED_GPIO_PIN) == 0;
 }
 
 // =============================================================================
