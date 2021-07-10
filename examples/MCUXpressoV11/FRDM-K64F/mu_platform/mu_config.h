@@ -84,6 +84,8 @@ typedef uint32_t mu_time_t;
 typedef int32_t mu_duration_t;
 typedef int32_t mu_duration_ms_t;
 
+#define RTC_FREQUENCY ((mu_duration_t)1000)
+
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.
 

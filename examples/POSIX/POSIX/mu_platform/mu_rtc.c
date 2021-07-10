@@ -45,8 +45,8 @@ mu_time_t mu_rtc_now(void) {
   return (now.tv_sec * NANOSECS_PER_S + now.tv_nsec) / NANOSECS_PER_MS;
 }
 
-void mu_rtc_busy_wait(mu_time_t ticks) {
-  mu_time_t until  = mu_time_offset(mu_rtc_now(), ticks);
+void mu_rtc_busy_wait(mu_duration_t duration) {
+  mu_time_t until  = mu_time_offset(mu_rtc_now(), duration);
   while (mu_time_precedes(mu_rtc_now(), until)) {
     asm(" nop");
     // buzz...

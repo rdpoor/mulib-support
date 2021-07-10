@@ -96,6 +96,9 @@ typedef int32_t mu_duration_ms_t;
 //!
 #define LSBUS_FREQ_HZ               (10000)
 
+#define RTC_FREQUENCY (1024L)
+
+
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.
 

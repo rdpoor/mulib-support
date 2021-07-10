@@ -44,6 +44,8 @@ extern "C" {
 // #define MU_TASK_PROFILING
 // #define MU_CAN_SLEEP
 
+
+
 /**
  * Define the number of tasks that can be scheduled at interrupt level between
  * calls to sched_step().  This must be a power of two.
@@ -58,6 +60,9 @@ extern "C" {
 // #define MU_FLOAT float
 #define MU_FLOAT double
 
+#define MS_PER_SECOND (1000L)
+
+#define RTC_FREQUENCY ((mu_duration_t)1024)
 
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.

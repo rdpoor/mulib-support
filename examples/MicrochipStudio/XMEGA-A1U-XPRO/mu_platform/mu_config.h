@@ -51,6 +51,8 @@ extern "C" {
  */
 #define MU_IRQ_TASK_QUEUE_SIZE 8
 
+#define RTC_FREQUENCY ((mu_duration_t)1024)
+
 /**
  * Uncomment if you want task profiling enabled.
  */

@@ -108,7 +108,7 @@ static void reset(void);
 // Public code
 
 void tower_init(void) {
-  mu_time_init();
+  mu_rtc_init();
   mu_sched_init();
 
   mu_ansi_term_set_cursor_visible(false);

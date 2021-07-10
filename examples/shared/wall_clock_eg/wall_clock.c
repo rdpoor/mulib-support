@@ -60,7 +60,7 @@ static char s_display_buf[TERM_WIDTH * TERM_HEIGHT];
 
 void wall_clock_init(void) {
   // a l carte means we are responsible for calling these inits
-  mu_time_init();
+  mu_rtc_init();
   mu_sched_init();
   mu_ansi_term_init();
   mu_ansi_term_set_cursor_visible(false);
