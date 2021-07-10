@@ -64,7 +64,7 @@ extern "C" {
 // #define MU_FLOAT float
 // #define MU_FLOAT double
 
-#define RTC_FREQUENCY ((mu_duration_t)1000)
+#define RTC_FREQUENCY ((mu_duration_t)1024)
 
 // =============================================================================
 // Everything below this line is deduced from the settings above this line.
