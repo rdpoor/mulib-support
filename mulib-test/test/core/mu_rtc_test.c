@@ -22,79 +22,72 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
+
+#include "mu_test_utils.h"
+#include "mu_rtc.h"
+#include <unistd.h>
 
 #include <stdio.h>
-#include "mu_test_utils.h"
+// =============================================================================
+// private types and definitions
 
 // =============================================================================
-// types and definitions
+// private declarations
 
 // =============================================================================
-// declarations
-
-int mu_bvec_test();
-int mu_cirq_test();
-int mu_dlist_test();
-int mu_fsm_test();
-int mu_list_test();
-int mu_log_test();
-int mu_pstore_test();
-int mu_queue_test();
-int mu_rtc_test();
-int mu_sched_test();
-// int mu_spscq_test();
-int mu_str_test();
-int mu_strbuf_test();
-int mu_task_test();
-int mu_time_test();
-int mu_timer_test();
-int mu_vect_test();
-int mu_version_test();
-int mu_ansi_term_test();
+// local storage
 
 // =============================================================================
 // public code
 
-int main(void) {
+void mu_rtc_test() {
+  mu_time_t t1;
+  mu_time_t t2;
 
-  printf("\r\nstarting mu_test...");
+  mu_duration_t dt1;
+  mu_duration_ms_t dm1;
 
+  t1 = mu_rtc_now();   // an arbitrary time
+  dm1 = mu_time_ms_to_duration(1000);
+  t2 = mu_time_offset(t1, dm1);
 
-  mu_test_init();
+  ASSERT(mu_time_precedes(t1, t2) == true);
+  ASSERT(mu_time_precedes(t1, t1) == false);
+  ASSERT(mu_time_precedes(t2, t1) == false);
 
-  mu_bvec_test();
-  mu_cirq_test();
-  mu_dlist_test();
-  mu_fsm_test();
-  mu_list_test();
-  mu_log_test();
-  mu_pstore_test();
-  mu_queue_test();
-  mu_rtc_test();
-  mu_sched_test();
-  // mu_spscq_test();
-  mu_str_test();
-  mu_strbuf_test();
-  mu_task_test();
-  mu_time_test();
-  mu_timer_test();
-  mu_vect_test();
-  mu_version_test();
+  ASSERT(mu_time_equals(t1, t1) == true);
+  ASSERT(mu_time_equals(t1, t2) == false);
 
-  mu_ansi_term_test();
+  ASSERT(mu_time_follows(t1, t2) == false);
+  ASSERT(mu_time_follows(t1, t1) == false);
+  ASSERT(mu_time_follows(t2, t1) == true);
 
+  dt1 = mu_time_difference(t2, t1);
+  ASSERT(mu_time_duration_to_ms(dt1) == 1000);
 
-  printf("ending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
+#if (MU_VM_HAS_FLOAT)
+  mu_time_s_dt ds1;
 
-  return mu_test_error_count();  // return error code 0 on success
+  t1 = mu_rtc_now();   // an arbitrary time
+  ds1 = mu_time_s_to_duration(1.0);
+  t2 = mu_time_offset(t1, dm1);
 
-  
+  ASSERT(mu_time_precedes(t1, t2) == true);
+  ASSERT(mu_time_precedes(t1, t1) == false);
+  ASSERT(mu_time_precedes(t2, t1) == false);
+
+  ASSERT(mu_time_equals(t1, t1) == true);
+  ASSERT(mu_time_equals(t1, t2) == false);
+
+  ASSERT(mu_time_follows(t1, t2) == false);
+  ASSERT(mu_time_follows(t1, t1) == false);
+  ASSERT(mu_time_follows(t2, t1) == true);
+
+  dt1 = mu_time_difference(t2, t1);
+  ASSERT(mu_time_duration_to_s(dt1) == 1.0);
+#endif
 }
 
 // =============================================================================
