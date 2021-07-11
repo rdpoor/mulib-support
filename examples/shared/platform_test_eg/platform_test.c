@@ -19,7 +19,7 @@
 // =============================================================================
 // Local types and definitions
 
-#define VERSION "1.1"
+#define VERSION "1.12"
 #define DEMO_INTERVAL_SECS (5)
 
 // =============================================================================
@@ -82,7 +82,7 @@ void platform_test_init(void) {
 
   mu_led_io_set(MU_LED_0, false);
 
-  printf("LED should be off for %d seconds (match callback).\n", DEMO_INTERVAL_SECS);
+  printf("LED should be off for %d seconds (rtc alarm).\n", DEMO_INTERVAL_SECS);
   mu_rtc_set_alarm(
     mu_time_offset(mu_rtc_now(),
                    MU_TIME_MS_TO_DURATION(DEMO_INTERVAL_SECS * 1000)));
@@ -94,7 +94,7 @@ void platform_test_init(void) {
 
   mu_led_io_set(MU_LED_0, true);
 
-  printf("Press button or any key...\n");
+  printf("Press button or any key...                         \n");
 }
 
 void platform_test_step(void) {
@@ -102,14 +102,14 @@ void platform_test_step(void) {
   // mu_kbd_io to make sure they are working properly.
   if (s_button_changed_state) {
     s_button_changed_state = false;
-    printf("button %s\n", s_button_state ? "down" : "up");
     toggle_led();
+    printf("button %s                              \n", s_button_state ? "down" : "up");
   }
 
   if (s_key_pressed) {
     s_key_pressed = false;
-    printf("key %d pressed\n", s_last_char);
     toggle_led();
+    printf("key %d pressed                         \n", s_last_char);
   }
 }
 
