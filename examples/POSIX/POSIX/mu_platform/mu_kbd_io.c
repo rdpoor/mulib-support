@@ -193,6 +193,8 @@ static void read_ttysize() {
   //printf("Terminal is %dx%d\n", mu_kbd_cols, mu_kbd_rows);
 }
 
+// this allows POSIX to mimic MCU behavior which typically uses an isr to send
+// info about each keypress via the callback at s_kbd_io_cb()
 static void start_kbd_reader_thread(void) {
   pthread_create(&thread_id, NULL, reader_thread, NULL);
 }
