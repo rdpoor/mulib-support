@@ -297,13 +297,13 @@
       <SubType>compile</SubType>
       <Link>mulib\core\mu_sched.h</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\mulib\core\mu_spscq.c">
+    <Compile Include="..\..\..\..\..\mulib\core\mu_spsc.c">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_spscq.c</Link>
+      <Link>mulib\core\mu_spsc.c</Link>
     </Compile>
-    <Compile Include="..\..\..\..\..\mulib\core\mu_spscq.h">
+    <Compile Include="..\..\..\..\..\mulib\core\mu_spsc.h">
       <SubType>compile</SubType>
-      <Link>mulib\core\mu_spscq.h</Link>
+      <Link>mulib\core\mu_spsc.h</Link>
     </Compile>
     <Compile Include="..\..\..\..\..\mulib\core\mu_str.c">
       <SubType>compile</SubType>

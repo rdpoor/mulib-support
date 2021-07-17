@@ -109,7 +109,6 @@ mu_duration_ms_t mu_time_duration_to_ms(mu_duration_t dt) {
  * @return A duration object
  */
 mu_duration_t mu_time_ms_to_duration(mu_duration_ms_t ms) {
-  printf("ms %d\n",ms);
   return ms / 1000.0;
 }
 

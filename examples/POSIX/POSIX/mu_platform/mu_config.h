@@ -45,7 +45,6 @@ extern "C" {
 // #define MU_CAN_SLEEP
 
 
-
 /**
  * Define the number of tasks that can be scheduled at interrupt level between
  * calls to sched_step().  This must be a power of two.

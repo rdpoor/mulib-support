@@ -44,7 +44,7 @@ int mu_pstore_test();
 int mu_queue_test();
 int mu_rtc_test();
 int mu_sched_test();
-// int mu_spscq_test();
+// int mu_spsc_test();
 int mu_str_test();
 int mu_strbuf_test();
 int mu_task_test();
@@ -53,6 +53,7 @@ int mu_timer_test();
 int mu_vect_test();
 int mu_version_test();
 int mu_ansi_term_test();
+int mu_random_test();
 
 // =============================================================================
 // public code
@@ -74,7 +75,7 @@ int main(void) {
   mu_queue_test();
   mu_rtc_test();
   mu_sched_test();
-  // mu_spscq_test();
+  // mu_spsc_test();
   mu_str_test();
   mu_strbuf_test();
   mu_task_test();
@@ -82,8 +83,9 @@ int main(void) {
   mu_timer_test();
   mu_vect_test();
   mu_version_test();
-
+  // extras
   mu_ansi_term_test();
+  mu_random_test();
 
 
   printf("ending mu_test: %d error%s out of %d test%s\r\n",
