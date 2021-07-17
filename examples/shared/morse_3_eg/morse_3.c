@@ -52,11 +52,13 @@ static void task_fn(void *ctx, void *arg);
 // Local storage
 
 static ctx_t s_ctx;
+int verbosityLevel = 0;
 
 // =============================================================================
 // Public code
 
-void morse_3_init(void) {
+void morse_3_init(int aVerbosityLevel) {
+  verbosityLevel = aVerbosityLevel;
   mulib_init();
   mu_ansi_term_clear_screen();
 

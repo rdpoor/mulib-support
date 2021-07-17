@@ -166,7 +166,7 @@ static void mu_kbd_exit_noncanonical_mode() {
     info.c_cc[VTIME] = 0;         /* no timeout */
     mu_kbd_set_terminal_attributes(&info);
   }
-  mu_ansi_term_reset();
+  mu_ansi_term_restore_colors_and_cursor();
 }
 
 static void mu_kbd_set_terminal_attributes(struct termios *terminal_attributes) {

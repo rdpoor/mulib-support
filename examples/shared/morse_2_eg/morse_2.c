@@ -52,17 +52,19 @@ static void task_fn(void *ctx, void *arg);
 // Local storage
 
 static ctx_t s_ctx;
+int verbosityLevel = 0;
 
 // =============================================================================
 // Public code
 
-void morse_2_init(void) {
+void morse_2_init(int aVerbosityLevel) {
+  verbosityLevel = aVerbosityLevel;
   mulib_init();
   mu_ansi_term_clear_screen();
-  mu_ansi_term_set_cursor_visible(false);
-  atexit(mu_ansi_term_reset);
+  atexit(mu_ansi_term_restore_colors_and_cursor);
 
-  printf("\r\nmorse_2 v%s, mulib v%s\n", VERSION, MU_VERSION);
+  printf("\r\nmorse_2 v%s, mulib v%s verbosity: %d\n", VERSION, MU_VERSION,verbosityLevel);
+  mu_ansi_term_set_cursor_visible(false);
 
   // initialize the mu_task to associate task_fn with s_ctx
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");

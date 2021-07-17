@@ -38,7 +38,7 @@ extern "C" {
 // =============================================================================
 // Declarations
 
-void morse_3_init(void);
+void morse_3_init(int aVerbosityLevel);
 
 void morse_3_step(void);
 

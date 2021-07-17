@@ -83,7 +83,7 @@ void morse_1_init(void) {
   // Make sure the LED is initially off
   mu_led_io_set(MU_LED_0, false);
 
-  atexit(mu_ansi_term_reset);
+  atexit(mu_ansi_term_restore_colors_and_cursor);
   // Make the first call to the scheduler to start things off.  The task_fn will
   // reschedule itself upon completion.
   mu_sched_task_now(&s_ctx.task);

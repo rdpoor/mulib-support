@@ -116,7 +116,7 @@ void tower_init(void) {
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");
   // initialize the frame buffer
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
-  atexit(mu_ansi_term_reset); // restores terminal color and cursor
+  atexit(mu_ansi_term_restore_colors_and_cursor); // restores terminal color and cursor
 
   // set up tower and disk positions
   fb_erase();

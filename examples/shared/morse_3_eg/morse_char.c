@@ -28,6 +28,7 @@
 #include "morse_char.h"
 
 #include <mulib.h>
+#include <stdio.h>
 
 // =============================================================================
 // Local types and definitions
@@ -45,7 +46,8 @@
 // Define the context for a morse_char_task.
 typedef struct {
   mu_task_t task;            // the task object
-  const char *s;             // the character being printed
+  char c;                    // the ascii character being transmitted
+  const char *s;             // the morse symbol string being transmitted ("." or "-.--" for example)
   mu_task_t *on_completion;  // a task to call upon completion
 } ctx_t;
 
@@ -71,6 +73,7 @@ static char upcase(char ch);
 // Local storage
 
 static ctx_t s_ctx;
+static uint8_t nchars = 0;
 
 // Translate ASCII characters into a string of dots and dashes.  Use UNKNOWN_CH
 // when there is no Morse code equivalent.
@@ -144,6 +147,7 @@ mu_task_t *morse_char_init(char ascii, mu_task_t *on_completion) {
   mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse Char");
 
   // Initialize s_ctx
+  s_ctx.c = ascii;
   s_ctx.s = get_morse_string(ascii);
   s_ctx.on_completion = on_completion;
 
@@ -165,12 +169,18 @@ static void task_fn(void *ctx, void *arg) {
   switch(*self->s++) {
     case '.':  // dot: turn LED on for MORSE_SHORT_MARK
     mu_led_io_set(MU_LED_0, true);
-    mu_sched_reschedule_in(MORSE_SHORT_MARK);
+    if(verbosityLevel) {
+      mu_ansi_term_set_cursor_position(2,nchars++);
+      fputc('.',stdout);
+    }    mu_sched_reschedule_in(MORSE_SHORT_MARK);
     break;
 
     case '-':  // dash: turn LED on for MORSE_LONG_MARK
     mu_led_io_set(MU_LED_0, true);
-    mu_sched_reschedule_in(MORSE_LONG_MARK);
+    if(verbosityLevel) {
+      mu_ansi_term_set_cursor_position(2,nchars++);
+      fputc('-',stdout);
+    }    mu_sched_reschedule_in(MORSE_LONG_MARK);
     break;
 
     case ' ':  // intra-character: turn LED off for MORSE_INTRA_CHAR_GAP
@@ -182,6 +192,12 @@ static void task_fn(void *ctx, void *arg) {
     // Arrive here when the character has been emitted: turn the LED off and
     // call the on_completion task after MORSE_INTER_CHAR_GAP
     mu_led_io_set(MU_LED_0, false);
+    nchars++;
+    if(verbosityLevel == 2) {
+      mu_ansi_term_set_cursor_position(2,nchars++);
+      fputc(self->c,stdout);
+      nchars++;
+    }
     if (self->on_completion != NULL) {
       mu_sched_task_in(self->on_completion, MORSE_INTER_CHAR_GAP);
     }

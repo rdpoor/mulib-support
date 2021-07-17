@@ -41,7 +41,7 @@ extern "C" {
 /**
  * @brief Initialize the morse_2 example code.  Called once at startup.
  */
-void morse_2_init(void);
+void morse_2_init(int aVerbosityLevel);
 
 /**
  * @brief Step the morse_2 example code.  Called repeatedly.

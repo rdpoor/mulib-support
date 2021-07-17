@@ -39,6 +39,7 @@ extern "C" {
 
 // =============================================================================
 // Declarations
+extern int verbosityLevel;
 
 /**
  * @brief morse_char_init() returns a task that, when called, blinks out the

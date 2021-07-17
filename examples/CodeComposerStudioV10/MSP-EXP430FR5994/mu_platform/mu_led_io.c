@@ -67,11 +67,7 @@ void mu_led_io_set(uint8_t led_id, bool on) {
   mu_ansi_term_set_colors(on ? MU_ANSI_TERM_BRIGHT_GREEN : MU_ANSI_TERM_WHITE, MU_ANSI_TERM_DEFAULT_COLOR);
   mu_ansi_term_set_cursor_position(0, 0);
   printf("•\n");
-  // restore color and cursor position
   mu_ansi_term_reset();
- // mu_ansi_term_set_cursor_position(_cursor_x, _cursor_y);
-  //mu_ansi_term_restore_cursor_position();
- // mu_ansi_term_set_cursor_visible(true);
 }
 
 bool mu_led_io_get(uint8_t led_id) {
