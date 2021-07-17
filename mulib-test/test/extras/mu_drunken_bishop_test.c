@@ -22,83 +22,41 @@
  * SOFTWARE.
  */
 
- // =============================================================================
- // includes
+// =============================================================================
+// includes
 
-#include <stdio.h>
 #include "mu_test_utils.h"
+#include "extras/mu_drunken_bishop.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 // =============================================================================
-// types and definitions
+// private types and definitions
 
 // =============================================================================
-// declarations
+// private declarations
 
-int mu_bvec_test();
-int mu_cirq_test();
-int mu_dlist_test();
-int mu_fsm_test();
-int mu_list_test();
-int mu_log_test();
-int mu_pstore_test();
-int mu_queue_test();
-int mu_rtc_test();
-int mu_sched_test();
-// int mu_spsc_test();
-int mu_str_test();
-int mu_strbuf_test();
-int mu_task_test();
-int mu_time_test();
-int mu_timer_test();
-int mu_vect_test();
-int mu_version_test();
-int mu_ansi_term_test();
-int mu_random_test();
-int mu_drunken_bishop_test();
+int display_art();
+
+// =============================================================================
+// local storage
+
 
 // =============================================================================
 // public code
 
-int main(void) {
+void mu_drunken_bishop_test() {
+  ASSERT(display_art() == 1);
+}
 
-  printf("\r\nstarting mu_test...");
-
-
-  mu_test_init();
-
-  mu_bvec_test();
-  mu_cirq_test();
-  mu_dlist_test();
-  mu_fsm_test();
-  mu_list_test();
-  mu_log_test();
-  mu_pstore_test();
-  mu_queue_test();
-  mu_rtc_test();
-  mu_sched_test();
-  // mu_spsc_test();
-  mu_str_test();
-  mu_strbuf_test();
-  mu_task_test();
-  mu_time_test();
-  mu_timer_test();
-  mu_vect_test();
-  mu_version_test();
-  // extras
-  mu_ansi_term_test();
-  mu_random_test();
-  mu_drunken_bishop_test();
-
-  printf("ending mu_test: %d error%s out of %d test%s\r\n",
-         mu_test_error_count(),
-         mu_test_error_count() == 1 ? "" : "s",
-         mu_test_count(),
-         mu_test_count() == 1 ? "" : "s");
-
-  return mu_test_error_count();  // return error code 0 on success
-
-  
+int display_art() {
+  print_randomart("1wioasoiuoio2345");
+  return 1;
 }
 
 // =============================================================================
 // private code
+
