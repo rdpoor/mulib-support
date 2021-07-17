@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    int verbosityLevel = 0;
+    int verbosityLevel;
     int opt;
     while ((opt = getopt(argc, argv, "vV")) != -1) {
         switch (opt) {

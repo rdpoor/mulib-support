@@ -180,7 +180,6 @@ static void task_fn(void *ctx, void *arg) {
     case '-':  // dash: turn LED on for MORSE_LONG_MARK
     mu_led_io_set(MU_LED_0, true);
     mu_sched_reschedule_in(MORSE_LONG_MARK);
-    mu_ansi_term_set_cursor_position(2,nchars++);
     if(verbosityLevel) {
       mu_ansi_term_set_cursor_position(2,nchars++);
       fputc('-',stdout);

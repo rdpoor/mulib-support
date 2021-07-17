@@ -55,15 +55,15 @@ clean:
 .c.o:
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
-$(BUILD_MULIB_CORE_DIR)/%.o : $(SRC_MULIB_CORE_DIR)/%.c $(SRC_MULIB_CORE_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/mu_config.h
+$(BUILD_MULIB_CORE_DIR)/%.o : $(SRC_MULIB_CORE_DIR)/%.c $(MULIB_CORE_INCLUDE_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/mu_config.h
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
-$(BUILD_MULIB_EXTRAS_DIR)/%.o: $(SRC_MULIB_EXTRAS_DIR)/%.c $(SRC_MULIB_EXTRAS_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/mu_config.h
+$(BUILD_MULIB_EXTRAS_DIR)/%.o: $(SRC_MULIB_EXTRAS_DIR)/%.c $(MULIB_EXTRAS_INCLUDE_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/mu_config.h
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
-$(BUILD_MU_PLATFORM_DIR)/%.o: $(SRC_MU_PLATFORM_DIR)/%.c $(SRC_MU_PLATFORM_DIR)/mu_config.h
+$(BUILD_MU_PLATFORM_DIR)/%.o: $(SRC_MU_PLATFORM_DIR)/%.c $(MU_PLATFORM_INCLUDE_DIR)/*.h $(SRC_MU_PLATFORM_DIR)/mu_config.h
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $(<) -o $@
 
