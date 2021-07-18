@@ -26,12 +26,16 @@
  // includes
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "mu_test_utils.h"
 #include "mu_version.h"
 #include "mu_drunken_bishop.h"
+#include "mu_ansi_term.h"
 
 // =============================================================================
 // types and definitions
+
+#define OUTPUT_BUFFER_SIZE 80
 
 // =============================================================================
 // private declarations
@@ -67,23 +71,24 @@ int mu_drunken_bishop_test();
 // public code
 
 int main(void) {
-  char readbuf[80];
+  char readbuf[OUTPUT_BUFFER_SIZE];
 
-  printf("\r\nstarting mu_test...");
-  printf("mu_version: %s\n",mu_version());
+  printf("\r\nstarting mu_test...\n");
+  printf("mu_version: ");
+  mu_ansi_term_set_colors(MU_ANSI_TERM_YELLOW, MU_ANSI_TERM_DEFAULT_COLOR);
+  printf("%s\n",mu_version());
+  mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
 
-  mu_test_init();
-
-  // get a string we can use for our ascii art seed
-  // first we try all the source files
-  // if that fails, we use the mu_version string
+  // output an identicon derived from hashing the source code
   int err = read_output_from_shell_command("md5sum ../../mulib/core/*.c ../../mulib/extras/*.c | md5sum", readbuf);
   if(err) {
+    // if the shell md5sum failed, we use the mu_version string
     sprintf(readbuf, "%s", mu_version());
   }
-  //else printf("dir hash is: %s",readbuf);
-  print_random_art_from_string(readbuf, 25);
+  printf("source fingerprint:\n");
+  print_random_art_from_string(readbuf, 17);
 
+  mu_test_init();
   mu_bvec_test();
   mu_cirq_test();
   mu_dlist_test();
@@ -107,15 +112,17 @@ int main(void) {
   mu_random_test();
   mu_drunken_bishop_test();
 
-  printf("ending mu_test: %d error%s out of %d test%s\r\n",
+  bool hadErrors = mu_test_error_count() > 0;
+
+  printf("completed mu_test.\n");
+  mu_ansi_term_set_colors(hadErrors ? MU_ANSI_TERM_BRIGHT_RED : MU_ANSI_TERM_BRIGHT_GREEN, MU_ANSI_TERM_DEFAULT_COLOR);
+  printf("%d error%s in %d test%s\r\n",
          mu_test_error_count(),
          mu_test_error_count() == 1 ? "" : "s",
          mu_test_count(),
          mu_test_count() == 1 ? "" : "s");
-
+  mu_ansi_term_reset();
   return mu_test_error_count();  // return error code 0 on success
-
-  
 }
 
 // =============================================================================
@@ -129,7 +136,7 @@ static int read_output_from_shell_command(char *command, char *output_buffer) {
       fprintf (stderr, "incorrect parameters.\n");
       return -1;
     }
-  while(fgets(output_buffer, 80, input))
+  while(fgets(output_buffer, OUTPUT_BUFFER_SIZE, input))
   
   if (pclose (input) != 0)
     {

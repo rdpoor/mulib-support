@@ -54,6 +54,13 @@ static int compare_rng_with_expected_gibberish();
 void mu_random_test() {
   mu_random_reset();
   ASSERT(compare_rng_with_expected_gibberish() == 1);
+  mu_random_reset();
+  ASSERT(compare_rng_with_expected_gibberish() == 1);
+  mu_random_seed(1234);
+  uint32_t r = mu_random();
+  ASSERT(r != mu_random());
+  mu_random_seed(1234);
+  ASSERT(r == mu_random());
 }
 
 

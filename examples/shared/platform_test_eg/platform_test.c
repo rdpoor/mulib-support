@@ -68,7 +68,7 @@ void platform_test_init(void) {
   mu_button_io_set_callback(button_cb);
   mu_kbd_io_set_callback(kbd_cb);
 
-  printf("\n\rmu_platform test v%s.\n", VERSION);
+  printf("\n\rmu_platform test v%s\n", VERSION);
   s_button_changed_state = false;
   s_key_pressed = false;
   s_rtc_alarm_fired = false;

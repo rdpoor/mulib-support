@@ -39,7 +39,7 @@
 
 // =============================================================================
 // private declarations
-
+int test_non_zero_worm();
 // =============================================================================
 // local storage
 
@@ -48,11 +48,15 @@
 // public code
 
 void mu_drunken_bishop_test() {
-  print_random_art_from_string("12345", 17);
-  //ASSERT(print_random_art_from_seed("12345") == 1);
+  ASSERT(test_non_zero_worm() == 1);
 }
 
 // =============================================================================
 // private code
 
+int test_non_zero_worm() {
+  //print_random_art_from_string("",7);
+  //print_random_art_from_string("234",11);
+  return 1;
+}
 

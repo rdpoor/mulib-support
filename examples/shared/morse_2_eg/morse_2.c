@@ -61,7 +61,6 @@ void morse_2_init(int aVerbosityLevel) {
   verbosityLevel = aVerbosityLevel;
   mulib_init();
   mu_ansi_term_clear_screen();
-  atexit(mu_ansi_term_restore_colors_and_cursor);
 
   printf("\r\nmorse_2 v%s, mulib v%s verbosity: %d\n", VERSION, MU_VERSION,verbosityLevel);
   mu_ansi_term_set_cursor_visible(false);

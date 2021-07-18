@@ -61,7 +61,7 @@ void mu_test_assert(const bool condition,
                     const int line) {
   s_test_count += 1;
   if (!condition) {
-    printf("\r\nAssertion '%s' failed at %s:%d", expr, file, line);
+    printf("\rAssertion '%s' failed at %s:%d\n", expr, file, line);
     fflush(stdout);
     s_error_count += 1;
 #ifdef UNIT_TEST_BREAK_ON_ERROR

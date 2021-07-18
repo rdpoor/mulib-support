@@ -74,9 +74,6 @@ void morse_1_init(void) {
   // Initialize the context's initial state
   s_ctx.frame_period = MU_TIME_MS_TO_DURATION(FRAME_PERIOD_MS);
 
-  // register call to reset the terminal when we exit
-  atexit(mu_ansi_term_restore_colors_and_cursor);
-
   // Make the first call to the scheduler to start things off.  The task_fn will
   // reschedule itself upon completion.
   mu_sched_task_now(&s_ctx.task);

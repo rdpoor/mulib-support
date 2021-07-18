@@ -103,7 +103,7 @@ void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb) {
 
 
 // =============================================================================
-// Local (static) code
+// Local code
 #ifdef HAS_SIGNAL 
 static void handle_sigwinch() {
    read_ttysize();
