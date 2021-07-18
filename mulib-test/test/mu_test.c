@@ -27,12 +27,16 @@
 
 #include <stdio.h>
 #include "mu_test_utils.h"
+#include "mu_version.h"
+#include "mu_drunken_bishop.h"
 
 // =============================================================================
 // types and definitions
 
 // =============================================================================
-// declarations
+// private declarations
+
+static int read_output_from_shell_command(char *command, char *output_buffer);
 
 int mu_bvec_test();
 int mu_cirq_test();
@@ -57,14 +61,28 @@ int mu_random_test();
 int mu_drunken_bishop_test();
 
 // =============================================================================
+// local storage
+
+// =============================================================================
 // public code
 
 int main(void) {
+  char readbuf[80];
 
   printf("\r\nstarting mu_test...");
-
+  printf("mu_version: %s\n",mu_version());
 
   mu_test_init();
+
+  // get a string we can use for our ascii art seed
+  // first we try all the source files
+  // if that fails, we use the mu_version string
+  int err = read_output_from_shell_command("md5sum ../../mulib/core/*.c ../../mulib/extras/*.c | md5sum", readbuf);
+  if(err) {
+    sprintf(readbuf, "%s", mu_version());
+  }
+  //else printf("dir hash is: %s",readbuf);
+  print_random_art_from_string(readbuf, 25);
 
   mu_bvec_test();
   mu_cirq_test();
@@ -102,3 +120,21 @@ int main(void) {
 
 // =============================================================================
 // private code
+
+static int read_output_from_shell_command(char *command, char *output_buffer) {
+  FILE *input;
+  input = popen (command, "r");
+  if (!input)
+    {
+      fprintf (stderr, "incorrect parameters.\n");
+      return -1;
+    }
+  while(fgets(output_buffer, 80, input))
+  
+  if (pclose (input) != 0)
+    {
+      fprintf (stderr, "Could not run shell command or other error.\n");
+      return -1;
+    }
+    return 0;
+}

@@ -27,6 +27,7 @@
 
 #include "mu_test_utils.h"
 #include "extras/mu_drunken_bishop.h"
+#include "core/mu_version.h"
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -39,8 +40,6 @@
 // =============================================================================
 // private declarations
 
-int display_art();
-
 // =============================================================================
 // local storage
 
@@ -49,14 +48,11 @@ int display_art();
 // public code
 
 void mu_drunken_bishop_test() {
-  ASSERT(display_art() == 1);
-}
-
-int display_art() {
-  print_randomart("1wioasoiuoio2345");
-  return 1;
+  print_random_art_from_string("12345", 17);
+  //ASSERT(print_random_art_from_seed("12345") == 1);
 }
 
 // =============================================================================
 // private code
+
 

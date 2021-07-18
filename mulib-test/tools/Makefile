@@ -13,6 +13,9 @@ MULIB_DIR = $(MULIB_SUPPORT_DIR)/mulib
 
 SRC_MULIB_CORE_DIR = $(MULIB_DIR)/core
 SRC_MULIB_EXTRAS_DIR = $(MULIB_DIR)/extras
+
+# this testing is intended to run on our host / dev machine, not on an MCU, so we use the generic POSIX platform code
+# the mu_platform_test project found in the examples/ directory can be used to test platform-specifix code
 SRC_MU_PLATFORM_DIR = ../../examples/POSIX/POSIX/mu_platform/
 
  $(info    SRC_MULIB_CORE_DIR is $(SRC_MULIB_CORE_DIR))
@@ -65,6 +68,7 @@ run: test
 
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -rf mu_test
 
 
 $(BUILD_MULIB_CORE_DIR)/%.o : $(SRC_MULIB_CORE_DIR)/%.c $(MULIB_CORE_INCLUDE_DIR)/*.h $(MU_PLATFORM_INCLUDE_DIR)/*.h
