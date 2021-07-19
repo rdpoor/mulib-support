@@ -33,12 +33,24 @@
 #include "mu_kbd_io.h"
 #include "mu_signal.h"
 
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include <unistd.h>
+#include <sys/ioctl.h> // need this for getting the terminal size
+
 // =============================================================================
 // Private types and definitions
 
 // =============================================================================
 // Private (forward) declarations
 
+static void read_ttysize(bool watch_for_changes);
+
+#ifdef HAS_SIGNAL 
+static void handle_sigwinch();
+#endif
 
 // =============================================================================
 // Local storage
@@ -50,12 +62,38 @@ void mu_platform_init(void) {
   mu_button_io_init();
   mu_led_io_init();
   mu_rtc_init();
-  mu_ansi_term_init();
   mu_kbd_io_init();
+  mu_ansi_term_init();
   mu_signal_init();
+  read_ttysize(true);
 }
 
 // =============================================================================
 // Local (static) code
 
+static void read_ttysize(bool watch_for_changes) {
 
+  #ifdef TIOCGSIZE
+      struct ttysize ts;
+      ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
+      mu_ansi_term_set_ncols(ts.ts_cols);
+      mu_ansi_term_set_nrows(ts.ts_lines);
+  #elif defined(TIOCGWINSZ)
+      struct winsize ts;
+      ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
+      mu_ansi_term_set_ncols(ts.ws_col);
+      mu_ansi_term_set_nrows(ts.ws_row);
+  #endif /* TIOCGSIZE */
+  //printf("Terminal is %dx%d\n", mu_kbd_cols, mu_kbd_rows);
+
+  #ifdef HAS_SIGNAL
+    if(watch_for_changes)
+      signal(SIGWINCH, handle_sigwinch);
+  #endif
+}
+
+#ifdef HAS_SIGNAL 
+static void handle_sigwinch() {
+   read_ttysize(true);
+}
+#endif

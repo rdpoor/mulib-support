@@ -27,7 +27,6 @@
 
 #include "strategies.h"
 #include <mulib.h>
-#include "mu_platform.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,11 +39,11 @@
 // Local (forward) declarations
 
 static char rot13(char c);
+static void print_string_expressively(char *s);
 
 // =============================================================================
 // Local storage
 
-//const static char const *s_strategies[] = {
 static char const *s_strategies[] = {
   "(Betnavp) znpuvarel.",
   "Abg ohvyqvat n jnyy; znxvat n oevpx.",
@@ -263,24 +262,14 @@ void strategies_choose_and_print() {
   static char buf[MAX_STRATEGY_LEN];
   int index = mu_random_range(0, N_STRATEGIES);
   const char *s = s_strategies[index];
-  int screen_width = 80;
-
-  //screen_width = mu_kbd_ncols();
 
   // decode (super secret cryptology!)
   int j = 0;
   while ((buf[j++] = rot13(*s++))) {
   }
+
   // print it
-
- // mu_ansi_term_clear_screen();
-
-  int indent_by = mu_random_range(0, screen_width - strlen(buf));
-
-  for(int i = 0; i < indent_by;i++)
-    printf(" ");
-
-  printf("%s\n", buf);
+  print_string_expressively(buf);
 }
 
 // =============================================================================
@@ -296,6 +285,20 @@ static char rot13(char c) {
   }
 }
 
+static void print_string_expressively(char *s) {
+  int screen_width = mu_ansi_term_get_ncols();
+  // mu_ansi_term_clear_screen();
+  int indent_by = mu_random_range(0, screen_width - strlen(s));
 
+  while(indent_by--)
+    printf(" ");
+
+  mu_ansi_term_set_colors(mu_random_range(0,MU_ANSI_COLOR_COUNT),MU_ANSI_TERM_DEFAULT_COLOR);
+
+  printf("%s\n", s);
+      
+  mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
+
+}
 
 

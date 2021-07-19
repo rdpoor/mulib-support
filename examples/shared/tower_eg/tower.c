@@ -31,15 +31,13 @@
 #include "fb.h"
 #include "pole.h"
 
-// here we include mu modules a la carte -- this means we need to call  mu_time_init() and mu_sched_init() which we do in our own tower_init()
-#include "mu_rtc.h"
-#include "mu_ansi_term.h"
-#include "mu_platform.h"
 
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <mulib.h>
 
 // =============================================================================
 // Local types and definitions
@@ -108,20 +106,16 @@ static void reset(void);
 // Public code
 
 void tower_init(void) {
+  // a la carte inits as opposed to mulib_init()
   mu_rtc_init();
   mu_sched_init();
 
-  mu_ansi_term_set_cursor_visible(false);
-  mu_button_io_set_callback(NULL);
   mu_task_init(&s_tower_ctx.task, tower_task_fn, &s_tower_ctx, "Tower");
   // initialize the frame buffer
   fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
-  atexit(mu_ansi_term_restore_colors_and_cursor); // restores terminal color and cursor
-
   // set up tower and disk positions
   fb_erase();
   reset();
-
   // Schedule the task.
   mu_sched_task_now(&s_tower_ctx.task);
 }

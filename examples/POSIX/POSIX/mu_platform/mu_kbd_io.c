@@ -26,17 +26,11 @@
 // Includes
 
 #include "mu_kbd_io.h"
-#include "mu_ansi_term.h"
-
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
 #include <termios.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
 #include <pthread.h>
 
 // =============================================================================
@@ -51,8 +45,6 @@ static mu_kbd_io_callback_t s_kbd_io_cb;
 static struct termios saved_attributes;
 static bool _has_saved_attributes = false;
 static bool _tty_is_in_non_canonical_mode = false;
-static int mu_kbd_cols = 80;
-static int mu_kbd_rows = 24;
 pthread_t thread_id;
 
 
@@ -61,7 +53,6 @@ pthread_t thread_id;
 
 static void mu_kbd_get_terminal_attributes(struct termios *terminal_attributes);
 static void mu_kbd_set_terminal_attributes(struct termios *terminal_attributes);
-static void read_ttysize();
 
 static void fire_kbd_io_callback(char ch);
 
@@ -72,17 +63,11 @@ static void mu_kbd_exit_noncanonical_mode(void);
 
 static int mu_kbd_get_key_press(void);
 
-// static int mu_kbd_ncols();
-
-// static int mu_kbd_nrows();
-
 static void start_kbd_reader_thread(void);
 
 static void *reader_thread(void* vargp);
 
-#ifdef HAS_SIGNAL 
-static void handle_sigwinch();
-#endif
+
 
 // =============================================================================
 // Public code
@@ -90,10 +75,6 @@ static void handle_sigwinch();
 void mu_kbd_io_init(void) {
   mu_kbd_enter_noncanonical_mode();
   atexit(mu_kbd_exit_noncanonical_mode); // restores terminal attributes
-  read_ttysize();
-  #ifdef HAS_SIGNAL
-    signal(SIGWINCH, handle_sigwinch);
-  #endif
   start_kbd_reader_thread();
 }
 
@@ -104,24 +85,11 @@ void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb) {
 
 // =============================================================================
 // Local code
-#ifdef HAS_SIGNAL 
-static void handle_sigwinch() {
-   read_ttysize();
-}
-#endif
 
 
 static void fire_kbd_io_callback(char ch) {
   s_kbd_io_cb(ch);
 }
-
-// static int mu_kbd_ncols() {
-//   return mu_kbd_cols;
-// }
-
-// static int mu_kbd_nrows() {
-//   return mu_kbd_rows;
-// }
 
 static int mu_kbd_get_key_press(void) {
     int ch;
@@ -166,7 +134,8 @@ static void mu_kbd_exit_noncanonical_mode() {
     info.c_cc[VTIME] = 0;         /* no timeout */
     mu_kbd_set_terminal_attributes(&info);
   }
-  mu_ansi_term_restore_colors_and_cursor();
+  printf("\33[0m"); // ansi reset ?25h
+  printf("\33[?25h"); // ansi show cursor
 }
 
 static void mu_kbd_set_terminal_attributes(struct termios *terminal_attributes) {
@@ -178,20 +147,7 @@ static void mu_kbd_get_terminal_attributes(struct termios *terminal_attributes) 
   tcgetattr(STDIN_FILENO, terminal_attributes);      
 }
 
-static void read_ttysize() {
-  #ifdef TIOCGSIZE
-      struct ttysize ts;
-      ioctl(STDIN_FILENO, TIOCGSIZE, &ts);
-      mu_kbd_cols = ts.ts_cols;
-      mu_kbd_rows = ts.ts_lines;
-  #elif defined(TIOCGWINSZ)
-      struct winsize ts;
-      ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
-      mu_kbd_cols = ts.ws_col;
-      mu_kbd_rows = ts.ws_row;
-  #endif /* TIOCGSIZE */
-  //printf("Terminal is %dx%d\n", mu_kbd_cols, mu_kbd_rows);
-}
+
 
 // this allows POSIX to mimic MCU behavior which typically uses an isr to send
 // info about each keypress via the callback at s_kbd_io_cb()
