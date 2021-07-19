@@ -1,0 +1,69 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#ifndef HEXAGRAMS_H_
+#define HEXAGRAMS_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// =============================================================================
+// includes
+
+#include <mulib.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+// =============================================================================
+// types and definitions
+
+typedef struct {
+  char *pd;
+  char *cm;
+} i_ching_line;
+
+typedef struct {
+  unsigned char number;
+  char *name;
+  char *cm;
+  char *jd;
+  char *j_cm;
+  char *im;
+  char *i_cm;
+  i_ching_line lines[7];
+} i_ching_hexagram;
+
+// =============================================================================
+// declarations
+
+void display_hexagram(int hexagram_number);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* #ifndef HEXAGRAMS_H_ */
+
+
