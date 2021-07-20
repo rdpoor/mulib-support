@@ -41,14 +41,15 @@
 // Local storage
 
 static const char *_line_strings[] = {
-  "-----   -   ------",
-  "------------------",
-  "-----       ------",
-  "------+++++-------",
+  "------  -  -------", // 6 = old yin
+  "------------------", // 7 = young yang
+  "------     -------", // 8 = young yin
+  "-------+++--------", // 9 = old yang 
 };
 
 static char changed_user_lines[7];
 
+// Wilhelm translation
 static const i_ching_hexagram  hexagrams[] = {
   {
     .number = 1,
@@ -715,7 +716,7 @@ static const i_ching_hexagram  hexagrams[] = {
     .jd = "APPROACH has supreme success.\nPerseverance furthers.\nWhen the eighth month comes,\nThere will be misfortune.",
     .j_cm = "The hexagram as a whole points to a time of joyous, hopeful progress.\nSpring is approaching. Joy and forbearance bring high and low nearer\ntogether. Success is certain. But we must work with determination and\nperseverance to make full use of the propitiousness of the time. And on\nthing more: spring does not last forever. In the eighth month the aspects\nare reversed. Then only two strong, light lines are left; these do not\nadvance but are in retreat (see next hexagram). We must take heed of this\nchange in good time. If we meet evil before it becomes reality-before it\nhas even begun to stir-we can master it.",
     .im =   "The earth above the lake:\nThe image of APPROACH.\nThus the superior man is inexhaustible\nIn his will to teach,\nAnd without limits\nIn his tolerance and protection of the people.",
-    .i_cm = "The earth borders upon the lake from above. This symbolizes the approach\nand condescension of the man of higher position to those beneath him.\nThe two parts of the image indicate what his attitude toward these people\nwill be. Just as the lake is inexhaustible in depth, so the sage is inexhaustible\nin his readiness to teach mankind, and just as the earth is boundlessly\nwide, sustaining and caring for all creatures on it, so the sage sustains\nand cares for all people and excludes no part of humanity.",
+    .i_cm = "The earth borders upon the lake from above. This symbolizes the approach\nand condescension of the man of higher position to those beneath him.\nThe two parts of the image indicate what his attitude toward these people\nwill be. Just as the lake is inexhaustible in depth,\nso the sage is inexhaustible/nin his readiness to teach mankind, and just as the earth is boundlessly\nwide, sustaining and caring for all creatures on it, so the sage sustains\nand cares for all people and excludes no part of humanity.",
         .lines = {
         {
           .pd ="Joint approach.\nPerseverance brings good fortune.",
@@ -2391,8 +2392,6 @@ int hexagram_number_from_user_lines(char *user_lines) {
   for(int i=0; i < 64; i++) {
     const i_ching_hexagram *hex = &hexagrams[i];
     if(hex->sk == sk) {
-      if(i != (hex->number - 1)) 
-        printf("Sanity check fail in hexagram_number_from_user_lines.\n");
       return hex->number;
     }
   }
@@ -2409,7 +2408,6 @@ char *change_user_lines(char *user_lines) {
   }
   return changed_user_lines;
 }
-
 
 void draw_user_lines(char *user_lines) { 
   for(int i = 0; i < 6; i++) { // rightmost bit is the foudnation, so we print it last

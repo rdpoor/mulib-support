@@ -78,22 +78,20 @@ void i_ching_init() {
   mu_ansi_term_home();
   mu_ansi_term_set_cursor_visible(false);
 
-  printf("Contemplate your question.\n");
+  printf("\nContemplate your question.\n\n");
   print_reversed("Press user button or any key to begin casting...\n\n");
   wait_for_user(false);
   mu_ansi_term_clear_screen();
 
-
   printf("hit keys to throw coins...");
 
   memset(user_lines,0,7);
-
   for(int i = 0; i < 6; i++) {
     mu_ansi_term_home();
-    user_lines[5 - i] = get_user_coin_toss(); // '6','7','8' or '9' -- note that we store the foundation in the rightmost character (so right to left) in order to align with our binary sk notation 0b00111111
+    user_lines[5 - i] = get_user_coin_toss(); 
+    // '6','7','8' or '9' -- note that we store the foundation in the rightmost character (so right to left) in order to align with our binary sk notation 0b00111111
     printf("\n%s",&user_lines[5 - i]);
   }
- 
   present_reading_for_lines(user_lines);
 }
 

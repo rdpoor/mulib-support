@@ -45,7 +45,7 @@ typedef struct {
 } i_ching_line;
 
 typedef struct {
-  unsigned char number;
+  unsigned char number; // 1 - 64, corresponding to the KWS chart
   uint8_t sk; // holds the bit encoding of the lines
   char *name;
   char *cm;
