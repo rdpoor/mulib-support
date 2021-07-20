@@ -51,7 +51,7 @@ static void kbd_cb(unsigned char ch);
 static mu_duration_t wait_for_user(bool show_message);
 static char get_user_coin_toss();
 static void print_reversed(char *wut);
-static void display_reading_for_lines(char *user_lines);
+static void present_reading_for_lines(char *user_lines);
 static void print_hexagram_info(int hexagram_number);
 
 // =============================================================================
@@ -78,12 +78,6 @@ void i_ching_init() {
   mu_ansi_term_home();
   mu_ansi_term_set_cursor_visible(false);
 
-   // char *test_lines = "696677";
-   // draw_user_lines(test_lines);
-   // printf("number %d\n", hexagram_number_from_user_lines(test_lines));
-
-   // exit(0);
-
   printf("Contemplate your question.\n");
   print_reversed("Press user button or any key to begin casting...\n\n");
   wait_for_user(false);
@@ -100,7 +94,7 @@ void i_ching_init() {
     printf("\n%s",&user_lines[5 - i]);
   }
  
-  display_reading_for_lines(user_lines);
+  present_reading_for_lines(user_lines);
 }
 
 void i_ching_step() {
@@ -140,6 +134,28 @@ static mu_duration_t wait_for_user(bool show_message) {
   return mu_time_difference(mu_rtc_now(), start_time);
 }
 
+/*
+static void test_format() {
+    // char *test_lines = "696677";
+   // draw_user_lines(test_lines);
+   // printf("number %d\n", hexagram_number_from_user_lines(test_lines));
+
+   // exit(0);
+
+  for(int i = 0; i < 64; i++) {
+    char li[7] = "666666";
+    if(i & 1) li[0] = '9';
+    if(i & 2) li[1] = '9';
+    if(i & 4) li[2] = '9';
+    if(i & 8) li[3] = '9';
+    if(i & 16) li[4] = '9';
+    if(i & 32) li[5] = '9';
+    present_reading_for_lines(li);
+  }
+  exit(0);
+}
+*/
+
 static void print_reversed(char *wut) {
     mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_GRAY);
     printf("%s",wut);
@@ -166,14 +182,10 @@ static char get_user_coin_toss() {
     answer += coin_value ? 3 : 2;
   }
   printf("\n");
-  if(answer == 6) return '6';
-  if(answer == 7) return '7';
-  if(answer == 8) return '8';
-  if(answer == 9) return '9';
-  return 'x';
+  return 48 + answer; // turn 6 into '6'
 }
 
-static void display_reading_for_lines(char *user_lines) {
+static void present_reading_for_lines(char *user_lines) {
   //printf("coin tosses: %s\n\n",user_lines);
   mu_ansi_term_clear_screen();
   mu_ansi_term_home();
@@ -184,25 +196,25 @@ static void display_reading_for_lines(char *user_lines) {
   char *changed_lines = change_user_lines(user_lines);
   int secondary_num = hexagram_number_from_user_lines(changed_lines);
   if(num != secondary_num) {
-    printf("CHANGES:\n\n");
+    printf("\nCHANGES:\n\n");
     print_analaysis_of_changing_lines(user_lines);
-    printf("Relating hexagram:\n\n");
+    printf("\nRelating hexagram:\n\n");
     draw_user_lines(changed_lines);
     print_hexagram_info(secondary_num);
   }
 }
 
 static void print_hexagram_info(int number) { // note that this is 1-indexed for compatibility with humans / the texts
-  const i_ching_hexagram *hex = get_hexagram_number(number); // whereas this is 0-indexed
+  const i_ching_hexagram *hex = get_hexagram(number); // whereas this is 0-indexed
   printf("\n%d. %s\n\n",hex->number,hex->name);
   //wait_for_user();
-  printf("%s\n\n",hex->cm);
+  printf("%s\n",hex->cm);
   wait_for_user(true);
-  printf("Judgement:\n\n%s\n\n",hex->jd);
+  printf("Judgement:\n\n%s\n",hex->jd);
   wait_for_user(true);
-  printf("%s\n\n",hex->j_cm);
+  printf("%s\n",hex->j_cm);
   wait_for_user(true);
-  printf("Image:\n\n%s\n\n",hex->im);
+  printf("Image:\n\n%s\n",hex->im);
   wait_for_user(true);
-  printf("%s\n\n",hex->i_cm);
+  printf("%s\n",hex->i_cm);
 }

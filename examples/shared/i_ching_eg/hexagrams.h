@@ -62,7 +62,7 @@ int hexagram_number_from_user_lines(char *user_lines);
 char *change_user_lines(char *user_lines);
 void draw_user_lines(char *user_lines);
 void print_analaysis_of_changing_lines(char *user_lines);
-const i_ching_hexagram *get_hexagram_number(int number);
+const i_ching_hexagram *get_hexagram(int number);
 
 #ifdef __cplusplus
 }
