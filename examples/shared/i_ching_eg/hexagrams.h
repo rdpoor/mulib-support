@@ -46,19 +46,23 @@ typedef struct {
 
 typedef struct {
   unsigned char number;
+  uint8_t sk; // holds the bit encoding of the lines
   char *name;
   char *cm;
   char *jd;
   char *j_cm;
   char *im;
   char *i_cm;
-  i_ching_line lines[7];
+  i_ching_line lines[7]; // 7th line seems to speak to the special case when all 6 lines are changing (old)
 } i_ching_hexagram;
 
 // =============================================================================
 // declarations
-
-void display_hexagram(int hexagram_number);
+int hexagram_number_from_user_lines(char *user_lines);
+char *change_user_lines(char *user_lines);
+void print_hexagram_info(int hexagram_number);
+void draw_user_lines(char *user_lines);
+void print_analaysis_of_changing_lines(char *user_lines);
 
 #ifdef __cplusplus
 }
