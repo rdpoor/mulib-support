@@ -78,7 +78,7 @@ void i_ching_init() {
   mu_ansi_term_home();
   mu_ansi_term_set_cursor_visible(false);
 
-   // char *test_lines = "777777";
+   // char *test_lines = "696677";
    // draw_user_lines(test_lines);
    // printf("number %d\n", hexagram_number_from_user_lines(test_lines));
 
@@ -186,7 +186,7 @@ static void display_reading_for_lines(char *user_lines) {
   if(num != secondary_num) {
     printf("CHANGES:\n\n");
     print_analaysis_of_changing_lines(user_lines);
-    printf("Secondary hexagram:\n\n");
+    printf("Relating hexagram:\n\n");
     draw_user_lines(changed_lines);
     print_hexagram_info(secondary_num);
   }
