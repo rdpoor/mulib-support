@@ -48,16 +48,18 @@
 
 static void button_cb(uint8_t button_id, bool button_is_pressed);
 static void kbd_cb(unsigned char ch);
-static mu_duration_t wait_for_user();
+static mu_duration_t wait_for_user(bool show_message);
 static char get_user_coin_toss();
+static void print_reversed(char *wut);
 static void display_reading_for_lines(char *user_lines);
+static void print_hexagram_info(int hexagram_number);
 
 // =============================================================================
 // Local storage
 
 static bool user_hit_something = false;
 static char _most_recent_character;
-static char user_lines[7] = "999999";
+static char user_lines[7];
 
 // =============================================================================
 // Public code
@@ -74,20 +76,28 @@ void i_ching_init() {
   mu_kbd_io_set_callback(kbd_cb);
   mu_ansi_term_clear_screen();
   mu_ansi_term_home();
-
-  // print_hexagram_info(hexagram_number_from_user_lines("778888"));
-  //exit(0);
-
-  printf("Contemplate your question.\nPress user button or any key to begin casting...\n\n");
-
   mu_ansi_term_set_cursor_visible(false);
+
+   // char *test_lines = "777777";
+   // draw_user_lines(test_lines);
+   // printf("number %d\n", hexagram_number_from_user_lines(test_lines));
+
+   // exit(0);
+
+  printf("Contemplate your question.\n");
+  print_reversed("Press user button or any key to begin casting...\n\n");
+  wait_for_user(false);
   mu_ansi_term_clear_screen();
+
+
+  printf("hit keys to throw coins...");
+
+  memset(user_lines,0,7);
 
   for(int i = 0; i < 6; i++) {
     mu_ansi_term_home();
     user_lines[5 - i] = get_user_coin_toss(); // '6','7','8' or '9' -- note that we store the foundation in the rightmost character (so right to left) in order to align with our binary sk notation 0b00111111
-    printf("\n");
-    putchar(user_lines[i]);
+    printf("\n%s",&user_lines[5 - i]);
   }
  
   display_reading_for_lines(user_lines);
@@ -112,13 +122,28 @@ static void kbd_cb(unsigned char ch) {
   user_hit_something = true;
 }
 
-static mu_duration_t wait_for_user() {
+static mu_duration_t wait_for_user(bool show_message) {
   user_hit_something = false;
   mu_time_t start_time = mu_rtc_now();
+  if(show_message) {
+    printf("\n");
+    print_reversed("Any key to continue...");
+  }
   while (!user_hit_something) {
   }
+  if(show_message) {
+    mu_ansi_term_clear_line();
+  }
   user_hit_something = false;
+  if(_most_recent_character == 'q')
+    exit(0);
   return mu_time_difference(mu_rtc_now(), start_time);
+}
+
+static void print_reversed(char *wut) {
+    mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_GRAY);
+    printf("%s",wut);
+    mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
 }
 
 // the time between keypresses determines the value of the coin flip.
@@ -130,12 +155,17 @@ static char get_user_coin_toss() {
   bool coin_value;
   mu_duration_t wait_duration;
   while(n_tosses--) {
-    mu_ansi_term_home();
-    printf("\nhit %d keys to toss...",n_tosses);
-    wait_duration = wait_for_user();
+    wait_duration = wait_for_user(false);
+    if(n_tosses == 2) {
+      printf("      ");
+      mu_ansi_term_home();
+    }
     coin_value = (wait_duration >> 4) % 2; // reduce the clock resolution a bit to shift the stochasticism to a more human scale
+    putchar(coin_value ? 'x' : 'o');
+    putchar(' ');
     answer += coin_value ? 3 : 2;
   }
+  printf("\n");
   if(answer == 6) return '6';
   if(answer == 7) return '7';
   if(answer == 8) return '8';
@@ -144,9 +174,10 @@ static char get_user_coin_toss() {
 }
 
 static void display_reading_for_lines(char *user_lines) {
+  //printf("coin tosses: %s\n\n",user_lines);
   mu_ansi_term_clear_screen();
   mu_ansi_term_home();
-  printf("coin tosses: %s\n\n",user_lines);
+  printf("\n");
   draw_user_lines(user_lines);
   int num = hexagram_number_from_user_lines(user_lines);
   print_hexagram_info(num);
@@ -159,4 +190,19 @@ static void display_reading_for_lines(char *user_lines) {
     draw_user_lines(changed_lines);
     print_hexagram_info(secondary_num);
   }
+}
+
+static void print_hexagram_info(int number) { // note that this is 1-indexed for compatibility with humans / the texts
+  const i_ching_hexagram *hex = get_hexagram_number(number); // whereas this is 0-indexed
+  printf("\n%d. %s\n\n",hex->number,hex->name);
+  //wait_for_user();
+  printf("%s\n\n",hex->cm);
+  wait_for_user(true);
+  printf("Judgement:\n\n%s\n\n",hex->jd);
+  wait_for_user(true);
+  printf("%s\n\n",hex->j_cm);
+  wait_for_user(true);
+  printf("Image:\n\n%s\n\n",hex->im);
+  wait_for_user(true);
+  printf("%s\n\n",hex->i_cm);
 }

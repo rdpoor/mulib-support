@@ -60,9 +60,9 @@ typedef struct {
 // declarations
 int hexagram_number_from_user_lines(char *user_lines);
 char *change_user_lines(char *user_lines);
-void print_hexagram_info(int hexagram_number);
 void draw_user_lines(char *user_lines);
 void print_analaysis_of_changing_lines(char *user_lines);
+const i_ching_hexagram *get_hexagram_number(int number);
 
 #ifdef __cplusplus
 }
