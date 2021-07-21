@@ -51,6 +51,7 @@ static void kbd_cb(unsigned char ch);
 static mu_duration_t wait_for_user(bool show_message);
 static char get_user_coin_toss();
 static void print_reversed(char *wut);
+static void print_emphasized(char *wut);
 static void present_reading_for_lines(char *user_lines);
 static void print_hexagram_info(int hexagram_number);
 
@@ -134,11 +135,11 @@ static mu_duration_t wait_for_user(bool show_message) {
 
 /*
 static void test_format() {
-    // char *test_lines = "696677";
-   // draw_user_lines(test_lines);
-   // printf("number %d\n", hexagram_number_from_user_lines(test_lines));
+  // char *test_lines = "696677";
+  // draw_user_lines(test_lines);
+  // printf("number %d\n", hexagram_number_from_user_lines(test_lines));
 
-   // exit(0);
+  // exit(0);
 
   for(int i = 0; i < 64; i++) {
     char li[7] = "666666";
@@ -160,6 +161,12 @@ static void print_reversed(char *wut) {
     mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
 }
 
+static void print_emphasized(char *wut) {
+    mu_ansi_term_set_colors(MU_ANSI_TERM_YELLOW, MU_ANSI_TERM_DEFAULT_COLOR);
+    printf("%s",wut);
+    mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
+}
+
 // the time between keypresses determines the value of the coin flip.
 // no need for the additional obfuscation of seeding an rng, 
 // here it is entirely the user's actions which directly determines (in an uncontrollable and unpredictable way) the result of the coin flip
@@ -175,7 +182,7 @@ static char get_user_coin_toss() {
       mu_ansi_term_home();
     }
     coin_value = (wait_duration >> 4) % 2; // reduce the clock resolution a bit to shift the stochasticism to a more human scale
-    putchar(coin_value ? 'x' : 'o');
+    putchar(coin_value ? 'X' : 'O');
     putchar(' ');
     answer += coin_value ? 3 : 2;
   }
@@ -194,7 +201,8 @@ static void present_reading_for_lines(char *user_lines) {
   char *changed_lines = change_user_lines(user_lines);
   int secondary_num = hexagram_number_from_user_lines(changed_lines);
   if(num != secondary_num) {
-    printf("\nCHANGES:\n\n");
+    wait_for_user(true);
+    print_emphasized("THE CHANGES:\n\n");
     print_analaysis_of_changing_lines(user_lines);
     printf("\nRelating hexagram:\n\n");
     draw_user_lines(changed_lines);
@@ -208,11 +216,11 @@ static void print_hexagram_info(int number) { // note that this is 1-indexed for
   //wait_for_user();
   printf("%s\n",hex->cm);
   wait_for_user(true);
-  printf("Judgement:\n\n%s\n",hex->jd);
-  wait_for_user(true);
+  print_emphasized("THE JUDGEMENT:");
+  printf("\n\n%s\n\n",hex->jd);
   printf("%s\n",hex->j_cm);
   wait_for_user(true);
-  printf("Image:\n\n%s\n",hex->im);
-  wait_for_user(true);
-  printf("%s\n",hex->i_cm);
+  print_emphasized("THE IMAGE:");
+  printf("\n\n%s\n",hex->im);
+  printf("\n%s\n\n",hex->i_cm);
 }
