@@ -213,7 +213,6 @@ static void present_reading_for_lines(char *user_lines) {
 static void print_hexagram_info(int number) { // note that this is 1-indexed for compatibility with humans / the texts
   const i_ching_hexagram *hex = get_hexagram(number); // whereas this is 0-indexed
   printf("\n%d. %s\n\n",hex->number,hex->name);
-  //wait_for_user();
   printf("%s\n",hex->cm);
   wait_for_user(true);
   print_emphasized("THE JUDGEMENT:");

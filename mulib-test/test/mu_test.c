@@ -82,11 +82,12 @@ int main(void) {
   // output an identicon derived from hashing the source code
   int err = read_output_from_shell_command("md5sum ../../mulib/core/*.c ../../mulib/extras/*.c | md5sum", readbuf);
   if(err) {
-    // if the shell md5sum failed, we use the mu_version string
+    // if the shell md5sum failed, we (lamely) use the mu_version string
+    // TODO: actually traverse the source tree and do a md5sum thing ourselves.  in extras?
     sprintf(readbuf, "%s", mu_version());
   }
   printf("source fingerprint:\n");
-  print_random_art_from_string(readbuf, 17);
+  mu_print_random_art_from_string(readbuf, 17);
 
   mu_test_init();
   mu_bvec_test();

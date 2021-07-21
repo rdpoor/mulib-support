@@ -55,8 +55,8 @@ void mu_drunken_bishop_test() {
 // private code
 
 int test_non_zero_worm() {
-  //print_random_art_from_string("",7);
-  //print_random_art_from_string("234",11);
+  //mu_print_random_art_from_string("",7);
+  //mu_print_random_art_from_string("234",11);
   return 1;
 }
 
