@@ -41,7 +41,7 @@
 // =============================================================================
 // Local storage
 
-static mu_kbd_io_callback_t s_kbd_io_cb;
+static mu_kbd_io_callback_t s_kbd_io_cb = 0;
 static struct termios saved_attributes;
 static bool _has_saved_attributes = false;
 static bool _tty_is_in_non_canonical_mode = false;
@@ -147,8 +147,6 @@ static void mu_kbd_get_terminal_attributes(struct termios *terminal_attributes) 
   tcgetattr(STDIN_FILENO, terminal_attributes);      
 }
 
-
-
 // this allows POSIX to mimic MCU behavior which typically uses an isr to send
 // info about each keypress via the callback at s_kbd_io_cb()
 static void start_kbd_reader_thread(void) {
@@ -158,8 +156,8 @@ static void start_kbd_reader_thread(void) {
 static void *reader_thread(void* vargp)
 {
     while(1) {
-      char ch = mu_kbd_get_key_press();
-      if(ch) {
+      char ch = mu_kbd_get_key_press(); // even if s_kbd_io_cb is NULL, we benefit from polling the kbd because we can intercept CTRL-C, call exit() which fire atexit() so we can clean up
+      if(ch && s_kbd_io_cb) {
         fire_kbd_io_callback(ch);
       }
     }

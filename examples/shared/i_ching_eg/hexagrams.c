@@ -2420,6 +2420,51 @@ void draw_user_lines(char *user_lines) {
   }
 }
 
+// we can add a width_reduction arg, defaults to 0. "------      ------" 1 skips aingle chars in the _line_strings, making each seg 3 "---   ---".   2 skips by 6 or 7, making each seg 1 "- -"
+// make elegant transform that will start with a const like "- -" -> "-- --" -> "---  ---" -> "-----   -----" -> "-------     -------" -- we could even do one full screen BUT need to starting adding y axis HOW?
+// if we use putchar we dont need the static storage
+
+
+
+
+void draw_multiple_user_linesALT(char *user_lines[], int how_many, int width, int height) { // maybe also pass in colors?
+  int i = 0;
+  MU_FLOAT height_fac = (MU_FLOAT) 6 / height; // need to clamp this
+  MU_FLOAT y = 0;
+  while(i < 6) { // rightmost bit is the foudnation, so we print it last
+    for(int n = 0; n < how_many; n++) {
+      uint8_t ci = (user_lines[n][i] - 54) % 4; // 54 is ascii for '6', so this turns "6789" into 0 1 2 3
+      printf("  ");
+      mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_YELLOW);
+      printf("%s",_line_strings[ci]); // could loop using putchar and optionally skip 1 or 2 to shrink width
+      mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
+    }
+    printf("\n");
+    y += height_fac;
+    if(y > i) {
+      i = (int)y; // i++ would be easier but truncating also works for height_fac == 2 1 -- NOTE height CANT be less than 3
+    }
+  }
+}
+
+oid draw_multiple_user_lines(char *user_lines[], how_many) { 
+
+  for(int i = 0; i < 6; i++) { // rightmost bit is the foudnation, so we print it last
+
+    for(int n = 0; n < how_many; n++) {
+
+      uint8_t ci = (user_lines[n][i] - 54) % 4; // 54 is ascii for '6', so this turns "6789" into 0 1 2 3
+      printf("  ");
+      mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_YELLOW);
+      printf("%s",_line_strings[ci]); // could loop using putchar and optionally skip 1 or 2 to shrink width
+      mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
+  }
+
+  printf("\n");
+
+  }
+}
+
 void print_analaysis_of_changing_lines(char *user_lines) {
   const i_ching_hexagram *hex = &hexagrams[hexagram_number_from_user_lines(user_lines) - 1]; // this is 0-indexed
   uint8_t change_count = 0;
@@ -2438,6 +2483,7 @@ void print_analaysis_of_changing_lines(char *user_lines) {
     printf("%s\n\n",hex->lines[6].cm);
   }
 }
+
 const i_ching_hexagram *get_hexagram(int number) {
   return &hexagrams[number - 1];
 }
