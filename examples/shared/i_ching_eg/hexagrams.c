@@ -2425,7 +2425,7 @@ void draw_user_lines(char *user_lines) {
 // if we use putchar we dont need the static storage
 
 
-
+/*
 
 void draw_multiple_user_linesALT(char *user_lines[], int how_many, int width, int height) { // maybe also pass in colors?
   int i = 0;
@@ -2446,24 +2446,7 @@ void draw_multiple_user_linesALT(char *user_lines[], int how_many, int width, in
     }
   }
 }
-
-oid draw_multiple_user_lines(char *user_lines[], how_many) { 
-
-  for(int i = 0; i < 6; i++) { // rightmost bit is the foudnation, so we print it last
-
-    for(int n = 0; n < how_many; n++) {
-
-      uint8_t ci = (user_lines[n][i] - 54) % 4; // 54 is ascii for '6', so this turns "6789" into 0 1 2 3
-      printf("  ");
-      mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_YELLOW);
-      printf("%s",_line_strings[ci]); // could loop using putchar and optionally skip 1 or 2 to shrink width
-      mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
-  }
-
-  printf("\n");
-
-  }
-}
+*/
 
 void print_analaysis_of_changing_lines(char *user_lines) {
   const i_ching_hexagram *hex = &hexagrams[hexagram_number_from_user_lines(user_lines) - 1]; // this is 0-indexed
