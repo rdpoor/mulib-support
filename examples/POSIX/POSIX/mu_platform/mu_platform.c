@@ -36,6 +36,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include <unistd.h>
 #include <sys/ioctl.h> // need this for getting the terminal size
