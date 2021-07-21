@@ -33,7 +33,7 @@ static volatile mu_time_t s_rtc_ticks;
 //static mu_time_t s_safe_ticks;
 static mu_rtc_alarm_cb_t s_rtc_alarm_cb;
 static mu_time_t s_rtc_alarm_time; 
-static pthread_t alarm_thread_id = NULL;
+static pthread_t alarm_thread_id = 0;
 
 // =============================================================================
 // public code
@@ -138,6 +138,6 @@ static void *alarm_thread(void* vargp)
   if(s_rtc_alarm_cb)
     s_rtc_alarm_cb();
 
-  alarm_thread_id = NULL;
+  alarm_thread_id = 0;
   return NULL;
 }
