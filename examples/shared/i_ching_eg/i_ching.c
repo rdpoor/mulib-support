@@ -41,7 +41,7 @@
 // Local types and definitions
 
 
-#define VERSION "1.0"
+#define VERSION "1.01"
 
 // =============================================================================
 // Local (forward) declarations
@@ -54,7 +54,6 @@ static void print_reversed(char *wut);
 static void print_emphasized(char *wut);
 static void present_reading_for_lines(char *user_lines);
 static void print_hexagram_info(int hexagram_number);
-//static void display_intro();
 
 // =============================================================================
 // Local storage
@@ -68,25 +67,7 @@ static char user_lines[7];
 
 /**
  * @brief Walk the user through the process of contemplating their question and casting "coins" in the traditional way
- * 
- * 
  */
-
-/*
-static void display_intro() {
-    //char *test_user_lines[2];
-    for(int i = 0; i < 64; i++) {
-    char li[7] = "666666";
-    if(i & 1) li[0] = '9';
-    if(i & 2) li[1] = '9';
-    if(i & 4) li[2] = '9';
-    if(i & 8) li[3] = '9';
-    if(i & 16) li[4] = '9';
-    if(i & 32) li[5] = '9';
-  }
-}
-*/
-
 void i_ching_init() {
   mulib_init();
   mu_button_io_set_callback(button_cb);
@@ -94,27 +75,6 @@ void i_ching_init() {
   mu_ansi_term_clear_screen();
   mu_ansi_term_home();
   mu_ansi_term_set_cursor_visible(false);
-
-/*
-  display_intro();
-
-  char *test_user_lines[2];
-  test_user_lines[0] = "678986";
-  test_user_lines[1] = "778698";
-  draw_multiple_user_lines(test_user_lines, 2, 3, 6);
-  printf("\n");
-  draw_multiple_user_lines(test_user_lines, 2, 6, 6);
-  printf("\n");
-  draw_multiple_user_lines(test_user_lines, 2, 9, 6);
-  printf("\n");
-  draw_multiple_user_lines(test_user_lines, 2, 18, 12);
-  printf("\n");
-  //draw_multiple_user_lines(test_user_lines, 2, 36, 24);
-  printf("\n");
- exit(0);
-*/
-
-
 
   printf("\nContemplate your question.\n\n");
   print_reversed("Press user button or any key to begin casting...\n\n");
@@ -170,28 +130,6 @@ static mu_duration_t wait_for_user(bool show_message) {
   return mu_time_difference(mu_rtc_now(), start_time);
 }
 
-/*
-static void test_format() {
-  // char *test_lines = "696677";
-  // draw_user_lines(test_lines);
-  // printf("number %d\n", hexagram_number_from_user_lines(test_lines));
-
-  // exit(0);
-
-  for(int i = 0; i < 64; i++) {
-    char li[7] = "666666";
-    if(i & 1) li[0] = '9';
-    if(i & 2) li[1] = '9';
-    if(i & 4) li[2] = '9';
-    if(i & 8) li[3] = '9';
-    if(i & 16) li[4] = '9';
-    if(i & 32) li[5] = '9';
-    present_reading_for_lines(li);
-  }
-  exit(0);
-}
-*/
-
 static void print_reversed(char *wut) {
     mu_ansi_term_set_colors(MU_ANSI_TERM_BRIGHT_YELLOW, MU_ANSI_TERM_GRAY);
     printf("%s",wut);
@@ -228,28 +166,55 @@ static char get_user_coin_toss() {
 }
 
 static void present_reading_for_lines(char *user_lines) {
-  //printf("coin tosses: %s\n\n",user_lines);
+  char *cast_user_lines[2];
+  cast_user_lines[0] = user_lines;
+  char *changed_lines = change_user_lines(user_lines);
+  cast_user_lines[1] = changed_lines;
+  int num = hexagram_number_from_user_lines(user_lines);
+  int secondary_num = hexagram_number_from_user_lines(changed_lines);
+  const i_ching_hexagram *hex = get_hexagram(num); 
+  bool has_changes = secondary_num != num;
+
   mu_ansi_term_clear_screen();
   mu_ansi_term_home();
   printf("\n");
-  draw_user_lines(user_lines);
-  int num = hexagram_number_from_user_lines(user_lines);
+
+  // show the relevant hexagrams
+  draw_multiple_user_lines(cast_user_lines,  has_changes ? 2 : 1, has_changes ? 24 : 48,  has_changes ? 12 : 18);
+
+  int name_width = strlen(hex->name);
+  if(name_width > 29) {
+      int paren_index = strchr(hex->name,'(') - hex->name;
+      if(paren_index > 0) 
+        name_width = paren_index - 1;
+  }
+
+  printf("%4d. %*s",hex->number,name_width,hex->name);
+  if(has_changes) {
+    if(name_width < 29)
+      printf("%*s",(int)(29 - strlen(hex->name))," ");
+    hex = get_hexagram(secondary_num);
+    printf("==>   %d. %-29s",hex->number,hex->name);
+  }
+  printf("\n");
+
+  wait_for_user(true);
+
   print_hexagram_info(num);
-  char *changed_lines = change_user_lines(user_lines);
-  int secondary_num = hexagram_number_from_user_lines(changed_lines);
-  if(num != secondary_num) {
+
+  if(has_changes) {
     wait_for_user(true);
     print_emphasized("THE CHANGES:\n\n");
     print_analaysis_of_changing_lines(user_lines);
     printf("\nRelating hexagram:\n\n");
-    draw_user_lines(changed_lines);
+    draw_multiple_user_lines(&cast_user_lines[1], 1,  24,  12);
     print_hexagram_info(secondary_num);
   }
 }
 
 static void print_hexagram_info(int number) { // note that this is 1-indexed for compatibility with humans / the texts
   const i_ching_hexagram *hex = get_hexagram(number); // whereas this is 0-indexed
-  printf("\n%d. %s\n\n",hex->number,hex->name);
+  printf("\n%s\n\n",hex->name);
   printf("%s\n",hex->cm);
   wait_for_user(true);
   print_emphasized("THE JUDGEMENT:");
@@ -260,3 +225,25 @@ static void print_hexagram_info(int number) { // note that this is 1-indexed for
   printf("\n\n%s\n",hex->im);
   printf("\n%s\n\n",hex->i_cm);
 }
+
+/*
+static void display_intro() {
+    int n_hex = 0;
+    char test_user_lines[12][7]; // memset
+    for(int i = 0; i < 64; i++) {
+    char *li = test_user_lines[n_hex];
+    if(i & 1) li[0] = '9';
+    if(i & 2) li[1] = '9';
+    if(i & 4) li[2] = '9';
+    if(i & 8) li[3] = '9';
+    if(i & 16) li[4] = '9';
+    if(i & 32) li[5] = '9';
+    if(++n_hex > 8) {
+      draw_multiple_user_lines(test_user_lines, 10, 8, 6);
+      printf("\n\n");
+      n_hex = 0;
+    }
+  }
+}
+*/
+

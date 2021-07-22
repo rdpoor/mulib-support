@@ -44,8 +44,10 @@ static const char *_line_strings[] = {
   "------  -  -------", // 6 = old yin
   "------------------", // 7 = young yang
   "------     -------", // 8 = young yin
-  "-------+++--------", // 9 = old yang 
+  "------+++++-------", // 9 = old yang 
 };
+
+
 
 static char changed_user_lines[7];
 
@@ -2409,20 +2411,7 @@ char *change_user_lines(char *user_lines) {
   return changed_user_lines;
 }
 
-void draw_user_lines(char *user_lines) { 
-  for(int i = 0; i < 6; i++) { // rightmost bit is the foudnation, so we print it last
-    uint8_t ci = (user_lines[i] - 54) % 4; // 54 is ascii for '6', so this turns "6789" into 0 1 2 3
-    printf("\t\t\t     ");
-    mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_YELLOW);
-    printf("%s",_line_strings[ci]);
-    mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
-    printf("\n");
-  }
-}
-
-// if we use putchar we dont need the static storage
-
-#define STORE_WIDTH 18
+#define HEX_LINE_WIDTH 18
 
 void draw_multiple_user_lines(char *user_lines[], int how_many, int width, int height) { // maybe also pass in colors?
   int i = 0;
@@ -2431,36 +2420,35 @@ void draw_multiple_user_lines(char *user_lines[], int how_many, int width, int h
   MU_FLOAT width_fac = (MU_FLOAT) 12 / (MU_FLOAT)width; // need to clamp this
   int space_x = 1;
 
-  printf("width_fac %f %f\n",width_fac, height_fac);
-
-  while(i < 6) { // rightmost bit is the foudnation, so we print it last
+  while(i < 6) { // rightmost bit is the foundation, so we print it last
     for(int n = 0; n < how_many; n++) {
       uint8_t ci = (user_lines[n][i] - 54) % 4; // 54 is ascii for '6', so this turns "6789" into 0 1 2 3
       MU_FLOAT x = 0;
-
       printf("  "); // leading space
       mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_YELLOW);
 
-      while(x < STORE_WIDTH) {
-        int xx = (int)(x + 0.5);
-        putchar(_line_strings[ci][xx]);
+      while(x < HEX_LINE_WIDTH) {
+        int xi = (int)(x + 0.02);
+        // make the broken lines the default color in their middle section
+        if((width_fac <= 1) && xi == 6 && ((ci == 0) || (ci == 2)))
+          mu_ansi_term_set_colors(MU_ANSI_TERM_YELLOW, MU_ANSI_TERM_DEFAULT_COLOR);
+        if(xi == 11)
+          mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_YELLOW);
+        putchar(_line_strings[ci][xi]);
         x += width_fac;
       }
-
       mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
       // space between hexagrams
       int s = space_x;
       while(s--)
         putchar(' ');
     }
-    printf("\n");
     y += (height_fac);
-    //printf("%f ",y);
-    if(y  + 0.02  >= i) {
-      //i = (int)(y + 0.5); 
+    printf("\n");
+    if((int)(y  + 0.02)  > i) {
       i = (int)(y  + 0.02); 
-      //printf("%d",i);
-      // i++ would be easier but truncating also works for height_fac == 2 1 -- NOTE height CANT be less than 3
+      if(height_fac < 1)
+        printf("\n");
     }
   }
 }
