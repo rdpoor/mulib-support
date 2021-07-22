@@ -52,7 +52,7 @@ int mu_pstore_test();
 int mu_queue_test();
 int mu_rtc_test();
 int mu_sched_test();
-// int mu_spsc_test();
+int mu_spsc_test();
 int mu_str_test();
 int mu_strbuf_test();
 int mu_task_test();
@@ -100,7 +100,7 @@ int main(void) {
   mu_queue_test();
   mu_rtc_test();
   mu_sched_test();
-  // mu_spsc_test();
+  mu_spsc_test();
   mu_str_test();
   mu_strbuf_test();
   mu_task_test();

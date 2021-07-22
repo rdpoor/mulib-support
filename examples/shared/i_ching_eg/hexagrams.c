@@ -2420,33 +2420,51 @@ void draw_user_lines(char *user_lines) {
   }
 }
 
-// we can add a width_reduction arg, defaults to 0. "------      ------" 1 skips aingle chars in the _line_strings, making each seg 3 "---   ---".   2 skips by 6 or 7, making each seg 1 "- -"
-// make elegant transform that will start with a const like "- -" -> "-- --" -> "---  ---" -> "-----   -----" -> "-------     -------" -- we could even do one full screen BUT need to starting adding y axis HOW?
 // if we use putchar we dont need the static storage
 
+#define STORE_WIDTH 18
 
-/*
-
-void draw_multiple_user_linesALT(char *user_lines[], int how_many, int width, int height) { // maybe also pass in colors?
+void draw_multiple_user_lines(char *user_lines[], int how_many, int width, int height) { // maybe also pass in colors?
   int i = 0;
   MU_FLOAT height_fac = (MU_FLOAT) 6 / height; // need to clamp this
   MU_FLOAT y = 0;
+  MU_FLOAT width_fac = (MU_FLOAT) 12 / (MU_FLOAT)width; // need to clamp this
+  int space_x = 1;
+
+  printf("width_fac %f %f\n",width_fac, height_fac);
+
   while(i < 6) { // rightmost bit is the foudnation, so we print it last
     for(int n = 0; n < how_many; n++) {
       uint8_t ci = (user_lines[n][i] - 54) % 4; // 54 is ascii for '6', so this turns "6789" into 0 1 2 3
-      printf("  ");
+      MU_FLOAT x = 0;
+
+      printf("  "); // leading space
       mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_YELLOW);
-      printf("%s",_line_strings[ci]); // could loop using putchar and optionally skip 1 or 2 to shrink width
+
+      while(x < STORE_WIDTH) {
+        int xx = (int)(x + 0.5);
+        putchar(_line_strings[ci][xx]);
+        x += width_fac;
+      }
+
       mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
+      // space between hexagrams
+      int s = space_x;
+      while(s--)
+        putchar(' ');
     }
     printf("\n");
-    y += height_fac;
-    if(y > i) {
-      i = (int)y; // i++ would be easier but truncating also works for height_fac == 2 1 -- NOTE height CANT be less than 3
+    y += (height_fac);
+    //printf("%f ",y);
+    if(y  + 0.02  >= i) {
+      //i = (int)(y + 0.5); 
+      i = (int)(y  + 0.02); 
+      //printf("%d",i);
+      // i++ would be easier but truncating also works for height_fac == 2 1 -- NOTE height CANT be less than 3
     }
   }
 }
-*/
+
 
 void print_analaysis_of_changing_lines(char *user_lines) {
   const i_ching_hexagram *hex = &hexagrams[hexagram_number_from_user_lines(user_lines) - 1]; // this is 0-indexed

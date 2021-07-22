@@ -62,7 +62,7 @@ Efficient, extensible first-in, first-out queue operations, built on `mu_list`.
 Low-overhead run-to-completion scheduler.  see [About Run To Completion
 Schedulers](./RunToCompletion.md) for more information.
 
-### `mu_spscq`
+### `mu_spsc`
 
 Thread-safe, lock-free, single-producer, single-consumer queue.  It is designed
 primarily for use by `mu_sched` to transfer control between interrupt and the

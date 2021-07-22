@@ -54,6 +54,7 @@ static void print_reversed(char *wut);
 static void print_emphasized(char *wut);
 static void present_reading_for_lines(char *user_lines);
 static void print_hexagram_info(int hexagram_number);
+//static void display_intro();
 
 // =============================================================================
 // Local storage
@@ -71,6 +72,21 @@ static char user_lines[7];
  * 
  */
 
+/*
+static void display_intro() {
+    //char *test_user_lines[2];
+    for(int i = 0; i < 64; i++) {
+    char li[7] = "666666";
+    if(i & 1) li[0] = '9';
+    if(i & 2) li[1] = '9';
+    if(i & 4) li[2] = '9';
+    if(i & 8) li[3] = '9';
+    if(i & 16) li[4] = '9';
+    if(i & 32) li[5] = '9';
+  }
+}
+*/
+
 void i_ching_init() {
   mulib_init();
   mu_button_io_set_callback(button_cb);
@@ -78,6 +94,27 @@ void i_ching_init() {
   mu_ansi_term_clear_screen();
   mu_ansi_term_home();
   mu_ansi_term_set_cursor_visible(false);
+
+/*
+  display_intro();
+
+  char *test_user_lines[2];
+  test_user_lines[0] = "678986";
+  test_user_lines[1] = "778698";
+  draw_multiple_user_lines(test_user_lines, 2, 3, 6);
+  printf("\n");
+  draw_multiple_user_lines(test_user_lines, 2, 6, 6);
+  printf("\n");
+  draw_multiple_user_lines(test_user_lines, 2, 9, 6);
+  printf("\n");
+  draw_multiple_user_lines(test_user_lines, 2, 18, 12);
+  printf("\n");
+  //draw_multiple_user_lines(test_user_lines, 2, 36, 24);
+  printf("\n");
+ exit(0);
+*/
+
+
 
   printf("\nContemplate your question.\n\n");
   print_reversed("Press user button or any key to begin casting...\n\n");
@@ -156,7 +193,7 @@ static void test_format() {
 */
 
 static void print_reversed(char *wut) {
-    mu_ansi_term_set_colors(MU_ANSI_TERM_BLACK, MU_ANSI_TERM_GRAY);
+    mu_ansi_term_set_colors(MU_ANSI_TERM_BRIGHT_YELLOW, MU_ANSI_TERM_GRAY);
     printf("%s",wut);
     mu_ansi_term_set_colors(MU_ANSI_TERM_DEFAULT_COLOR, MU_ANSI_TERM_DEFAULT_COLOR);
 }
