@@ -26,31 +26,37 @@
 // includes
 
 #include "mu_test_utils.h"
-#include "mu_time.h"
+#include "extras/mu_drunken_bishop.h"
+#include "core/mu_version.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-#include <stdio.h>
 // =============================================================================
 // private types and definitions
 
 // =============================================================================
 // private declarations
-
+int test_non_zero_worm();
 // =============================================================================
 // local storage
+
 
 // =============================================================================
 // public code
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
-
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
-
-  
+void mu_drunken_bishop_test() {
+  ASSERT(test_non_zero_worm() == 1);
 }
 
 // =============================================================================
 // private code
+
+int test_non_zero_worm() {
+  //mu_print_random_art_from_string("",7);
+  //mu_print_random_art_from_string("234",11);
+  return 1;
+}
+

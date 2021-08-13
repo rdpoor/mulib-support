@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,38 @@
  */
 
 // =============================================================================
-// includes
+// Includes
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
+#include "mu_kbd_io.h"
 
 #include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
 // =============================================================================
-// private types and definitions
+// Local types and definitions
 
-// =============================================================================
-// private declarations
-
-// =============================================================================
-// local storage
 
 // =============================================================================
-// public code
+// Local storage
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+// =============================================================================
+// Local (forward) declarations
 
-  
+// =============================================================================
+// Public code
+
+void mu_kbd_io_init(void) {
 }
 
+void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb) {
+  //s_kbd_io_cb = cb;
+}
+
+
+
 // =============================================================================
-// private code
+// Local (static) code
+
+

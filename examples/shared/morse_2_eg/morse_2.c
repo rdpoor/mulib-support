@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,69 @@
  */
 
 // =============================================================================
-// includes
+// Includes
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
+#include "morse_2.h"
+#include "morse_char.h"
 
+#include <mulib.h>
 #include <stdio.h>
-// =============================================================================
-// private types and definitions
+#include <stdlib.h>
+#include <stddef.h>
 
 // =============================================================================
-// private declarations
+// Local types and definitions
+
+#define VERSION "1.0"
+
+typedef struct {
+  mu_task_t task;
+  char ascii;
+} ctx_t;
 
 // =============================================================================
-// local storage
+// Local (forward) declarations
+
+static void task_fn(void *ctx, void *arg);
 
 // =============================================================================
-// public code
+// Local storage
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
+static ctx_t s_ctx;
+int verbosityLevel = 0;
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+// =============================================================================
+// Public code
 
-  
+void morse_2_init(int aVerbosityLevel) {
+  verbosityLevel = aVerbosityLevel;
+  mulib_init();
+  mu_ansi_term_clear_screen();
+
+  printf("\r\nmorse_2 v%s, mulib v%s verbosity: %d\n", VERSION, MU_VERSION,verbosityLevel);
+  mu_ansi_term_set_cursor_visible(false);
+
+  // initialize the mu_task to associate task_fn with s_ctx
+  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 2");
+
+  // Initialize s_ctx
+  s_ctx.ascii = 'Y';
+
+  mu_sched_task_now(&s_ctx.task);
+}
+
+void morse_2_step(void) {
+  mu_sched_step();
 }
 
 // =============================================================================
-// private code
+// Local (private) code
+
+static void task_fn(void *ctx, void *arg) {
+  // Recast the void * argument to a morse_2 ctx_t * argument.
+  ctx_t *self = (ctx_t *)ctx;
+  (void)arg;  // unused
+
+  // Schedule sub-task to blink the ascii and upon completion, call this task.
+  mu_sched_task_now(morse_char_init(self->ascii, &self->task));
+}

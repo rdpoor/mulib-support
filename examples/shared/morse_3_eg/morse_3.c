@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,65 @@
  */
 
 // =============================================================================
-// includes
+// Includes
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
+#include "morse_3.h"
+#include "morse_str.h"
 
+#include <mulib.h>
 #include <stdio.h>
-// =============================================================================
-// private types and definitions
+#include <stddef.h>
 
 // =============================================================================
-// private declarations
+// Local types and definitions
+
+#define VERSION "1.0"
+
+#define MESSAGE "Hello, world!"
+
+typedef struct {
+  mu_task_t task;
+} ctx_t;
 
 // =============================================================================
-// local storage
+// Local (forward) declarations
+
+static void task_fn(void *ctx, void *arg);
 
 // =============================================================================
-// public code
+// Local storage
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
+static ctx_t s_ctx;
+int verbosityLevel = 0;
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+// =============================================================================
+// Public code
 
-  
+void morse_3_init(int aVerbosityLevel) {
+  verbosityLevel = aVerbosityLevel;
+  mulib_init();
+  mu_ansi_term_clear_screen();
+
+  printf("\r\nmorse_3 v%s, mulib v%s\n", VERSION, MU_VERSION);
+
+  mu_task_init(&s_ctx.task, task_fn, &s_ctx, "Morse 3");
+
+  mu_sched_task_now(&s_ctx.task);
+}
+
+void morse_3_step(void) {
+  mu_sched_step();
 }
 
 // =============================================================================
-// private code
+// Local (private) code
+
+static void task_fn(void *ctx, void *arg) {
+  // Recast the void * argument to a ctx_t * argument.
+  ctx_t *self = (ctx_t *)ctx;
+  (void)arg;  // unused
+
+  // Schedule sub-task to blink the message and upon completion, call this task,
+  // which will simply repeat the process.
+  mu_sched_task_now(morse_str_init(MESSAGE, &self->task));
+}

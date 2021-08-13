@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,37 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// includes
+#ifndef _MORSE_2_H_
+#define _MORSE_2_H_
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
-
-#include <stdio.h>
-// =============================================================================
-// private types and definitions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// private declarations
+// Includes
 
 // =============================================================================
-// local storage
+// Types and definitions
 
 // =============================================================================
-// public code
+// Declarations
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
+/**
+ * @brief Initialize the morse_2 example code.  Called once at startup.
+ */
+void morse_2_init(int aVerbosityLevel);
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+/**
+ * @brief Step the morse_2 example code.  Called repeatedly.
+ *
+ * Note: All morse_e_step() does is call mu_sched_step().  This is typical of
+ * applications that are based on the mulib scheduler.
+ */
+void morse_2_step(void);
 
-  
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif // #ifndef _MORSE_2_H_

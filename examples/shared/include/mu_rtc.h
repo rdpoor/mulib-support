@@ -22,35 +22,78 @@
  * SOFTWARE.
  */
 
+#ifndef _MU_RTC_H_
+#define _MU_RTC_H_
+
+#ifdef __cplusplus
+extern "C";
+#endif
+
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
 #include "mu_time.h"
-#include <unistd.h>
-
-#include <stdio.h>
-// =============================================================================
-// private types and definitions
+#include "mu_config.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 // =============================================================================
-// private declarations
+// types and definitions
+
+#define MU_TIME_MS_TO_DURATION(ms) ((mu_duration_t)(((((mu_duration_t)ms)*MS_PER_SECOND))/RTC_FREQUENCY))
+
+typedef void (*mu_rtc_alarm_cb_t)(void);
 
 // =============================================================================
-// local storage
+// declarations
+
+/**
+ * @brief Initialize the Real Time Clock.  Must be called before any other rtc
+ * functions are called.
+ */
+void mu_rtc_init(void);
+
+/**
+ * @brief Get the current time.
+ */
+mu_time_t mu_rtc_now(void);
+
+/**
+ * @brief Busy wait for the given number of RTC ticks.
+ */
+void mu_rtc_busy_wait(mu_duration_t duration);
+
+/**
+ * @brief Set the absolute time at which the RTC should trigger a callback.
+ */
+void mu_rtc_set_alarm(mu_time_t count);
+
+/**
+ * @brief Get the time at which the RTC should trigger a callback.
+ */
+mu_time_t mu_rtc_get_alarm(void);
+
+/**
+ * @brief Set the function to be called when the RTC alarm fires
+ *
+ * Pass NULL for the CB to disable RTC match count callbacks.
+ */
+void mu_rtc_set_alarm_cb(mu_rtc_alarm_cb_t cb);
 
 // =============================================================================
-// public code
+// These are not public functions, but need to be declared for the RTC ISR
+// functions.
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
+// Design pattern: this is one of the few places where we don't provide a
+// declaration in the .h file and instead use an extern declaration in the
+// driver_isr.c file instead.
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+// void mu_rtc_on_compare_interrupt(void);
 
-  
+// void mu_rtc_on_overflow_interrupt(void);
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif // #ifndef _MU_RTC_H_

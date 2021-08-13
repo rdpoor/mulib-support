@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,54 @@
  * SOFTWARE.
  */
 
+/**
+ * @file mu_led_io.h
+ *
+ * @brief Control a platform-specific LED.
+ *
+ * mu_led_io defines a platform-specific LED.  This is commonly required by
+ * example applications, but could be used in production code if needed.
+ */
+
+#ifndef _MU_LED_IO_H_
+#define _MU_LED_IO_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
-
-#include <stdio.h>
-// =============================================================================
-// private types and definitions
+#include <stdbool.h>
+#include <stdint.h>
 
 // =============================================================================
-// private declarations
+// types and definitions
+
+// The canonical LED used in example code.
+#define MU_LED_0   0
 
 // =============================================================================
-// local storage
+// declarations
 
-// =============================================================================
-// public code
+/**
+ * @brief Initialize the LED.
+ */
+void mu_led_io_init(void);
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
+/**
+ * @brief Turn on or off an LED
+ */
+void mu_led_io_set(uint8_t led_id, bool on);
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+/**
+ * @brief Get the state of an LED.
+ */
+bool mu_led_io_get(uint8_t led_id);
 
-  
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef __TEMPLATE_H_ */

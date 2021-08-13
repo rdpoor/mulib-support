@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,38 @@
  * SOFTWARE.
  */
 
+#ifndef _MU_KBD_IO_H_
+#define _MU_KBD_IO_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // =============================================================================
 // includes
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
-
-#include <stdio.h>
 // =============================================================================
-// private types and definitions
+// types and definitions
+
+// Signature of the keyboard callback function
+typedef void (*mu_kbd_io_callback_t)(unsigned char ch);
 
 // =============================================================================
-// private declarations
+// declarations
 
-// =============================================================================
-// local storage
+/**
+ * @brief Initialize the keyboard input module.
+ */
+void mu_kbd_io_init(void);
 
-// =============================================================================
-// public code
+/**
+ * @brief Install a callback to be triggered (at interrupt level) when a
+ * character is received from the keyboard.
+ */
+void mu_kbd_io_set_callback(mu_kbd_io_callback_t cb);
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
-
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
-
-  
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _MU_KBD_IO_H_ */

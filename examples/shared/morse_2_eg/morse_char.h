@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,34 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// includes
+#ifndef _MORSE_CHAR_H_
+#define _MORSE_CHAR_H_
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
-
-#include <stdio.h>
-// =============================================================================
-// private types and definitions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// private declarations
+// Includes
+
+#include <mulib.h>
 
 // =============================================================================
-// local storage
+// Types and definitions
 
 // =============================================================================
-// public code
+// Declarations
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
+extern int verbosityLevel;
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+/**
+ * @brief morse_char_init() returns a task that, when called, blinks out the
+ * given ASCII character in morse code using the mu_platform's LED.
+ */
+mu_task_t *morse_char_init(char ascii, mu_task_t *on_completion);
 
-  
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif // #ifndef _MORSE_CHAR_H_

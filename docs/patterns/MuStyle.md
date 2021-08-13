@@ -803,7 +803,7 @@ In this example, we create a `morse_join` task that spawns several
 #include <stddef.h>           // defines NULL
 
 #define ISR_QUEUE_SIZE 8
-static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
+static mu_spsc_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
 
 // Three tasks to blink out "Hello, World" in different languages
 static morse_task_ctx_t s_english_task_ctx;

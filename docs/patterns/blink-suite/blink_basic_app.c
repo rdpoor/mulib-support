@@ -44,7 +44,7 @@
 
  // Allocate storage for the scheduler's Interrupt Service Routine queue.
  // TODO: use the task's link field for ISR queue rather than this...
- static mu_spscq_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
+ static mu_spsc_item_t s_isr_queue_items[ISR_QUEUE_SIZE];
 
  // =============================================================================
  // Local (forward) declarations

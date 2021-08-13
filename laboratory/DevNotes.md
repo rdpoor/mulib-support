@@ -21,6 +21,29 @@ Any demo app that needs `mu_stddemo` functions will `#include "mu_stddemo.h"`.
 
 Files in mulib/extras can easily reference declarations in muilb/core.
 
+## 20210601-1000 Terry doc notes
+
+
+3.  It would be cool if I could include just a single .h that I've updated with what I want to do.  For example,
+  #define core
+if I want to include all the core stuff and
+  #define platform
+  #define platform_comp1
+  #define platform_comp2
+if I want to pick-and choose.  Then I
+  #include mu_setup.h
+  #include mulib.h
+which interrogates the values set in mu_setup to include the right thing.  Maybe too much work and ultimately inflexible but a thought.
+4.  We need detailed instructions on the file structure.  Where to install mu lib and where to put my code.  Does my code go into the mulib.c file?  Why is the top-level directory mulib-support?  Shouldn't my code go into the top-level with mulib as the next level?  I'm not sure I want the mulib stuff directly in my directory tree?  I think mulib should be in a /lib directory separate from where my application source goes.  However, maybe in embedded-land things are more combined, I don't know.
+5.  Need to rationalize the code a bit.  The mulib.c file you get when you clone git doesn't look like the morse_1.c from the examples.
+6.  Need detailed coverage of all APIs - separate from comments in the code.  I hate that.  The git pages should include details of what each developer-visible function does (responsibility, return, errors, exception conditions, etc.); I do not mean that internal functions should be documented in this way - just the things that I would touch if I were porting to a new HW platform.
+7.  Similar need for programmers *using* mulib on a platform without needing to port it.  How should my code be structured?  What APIs should I use?  Document all this.
+8.  In short, the above few questions talk about a more detailed tutorial.
+9.  Why no int main()?  Maybe in embedded-land the runtime is simpler but if no main() then what is the application entry-point?  Explain.
+10.  Headers have some confusing code - maybe because its a work-in-progress?  For example disable/enable_interrupts is a while(true) loop.  This seems bad.  Maybe it is supposed to be that way.  If so, code comment should explain.  Also, why would I want to disable interrupts anyway?  Embedded-land should explain this.
+11.  Inconsistent use of empty #define.  #define log_enabled 1 but others are just #define someconstant.  Maybe log_enabled has a value because it is also defining a log-level?  Should be consistent.  Also, the comment says "uncomment log_enabled to turn on logging" but it's already uncommented.  Not high-importance because the intent is clear but the code as it comes out of git should be consistent.
+12.  Should there be a makefile?  Again, make it very clear how to build an application using mulib, how to port to a new HW platform and how to pick-and-choose components.
+
 
 ### But what about initialization?
 
@@ -81,4 +104,7 @@ Working on the POSIX stuff has led me to think about:
 * Why are .h files living alongside .c files?   Are Terry and I old fogies?   If during a port you're meant to change anything in a .h, it should be stand alone, like config.h.  Also centralize / factor the platform changes.
 * Why is mulib.c outside of core/?
 * There's redundnancy with ansi routines in tower and POSIX/mu_stddemo.   Pull up into mu_platform/mu_terminal_io?
+
+
+
 

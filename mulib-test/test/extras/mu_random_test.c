@@ -26,31 +26,57 @@
 // includes
 
 #include "mu_test_utils.h"
-#include "mu_time.h"
+#include "mu_random.h"
+#include <string.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-#include <stdio.h>
 // =============================================================================
 // private types and definitions
+#define GIBBERISH_LENGTH 78
+
+#define EXPECTED_GIBBERISH "M<-F::M?LN?#'IY7*T78@,3K=H9?HWK8J0+5GQ19W4?ZB;-4V=$/AR@,5*ACHM&8T;=N@;8;+8E6NV"
 
 // =============================================================================
 // private declarations
 
+static int compare_rng_with_expected_gibberish();
+
 // =============================================================================
 // local storage
+
 
 // =============================================================================
 // public code
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
-
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
-
-  
+void mu_random_test() {
+  mu_random_reset();
+  ASSERT(compare_rng_with_expected_gibberish() == 1);
+  mu_random_reset();
+  ASSERT(compare_rng_with_expected_gibberish() == 1);
+  mu_random_seed(1234);
+  uint32_t r = mu_random();
+  ASSERT(r != mu_random());
+  mu_random_seed(1234);
+  ASSERT(r == mu_random());
 }
+
 
 // =============================================================================
 // private code
+
+static int compare_rng_with_expected_gibberish() {
+  for(int i = 0; i < GIBBERISH_LENGTH; i++) {
+    char a = (char)mu_random_range(35, 91);
+    //fputc(a,stdout);
+    if(a != EXPECTED_GIBBERISH[i]) {
+      printf("\nmu_random() failed to match the expected random sequence for the default seed.\n");
+      return 0;
+    }
+  }
+  //printf("\nseeded rng matches.\n");
+  return 1;
+}
+

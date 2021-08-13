@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 R. Dunbar Poor <rdpoor@gmail.com>
+ * Copyright (c) 2021 Klatu Networks, Inc
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,30 @@
  * SOFTWARE.
  */
 
-// =============================================================================
-// includes
+#ifndef _I_CHING_H_
+#define _I_CHING_H_
 
-#include "mu_test_utils.h"
-#include "mu_time.h"
-#include <unistd.h>
-
-#include <stdio.h>
-// =============================================================================
-// private types and definitions
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // =============================================================================
-// private declarations
+// Includes
+#include <stdbool.h>
 
 // =============================================================================
-// local storage
+// Types and definitions
 
 // =============================================================================
-// public code
+// Declarations
 
-void mu_time_test() {
-  // mu_time_t t1;
-  // mu_time_t t2;
 
-  // mu_duration_t dt1;
-  // mu_duration_ms_t dm1;
+void i_ching_init();
 
-  
+void i_ching_step();
+
+#ifdef __cplusplus
 }
+#endif
 
-// =============================================================================
-// private code
+#endif /* #ifndef _I_CHING_H_ */

@@ -48,56 +48,38 @@ static int item3 = 3;
 // =============================================================================
 // public code
 
-void mu_spscq_test() {
-  mu_spscq_t cqi;
-  mu_spscq_t *cq = &cqi;
-  mu_spscq_item_t item;
+void mu_spsc_test() {
+  mu_spsc_t cqi;
+  mu_spsc_t *cq = &cqi;
+  mu_spsc_item_t item;
 
-  // mu_spscq_err_t mu_spscq_init(mu_spscq_t *cq, mu_spscq_obj_t *pool, unsigned int capacity);
+  // mu_spsc_err_t mu_spsc_init(mu_spsc_t *cq, mu_spsc_obj_t *pool, unsigned int capacity);
   // pool size must be a power of two
-  ASSERT(mu_spscq_init(cq, pool, POOL_SIZE-1) == MU_CQUEUE_ERR_SIZE);
-  ASSERT(mu_spscq_init(cq, pool, POOL_SIZE) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_capacity(cq) == POOL_SIZE-1);
-  ASSERT(mu_spscq_count(cq) == 0);
-  ASSERT(mu_spscq_is_empty(cq) == true);
+  ASSERT(mu_spsc_init(cq, pool, POOL_SIZE-1) == MU_SPSC_ERR_SIZE);
+  ASSERT(mu_spsc_init(cq, pool, POOL_SIZE) == MU_SPSC_ERR_NONE);
+  ASSERT(mu_spsc_capacity(cq) == POOL_SIZE-1);
 
-  // mu_spscq_err_t mu_spscq_put(mu_spscq_t *cq, mu_spscq_obj_t obj);
-  ASSERT(mu_spscq_put(cq, (mu_spscq_item_t)&item0) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 1);
-  ASSERT(mu_spscq_is_empty(cq) == false);
-  ASSERT(mu_spscq_put(cq, (mu_spscq_item_t)&item1) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 2);
-  ASSERT(mu_spscq_put(cq, (mu_spscq_item_t)&item2) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 3);
+  // mu_spsc_err_t mu_spsc_put(mu_spsc_t *cq, mu_spsc_obj_t obj);
+  ASSERT(mu_spsc_put(cq, (mu_spsc_item_t)&item0) == MU_SPSC_ERR_NONE);
+  ASSERT(mu_spsc_put(cq, (mu_spsc_item_t)&item1) == MU_SPSC_ERR_NONE);
+  ASSERT(mu_spsc_put(cq, (mu_spsc_item_t)&item2) == MU_SPSC_ERR_NONE);
   // put into a full queue fails
-  ASSERT(mu_spscq_put(cq, (mu_spscq_item_t)&item3) == MU_CQUEUE_ERR_FULL);
-  ASSERT(mu_spscq_count(cq) == 3);
-  ASSERT(mu_spscq_is_empty(cq) == false);
+  ASSERT(mu_spsc_put(cq, (mu_spsc_item_t)&item3) == MU_SPSC_ERR_FULL);
 
-  // mu_spscq_err_t mu_spscq_get(mu_spscq_t *cq, mu_spscq_obj_t *obj);
-  ASSERT(mu_spscq_get(cq, &item) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 2);
+  // mu_spsc_err_t mu_spsc_get(mu_spsc_t *cq, mu_spsc_obj_t *obj);
+  ASSERT(mu_spsc_get(cq, &item) == MU_SPSC_ERR_NONE);
   ASSERT(item == &item0);
-  ASSERT(mu_spscq_get(cq, &item) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 1);
+  ASSERT(mu_spsc_get(cq, &item) == MU_SPSC_ERR_NONE);
   ASSERT(item == &item1);
-  ASSERT(mu_spscq_get(cq, &item) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 0);
+  ASSERT(mu_spsc_get(cq, &item) == MU_SPSC_ERR_NONE);
   ASSERT(item == &item2);
-  ASSERT(mu_spscq_is_empty(cq) == true);
   // get from an empty queue fails
-  ASSERT(mu_spscq_get(cq, &item) == MU_CQUEUE_ERR_EMPTY);
-  ASSERT(mu_spscq_count(cq) == 0);
+  ASSERT(mu_spsc_get(cq, &item) == MU_SPSC_ERR_EMPTY);
   ASSERT(item == NULL);
-  ASSERT(mu_spscq_is_empty(cq) == true);
 
-  // mu_spscq_err_t mu_spscq_reset(mu_spscq_t *cq);
-  ASSERT(mu_spscq_put(cq, (mu_spscq_item_t)&item0) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 1);
-  ASSERT(mu_spscq_is_empty(cq) == false);
-  ASSERT(mu_spscq_reset(cq) == MU_CQUEUE_ERR_NONE);
-  ASSERT(mu_spscq_count(cq) == 0);
-  ASSERT(mu_spscq_is_empty(cq) == true);
+  // mu_spsc_err_t mu_spsc_reset(mu_spsc_t *cq);
+  ASSERT(mu_spsc_put(cq, (mu_spsc_item_t)&item0) == MU_SPSC_ERR_NONE);
+  ASSERT(mu_spsc_reset(cq) == MU_SPSC_ERR_NONE);
 }
 
 // =============================================================================
