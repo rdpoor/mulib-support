@@ -1,4 +1,0 @@
-language: c
-script:
-- git clone --depth=50 --branch=main https://github.com/rdpoor/mulib.git mulib
-- (cd mulib-test/tools && make test)
